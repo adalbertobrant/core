@@ -1,0 +1,62 @@
+<table class="table-sm" style="max-width: 200px;">
+    <thead>
+        <tr>
+            <th colspan="2">Key</th>
+        </tr>
+        <tr>
+            <th>Type</th>
+            <th>Color</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Present</td>
+            <td style="background-color:green;"></td>
+        </tr>
+        <tr>
+            <td>Late</td>
+            <td style="background-color:yellow;"></td>
+        </tr>
+        <tr>
+            <td>Absent</td>
+            <td style="background-color:red;"></td>
+        </tr>
+    </tbody>
+</table>
+
+{% for page in pages %}
+<table >
+    <thead>
+        <tr>
+            <th class="day-content" >Employee #</th>
+            {% for date in days %}
+            <th class="day-heading">{{date}}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for employee in page %}
+        <tr>
+            <td class="day-content">
+                {% if employee.latest_timesheet %}
+                <a style="text-decoration:none;" href="{% url 'employees:timesheet-detail' pk=employee.latest_timesheet %}">
+                    {{employee.pk | stringformat:"04d"}}
+                </a>
+                {% else %}
+                    {{employee.pk | stringformat:"04d"}}
+                {% endif %}
+            </td>
+            {% for date in employee.attendance %}
+                <td class="day-content" style="background-color:{% if date == 0 %}green{% elif date == 1 %}yellow{% else %}red{% endif %};"></td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{{page}}
+{% if page.has_next %}
+    <p class="eop"></p>
+{% endif %}
+
+{% endfor %}

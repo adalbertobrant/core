@@ -1,0 +1,116 @@
+{% extends "window.html" %} {% block content %}
+{% load static %}
+<div class="jumbotron jumbo-gradient">
+    <h1 class="display-3"><i class=" fas fa-cash-register" style="color:#07f; font-size:128px;"></i> Sales Dashboard
+    </h1>
+    <p class="lead">Create invoices, apply customer payments, generate reports</p>
+
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><a class="nav-link active" href="#actions" data-toggle="tab">Actions</a></li>
+                <li class="nav-item"><a class="nav-link" href="#dashboard" data-toggle="tab">Dashboard</a></li>
+            </ul>
+            <div class="tab-content panel-body">
+                <div id="actions" class="tab-pane active">
+                    <div class="card-deck">
+                        <div class="card bg-primary text-white">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-cash-register"></i> Invoices</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item hvr-grow">
+                                        <a class="card-link" href="{% url 'invoicing:create-quotation' %}">
+                                            Create Quotation
+                                        </a>
+                                    </li>
+                                    <li class="list-group-item hvr-grow">
+                                        <a class="card-link" href="{% url 'invoicing:create-invoice' %}">
+                                            Create Invoice
+                                        </a>
+                                    </li>
+                                    <li class="list-group-item hvr-grow"><a class="card-link"
+                                            href="{% url 'invoicing:invoices-list' %}">Manage
+                                            Quotations + Invoices</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card bg-primary text-white">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-shopping-cart"></i> Customers</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item hvr-grow"><a class="card-link"
+                                            href="{% url 'invoicing:create-customer' %}">Create Customer</a></li>
+                                    <li class="list-group-item hvr-grow"><a class="card-link"
+                                            href="{% url 'invoicing:customers-list' %}">Manage Customers</a></li>
+                                    <li class="list-group-item hvr-grow">...</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card bg-primary text-white">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-chart-bar"></i> Reports</h4>
+                            </div>
+                            <div class="card-body">
+
+                                <ul class="list-group">
+                                    <li class="list-group-item hvr-grow"><a class="card-link"
+                                            href="{% url 'invoicing:customer-statement-form' %}">Customer
+                                            Statement</a></li>
+                                    <li class="list-group-item hvr-grow"><a class="card-link"
+                                            href="/invoicing/sales-report-form">Sales
+                                            Report</a></li>
+                                    <li class="list-group-item ">
+                                        <div class="dropdown">
+                                            <span data-toggle="dropdown" class=" card-link"
+                                                style="color:blue;">More...</span>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item"
+                                                    href="{% url 'invoicing:invoice-aging' %}">Invoice Aging Report</a>
+                                                <a class="dropdown-item"
+                                                    href="{% url 'invoicing:accounts-receivable-report' %}">Accounts
+                                                    Receivable Report</a> <a class="dropdown-item"
+                                                    href="{% url 'invoicing:sales-by-customer-form' %}">Sales By
+                                                    Customer Report</a>
+                                                <a class="dropdown-item"
+                                                    href="{% url 'invoicing:customer-payments-form' %}">Customer
+                                                    Payments Report</a>
+                                                <a class="dropdown-item"
+                                                    href="{% url 'invoicing:average-days-to-pay-report' %}">Average Days
+                                                    To Pay</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+                    <div class="card-deck">
+                        <div class="card bg-primary text-white">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-sliders-h"></i> Configuration</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item hvr-grow"><a class="card-link"
+                                            href="{% url 'invoicing:config' pk=1 %}">Settings</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="dashboard" class="tab-pane">
+                    <iframe src="/invoicing/async-dashboard/" style='width:100%;height:600px;' frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

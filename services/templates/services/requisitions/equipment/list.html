@@ -1,0 +1,39 @@
+{% extends "common_data/list_template.html" %} {% block list_headings %}
+<tr class="info">
+    <td>ID</td>
+    <td >Reference</td>
+    <td >Date</td>
+    <td >Requested By</td>
+    <td >Actions</td>
+</tr>
+{% endblock %} {% block list_content %} 
+{% for req in object_list %}
+<tr>
+    <td>{{req.pk}}</td>
+    <td>{{req.reference}}</td>
+    <td>{{req.date}}</td>
+    <td>{{req.requested_by}}</td>
+    <td>
+        <div class="dropdown">
+            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                Actions
+            </button>
+            <div class="dropdown-menu" aria-labelledby="triggerId">
+                <a class="dropdown-item" href="{% url 'services:equipment-requisition-auth-view' pk=req.pk %}">
+                        <i class="fas fa-eye"></i> Authorize/Release
+                    </a>
+
+                <a class="dropdown-item" href="{% url 'services:equipment-requisition-detail' pk=req.pk %}">
+                        <i class="fas fa-eye"></i> Details
+                    </a>
+
+                <a class="dropdown-item" href="{% url 'services:equipment-return' pk=req.pk %}">
+                        <i class="fas fa-reply"></i> Accept Returns
+                    </a>
+            </div>
+        </div>
+
+    </td>
+</tr>
+{% endfor %} {% endblock %}

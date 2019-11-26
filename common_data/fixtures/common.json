@@ -1,0 +1,10 @@
+[
+    
+    {
+        "model": "common_data.GlobalConfig",
+        "pk": 1,
+        "fields": {
+            "document_theme": 1
+        }
+    }
+]

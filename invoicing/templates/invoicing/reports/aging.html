@@ -1,0 +1,74 @@
+{% extends "common_data/page/pdf_page.html" %}
+{% load accounting %}
+
+{% block pre_page %}
+<div class="jumbotron">
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Actions
+        </button>
+        <div class="dropdown-menu" aria-labelledby="triggerId">
+            <a href="{% url 'invoicing:invoice-aging-pdf' %}" class="dropdown-item"><i class="fas fa-file-pdf"></i>
+                Generate PDF
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock  %}
+
+{% block page_contents %}
+
+<table class=" table-sm" style="width:100%">
+    <tbody>
+        <tr>
+            <td colspan="2">
+                {% include "invoicing/reports/aging_header.html" %}
+            </td>
+        </tr>
+        
+        <tr>
+            <td colspan="2">
+                {% for page in pages %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th colspan="6" style="text-align:center">Invoice Age</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>Total A/R</th>
+                            <th>Current</th>
+                            <th>0-7 Days</th>
+                            <th>8-14 Days</th>
+                            <th>15-30 Days</th>
+                            <th>31- 60 Days</th>
+                            <th>61+ Days</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in page %}
+                        <tr>
+                            <td>{{c}}</td>
+                            <td>{{c.total_accounts_receivable |active_currency}}</td>
+                            {% for amount in c.age_list %}
+                            <td>{{amount |active_currency}}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% if page.has_next %}
+                <p class="eop"></p>
+                {% endif %}
+                {{page}}
+                {% endfor %}
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% if pdf_link %}
+
+{% endif %}
+{% endblock %}

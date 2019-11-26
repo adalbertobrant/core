@@ -1,0 +1,10 @@
+[
+    {
+        "model": "invoicing.SalesConfig",
+        "pk": 1,
+        "fields": {
+            "default_invoice_comments": "Thank you for your business"    
+        }
+    }
+    
+]

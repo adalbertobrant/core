@@ -1,0 +1,24 @@
+{% extends "window.html" %}
+{% load crispy_forms_tags %}
+{% load render_bundle from webpack_loader %}
+{% block content %}
+
+<div class="jumbotron">
+    <h1 class="display-3">Update Event</h1>
+    <p class="lead">Provide Additional Information for an event</p>
+    <hr class="my-2">
+    <p>Actions</p>
+    <p class="lead">
+        <a class="btn btn-primary btn-lg" href="" role="button">Complete</a>
+    </p>
+</div>
+
+<div class="shadow container">
+    <div class="row">
+        <div class="col-sm-12">
+                {% crispy form %}
+        </div>
+    </div>
+</div>
+{% render_bundle 'calendar' %}
+{% endblock %}

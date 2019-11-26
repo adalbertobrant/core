@@ -1,0 +1,116 @@
+<style>
+    #item-table th{
+        color: white;
+        background-color: black;
+        border-right: 1px solid white;
+    }
+
+    #item-table tbody td{
+        border-collapse: collapse;
+        border-right: 1px solid black;
+    }
+
+    #item-table tbody{
+        border: 1px solid black;
+    }
+
+
+    .subtotals{
+        padding: 5px;
+        border: 1px solid black;
+    }
+
+    #item-table{
+        width:100%;
+        min-height: 15cm;
+    }
+
+
+</style>
+
+<table style="width:100%;">
+    <tbody>
+        <tr>
+        <td colspan="2">
+            {% include "inventory/order/header.html" %}
+        </td>
+        </tr>
+        <tr>
+            <th colspan="2" >
+                {% for page in pages %}                
+                <table id="item-table" class=" table-sm" >
+                    <thead>
+                        <tr>
+                            <th >Qty</th>
+                            <th  style="width:40%;">Description</th>
+                            <th>Unit</th>
+                            <th >Unit Price</th>
+                            <th >Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>                        
+                        {% for item in page %}
+                        <tr>
+                            <td >{{item.quantity}}</td>
+                            <td >{{item.item.name}}</td>
+                            <td>{{item.item.unit}}</td>
+                            <td >{{item.order_price}}</td>
+                            <td >{{item.subtotal}}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr style="height:100%">
+                            <td ></td>
+                            <td ></td>
+                            <td ></td>
+                            <td ></td>
+                            <td ></td>
+                        </tr>
+                    </tbody>
+                    {% if not page.has_next %}
+                    <tfoot style="border-top:1px solid black;">
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2" class="subtotals">
+                                <b>SubTotal:</b>
+                            </td>
+                            <td class="subtotals">{{object.subtotal | floatformat:2 }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2" class="subtotals">
+                                <b>Tax Due @{{object.tax.rate}}%:</b>
+                            </td>
+                            <td class="subtotals">{{object.tax_amount | floatformat:2 }}</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2" class="subtotals">
+                                <b>Total:</b>
+                            </td>
+                            <td class="subtotals">{{object.total | floatformat:2 }}</td>
+                        </tr>
+                    </tfoot>
+                    {% endif %}
+                </table>
+                <p>{{page}}</p>
+                {% if page.has_next %}
+                <p class="eop"></p>
+                {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" >
+                <div class="footer-cell">
+                    <div class="footer-cell-heading">
+                        <h5>Notes:</h5>
+                    </div>
+                    <div class="footer-cell-contents">
+                        <p>{{object.notes}}</p>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>

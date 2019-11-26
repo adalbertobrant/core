@@ -1,0 +1,26 @@
+
+
+
+
+{% if object.terms and object.comments %}
+    <table style="width:100%;">
+        <tbody>
+            <tr>
+                <td>
+                    {% include "common_data/common/terms.html" %}
+                </td>
+                <td>
+                    {% include "common_data/common/comments.html" %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+{% elif object.terms %}
+    {% include "common_data/common/terms.html" %}
+
+{% elif object.comments %}
+    {% include "common_data/common/comments.html" %}
+
+{% endif %}
+

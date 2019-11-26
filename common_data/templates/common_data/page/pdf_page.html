@@ -1,0 +1,95 @@
+{% load static %}
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'common_data/css/bootstrap/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'common_data/css/document-styles.css' %}" />
+    <link rel="stylesheet" type="text/css" 
+        href="{% static 'common_data/css/animate.css' %}" />
+    
+     <link rel="stylesheet" type="text/css" 
+        href="{% static 'common_data/assets/css/all.min.css' %}" />
+    <script type="text/javascript" src="{% static 'common_data/js/jquery-3.3.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'common_data/js/popper.js' %}"></script>
+    <script type="text/javascript" src="{% static 'common_data/css/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'common_data/js/pygal-tooltips.min.js' %}"></script>
+    
+    {% if pdf_link %}
+    
+    
+    <link rel="stylesheet" type="text/css" 
+        href="{% static 'common_data/assets/css/all.min.css' %}" />
+ 
+        {% endif %}
+    <link rel="stylesheet" type="text/css" href="{% static 'common_data/css/document-styles.css' %}" >
+</head>
+<body>
+    <style>
+        .custom-page {
+            width: 100%;
+            height: 100%;
+            {% if pdf_link %}
+            overflow-y: auto;
+            {% endif %}
+        }
+
+        .custom-page::-webkit-scrollbar {
+            width: 5px;
+            background-color: #F5F5F5;
+        }
+
+        .custom-page::-webkit-scrollbar-thumb {
+            background-color: #007bff;
+        }
+
+        .page-container-iframe {
+            height: 100%                 !important;
+            border: 0px                  !important;
+            box-shadow: 0px 0px 0px #fff !important;
+        }
+
+        .page-container-iframe > div {
+            overflow-y: visible !important;
+        }
+
+        .page-container {
+            margin: 0px auto;
+            padding: 0.5in;
+            width: 21cm;
+            height: 29.7cm;
+            
+            {% if pdf_link %}
+            
+            border: 1px solid grey;
+            box-shadow: 15px 30px 20px #ccc;
+            {% endif %}
+        }
+        .eop {
+            page-break-before: always;
+        }
+    </style>
+    
+        {% if pdf_link %}
+        {% include "nav.html" %}
+        {% block pre_page %}{% endblock %}
+        {% endif %}
+        <div class="page-container"> 
+            <div class="custom-page">
+                {% block page_contents %}{% endblock %}
+            </div>
+        </div>
+        {% if pdf_link %}
+        {% include "footer.html" %}
+        {% endif %}
+        
+<script>
+    $(document).ready(function(){
+        if(window.self != window.top){
+            $('.page-container').addClass('page-container-iframe')
+        }
+    })
+</script>
+ 
+</body>
+</html>

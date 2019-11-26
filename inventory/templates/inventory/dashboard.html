@@ -1,0 +1,228 @@
+{% extends "window.html" %} {% block content %}
+<style>
+    .card th {
+        color: white;
+    }
+</style>
+<div class="jumbotron jumbo-gradient">
+    <h1 class="display-3"><i class=" fas fa-warehouse" style="color:#07f; font-size:128px;"></i> Inventory Dashboard
+    </h1>
+    <p class="lead">Manage inventory items and warehouses</p>
+    <hr class="my-2">
+
+</div>
+<div class="container">
+    <div class="tab-content">
+        <div class="col-sm-12">
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><a class="nav-link active" href="#actions" data-toggle="tab">Actions</a></li>
+                <li class="nav-item"><a class="nav-link" href="#dashboard" data-toggle="tab">Dashboard</a></li>
+            </ul>
+            <div class="tab-content panel-body">
+                <div id="actions" class="tab-pane active">
+                    <div class="card-deck">
+                        {% if use_warehousing_model %}
+                        <div class="card bg-primary text-white">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-warehouse"></i> Warehouses</h4>
+                            </div>
+                            <div class="card-body">
+
+                                <ul class="list-group">
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'inventory:warehouse-create' %}">Add Warehouse</a>
+                                    </li>
+
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'inventory:warehouse-list' %}"> Manage Warehouses</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <div class="card-header">
+                                    <h4 class="card-title"><i class="fas fa-puzzle-piece"></i> Inventory Management</h4>
+                                </div>
+                                <ul class="list-group">
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'inventory:warehouse-detail' pk=1 %}">View Inventory</a>
+                                    </li>
+
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'inventory:create-inventory-check' pk=1 %}"> Check Inventory</a>
+                                    </li>
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'inventory:scrap-inventory' pk=1 %}"> Scrap Inventory</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="card bg-primary text-white">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-file-invoice"></i> Purchases</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'inventory:order-create' %}">Create New Purchase Order</a>
+                                    </li>
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'inventory:order-list' %}">Manage Orders</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card bg-primary text-white">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-shipping-fast"></i> Vendors</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+
+                                    <li class="list-group-item hvr-grow">
+                                        <a class="card-link" href="{% url 'inventory:supplier-create' %}">Create
+                                            Vendor</a>
+                                    </li>
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'inventory:supplier-list'%} ">Manage Vendors</a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <div class="card-deck">
+                        <div class="card bg-primary text-white">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-shopping-basket"></i> Inventory</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    {% if use_product_inventory %}
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'inventory:product-list' %}">Manage Products</a>
+                                    </li>
+                                    {% endif %}
+                                    {% if use_equipment_inventory %}
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'inventory:equipment-list' %}">Manage Equipment</a>
+                                    </li>
+                                    {% endif %}
+                                    {% if use_consumables_inventory %}
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'inventory:consumable-list' %}">Manage Consumables</a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+
+                        {% if use_equipment_inventory or use_consumables_inventory %}
+                        <div class="card bg-primary text-white">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-file-signature"></i> Requisitions</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'services:equipment-requisition-list' %}">Manage Equipment
+                                            Requisitions</a>
+                                    </li>
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'services:consumable-requisition-list' %}">Manage Consumables
+                                            Requisitions</a>
+                                    </li>
+                                    <li class="list-group-item hvr-grow">...</li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div class="card bg-primary text-white">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-chart-bar"></i> Reports</h4>
+                            </div>
+
+                            <div class="card-body">
+
+                                <ul class="list-group">
+
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'inventory:inventory-report' %}">Item Stock Level Report</a>
+                                    </li>
+
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'inventory:outstanding-orders-report' %}">Outstanding Orders
+                                            Report</a>
+                                    </li>
+                                    <li class="list-group-item ">
+                                        <div class="dropdown">
+                                            <span data-toggle="dropdown" class="card-link"
+                                                style="color:blue;">More...</span>
+                                            <div class="dropdown-menu">
+                                                <a class='dropdown-item'
+                                                    href="{% url 'inventory:payments-due-report' %}">
+                                                    Payments Due Report
+                                                </a>
+                                                <a class='dropdown-item'
+                                                    href="{% url 'inventory:vendor-balance-report' %}">
+                                                    Vendor Balance Report
+                                                </a>
+                                                <a class='dropdown-item'
+                                                    href="{% url 'inventory:vendor-average-days-to-deliver-report' %}">
+                                                    Vendor Average Days To Deliver Report
+                                                </a>
+                                                <a class='dropdown-item'
+                                                    href="{% url 'inventory:vendor-transactions-form' %}">
+                                                    Vendor Transactions Report
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-4" />
+                    <div class="card-deck">
+                        <div class="card bg-primary text-white">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-sliders-h"></i> Configuration</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'inventory:config' pk=1 %}">Settings</a>
+                                    </li>
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'inventory:category-list' %}">Manage Inventory Categories</a>
+                                    </li>
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'inventory:unit-list' %}">Manage Units Of Measure</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="dashboard" class="tab-pane">
+                    <iframe src="/inventory/async-dashboard/" style="width:100%;height:600px;" frameborder="0"></iframe>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}

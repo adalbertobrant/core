@@ -1,0 +1,43 @@
+{% extends "common_data/list_template.html" %}
+
+{% block list_headings %}
+
+    <tr class="bg-primary text-white">
+        <td>Description</td>
+        <td>Created By</td>
+        <td>Invoice</td>
+        <td>Status</td>
+
+        <td># of WorkOrders</td>
+        <td>Actions</td>
+    </tr>
+
+{% endblock list_headings %}
+
+{% block list_content %}
+
+    {% for wr in object_list %}
+    <tr>
+        <td>{{wr.description | truncatechars:50}}</td>
+        <td>{{wr.created_by}}</td>
+        <td> {% if wr.invoice %} {{wr.invoice.invoice_number|stringformat:"06d"}} {% else %} None {% endif %} </td>
+        <td>{{wr.status}}</td>
+        <td>{{wr.work_orders.count}}</td>
+        <td>
+            <div class="dropdown">
+                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                            Actions
+                        </button>
+                <div class="dropdown-menu" aria-labelledby="triggerId">
+                    <a class="dropdown-item" href="{% url 'services:work-order-request-detail' pk=wr.pk %}"> <i class="fas fa-file"></i> Detail</a>
+                    {% if wr.invoice %}
+                    <a class="dropdown-item" href="{% url 'invoicing:invoice-detail' pk=wr.invoice.pk %}"><i class="fas fa-eye    "></i> View Invoice</a>
+                    {% endif %}
+                    <a class="dropdown-item" href="{% url 'services:work-order-create' pk=wr.pk %}"><i class="fas fa-plus    "></i> Add Work Order</a>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+{% endblock list_content %}

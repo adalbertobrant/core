@@ -1,0 +1,54 @@
+{% extends 'common_data/page/pdf_page.html' %}
+
+{% block pre_page %}
+
+<style>
+#scrollable-page {
+    max-height: 29.7cm;
+    overflow-y: auto
+}
+</style>
+<div class="jumbotron">
+
+<div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+                Actions
+            </button>
+    <div class="dropdown-menu" aria-labelledby="triggerId">
+        <a class="dropdown-item" href="{% url 'services:procedure-pdf' pk=object.pk %}"> <i class="fas fa-file-pdf"></i> Generate PDF</a>
+    </div>
+</div>
+
+</div>
+{% endblock  %}
+
+
+{% block page_contents %}
+
+<div id="scrollable-page">
+
+{% include 'services/procedure/printable/header.html' %}
+
+<h5>I. Description.</h5>
+<p>{{object.description}}</p>
+<h5>II. Required Equipment.</h5>
+<ul>
+    {% for i in object.required_equipment.all %}
+        <li>{{i}}</li>
+    {% endfor %}
+</ul>
+<h5>III. Required Consumables.</h5>
+<ul>
+    {% for i in object.required_consumables.all %}
+        <li>{{i}}</li>
+    {% endfor %}
+</ul>
+<h5>IV. Procedure Stages</h5>
+<ol>
+    {% for step in object.steps %}
+        <li>{{step}}</li>
+    {% endfor %}
+</ol>
+</div>
+{% endblock page_contents %}

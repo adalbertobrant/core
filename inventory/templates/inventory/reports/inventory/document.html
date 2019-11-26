@@ -1,0 +1,44 @@
+
+<table class="table table-sm" style="width:100%">
+    <tbody>
+        <tr>
+            <td colspan="2" style="width:100%">
+                {% include "inventory/reports/inventory/header.html"%}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+            {% for page in pages %}
+                <table class="table table-sm ">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Locations</th>
+                            <th>Quantity</th>
+                            <th>Stock Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in page %}
+                        <tr>
+                            <td>{{i.name}}</td>
+                            <td>
+                                {% for l in i.locations %}
+                                    {{l.warehouse}},
+                                {% endfor %}
+                            </td>
+                            <td>{{i.quantity | floatformat:2 }}</td>
+                            <td>{{i.product_component.stock_value | floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <p>{{page}}</p>
+            {% if page.has_next %}
+                <p class="eop"></p>
+                {% endif %}
+            {% endfor %}
+            </td>
+        </tr>
+    </tbody>
+</table>

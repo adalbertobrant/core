@@ -1,0 +1,68 @@
+#item-table thead td{
+    padding: 10px;
+    color: white;
+    background-color: black;
+    border-right: 1px solid white;
+}
+
+#item-table tbody{
+    border: 1px solid black;
+    
+}
+
+#item-table{
+    min-height: 500px;
+    border: 1px solid black;
+}
+
+#item-table tbody td{
+    border-right: 1px solid black;
+    padding: 10px;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+
+.simple-content thead td {
+    font-size: 11pt;
+    border-right: 1px solid white;
+    color: white;
+    background-color: black;
+}
+
+.simple-content tbody td {
+    font-size: 11pt;
+
+    border-right: 1px solid black;
+}
+
+.simple-content tbody{
+    border: 1px solid black;
+}
+
+.simple-content tfoot td {
+    text-align: right;
+}
+
+.simple-head-cell {
+    padding: 10px; 
+    
+}
+
+.footer-cell {
+    border: 1px solid black;
+    min-height: 150px;
+}
+
+.footer-cell-heading{
+    color: white;
+    background-color: black;
+    padding: 2px 5px;
+}
+
+.footer-cell-contents{
+    padding: 2px 5px;
+}
+

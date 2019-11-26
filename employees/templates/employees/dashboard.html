@@ -1,0 +1,197 @@
+{% extends "window.html" %} {% block content %}
+
+<style>
+    .white-on-blue {
+        background-color: white;
+        border: 1px solid #007bff;
+        color: #007bff;
+    }
+</style>
+
+<div class="jumbotron jumbo-gradient">
+    <h1 class="display-3"><i class=" fas fa-users" style="color:#07f; font-size:128px;"></i> Employees Dashboard</h1>
+    <p class="lead">Control panel for adding employees, running payroll and other employee related functions</p>
+    <hr class="my-2">
+    <a href="{% url 'employees:portal-login' %}" class="btn btn-secondary btn-lg"><i class="fas fa-users"></i> Employee Portal</a>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><a class="nav-link active" href="#actions" data-toggle="tab">Actions</a></li>
+                <li class="nav-item"><a class="nav-link" href="#dashboard" data-toggle="tab">Dashboard</a></li>
+            </ul>
+            <div class="tab-content panel-body">
+                <div id="actions" class="tab-pane active">
+                    <div class="card-deck">
+                        <div class="card bg-primary text-white">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-puzzle-piece"></i> Payroll</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'employees:list-pay-slips' %}"> Pay Slips</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <a href="{% url 'employees:timesheet-list' %}"> Time Sheets</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="dropdown">
+                                            <span data-toggle="dropdown" class=" card-link"
+                                                style="color:blue;">More...</span>
+                                            <div class="dropdown-menu">
+                                                <a class='dropdown-item' href="{% url 'employees:list-pay-grades' %}"> Pay Grades</a>
+                                                 <a class="dropdown-item" href="{% url 'employees:payroll-tax-list' %}"> Payroll Taxes</a>
+                                                <a class="dropdown-item" href="{% url 'employees:deductions-list' %}">Deductions</a>
+                                                <a class="dropdown-item" href="{% url 'employees:allowances-list' %}">Benefits</a>
+                                                <a class="dropdown-item" href="{% url 'employees:commissions-list' %}">Commission Rules</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                        <div class="card bg-primary text-white">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-users"></i> Employees</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'employees:list-employees' %}">
+                                             Employees
+                                        </a>
+                                    </li>
+                                    <li class="list-group-item hvr-grow">
+                                        <a 
+                                                    href="{% url 'employees:department-list' %}"> Departments</a>
+                                        
+                                    </li>
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'employees:contract-list' %}">Contracts</a>
+                                    </li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card bg-primary text-white">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-chart-bar"></i> Reports</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'employees:employee-attendance' %}" >Employee Attendance</a>
+                                    </li>
+                                    
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'employees:leave-report' %}" >Leave Schedule Report</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="dropdown">
+                                            <span data-toggle="dropdown" class=" card-link"
+                                                style="color:blue;">More...</span>
+                                            <div class="dropdown-menu">
+                                                <a href="{% url 'employees:payroll-report-form' %}" class='dropdown-item'>Payroll  Report</a>
+                                                <a href="{% url 'employees:zimra-p2-report-form' %}" class='dropdown-item'>Zimra P2 Report</a>
+                                                <a href="{% url 'employees:nssa-p4-report-form' %}" class='dropdown-item'>NSSA P4 Report</a>
+                                                 
+                                            </div>
+                                        </div>
+                                        
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-2">
+                    <div class="card-deck">
+                        <div class="card bg-primary text-white">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-calendar"></i> Leave Days</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'employees:leave-list' %}">Leave Day Management</a>
+                                    </li>
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{{calendar_url}}">Leave Calendar</a>
+                                    </li>
+                                    <li class="list-group-item hvr-grow">...</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card bg-primary text-white">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-user-cog"></i> Employee Roles</h4>
+                            </div>
+
+                            <div class="card-body">
+
+                                <ul class="list-group">
+                                    <li class="list-group-item hvr-grow">
+                                        <a class="card-link"
+                                            href="{% url 'inventory:inventory-controller-list' %}">
+                                            Inventory Controllers</a>
+                                    </li>
+                                    <li class="list-group-item hvr-grow">
+                                        <a class="card-link" href="{% url 'invoicing:sales-reps-list' %}"> Sales
+                                            Representatives</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="dropdown">
+                                            <span data-toggle="dropdown" class=" card-link"
+                                                style="color:blue;">More...</span>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item "
+                                                    href="{% url 'accounting:bookkeeper-list' %}">
+                                                    Bookkeepers </a>
+                                                <a class="dropdown-item"
+                                                    href="{% url 'services:service-person-list' %}">
+                                                    Service Employees </a>
+                                                <a class="dropdown-item"
+                                                    href="{% url 'employees:payroll-officer-list' %}">
+                                                    Payroll Officers </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="card bg-primary text-white">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-sliders-h"></i> Configuration</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'employees:config' pk=1 %}">Settings</a>
+                                    </li>
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'employees:payroll-date-list' %}">Manage Payroll Schedule</a>
+                                    </li>
+                                    <li class="list-group-item hvr-grow">
+                                        <a href="{% url 'employees:manual-config' %}">Run
+                                                    Manual Payroll</a>
+                                        
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="dashboard" class="tab-pane">
+                    <iframe src="/employees/async-dashboard/" style="width:100%;height:600px;" frameborder="0"></iframe>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

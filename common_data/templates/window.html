@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+    {% block head_extended %}{% endblock %}
+{% endblock %}
+{% block window %}
+{% include "nav.html" %}
+
+<article style="min-height:500px;">    
+    {% block content %}{% endblock %}
+</article>
+{% include "footer.html" %}
+
+<script src='{% static "common_data/js/suave.js" %}'></script>
+{% endblock %}

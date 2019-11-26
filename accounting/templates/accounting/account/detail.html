@@ -1,0 +1,99 @@
+{% extends "window.html" %} 
+{% load accounting %}
+
+{% block content %}
+
+<style>
+    .bg-primary th, .bg-primary td {
+        color:white;
+    }
+</style>
+<div class="jumbotron">
+    <h1 class="display-3">{{object.name}} Details</h1>
+    <p class="lead">Record of Entries and other features</p>
+    <hr class="my-2">
+    <p>Actions:</p>
+    <p class="lead">
+        <a class="btn btn-success" href="{% url 'accounting:account-update' pk=object.pk %}" role="button">Edit Details</a>
+        <a class="btn btn-success" href="{% url 'accounting:account-report-form' pk=object.pk %}" role="button">Generate Report</a>
+    </p>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card-deck" >
+                <div class="card shadow" style="max-width:33%;">
+                    <div class="card-header">
+                        <h4 class="card-title">Details</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>ID:</th>
+                                    <td>{{object.pk}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Balance:</th>
+                                    <td>{{object.balance | accounting}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Type:</th>
+                                    <td>{{object.type}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Bank Account?</th>
+                                    <td>{{object.bank_account}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Control Account?</th>
+                                    <td>{{object.control_account}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Parent:</th>
+                                    <td>{{object.parent_account}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Children:</th>
+                                    <td>
+                                        <ul>
+                                        {% for c in object.children %}
+                                            <li>{{c}}</li>
+                                        {% endfor %}
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Description</h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{{object.description}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-sm-12">
+                <div style="display:inline-block;width:48%;border-right:2px solid black;border-top: 2px solid black;margin-top:20px;">
+                    <h4 style="text-align:center;">Credits</h4>
+                    <iframe width="500" height="500" frameborder="0" id="journal-frame" src="/accounting/account/{{object.pk}}/entry-list/credit">
+                    </iframe>
+                </div>
+                <div style="display:inline-block;width:48%;border-top: 2px solid black;margin-top:20px;">
+                    <h4 style="text-align:center;">Debits</h4>
+                    <iframe width="500" height="500" frameborder="0"  id="journal-frame" src="/accounting/account/{{object.pk}}/entry-list/debit">
+                    </iframe>
+                </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

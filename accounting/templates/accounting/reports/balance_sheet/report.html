@@ -1,0 +1,143 @@
+{% extends "common_data/page/pdf_page.html" %}
+
+
+{% block pre_page %}
+<div class="jumbotron">
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Actions
+        </button>
+        <div class="dropdown-menu" aria-labelledby="triggerId">
+            <a href="{% url 'accounting:balance-sheet-csv' %}" class="dropdown-item"><i class="fas fa-file-excel"></i>
+                Export as csv</a>
+            <a href="{% url 'accounting:balance-sheet-pdf' %}" class="dropdown-item"><i class="fas fa-file-pdf"></i>
+                Generate PDF</a>
+        </div>
+            
+    </div>
+</div>
+{% endblock %}
+
+{% block page_contents %}
+{% load accounting %}
+
+<table style="width:100%">
+    <tbody>
+        
+        <tr>
+            <td colspan="2">
+                {% include "accounting/reports/balance_sheet/header.html" %}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table id="report" style="width:100%;">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>$</td>
+                            <td>$</td>
+                        </tr>
+                        <tr>
+                            <td>Non-current assets:</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        {% for a in long_term_assets %}
+                        <tr>
+                            <td>{{a.name}}</td>
+                            <td></td>
+                            <td>{{a.control_balance | accounting}}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td>Current assets:</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Inventory</td>
+                            <td>{{inventory | accounting}}</td>
+                            <td></td>
+                        </tr>
+                        {% for a in current_assets %}
+                        <tr>
+                            <td>{{a.name}}</td>
+                            <td>{{a.control_balance | accounting}}</td>
+                            <td></td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td></td>
+                            <td style="border-top:2px solid black;">{{current_assets_total | accounting}}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Current liabilities:</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        {% for a in current_liabilities %}
+                        <tr>
+                            <td>{{a.name}}</td>
+                            <td>{{a.control_balance | accounting}}</td>
+                            <td></td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td>Working Capital</td>
+                            <td></td>
+                            <td>{{working_capital | accounting}}</td>
+                        </tr>
+                        <tr>
+                            <td>Less non-current liabilities:</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        {% for a in long_term_liabilities %}
+                        <tr>
+                            <td>{{a.name}}</td>
+                            <td>{{a.control_balance  | accounting}}</td>
+                            <td></td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td>Net Assets</td>
+                            <td></td>
+                            <td style="border-bottom:4px double black;">{{net_assets | accounting}}</td>
+                        </tr>
+                        <tr>
+                            <td>Equity:</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        {% for a in equity %}
+                        <tr>
+                            <td>{{a.name}}</td>
+                            <td></td>
+                            <td>{{a.control_balance | accounting}}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td>Add Net profit</td>
+                            <td></td>
+                            <td style="border-top:2px solid black;">{{net_profit | accounting}}</td>
+                        </tr>
+                        <tr>
+                            <td>Less Drawings</td>
+                            <td></td>
+                            <td style="border-bottom:2px solid black;">{{drawings | accounting}}</td>
+                        </tr>
+                        <tr>
+                            <td>Total Equity</td>
+                            <td></td>
+                            <td style="border-bottom:4px double black;">{{equity_total | accounting}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% endblock  %}

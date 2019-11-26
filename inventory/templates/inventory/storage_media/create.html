@@ -1,0 +1,25 @@
+{% extends "window.html" %}
+{% load render_bundle from webpack_loader %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="jumbotron">
+    <h1 class="display-3">Create New Storage Medium</h1>
+    <p class="lead">Use storage media to compartmentalize inventory storage according to its physical location within a warehouse</p>
+    <hr class="my-2">
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h4 class="card-title">Storage Medium Form</h4>
+                    {{form.errors}}
+                    {% crispy form %}    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% render_bundle 'widgets' %}
+{% endblock %}

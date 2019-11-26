@@ -1,0 +1,114 @@
+`{% extends "common_data/page/pdf_page.html" %}
+
+{% block page_contents %}
+{% load accounting %}
+
+<style>
+    .shrink a {
+    display: block;
+}
+
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            {% if pdf_link %}
+                <div class="jumbotron">
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Actions
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="triggerId">
+                        <a href="/invoicing/sales-report-pdf/{{start|urlencode}}/{{end|urlencode}}"class="dropdown-item"><i class="fas fa-file-pdf"></i>Generate PDF</a>
+                    </div>
+                </div>
+                
+            </div>
+            
+            {% endif %}
+            
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <h1>Sales Report</h1>
+
+            <h4>Period Covering: {{start}} to {{end}}</h4>
+            <p>Total Sales over period: {{total_sales | active_currency}}</p>
+            <p>Average daily sales: {{average_sales | active_currency}}</p>
+            {% autoescape off %}
+            {{bar_graph}}
+            
+            {{pie_chart}}
+
+            {% endautoescape %}
+            <p class="eop"></p>
+
+            <h4>Sales By Customer Table</h4>
+            <table class="table table-sm">
+                {% for customer in customer_invoices %}
+                    <tbody>
+                        <tr>
+                            <th class='bg-primary text-white' colspan='3'>{{customer.name}}</th>
+                        </tr>
+                        <tr>
+                            <th>Date</th>
+                            <th>Invoice</th>
+                            <th>Amount</th>
+                        </tr>
+                        {% for sale in customer.sales %}
+                            <tr>
+                                <td>{{sale.date}}</td>
+                                <td>{{sale.id | stringformat:'06d'}}</td>
+                                <td>{{sale.subtotal | floatformat:2}}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <th colspan='2'>Total</th>
+                            <th>{{customer.total | floatformat:2}}</th>
+                        </tr>
+
+                    </tbody>
+                {% endfor %}
+            </table>
+
+            {% autoescape off %}
+            {{pie_chart_2}}
+            <p class="eop"></p>
+
+            {% endautoescape %}
+
+            <h4>Sales By Products and Services Table</h4>
+            <table class="table table-sm">
+                <thead>
+                    <tr class='bg-primary text-white' >
+                        <th>Type</th>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, item in products_and_services.items %}
+                         <tr>
+                            <td>{{item.type}}</td>
+                            <td>{{item.name}}</td>
+                            <td>{% if item.type != 'service' %}
+                                {{item.quantity}}
+                                {% else %}
+                                N/A
+                            {% endif %}</td>
+                            <td>{{item.total | floatformat:2}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}``

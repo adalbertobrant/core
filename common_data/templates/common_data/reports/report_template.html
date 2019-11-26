@@ -1,0 +1,39 @@
+{% extends "window.html" %}
+
+
+{% block content %}
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-sm-3">
+            <h3>Report Form</h3>
+            <hr class="my-4">
+            <div style="border-right: 1px solid #b0b0b0;padding-right:20px;">
+                <form method="GET" action="{{action}}" target="report_frame">
+                {% csrf_token %}
+                {{form.as_p}}
+                    <button class="btn btn-primary">Generate Report</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-sm-9" id='frame-container'>
+                <iframe width="800" src="/base/blank-report" name="report_frame" id='id-report-frame' frameborder="0"></iframe>
+                <script>
+                var navHeight = document.getElementById('navbar').offsetHeight;
+                var height = document.documentElement.clientHeight - navHeight -2;
+                $('#id-report-frame').attr({
+                    'width': $('#frame-container').css('width'),
+                    'height': height
+                })
+
+                $(document).ready(function(){
+                    $('footer').hide();
+                })
+                </script>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content %}  

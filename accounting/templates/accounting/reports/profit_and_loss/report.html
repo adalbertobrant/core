@@ -1,0 +1,122 @@
+{% extends "common_data/page/pdf_page.html" %}
+
+{% block pre_page %}
+<div class="jumbotron">
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Actions
+        </button>
+        <div class="dropdown-menu" aria-labelledby="triggerId">
+            <a class="dropdown-item"
+                href="/accounting/csv/profit-and-loss/{{start|urlencode}}/{{end|urlencode}}"><i class="fas fa-file-excel"></i>Export as csv</a>
+            <a class="dropdown-item"
+                href="/accounting/pdf/profit-and-loss/{{start|urlencode}}/{{end|urlencode}}"><i class="fas fa-file-pdf"></i>Generate PDF</a>
+        </div>
+
+    </div>
+
+</div>
+{% endblock  %}
+
+{% block page_contents %}
+{% load accounting %}
+<table class="table table-sm" style="width:100%">
+    <tbody>
+        
+        <tr>
+            <td colspan="2">
+                {% include "accounting/reports/profit_and_loss/header.html" %}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table style="width:100%;">
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td>$</td>
+                            <td>$</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Revenue</td>
+                            <td></td>
+                            <td>{{sales | accounting}}</td>
+                        </tr>
+                        <tr>
+                            <td>Less Cost of Goods Sold:</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Opening inventory</td>
+                            <td>{{opening_inventory | accounting}}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Purchases</td>
+                            <td>{{purchases | accounting}}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Less Closing Inventory</td>
+                            <td>{{closing_inventory | accounting}}</td>
+                            <td>{{cost_of_goods_sold | accounting}}</td>
+                        </tr>
+                        <tr>
+                            <td>Gross Profit</td>
+                            <td></td>
+                            <td>{{gross_profit | floatformat:2}}</td>
+                        </tr>
+                        {% if other_income_total != 0 %}
+                        <tr>
+                            <td>Add:</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        {% for i in other_income_accounts %}
+                        <tr>
+                            <td>{{i.name}}</td>
+                            <td></td>
+                            <td>{{i.control_balance | accounting}}</td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>{{total_revenue | accounting}}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Less Expenses:</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        {% for exp in expenses %}
+                        <tr>
+                            <td>{{exp.name}}</td>
+                            <td>{{exp.control_balance | accounting}}</td>
+                            <td></td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>{{total_expenses | accounting}}</td>
+                        </tr>
+                        <tr>
+                            <td>Net Profit</td>
+                            <td></td>
+                            <td>{{net_profit | accounting}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+{% endblock %}

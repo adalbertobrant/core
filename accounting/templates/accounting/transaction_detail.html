@@ -1,0 +1,56 @@
+{% extends 'window.html' %} {% block content %}
+<div class="jumbotron">
+    <h1 class="display-3">Journal Entry Details</h1>
+    <hr class="my-2">
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h3 class="card-title">Metadata</h3>
+                </div>
+                <div class="card-body">
+                    <p><b>Status:</b> {% if object.draft %} Draft <a class="btn btn-success" href="{% url 'accounting:verify-entry' pk=object.pk %}">Verify</a> {% else %} Verified {% endif %}</p>
+                    <p><b>Entry ID:</b> {{object.pk}}</p>
+                    <p><b>Date Recorded:</b> {{object.date}}</p>
+                    <p><b>Recorded By:</b> {{object.created_by}}</p>
+                    <p><b>Entry Reference:</b> {{object.reference}}</p>
+                    <hr />
+                    <p><b>Memo:</b> {{object.memo}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr class="bg-primary">
+                                <td>Account</td>
+                                <td>Credit</td>
+                                <td>Debit</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for d in object.debit_set.all %}
+                            <tr>
+                                <td>{{d.account}}</td>
+                                <td></td>
+                                <td>{{d.amount}}</td>
+                            </tr>
+                            {% endfor %}
+                            {% for c in object.credit_set.all %}
+                            <tr>
+                                <td>{{c.account}}</td>
+                                <td>{{c.amount}}</td>
+                                <td></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+            
+        </div>
+        <div class="col-sm-3"></div>
+
+    </div>
+</div>
+{% endblock content %}

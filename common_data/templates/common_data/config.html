@@ -1,0 +1,134 @@
+
+{% extends "window.html" %} {% load static %} {% block head %}
+<link rel="stylesheet" href="{% static 'common_data/css/forms.css' %}"> {% endblock %} 
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+form li {
+    list-style-type: none;
+}
+</style>
+<div class="jumbotron">
+    <div class="container">
+        <h1 class="display-3">{% if icon %} <i class="fas fa-{{icon}}"></i> {% else %} <i class="fas fa-edit"></i> {% endif %} {{title}}</h1>
+        <p class="lead">{{description}}</p>
+        {% if related_links %}
+        <p>Actions</p>
+            
+            <script>
+               
+
+                function linkClickHandler(link){
+                    /*
+                    window.open(link ,'popup','width=900,height=480');
+                    
+                    return false;
+                    */
+                   $('#popup-frame').attr('src', link);
+                   var modal = document.getElementById('id-my-modal');
+                    modal.style.display = 'block';
+                    $('#refresher-button').css('display', 'block');
+                }   
+            </script>
+            <div class="btn btn-group">
+                    {% for item in related_links %}
+                        <a class="btn btn-primary text-white"  onclick="linkClickHandler('{{item.url}}')" target="popup">{{item.name}}</a>
+                    {% endfor %}    
+            </div>
+            <button
+                class="btn btn-success"
+                id="refresher-button" 
+                style="display:none;"
+                onclick="window.location.replace(window.location.href);"
+                >Refresh <i class="fas fa-sync"></i>
+            </button>
+        <p class="lead">
+        
+        {% endif %}
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">    
+        <div class="col-sm-12">
+            <div class="shadow card ">
+                <div class="card-body">
+                    {% crispy form %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript">
+
+     $("#id_logo_aspect_ratio").change(function(evt){
+                    console.log('changed')
+                    var input_val = evt.target.value
+                    var value;
+                    switch(input_val){
+                        case '0':
+                            value = 1.5 * 200;
+                            break;
+                        case '1':
+                            value = 1 * 200;
+                            break;
+                        case '2':
+                            value = 1.33 * 200;
+                            break;
+                        case '3':
+                            value = 1.78 * 200;
+                            break
+                    }
+                    $('#id-logo-preview').attr('width', value)
+
+                })
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "/base/logo-url",
+            method:"get"
+        }).then(res => {
+            $("#id-logo-preview").attr({src: res.url });
+        })
+        
+        $('input[type="file"]').attr({
+            'onchange': 'upload_img(this)'
+        });
+    })
+
+    function upload_img(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#id-logo-preview').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // for invoice template 
+    var templates = [
+        "{% static 'common_data/images/template-previews/simple.png' %}",
+        "{% static 'common_data/images/template-previews/blue.png' %}",
+        "{% static 'common_data/images/template-previews/steel.png' %}",
+        "{% static 'common_data/images/template-previews/verdant.png' %}",
+        "{% static 'common_data/images/template-previews/dayglow.png' %}"
+    ];
+
+    function setTemplate() {
+        var temp = $('#id_document_theme').val();
+        $("#template-preview").attr({
+            'src': templates[temp - 1]
+        });
+    }
+
+    $(document).ready(function () {
+        setTemplate();
+        $("#id_document_theme").change(setTemplate);
+    })
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "window.html" %}
+{% block content %}
+{% load render_bundle from webpack_loader %}
+
+<div id="thread-widget"  class="container">
+</div>
+{% csrf_token %}
+{% render_bundle "widgets" %}
+{% endblock content %}

@@ -1,0 +1,101 @@
+
+{% include 'employees/payslip/header.html' %}
+
+<table>
+    <tbody>
+        <tr>
+            <td valign="top">
+                <table>
+                    <thead>
+                        <tr class="text-white" style="background-color:black;">
+                            <th style="padding:20px;">Earnings</th>
+                            <th style="padding:20px;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>Basic Salary</th>
+                            <td>{{object.paygrade_.salary | floatformat:2}}</td>
+                        </tr>
+                        <tr>
+                            <th>Normal Hourly Income</th>
+                            <td>{{object.normal_pay | floatformat:2}}</td>
+                        </tr>
+                        <tr>
+                            <th>Overtime Hourly Income</th>
+                            <td>{{object.overtime_pay | floatformat:2}}</td>
+                        </tr>
+                        <tr style="border-bottom: 2px solid black;">
+                            <th>Total Benefits(breakdown below)</th>
+                            <td>{{object.total_allowances | floatformat:2}}</td>
+                        </tr>
+                        {% for a in object.allowances%}
+                        <tr>
+                            <td>{{a.name}}</td>
+                            <td>{{a.amount | floatformat:2}}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <th>Commission</th>
+                            <td>{{object.commission_pay | floatformat:2}}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Gross Eearnings:</th>
+                            <td>{{object.gross_pay | floatformat:2}}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </td>
+            <td valign="top">
+                <table>
+                    <thead>
+                        <tr class="text-white" style="background-color:black;">
+                            <th style="padding:20px;">Deductions</th>
+                            <th style="padding:20px;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th colspan=2>Deductions</th>
+                        </tr>
+
+                        <tr style="border-bottom: 2px solid black;">
+                            <th>Total Deductions(breakdown below)</th>
+                            <td>{{object.total_deductions | floatformat:2}}</td>
+                        </tr>
+                        {% for d in object.calculated_deductions %}
+                        <tr>
+                            <td>{{d.name}}</td>
+                            <td>{{d.amount | floatformat:2}}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <th colspan="2">Payroll Taxes</th>
+                        </tr>
+                        {% for tax in object.calculated_payroll_taxes %}
+                        <tr>
+                            <td>{{tax.name}}</td>
+                            <td>{{tax.amount | floatformat:2}}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>Total Deductions</td>
+                            <td>{{object.total_deductions | floatformat:2}}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr style="border:3px solid black;">
+            <th style="padding:10px;">Net Income</th>
+            <th style="padding:10px;text-align:right;">{{object.net_pay | floatformat:2}}</td>
+        </tr>
+    </tfoot>
+</table>

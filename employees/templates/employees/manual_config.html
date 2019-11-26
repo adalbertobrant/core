@@ -1,0 +1,29 @@
+{% extends "window.html" %} {% load render_bundle from webpack_loader %} {% block content %}
+<style>
+    form li {
+        list-style-type: none;
+    }
+</style>
+<div class="jumbotron">
+    <h1 class="display-3">Manual Payroll config form</h1>
+    <p class="lead">Control panel for running payroll manually</p>
+    <hr class="my-2">
+    <a href="{% url 'employees:execute-payroll' %}" class="btn btn-primary btn-lg" >Execute Payroll</a>
+</div>
+{% csrf_token %}
+
+<div class="container">
+    <div class="row">
+        <div class="shadow col-sm-12">
+        <form action="" method="POST">
+        
+                {{form.as_p}}
+                {% csrf_token %}
+                <button class="btn btn-primary" type="submit">Run Payroll</button>
+            </form>        
+        </div>
+    </div>
+</div>
+{% render_bundle 'employees' %}
+
+{% endblock content %}

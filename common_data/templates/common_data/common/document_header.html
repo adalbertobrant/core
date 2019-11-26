@@ -1,0 +1,67 @@
+<style>
+    .document_header {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .header-content {
+        width: 30%;
+        margin-top: 5px;
+    }
+
+    #title {
+        color: white;
+        background-color: black;
+        padding: 5px;
+        width: 100%
+    }
+
+    #lower-header {
+        margin-top: 2rem;
+    }
+
+    #right {
+        /*text-align: right;*/
+    }
+</style>
+<table style="width:100%;">
+    <tbody>
+        <tr>
+            <td class="header-content" id="left">
+                <h3 id="title">{% block title %}{% endblock title %}</h3>
+                {% block left_content %}
+
+                {% endblock  %}
+            </td>
+            <td >
+                <div class="header-content" id="center">
+                    {% block center_content %}
+                    {% endblock center_content %}
+                </div>
+            </td>
+            <td  class="header-content" id="right" align="right">
+                <div style="text-align:right;">
+                    {% include 'common_data/common/logo.html' %}
+                    {% block right_content %}
+                    {% endblock right_content %}
+                </div>
+                <br>
+                
+            </td>
+        </tr>
+        <tr>
+            <td class="header-content">
+                {% block lower_left %}
+                {% endblock lower_left %}
+            </td>
+            <td class="header-content">
+                {% block lower_center %}
+                {% endblock lower_center %}
+            </td>
+            <td class="header-content">
+                {% block lower_right %}
+                {% endblock lower_right %}
+            </td>
+        </tr>
+    </tbody>
+</table>

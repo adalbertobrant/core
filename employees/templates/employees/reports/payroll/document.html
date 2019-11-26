@@ -1,0 +1,33 @@
+{% load accounting %}
+
+
+{% for page in pages %}
+<table class="table-sm" style="width:100%;">
+    <thead>
+        <tr>
+            <th>Employee #</th>
+            <th>Full Name</th>
+            <th>ID Number</th>
+            <th>Taxable Income</th>
+            <th>PAYE</th>
+            <th>AIDS Levy</th>
+            <th>Total Tax</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for emp in page %}
+        <tr>
+            <td>{{emp.employee_number}}</td>
+            <td>{{emp.name}}</td>
+            <td>{{emp.id}}</td>
+            <td>{{emp.taxable_income |accounting }}</td>
+            <td>{{emp.paye  |accounting }}</td>
+            <td>{{emp.aids |accounting }}</td>
+            <td>{{emp.total |accounting }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{{page}}
+
+{% endfor %}

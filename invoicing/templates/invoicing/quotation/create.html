@@ -1,0 +1,120 @@
+{% extends "window.html" %}
+{% load render_bundle from webpack_loader %}
+
+
+{% block content %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 shadow">
+    {{form.errors}}
+    <table class="table table-sm">
+            <form action="" method="POST">
+                {% csrf_token %}
+        <tbody>
+            <tr>
+                <td colspan="2"><tr>
+                <td colspan="2">
+                <script>
+                function linkClickHandler(link){
+                   $('#popup-frame').attr('src', link);
+                   var modal = document.getElementById('id-my-modal');
+                    modal.style.display = 'block';
+                   
+                }   
+            </script>
+            <input type="hidden" id="box-array" value="{{box_array}}">
+                <div class="jumbotron">
+                    <h1 style="display:inline;padding:40px;">Create Quotation</h1>
+                    <div class="btn-group" >
+                        
+                        <a onclick="linkClickHandler('/invoicing/create-customer')" target="popup" class="btn btn-primary text-white">Create Customer</a>
+                    </div>
+                </div></td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr>
+                                <th>Customer</th>
+                                <td>{{form.customer}}</td>
+                            </tr>
+                            <tr>
+                                <th>Quoted By</th>
+                                <td>{{form.salesperson}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td>
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr>
+                                <th>Quotation Date</th>
+                                <td>{{form.quotation_date}}</td>
+                            </tr>
+                            <tr>
+                                <th>Quotation Valid Until</th>
+                                <td>{{form.quotation_valid}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <input  type="hidden" name="status" value="quotation">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item"><a class="nav-link active" href="#lines" data-toggle="tab">Quotation Lines</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#comments-terms" data-toggle="tab">T's & C's</a></li>
+                    </ul>
+                    <div class="tab-content panel-body">
+                        <div id="lines" class="tab-pane active">
+                            <div id="div_id_recipient" class="form-group"> <label for="id_recipient" class="col-form-label  requiredField">
+                                    Quotation Lines</label>
+                                <div id="invoice-table"></div>
+                            </div>
+                        </div>
+                        <div id="comments-terms" class="tab-pane">
+                            <div id="div_id_recipient" class="form-group"> <label for="id_recipient" class="col-form-label  requiredField">
+                                    Terms and Comments</label>
+                                <div class="{{style}}-footer-cell">
+                                    <div class="{{style}}-footer-cell-heading">
+                                            Terms:
+                                    </div>
+                                    <div class="{{style}}-footer-cell-contents">
+                                            {{form.terms}}
+                                    </div>
+                                </div>
+                                <div class="{{style}}-footer-cell">
+                                    <div class="{{style}}-footer-cell-heading">
+                                            Comments:
+                                    </div>
+                                    <div class="{{style}}-footer-cell-contents">
+                                            {{form.comments}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <button class="btn btn-info " type="submit">
+                            Submit
+                        </button>
+                        
+                </td>
+            </tr>
+            <tr>
+            </tr>
+        </tbody>
+        </form>
+    </table>
+
+{% render_bundle 'invoicing' %}
+</div>
+        </div>
+    </div>
+
+{% endblock  %}
+    

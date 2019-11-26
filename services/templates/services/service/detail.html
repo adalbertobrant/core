@@ -1,0 +1,58 @@
+{% extends "window.html" %} {% block content %}
+
+<div class="jumbotron">
+    <h1 class="display-3">Service Listing</h1>
+    <p class="lead">Review details and features of a service offering</p>
+    <hr class="my-2">
+    <div class="dropdown">
+            <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                        Actions
+                    </button>
+            <div class="dropdown-menu" aria-labelledby="triggerId">
+                <a href="{% url 'services:create-service' %}" class="dropdown-item"><i class="fas fa-plus"></i>Create Service</a>
+                <a class="dropdown-item" href="{% url 'services:service-update' pk=object.pk %}"><i class="fas fa-edit"></i>Update</a>
+            </div>
+        </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h4 class="card-title">Details</h4>
+                    <p class="card-text">Name: {{object.name}}</p>
+                    
+
+                    <p class="card-text">Flat fee: {{object.flat_fee}}</p>
+                    <p class="card-text">Hourly rate: {{object.hourly_rate}}</p>
+                    <p class="card-text"><b>Description</b>:</p>
+                    <p class="card-text">{{object.description}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            {% if object.procedure %}
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Procedure</h4>
+                    <p class="card-text">Author: {{object.procedure.author}}</p>
+                    <p class="card-text">Reference: {{object.procedure.reference}}</p>
+                    <p class="card-text"><b>Description</b>:</p>
+                    <p class="card-text">{{object.procedure.description}}</p>
+                    <h4>Steps</h4>
+                    <p class="card-text">
+                        <ol>
+                            {% for step in object.procedure.steps %}
+                            <li>{{step}}</li>
+                            {% endfor %}
+                        </ol>
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

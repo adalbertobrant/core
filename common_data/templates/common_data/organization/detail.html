@@ -1,0 +1,104 @@
+{% extends "window.html" %} {% block content %}
+<div class="jumbotron">
+    <h1 class="display-3">Organization Details</h1>
+    <p class="lead">View Recorded Data on an organization as well as its members and recent interactions</p>
+    <hr class="my-2">
+    <p>Actions</p>
+    <p class="lead">
+        <a class="btn btn-primary btn-lg" href="{% url 'base:organization-update' pk=object.pk %}" role="button">Edit</a>
+    </p>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card-deck">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Details</h4>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <td colspan="2">
+                                        <h5>Logo:</h5>
+                                        {% if object.logo %}
+                                            <img src="{{object.logo.url}}" class="img-thumbnail" width="128" height="128" alt="Photo thumbnail">
+                                        {% else %}
+                                            <i class="fas fa-building" style="font-size:72;"></i>
+
+                                            
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Legal Name</th>
+                                    <td>{{object.legal_name}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Address</th>
+                                    <td>{{object.business_address}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Website</th>
+                                    <td>
+                                        <a>{{object.website}}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Email</th>
+                                    <td>
+                                        <a href="{% url 'messaging:create-message' %}">{{object.email}}</a>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Members</h4>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr class="bg-primary">
+                                    <td>Name</td>
+                                    <td>Actions</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for m in object.members %}
+                                <tr>
+                                    <td>{{m}}</td>
+                                    <td>
+                                        <a href="{% url 'base:individual-detail' pk=m.pk %}" class="btn btn-success btn-sm">View</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Interactions</h4>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr class="bg-primary">
+                                    <td>Date</td>
+                                    <td>Interaction</td>
+                                    <td>Participants</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="3">No interactions yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

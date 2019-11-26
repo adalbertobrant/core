@@ -1,0 +1,124 @@
+{% extends "common_data/page/pdf_page.html" %}
+
+{% block pre_page %}
+{% load accounting %}
+<div class="jumbotron">
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Actions
+        </button>
+        <div class="dropdown-menu" aria-labelledby="triggerId">
+                <a href="/invoicing/customer-statement-pdf/{{start}}/{{end}}/{{customer.pk}}" class="dropdown-item"><i
+                        class="fas fa-file-pdf"></i> Generate PDF</a>
+        </div>
+    </div>
+</div>
+
+{% endblock  %}
+
+{% block page_contents %}
+{% load accounting %}
+<style>
+    .cell {
+        border-collapse: collapse;
+        border-right: 1px solid black;
+        
+
+    }
+</style>
+<table style="width:100%">
+    <tbody>
+        <tr>
+            <td>
+                {% include "invoicing/reports/customer_header.html" %}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div>
+                    {% for page in pages %}
+                    <table class="table-sm" style=" border: 1px solid black;width:100%;min-height:600px;" >
+                        <thead>
+                            <tr style="background-color:black; color:white; ">
+                                <th style="width:15%;">Date</th>
+                                <th style="width:25%;">Description</th>
+                                <th style="width:15%;">Credit</th>
+                                <th style="width:15%;">Debit</th>
+                                <th style="width:15%;">Line Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="border-bottom: 1px solid black;" class="cell" colspan="4">Balance Brought
+                                    Forward: </td>
+                                <td style="border-bottom: 1px solid black;" class="cell">
+                                    {{balance_brought_forward | accounting }}</td>
+                            </tr>
+                            {% for t in page %}
+                            <tr>
+                                <td class="cell">{{t.entry.date}}</td>
+                                <td class="cell">{{t.entry.memo}}</td>
+                                <td class="cell">{% if t.is_credit %} {{t.amount}} {% endif %}</td>
+                                <td class="cell"> {% if t.is_debit %} {{t.amount}} {% endif %}</td>
+                                <td class="cell">
+                                    {% if t.is_credit %}
+                                    ({{t.amount | floatformat:2}})
+                                    {% else %}
+                                    {{t.amount | floatformat:2}}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            <tr style="height:100%">
+                                <td class="cell"></td>
+                                <td class="cell"></td>
+                                <td class="cell"></td>
+                                <td class="cell"></td>
+                                <td class="cell"></td>
+                            </tr>
+                        </tbody>
+                        {% if not page.has_next %}
+                        <tfoot>
+                            <tr style="border-top: 1px solid black;">
+                                <td colspan="4">Remaining Balance:</td>
+                                <td>{{balance_at_end_of_period | accounting}}</td>
+                            </tr>
+                        </tfoot>
+                        
+                        {% endif %}
+                    </table>
+                    <p>{{page}}</p>
+                    {% if page.has_next %}
+                        <p class="eop"></p>
+                    {% endif %}
+                    {% endfor %}
+                    <table class="table table-sm">
+                    <thead>
+                        <tr>
+                             <th>Total A/R</th>
+                            <th>Current</th>
+                            <th>0-7 Days</th>
+                            <th>8-14 Days</th>
+                            <th>15-30 Days</th>
+                            <th>31- 60 Days</th>
+                            <th>61+ Days</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{customer.account.balance}}</td>
+                            {% for age in customer.age_list %}
+                                <td>{{age |floatformat:2}}</td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+{% endblock %}

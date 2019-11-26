@@ -1,0 +1,50 @@
+{% extends "common_data/list_template.html" %}
+
+{% block list_headings %}
+    <tr>
+        <td class="info">Name</td>
+        <td class="info">Type</td>
+        <td class="info">Phone</td>
+        <td class="info">Email</td>
+        <td class="info">Actions</td>
+    </tr>
+{% endblock %}
+
+{% block list_content %}
+    {% for supplier in object_list %}
+    <tr>
+        <td>{{supplier.name}}</td>
+        <td>{% if supplier.is_organization %}Organization {% else %} Individual{% endif %}</td>
+        <td> {% if supplier.phone != "" %} {{supplier.phone}}{% else %}None stored{% endif %}</td>
+        <td>{% if supplier.email != "" %}<a href="{% url 'messaging:create-message' %}">{{supplier.email}}</a>{% else %} None recorded {% endif %}</td>
+        <td>
+                <div class="dropdown">
+                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                            Actions
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="triggerId">
+                                <a href="{% url 'inventory:supplier-update' pk=supplier.pk %}" class="dropdown-item">
+                                        <i class="fas fa-file"></i> Update
+                                </a>
+                                <a href="{% url 'inventory:supplier-detail' pk=supplier.pk %}" class="dropdown-item">
+                                    <i class="fas fa-eye"></i> Details
+                            </a>
+                            <a class="dropdown-item" href="{% url 'inventory:supplier-delete'  pk=supplier.pk  %}">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                            <a class="dropdown-item" href="{% url 'inventory:order-create'  supplier=supplier.pk  %}">
+                                <i class="fas fa-receipt"></i> Make Purchase Order
+                            </a>
+                            <a class="dropdown-item" href="{% url 'accounting:direct-payment-supplier'  supplier=supplier.pk  %}">
+                                <i class="fas fa-money-check"></i> Make Payment To supplier
+                            </a>
+            
+                        </div>
+                    </div>
+        
+        
+        </td>
+    </tr>
+    {% endfor %}
+{% endblock %}

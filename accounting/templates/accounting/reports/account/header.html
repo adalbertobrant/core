@@ -1,0 +1,18 @@
+{% extends 'common_data/common/document_header.html' %}
+
+{% block title %}
+
+Account Statement
+
+{% endblock title %}
+
+{% block left_content %}
+<p>Account: {{account}}</p>
+<p>Period spanning: {{start}} - {{end}}</p>
+<p>Current Balance: {{account.balance}}</p>
+
+{% endblock left_content %}
+
+{% block right_content %}
+    {% include "common_data/common/business.html" %}
+{% endblock right_content %}

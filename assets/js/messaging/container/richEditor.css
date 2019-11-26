@@ -1,0 +1,11 @@
+.editorBlock {
+    border: 1px solid #ccc;
+    box-shadow: 5px 15px 30px #ddd;
+    padding: 5px;
+    margin: 5px;
+    min-height: 300px;
+}
+.editorContainer {
+    border: 1px solid #ccc;
+    padding: 10px;
+}

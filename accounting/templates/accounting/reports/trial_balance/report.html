@@ -1,0 +1,107 @@
+{% extends "common_data/page/pdf_page.html" %}
+{% load accounting %}
+
+{% block pre_page %}
+
+<div class="jumbotron">
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Actions
+        </button>
+        <div class="dropdown-menu" aria-labelledby="triggerId">
+            <a href="{% url 'accounting:trial-balance-csv' %}" class="dropdown-item"><i
+                    class="fas fa-file-excel"></i>Export as csv</a>
+            <a href="{% url 'accounting:trial-balance-pdf' %}" class="dropdown-item"><i
+                    class="fas fa-file-pdf"></i>Generate PDF</a>
+        </div>
+    </div>
+</div>
+
+{% endblock  %}
+
+{% block page_contents %}
+{% load accounting %}
+<style>
+    .table th {
+        color: white;
+        background-color: black;
+    }
+
+    .btn {
+        padding: 10px;
+        border-radius: 10px;
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-danger {
+        background-color: red;
+    }
+
+    .btn-success {
+        background-color: green;
+    }
+
+    .actions {
+        background-color: #c5c5c5;
+        padding: 30px;
+        margin: 10px;
+    }
+</style>
+<table class="table table-sm" style="width:100%">
+    <tbody>
+      
+        <tr>
+            <td colspan="2">
+                {% include "accounting/reports/trial_balance/header.html" %}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                {% for page in pages %}
+                <table style="width:100%;" id="data-table">
+                    <thead>
+                        <tr>
+                            <th>Account Code</th>
+                            <th>Account Title</th>
+                            <th>Debit</th>
+                            <th>Credit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for acc in page %}
+                        <tr>
+                            <td>{{acc.pk}}</td>
+                            <td>{{acc.name}}</td>
+                            <td>{{acc.debit | accounting}}</td>
+                            <td>{{acc.credit | accounting}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    {% if not page.has_next %}
+                    <tfoot>
+                        <tr>
+                            <th colspan="2">Total</th>
+                            <th>{{total_debit | accounting}}</th>
+                            <th>{{total_credit | accounting}}</th>
+                        </tr>
+                    </tfoot>
+                    {% endif %}
+                </table>
+                <p>{{page}}</p>
+                {% if page.has_next %}
+                <p class="eop"></p>
+                {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<p>Inventory at {{date}} was valued at {{inventory_value  | active_currency}}</p>
+
+
+
+
+{% endblock page_contents %}

@@ -1,0 +1,12 @@
+{% if object.comments %}
+
+<div class="footer-cell">
+    <div class="footer-cell-heading">
+        <h6>Comments:</h6>
+    </div>
+    <div class="footer-cell-contents">
+        <p>{{object.comments | linebreaks}}</p>
+    </div>
+</div>
+
+{% endif %}

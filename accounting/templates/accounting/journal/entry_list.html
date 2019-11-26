@@ -1,0 +1,29 @@
+{% extends "common_data/iframe_list_template.html" %}
+{% block list_headings %}
+        <tr>
+            <th>Date</th>
+            <th>REF</th>
+            <th>Draft</th>
+            <th>Memo</th>
+            <th>Debit </th>
+            <th>Credit</th>
+        </tr>
+{% endblock %}
+{% block list_content %}
+        {% for t in object_list %}
+        <tr>
+            <td scope="row">{{t.date}}</td>
+            <td><a target="_top" href="{% url 'accounting:entry-detail' pk=t.pk %}">{{t.pk}}</a></td>
+            <td>{{t.draft}}</td>
+            <td>{{t.memo |truncatechars:30}}</td>
+            <td>{{t.total_debits}}</td>
+            <td>{{t.total_credits}}</td>
+            <td>
+                <a class="btn btn-success" target="_parent" href="{% url 'accounting:entry-detail' pk=t.pk %}">View</a>  
+                <!--
+                <a class="btn btn-danger" href="#">Delete</a> -->
+            </td>
+        </tr>
+        {% endfor %}
+    
+{% endblock %}

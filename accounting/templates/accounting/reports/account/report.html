@@ -1,0 +1,95 @@
+{% extends 'common_data/page/pdf_page.html' %}
+
+{% block pre_page %}
+<div class="jumbotron">
+    <div class="btn-group">
+
+        {% if pdf_link %}
+
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                        Actions
+                    </button>
+            <div class="dropdown-menu" aria-labelledby="triggerId">
+                <a href="/accounting/csv/account-report/{{account.pk}}/{{start|urlencode}}/{{end|urlencode}}/"
+            class="dropdown-item">Generate CSV</a>
+        <a href="/accounting/pdf/account-report/{{account.pk}}/{{start|urlencode}}/{{end|urlencode}}/"
+            class="dropdown-item"> <i class="fas fa-file-pdf"></i> Generate PDF</a>
+            </div>
+        </div>
+
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+
+{% block page_contents %}
+
+<style>
+  
+
+    table.report-table {
+        width: 100%;
+        border: 1px solid black;
+    }
+
+    .report-table td {
+        padding: 2px;
+        border-collapse: collapse;
+        border: 1px solid black;
+    }
+
+    th {
+        color: white;
+        background-color: black;
+        border-right: 1px solid white;
+        padding: 2px;
+    }
+</style>
+
+{% include "accounting/reports/account/header.html" %}
+</h5>
+
+{% for page in pages %}
+<table class="report-table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Memo</th>
+            <th>Credit</th>
+            <th>Debit</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td colspan="3">Balance Brought Forward</td>
+            <td>{{starting_balance}}</td>
+        </tr>
+        {% for transaction in page %}
+        <tr>
+            <td>{{transaction.entry.date}}</td>
+            <td>{{transaction.entry.memo}}</td>
+            {% if transaction.is_credit %}
+            <td>{{transaction.amount}}</td>
+            <td></td>
+            {% else %}
+            <td></td>
+            <td>{{transaction.amount}}</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="3">Remaining Balance</td>
+            <td>{{remaining_balance}}</td>
+        </tr>
+    </tbody>
+</table>
+<p>{{page}}</p>
+{% if page.has_next %}
+    <p class="eop"></p>
+{% endif %}
+{% endfor %}
+
+{% endblock page_contents %}

@@ -1,0 +1,45 @@
+
+<table class="table table-sm" style="width:100%">
+    <tbody>
+        <tr>
+            <td colspan="2" style="width:100%">
+                {% include "inventory/reports/outstanding_orders/header.html"%}
+            </td>
+        </tr>
+        
+        <tr>
+            <td colspan="2">
+                {% for page in pages %}
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Supplier</th>
+                            <th>Order Number</th>
+                            <th>Order Value</th>
+                            <th>Expected Receipt Date</th>
+                            <th>Percentage Received</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        {% if not order.fully_received %}
+                        <tr>
+                            <td>{{order.supplier}}</td>
+                            <td>{{order.pk | stringformat:"06d"}}</td>
+                            <td>{{order.total}}</td>
+                            <td>{{order.expected_receipt_date}}</td>
+                            <td>{{order.percent_received}}</td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <p>{{page}}</p>
+                {% if page.has_next %}
+                    <p class="eop"></p>
+                {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+    </tbody>
+</table>

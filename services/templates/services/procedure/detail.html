@@ -1,0 +1,100 @@
+{% extends "window.html" %}
+{% block content %}
+
+<div class="jumbotron">
+    <h1 class="display-3">Procedure Details</h1>
+    <p class="lead">Information and steps that represent a procedure</p>
+    <hr class="my-2">
+<div class="dropdown">
+            <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                Actions
+            </button>
+            <div class="dropdown-menu" aria-labelledby="triggerId">
+            <a class="dropdown-item" href="{% url 'services:create-procedure' %}">
+                        <i class="fas fa-eye"></i> Create New Procedure
+                    </a>
+                <a class="dropdown-item" href="{% url 'services:procedure-update' pk=object.pk %}">
+                    <i class="fas fa-edit"></i> Update
+                </a>
+                
+            </div>
+        </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <nav class="nav nav-tabs nav-staccked">
+                <a href="#summary" class="nav-link active" data-toggle="tab">Summary</a>
+                <a href="#procedure" class="nav-link" data-toggle="tab">Requirements</a>
+            </nav>
+
+            <div class="tab-content panel-body">
+                <div class="tab-pane active" id="summary">
+                    <div class="row shadow">
+                        <div class="card shadow col-4">
+                            <div class="card-body">
+                                <h4 class="card-title">Summary Details</h4>
+                                <p class="card-text">Name: {{object.name}}</p>
+                                <p class="card-text">Reference: {{object.reference}}</p>
+                                <p class="card-text">Description: {{object.description}}</p>
+                            </div>
+                        </div>
+                        <div class="card col-8">
+                            <div class="card-body">
+                                <h4>Procedure Stages</h4>
+                                <ol>
+                                    {% if object.tasl_set.all.count == 0%}
+                                    <li colspan-"3"><b>No Data To Display</b></li>
+                                    {% else %}
+                                    {% for step in object.task_set.all %}
+                                    <li>{{step}}</li>
+                                    {% endfor %}
+                                    {% endif %}
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="procedure">
+                    <div class="row shadow">
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4>Equipment:</h4>
+                                    <ul>
+                                        {% if object.required_equipment.all.count == 0 %}
+                                        <li><b>No Data To Display</b></li>
+                                        {% else %}
+                                        {% for item in object.required_equipment.all %}
+                                        <li>{{item}}</li>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card col-6">
+
+                            <div class="card-body">
+                                <h4>Consumables:</h4>
+                                <ul>
+                                    {% if object.required_equipment.all.count == 0 %}
+                                    <li><b>No Data To Display</b></li>
+                                    {% else %}
+                                    {% for item in object.required_consumables.all %}
+                                    <li>{{item}}</li>
+                                    {% endfor %}
+                                    {% endif %}
+
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock content %}

@@ -1,0 +1,40 @@
+from django.urls import re_path, path
+
+from inventory import views
+
+report_urls = [
+    re_path(r'^inventory-report/?$', views.InventoryReport.as_view(),    
+        name='inventory-report'),
+    re_path(r'^outstanding-orders-report/?$', 
+        views.OutstandingOrderReport.as_view(),    
+            name='outstanding-orders-report'),
+    re_path(r'^inventory-report-pdf/?$', views.InventoryReportPDFView.as_view(),
+        name='inventory-report-pdf'),
+    re_path(r'^outstanding-orders-report-pdf/?$', 
+        views.OutstandingOrderReportPDFView.as_view(),    
+            name='outstanding-orders-report-pdf'),
+    path('payments-due-report', views.PaymentsDueReportView.as_view(), 
+        name='payments-due-report'),
+    path('payments-due-pdf', views.PaymentsDuePDFView.as_view(), 
+        name='payments-due-pdf'),
+    path('vendor-balance-report', views.VendorBalanceReportView.as_view(), 
+        name='vendor-balance-report'),
+    path('vendor-balance-pdf', views.VendorBalancePDFView.as_view(), 
+        name='vendor-balance-pdf'),
+    path('vendor-average-days-to-deliver-report', 
+        views.VendorAverageDaysToDeliverReportView.as_view(), 
+        name='vendor-average-days-to-deliver-report'),
+    path('vendor-average-days-to-deliver-pdf', 
+        views.VendorAverageDaysToDeliverPDFView.as_view(), 
+        name='vendor-average-days-to-deliver-pdf'),
+    path('vendor-transactions-report/', 
+        views.TransactionByVendorReportView.as_view(), 
+        name='vendor-transactions-report'),
+    path('vendor-transactions-pdf/<str:start>/<str:end>/', 
+        views.TransactionByVendorPDFView.as_view(), 
+        name='vendor-transactions-pdf'),
+    path('vendor-transactions-form/', 
+        views.TransactionByVendorReportFormView.as_view(), 
+        name='vendor-transactions-form'),
+]
+

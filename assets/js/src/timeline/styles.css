@@ -1,0 +1,103 @@
+.timelineContainer {
+    width: 100%;
+    max-height: 500px;
+    min-height: 300px;
+    overflow-y: auto;
+    margin: 5px;
+    position:relative;
+    
+}
+
+::-webkit-scrollbar { 
+    display: none; 
+}
+
+.transparentOverlay {
+    width: 100%;
+    padding:0px;
+    margin:0px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+}
+
+.timelineBg {
+    width: 100%;
+    height: 100%;
+    padding:0px;
+    margin:0px;
+}
+
+.timelineBgLeft {
+    width: 26%;
+    height: 100%;
+    padding:0px;
+    margin:0px;
+}
+
+.timelineBgRight {
+    width: 72%;
+    height: 100%;
+    padding:0px;
+    margin:0px;
+}
+
+.timelineLine {
+    width: 1px;
+    background-color:#007bff;
+    height: 100px;
+    padding:0px;
+    margin: 0px auto;
+}
+
+.timelineCard {
+    box-shadow: 3px 5px 20px grey;
+    margin: 1%;
+    height: 100px;
+    min-height: 100px;
+    width: 98%;
+    display: flex;
+    transition: height 0.3s;
+    flex-direction: row;
+}
+
+.timelineCardLeft {
+    width: 25%;
+    min-width: 25%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    display: inline-block;
+}
+
+.timelineCardRight {
+    height: 100%;  
+    display: inline-block;
+    margin: 0px;
+    padding: 5px;
+    position:relative;
+    width: 100%;
+    transition: background-color 0.5s;
+}
+
+.timelineCardRight:hover {
+    background-color: powderblue;
+    z-index: 10000;
+}
+
+.timelinePoint {
+    width: 25px;
+    height: 25px;
+    border-radius: 25px;
+    border: 2px solid #007bff;
+    box-shadow: 3px 5px 20px powderblue;
+
+    background-color: white;
+    margin: 37.5px 52.5px ;
+}
+
+.cardOptions  {
+}

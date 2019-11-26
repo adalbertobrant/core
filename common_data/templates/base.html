@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{% block title%}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'common_data/js/jquery-ui-1.12.1.custom/jquery-ui.theme.css' %}">
+    <link rel="stylesheet" href="{% static 'common_data/js/jquery-ui-1.12.1.custom/jquery-ui.structure.css' %}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'common_data/css/bootstrap/css/bootstrap.min.css' %}" />
+   
+    
+    <link rel="stylesheet" type="text/css" 
+        href="{% static 'common_data/assets/css/all.min.css' %}" />
+    <link rel="stylesheet" type="text/css" 
+        href="{% static 'common_data/css/hover-min.css' %}" />
+    <link rel="stylesheet" type="text/css" 
+        href="{% static 'common_data/css/animate.css' %}" />
+    
+    {{form.media.css}}
+    
+    <link rel="stylesheet" type='text/css' href="{% static 'common_data/css/suave.css' %}">
+    
+
+    <script type="text/javascript" src="{% static 'common_data/js/jquery-3.3.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'common_data/js/popper.js' %}"></script>
+    
+    <script type="text/javascript" src="{% static 'common_data/js/jquery-ui-1.12.1.custom/jquery-ui.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'common_data/css/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'common_data/js/jquery.form.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'common_data/js/pygal-tooltips.min.js' %}"></script>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-info">
+                    {{message}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+            {% endfor %}
+        
+        {% endif %}
+    </div>
+    {% block window %}{% endblock %}
+    <script type="text/javascript" src="{% static 'common_data/js/async_select.js' %}"></script>
+
+{% include 'notifications.html' %}
+
+{% include 'iframe_window.html' %}
+
+
+<script>
+    //iframe redirect detection
+    
+
+       $(".ui-date-picker").datepicker({
+        changeYear: true,
+        changeMonth: true,
+        dateFormat: 'yy-mm-dd' 
+        });
+    
+    
+    function setNavbarActive(){
+        var url = window.location.href;
+        if(url.search('invoicing') !== -1){
+            $("#sales").addClass('active')
+        }else if(url.search('inventory') !== -1){
+            $("#inventory").addClass('active')
+        }else if(url.search('services') !== -1){
+            $("#services").addClass('active')
+        }else if(url.search('accounting') !== -1){
+            $("#accounting").addClass('active')
+        }else if(url.search('employees') !== -1){
+            $("#employees").addClass('active')
+        }else if(url.search('messaging') !== -1){
+            $("#inbox").addClass('active')
+        }else if(url.search('planner') !== -1){
+            $("#planner").addClass('active')
+        }
+    }
+
+    $(document).ready(function(){
+        setNavbarActive();
+        
+     
+    })
+
+
+</script>
+    {{form.media.js}}
+
+</body>
+</html>
+

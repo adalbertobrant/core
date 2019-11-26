@@ -1,0 +1,181 @@
+{% extends "window.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="jumbotron">
+        <h1 class="display-3">Customer Detail</h1>
+        <p class="lead">Customer information as well a interactions</p>
+        <hr class="my-2">
+        <p>Actions</p>
+        <p class="lead">
+            <div class="dropdown">
+            <button class=" btn btn-primary btn-lg dropdown-toggle " type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                Actions
+            </button>
+            <div class="dropdown-menu" aria-labelledby="triggerId">
+            <a class="dropdown-item" href="{% url 'invoicing:create-customer' %}">
+                    <i class="fas fa-plus"></i> New Customer
+                </a>
+            <a href="{% url 'invoicing:update-customer' pk=customer.pk %}" class="dropdown-item">
+                    <i class="fas fa-edit"></i> Update Customer Data
+                </a>
+                <a class="dropdown-item" href="{% url 'invoicing:delete-customer' pk=customer.pk %}">
+                    <i class="fas fa-trash"></i> Delete Customer
+                </a>
+                <a class="dropdown-item" href="{% url 'invoicing:create-quotation' customer=customer.pk %}">
+                    <i class="fas fa-receipt"></i> Create Quotation
+                </a>
+                <a class="dropdown-item" href="{% url 'invoicing:customer-statement-form' pk=customer.pk %}">
+                    <i class="fas fa-file-alt"></i> View Customer Account Statement
+                </a>
+            </div>
+            </div>
+        </p>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card shadow" >
+                <div class="card-body">
+                    <h4 class="card-title">Customer Info</h4>
+                    <p class="card-text">Name: {{object.name}}</p>
+                    <p class="card-text">Email: {{object.customer_email}}</p>
+                    <p class="card-text">Type: {% if object.is_organization %} Organization {% else %} Individual {% endif %}</p>
+                    <p class="card-text">Address: {{object.address}}</p>
+                    <h4>Account</h4>
+                     <p class="card-text">Name: {{object.account}}</p>
+                     <p class="card-text">Balance: {{object.account.balance}}</p>
+                     <a href="{% url 'accounting:account-detail' pk=object.account.pk %}" class="btn btn-secondary">View</a>
+
+
+                </div>
+            </div>
+            {% if object.organization %}
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Members</h4>
+                    <button onclick="linkClickHandler('/invoicing/customer/add-member/{{object.organization.pk}}')" target='popup' class="btn btn-primary">Add Member</button>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Full Name</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for m in object.organization.members %}
+                            <tr>
+                                <td>{{m.full_name}}</td>
+                                <td>{{m.phone}}</td>
+                                <td><a href="{% url 'messaging:create-message' %}">{{m.email}}</a></td>
+                                <td>
+                                    <a href="{% url 'base:individual-detail' pk=m.pk %}" class="btn btn-success btn-sm">View</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class='col-sm-6'>
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Interactions</h4>
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item"><a href="#invoices" class="nav-link active" data-toggle="tab">Invoices</a></li>
+                        <li class="nav-item"><a href="#quotations" class="nav-link" data-toggle="tab">Quotations</a></li>
+                        <li class="nav-item"><a href="#credit-notes" class="nav-link" data-toggle="tab">Credit Notes</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="invoices" class="tab-pane active">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Date</th>
+                                        <th>Amount ($)</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for invoice in invoices %}
+                                    <tr>
+                                        <td>{{invoice.id}}</td>
+                                        <td>{{invoice.date}}</td>
+                                        <td>{{invoice.total | floatformat:2}}</td>
+                                        <td><a href="{% url 'invoicing:invoice-details' pk=invoice.pk %}" class="btn btn-primary">Detail</a></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            
+                            </table>
+                        </div>
+                        <div id="quotations" class="tab-pane">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Date</th>
+                                        <th>Amount ($)</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for invoice in quotations %}
+                                    <tr>
+                                        <td>{{invoice.id}}</td>
+                                        <td>{{invoice.date}}</td>
+                                        <td>{{invoice.total | floatformat:2}}</td>
+                                        <td><a href="{% url 'invoicing:quotation-details' pk=invoice.pk %}" class="btn btn-primary">Detail</a></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            
+                            </table>
+                        </div>
+                        <div id="credit-notes" class="tab-pane">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Date</th>
+                                        <th>Amount ($)</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for note in credit_notes %}
+                                    <tr>
+                                        <td>{{note.id}}</td>
+                                        <td>{{note.date}}</td>
+                                        <td>{{note.total | floatformat:2}}</td>
+                                        <td><a href="{% url 'invoicing:credit-note-detail' pk=note.pk %}" class="btn btn-primary">Detail</a></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+function linkClickHandler(link){
+    $('#popup-frame').attr('src', link);
+    var modal = document.getElementById('id-my-modal');
+    modal.style.display = 'block';
+    
+}
+</script>
+{% endblock content %}

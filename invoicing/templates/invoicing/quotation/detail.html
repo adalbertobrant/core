@@ -1,0 +1,37 @@
+{% extends "common_data/page/pdf_page.html" %} 
+
+{% block pre_page %}
+
+{% if object.draft %}
+<div class="jumbotron">
+
+<div style="margin:0px auto;width:320px;padding:10px" >
+    <form action="{% url 'invoicing:invoice-verify' pk=object.pk %}" method="POST">
+    {% csrf_token %}
+    <button class="btn btn-primary">Validate</button>
+    </form>
+</div>
+
+
+</div>
+
+
+
+{% endif %}
+
+{% endblock %}
+
+{% block page_contents %}
+<style>
+    #page-layout {
+        width: 100%;
+        height: 100%;
+    }
+
+    #title {
+        text-align: center;
+    }
+</style>
+
+{% include "invoicing/quotation/document.html" %}
+{% endblock %}

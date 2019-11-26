@@ -1,0 +1,36 @@
+
+<table class="table table-sm" style="width:100%">
+    <tbody>
+        <tr>
+            <td colspan="2" style="width:100%">
+                {% include "inventory/reports/days_to_deliver/header.html"%}
+            </td>
+        </tr>
+        
+        <tr>
+            <td colspan="2">
+                {% for page in pages %}
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Vendor</th>
+                                <th>Last Delivery Date</th>
+                                <th>Average Days To Deliver</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for vendor in page %}
+                            <tr>
+                                <td>{{vendor}}</td>
+                                <td>{{vendor.last_delivery.receive_date}}</td>
+                                <td>{{vendor.average_days_to_deliver |floatformat:1}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {{page}}
+                {% endfor %}
+            </td>
+        </tr>
+    </tbody>
+</table>

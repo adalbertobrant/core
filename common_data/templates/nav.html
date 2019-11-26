@@ -1,0 +1,99 @@
+{% load static %}
+
+<style>
+    a.nav-link{
+        background-color: "#07f"
+    }
+</style>
+<script>
+function inIFrame(){
+    return window.top !== window.self;       
+}
+
+$(document).ready(function(){
+    if(inIFrame()){
+        $("#navbar").hide();
+        $("#footer").hide();
+    }
+})
+</script>
+
+<nav class="navbar navbar-expand-sm bg-light" id="navbar" >
+        <ul class="navbar-nav ">
+            <!--{% url 'base:workflow' %}-->
+            <a class="navbar-brand" href="/base/workflow"  >
+                <img width='30' height='30' src="{% static 'common_data/images/logo.png' %}" alt="">
+            </a>
+            {% if request.user %}
+            <li class="nav-item" id="planner">
+                <a href="{% url 'planner:dashboard' %}" class="nav-link">
+                    <i class="fas fa-calendar-alt" style="font-size:24;">
+                    </i> Planner
+                    <span class="badge badge-primary">
+                        {% if request.user.employee %}
+                            {{request.user.employee.agenda_items}}
+                        {% else %}
+                        0 
+                        {% endif %}
+                    </span>
+                </a>
+            </li>
+            <li class="nav-item" id="inbox">
+                <a href="{% url 'messaging:dashboard' %}" class="nav-link">
+                    <i class="fas fa-envelope" style="font-size:24;"></i> 
+                    Messaging 
+                    <sub>
+                        <span class="badge badge-danger" >beta!</span>
+                    </sub>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% if request.user.is_superuser or request.user.employee.is_sales_rep %}
+            <li class="nav-item" id='sales'>
+                <a class="nav-link" href="{% url 'invoicing:home' %}">
+                    <i class="fas fa-cash-register" style="font-size:24;"></i> Sales
+                </a>
+            </li>
+            {% endif %}
+            
+            {% if request.user.is_superuser or request.user.employee.is_inventory_controller %}
+            <li class="nav-item" id="inventory">
+                <a class="nav-link" href="{% url 'inventory:home' %}">
+                    <i class="fas fa-warehouse" style="font-size:24;"></i> 
+                    Inventory
+                </a>
+            </li>
+            {% endif %}
+            {% if request.user.is_superuser or request.user.employee.is_sales_rep %}
+            <li class="nav-item" id="accounting">
+                <a class="nav-link" href="{% url 'accounting:dashboard' %}">
+                    <i class="fas fa-dollar-sign" style="font-size:24;"></i> 
+                        Accounting
+                </a>
+            </li>
+            {% endif %}
+            {% if request.user.is_superuser or request.user.employee.is_serviceperson %}
+            <li class="nav-item" id="services">
+                <a href="{% url 'services:dashboard' %}" class="nav-link"><i class="fas fa-toolbox" style="font-size:24;"></i> Services</a>
+            </li>
+            {% endif %}
+            {% if request.user.is_superuser or request.user.employee.is_payroll_officer %}
+            <li class="nav-item" id="employees">
+                <a class="nav-link" href="{% url 'employees:dashboard' %}">
+                    <i class="fas fa-users" style="font-size:24;"></i> Employees
+                </a>
+            </li>
+            {% endif %}
+            <!--
+            {% if request.user.is_superuser or request.user.employee.is_manufacturing_associate %}
+            <li>
+                <a class="nav-link" href="{% url 'manufacturing:dashboard' %}">Manufacturing</a>
+            </li>
+            {% endif %}
+            -->
+            <li>
+                <div class='notification-button'><i class="fas fa-bell"></i></div>
+            </li>
+        </ul>
+</nav>

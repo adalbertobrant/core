@@ -1,0 +1,66 @@
+[
+    {
+        "model": "inventory.InventorySettings",
+        "pk": 1,
+        "fields": {
+            "inventory_valuation_method": 1
+        }
+    },
+    {
+        "model": "inventory.UnitOfMeasure",
+        "pk": 1,
+        "fields": {
+            "name": "ea",
+            "description": "ea for 'each'."
+        }
+    },
+    {
+        "model": "inventory.UnitOfMeasure",
+        "pk": 2,
+        "fields": {
+            "name": "m",
+            "description": "Meter."
+        }
+    }
+    ,
+    {
+        "model": "inventory.UnitOfMeasure",
+        "pk": 3,
+        "fields": {
+            "name": "lt",
+            "description": "Litre."
+        }
+    },
+    {
+        "model": "inventory.UnitOfMeasure",
+        "pk": 4,
+        "fields": {
+            "name": "kg",
+            "description": "Kilogram."
+        }
+    },
+    {
+        "model": "inventory.Warehouse",
+        "pk": 1,
+        "fields": {
+            "name": "Default Warehouse",
+            "address": "Default Location"
+        }
+    },
+    {
+        "model": "inventory.Category",
+        "pk": 1,
+        "fields": {
+            "name": "Default Category",
+            "description": "Generic Category object"
+        }
+    },
+    {
+        "model": "inventory.StorageMedia",
+        "pk": 1,
+        "fields": {
+            "name": "Default Storage Medium",
+            "warehouse": 1
+        }
+    }
+]
