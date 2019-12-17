@@ -1,4 +1,12 @@
 {% extends "window.html" %}
+
+{% block heading %}
+Create Quotation
+{% endblock heading %}
+{% block actions %}
+<a onclick="linkClickHandler('/invoicing/create-customer')" target="popup" class="dropdown-item">Create Customer</a>
+
+{% endblock actions %}
 {% load render_bundle from webpack_loader %}
 
 
@@ -24,13 +32,7 @@
                 }   
             </script>
             <input type="hidden" id="box-array" value="{{box_array}}">
-                <div class="jumbotron">
-                    <h1 style="display:inline;padding:40px;">Create Quotation</h1>
-                    <div class="btn-group" >
-                        
-                        <a onclick="linkClickHandler('/invoicing/create-customer')" target="popup" class="btn btn-primary text-white">Create Customer</a>
-                    </div>
-                </div></td>
+                </td>
             </tr>
             <tr>
                 <td valign="top">

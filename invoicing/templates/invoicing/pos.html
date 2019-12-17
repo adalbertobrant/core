@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load render_bundle from webpack_loader %}
+{% block window %}
+
+<div id="root"></div>
+
+{% render_bundle 'pos' %}
+
+{% endblock window %}

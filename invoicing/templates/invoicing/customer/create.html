@@ -5,44 +5,37 @@
 {% block head %}
 <link rel="stylesheet" href="{% static 'common_data/css/forms.css' %}">
 {% endblock %}
+{% block heading %}
+Create Customer
+{% endblock heading %}
+{% block actions %}
+{% for item in related_links %}
+<a class="dropdown-item" onclick="linkClickHandler('{{item.url}}')" target="popup">{{item.name}}</a>
+{% endfor %}
+
+{% endblock actions %}
 {% block content %}
 
-<div class="jumbotron">
+{% comment %} <div class="jumbotron">
     <div class="container">
         <h1 class="display-3">{{title}}</h1>
         <p class="lead">{{description}}</p>
         {% if related_links %}
         <p>Actions</p>
-            <script>
-                function linkClickHandler(link){
-                    /*
-                    window.open(link ,'popup','width=900,height=480');
-                    $('#refresher-button').css('display', 'block');
-                    return false;
-                    */
-                   $('#popup-frame').attr('src', link);
-                   var modal = document.getElementById('id-my-modal');
-                    modal.style.display = 'block';
-                    $('#refresher-button').css('display', 'block');
-                }   
-            </script>
-            <div class="btn btn-group">
-                    {% for item in related_links %}
-                        <a class="btn btn-primary text-white"  onclick="linkClickHandler('{{item.url}}')" target="popup">{{item.name}}</a>
-                    {% endfor %}
-            </div>
-            <button
-                class="btn btn-success"
-                id="refresher-button" 
-                style="display:none;"
-                onclick="window.location.replace(window.location.href);"
-                >Refresh <i class="fas fa-sync"></i>
-            </button>
+        <script>
+
+        </script>
+        <div class="btn btn-group">
+
+        </div>
+        <button class="btn btn-success" id="refresher-button" style="display:none;"
+            onclick="window.location.replace(window.location.href);">Refresh <i class="fas fa-sync"></i>
+        </button>
         <p class="lead">
-        
-        {% endif %}
+
+            {% endif %}
     </div>
-</div>
+</div> {% endcomment %}
 
 
 <div class="container">
@@ -56,35 +49,36 @@
         <div class="col-sm-12">
             <div class="shadow card ">
                 <div class="card-body">
-                       {% crispy form %}
+                    {% crispy form %}
                 </div>
             </div>
         </div>
     </div>
-    
-</div><script>
-function dynamicFormRenderer(){
-                var input = $("#id_id_customer_type_0_1") //individual 
-                if(input[0].checked){
-                    $('#div_id_business_partner_number').hide();
-                    $('#div_id_organization').show();
-                }else{
-                    $('#div_id_business_partner_number').show();
-                    $('#div_id_organization').hide();
-                }
-                
-            }
-            $(document).ready(dynamicFormRenderer);
-            $("input[name='customer_type']").on('change', function(evt){
-                var value = evt.target.value;
-                if(value === "individual"){
-                    $('#div_id_business_partner_number').hide();
-                    $('#div_id_organization').show();
-                }else{
-                    $('#div_id_business_partner_number').show();
-                    $('#div_id_organization').hide();
-                }
-            })
-    </script>
+
+</div>
+<script>
+    function dynamicFormRenderer() {
+        var input = $("#id_id_customer_type_0_1") //individual 
+        if (input[0].checked) {
+            $('#div_id_business_partner_number').hide();
+            $('#div_id_organization').show();
+        } else {
+            $('#div_id_business_partner_number').show();
+            $('#div_id_organization').hide();
+        }
+
+    }
+    $(document).ready(dynamicFormRenderer);
+    $("input[name='customer_type']").on('change', function (evt) {
+        var value = evt.target.value;
+        if (value === "individual") {
+            $('#div_id_business_partner_number').hide();
+            $('#div_id_organization').show();
+        } else {
+            $('#div_id_business_partner_number').show();
+            $('#div_id_organization').hide();
+        }
+    })
+</script>
 
 {% endblock %}

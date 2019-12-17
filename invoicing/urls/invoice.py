@@ -84,4 +84,5 @@ urls = [
     re_path(r'^invoice/shipping-costs/list/(?P<pk>[\d]+)/?$', 
         views.ShippingExpenseListView.as_view(), 
         name='invoice-shipping-costs-list'),
+    path('pos/', views.POSAppView.as_view() ,name='pos')
 ] + invoice_router.urls + credit_note_urls + quotation_urls

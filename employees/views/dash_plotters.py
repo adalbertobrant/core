@@ -26,4 +26,11 @@ def employee_roles_chart():
     for role in roles.keys():
         chart.add(role, roles[role].objects.all().count())
 
+    chart.add('Other', models.Employee.objects.filter(
+        bookkeeper__isnull=True,
+        serviceperson__isnull=True,
+        salesrepresentative__isnull=True,
+        inventorycontroller__isnull=True,
+        payrollofficer__isnull=True
+    ).count())
     return chart

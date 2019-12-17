@@ -1,10 +1,6 @@
 {% load static %}
 
-<style>
-    a.nav-link{
-        background-color: "#07f"
-    }
-</style>
+
 <script>
 function inIFrame(){
     return window.top !== window.self;       
@@ -18,13 +14,13 @@ $(document).ready(function(){
 })
 </script>
 
-<nav class="navbar navbar-expand-sm bg-light" id="navbar" >
+<nav class="nav flex-column primary" id="navbar" >
         <ul class="navbar-nav ">
             <!--{% url 'base:workflow' %}-->
             <a class="navbar-brand" href="/base/workflow"  >
                 <img width='30' height='30' src="{% static 'common_data/images/logo.png' %}" alt="">
             </a>
-            {% if request.user %}
+            {% comment %} {% if request.user %}
             <li class="nav-item" id="planner">
                 <a href="{% url 'planner:dashboard' %}" class="nav-link">
                     <i class="fas fa-calendar-alt" style="font-size:24;">
@@ -47,7 +43,7 @@ $(document).ready(function(){
                     </sub>
                 </a>
             </li>
-            {% endif %}
+            {% endif %} {% endcomment %}
             
             {% if request.user.is_superuser or request.user.employee.is_sales_rep %}
             <li class="nav-item" id='sales'>
@@ -73,11 +69,11 @@ $(document).ready(function(){
                 </a>
             </li>
             {% endif %}
-            {% if request.user.is_superuser or request.user.employee.is_serviceperson %}
+            {% comment %} {% if request.user.is_superuser or request.user.employee.is_serviceperson %}
             <li class="nav-item" id="services">
                 <a href="{% url 'services:dashboard' %}" class="nav-link"><i class="fas fa-toolbox" style="font-size:24;"></i> Services</a>
             </li>
-            {% endif %}
+            {% endif %} {% endcomment %}
             {% if request.user.is_superuser or request.user.employee.is_payroll_officer %}
             <li class="nav-item" id="employees">
                 <a class="nav-link" href="{% url 'employees:dashboard' %}">

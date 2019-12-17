@@ -536,7 +536,7 @@ class ServiceViewTests(TestCase):
 
 
 class WorkOrderViewTests(TestCase):
-    fixtures = ['common.json','inventory.json']
+    fixtures = ['common.json',  'inventory.json']
 
     @classmethod 
     def setUpClass(cls):

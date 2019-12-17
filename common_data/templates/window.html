@@ -4,12 +4,24 @@
     {% block head_extended %}{% endblock %}
 {% endblock %}
 {% block window %}
-{% include "nav.html" %}
 
-<article style="min-height:500px;">    
-    {% block content %}{% endblock %}
-</article>
-{% include "footer.html" %}
+
+
+<main>
+    <aside id='nav'>
+        {% include "nav.html" %}
+    </aside>
+    <article id='window'>
+        {% include 'title.html' %}
+        <section id='content'>
+            {% block content %}{% endblock %}
+        </section>
+        <section id='footer'>
+            {% include "footer.html" %}
+        </section>
+    </article>
+</main>
+
 
 <script src='{% static "common_data/js/suave.js" %}'></script>
 {% endblock %}

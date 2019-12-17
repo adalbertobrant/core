@@ -1,3 +1,20 @@
+.primary {
+    background-color: #23374d;
+    color: #eee;
+
+} 
+.secondary {
+    background-color: #1089ff;
+    color: #eee;
+}
+.tertiary {
+    background-color: #e5e5e5;
+}
+.qaurternary {
+    background-color: #eeeeee;
+}
+
+
 .ui-nav {
     width: 200px;
     min-height: 80vh;
@@ -7,11 +24,11 @@
     flex-direction: row;
 }
 .bg-primary th {
-    color:white;
+    color:#EEE;
 }
 
 .bg-primary td {
-    color:white;
+    color:#EEE;
 }
 
 input[type="checkbox"] {
@@ -21,8 +38,6 @@ input[type="checkbox"] {
 }
 
 label > input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
     display: inline;
 }
 
@@ -40,18 +55,33 @@ input:required, textarea:required, select:required {
 
 .dashbox {
     margin: 10px;
-    padding: 30px;
-    width: 300px;
+    padding: 20px;
+    width: 30%;
     max-width:300px;
     min-height: 200px;
-    display:inline-block;
     text-align:center;
+    border-radius: 10px;
+    box-shadow: 2px 5px 10px #ccc;
+    color: #23374d;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+}
+
+.dashbox h3 {
+    font-weight: 500;
+    font-size:2rem;
+}
+
+.dashbox h4 {
+    font-weight: 200
 }
 
 .white-on-blue {
-    background-color: white;
-    border: 1px solid #007bff;
-    color: #007bff;
+    background-color: #EEE;
+    border: 1px solid #1089ff;
+    color: #1089ff;
 }
 
 .entry-style td{
@@ -76,7 +106,7 @@ input:required, textarea:required, select:required {
 
 #product-widget-text-box, #service-widget-text-box, #expense-widget-text-box {
     padding: 1px;
-    background-color: white;
+    background-color: #EEE;
 }
 .entry-style select{
     width: 100%;
@@ -85,25 +115,28 @@ input:required, textarea:required, select:required {
 .invoice-btn {
     width: 100%;
     padding: 3px;
-    background-color: #007bff;
-    color: white;
-    border: 1px solid white;
+    background-color: #1089ff;
+    color: #EEE;
+    border: 1px solid #EEE;
 }
 
 .shadow {
-    border: 1px solid grey;
-    padding: 40px ;
-    box-shadow: 5px 10px 30px powderblue;
+    padding: 20px ;
+    box-shadow: 5px 10px 15px #ccc;
 }
 
 nav .nav-link:hover{
-    color: white;
-    background-color: #007bff;
+    color: #eee;
+    background-color: #1089ff;
+}
+
+nav .nav-link{
+    color: #eee;
 }
 
 li.active .nav-link{
-    color: white;
-    background-color: #007bff;
+    color: #eee;
+    background-color: #1089ff;
 }
 
 .jumbo-gradient{
@@ -117,7 +150,7 @@ background: linear-gradient(90deg, rgba(0,123,255,1) 0%, rgba(176,224,230,1) 100
 }
 
 .list-group-item:hover {
-    border-left: 3px solid #007bff;
+    border-left: 3px solid #1089ff;
 }
 
 .list-group-item a{
@@ -197,7 +230,8 @@ table tr{
     padding: 10px 50px;
     left: 0px;
     bottom: 0px;
-    background-color: white;
+    z-index: 10;
+    background-color: #EEE;
 }
 
 .floating-submit button {
@@ -214,10 +248,10 @@ table tr{
 }
 
 .notification-button{
-    color: white;
+    color: #EEE;
     font-size: 1.5rem;
     text-align: center;
-    background-color: #007bff;
+    background-color: #1089ff;
     border-radius: 15px;
     width:45px;
     float:right;
@@ -229,11 +263,152 @@ table tr{
 }
 
 .dropdown-item:hover {
-    color: white;
-    background-color: #007bff;
+    color: #EEE;
+    background-color: #1089ff;
 }
 
-.dropdown-menu {
-    border: 1px solid grey;
-    box-shadow: 5px 10px 5px #bbb;
+
+
+
+/* Umisoft */
+
+body {
+    background-color: #eee;
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+}
+
+#nav {
+    flex: 1;
+    padding: 5px;
+    min-height: 100vh;
+    background-color: #23374d;
+}
+
+#window {
+    flex: 6;
+}
+
+#title {
+    width: 100%;
+    height: 10vh;
+    background-color: #23374d;
+    color: #eee;
+    position: sticky;
+    top:0;
+    font-size: 2rem;
+    padding: 0.5rem;
+    z-index: 999;
+    display:flex;
+    flex-direction: row;
+}
+#title-text {
+    flex: 20;
+}
+
+#action-icon, #notifications-icon{
+    flex: 1;
+    text-align: center;
+    padding: 2px;
+}
+
+#content {
+    min-height: 80vh;
+    padding-bottom: 30px;
+}
+
+#footer {
+    height: 10vh;
+    background-color: #23374d;
+    z-index: 999;
+}
+
+/* forms */
+
+.action-link {
+    color: #23374d !important;
+    display:block !important;
+}
+
+.action-link:hover {
+    color: #1089ff !important;
+    text-decoration: underline !important;
+    display:block !important;
+}
+
+.dashboard-nav {
+    max-height: 88vh;
+    overflow-y: auto;
+
+}
+
+.dashboard-nav::-webkit-scrollbar {
+    display: none;
+ }
+
+.dashboard-nav > .nav-item {
+    font-size: 1.5rem;
+    font-weight: 200;
+}
+.dash-frame {
+    width: 100%;
+    height: 90vh;
+}
+
+
+.dash-visualization {
+    max-height: 300px;
+}
+
+.dash-visualization h4 {
+    color: #eee;
+    background-color: #23374d;
+    padding: 5px;
+}
+
+.dash-icon {
+    color: #23374d;
+    opacity: 0.2;
+    z-index: -1;
+    transform: rotateZ(-20deg);
+    position: absolute;
+    bottom: 20px;
+    right: 50px;
+}
+
+
+.notifications {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.notification-window {
+    width: 40%;
+    height: 100%;
+    position: absolute;
+    right: -40vw;
+    top: 0px;
+    padding: 5px;
+    background-color: #23374d;
+    transition: right 2.5s linear;
+}
+
+.visible-notification-window {
+    right: 0px;
+}
+
+.notification-window h4{
+    color:#23374d;;
+    background-color: #1089ff;
+    padding: 10px;
+
 }

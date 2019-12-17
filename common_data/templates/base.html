@@ -33,23 +33,8 @@
     {% block head %}{% endblock %}
 </head>
 <body>
-    <div>
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-info">
-                    {{message}}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                </div>
-            {% endfor %}
-        
-        {% endif %}
-    </div>
     {% block window %}{% endblock %}
     <script type="text/javascript" src="{% static 'common_data/js/async_select.js' %}"></script>
-
-{% include 'notifications.html' %}
 
 {% include 'iframe_window.html' %}
 

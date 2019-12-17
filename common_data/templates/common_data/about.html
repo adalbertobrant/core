@@ -16,6 +16,30 @@
             <div class="card-body text-center">
                 <h4>Suave Business Tools</h4>
                 <p>Distributed by Latrom Systems</p>
+                <p id="animated"></p>
+                <script>
+                    $(document).ready(function(){
+                        var msg = 'Hello its nice to meet you!'
+                        var i = 0
+
+                        
+                        
+                        for(i in msg){
+                            var index = i
+                            var char = msg[index]
+                            var handler = function(j){
+                                var currText = $('#animated').text()
+                                $('#animated').text(currText + j)
+                            }
+                            
+                            setTimeout(function(){
+                                (handler)(char)
+                            }, 1000)
+                        }
+                        
+                        //$("#animated")
+                    })
+                </script>
             </div>
         </div>
     </div>   

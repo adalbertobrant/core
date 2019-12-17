@@ -1,7 +1,10 @@
 {% extends "window.html" %}
 {% load render_bundle from webpack_loader %}
 
+{% block heading %}
+Create Invoice
 
+{% endblock heading %}
 {% block content %}
     <style>
         
@@ -28,13 +31,13 @@
                 })
             </script>
             <input type="hidden" id="box-array" value="{{box_array}}">
-                <div class="jumbotron">
+                {% comment %} <div class="jumbotron">
                     <h1 style="display:inline;padding:40px;">Create Invoice</h1>
                     <div class="btn-group" >
                         
-                        <a onclick="linkClickHandler('/invoicing/create-customer')" target="popup" class="btn btn-primary text-white">Create Customer</a>
+                        
                     </div>
-                </div></td>
+                </div> {% endcomment %}</td>
             </tr>
             <tr>
                 <td valign="top">
@@ -58,16 +61,6 @@
                             </tr>
                         </tbody>
                     </table>
-                    <!--
-                    <p>Customer</p>
-                    <p>{{form.customer}}</p>
-                    <p>Customer PO Number:</p>
-                    <p>{{form.purchase_order_number}}</p>
-                    <p>Source Warehouse:</p>
-                    <p>{{form.ship_from}}</p>
-                    <p>Invoice Number</p>
-                    <p>{{form.invoice_number}}</p>
-                    -->
                 </td>
                 <td>
                     <table class="table table-sm">
@@ -86,15 +79,6 @@
                             </tr>
                         </tbody>
                     </table>
-                    <!--
-                        <p>Date</p>
-                        <p>{{form.date}}</p>
-                        <p>Due</p>
-                        <p>{{form.due}}</p>
-                        <p>Sales Representative</p>
-                        <p>{{form.salesperson}}</p>
-                    -->
-                    
                     
                     {{form.status}}
                 </td>

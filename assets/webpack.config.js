@@ -16,7 +16,8 @@ module.exports = {
         services: './js/services',
         manufacturing: './js/manufacturing',
         widgets: './js/widgets',
-        messaging: './js/messaging'
+        messaging: './js/messaging',
+        pos: './js/pos',
     },
     output: {
         path: path.resolve('./bundles/'),

@@ -1,42 +1,17 @@
-{% extends "base.html" %} {% block window %}
+{% extends "window.html" %} 
+{% load static %}
+{% block heading %}
+Dashboard
+
+{% endblock heading %}
+{% block content %}
 <div class="container">
 
-    <div class="jumbotron jumbo-gradient" style="position:static;">
-        <h1 class="display-3">
-            <i class="fas fa-circle-notch" id="flow" style="font-size:168px;"></i>
-        Begin your WorkFlow</h1>
-        <p class="lead">Welcome <strong>{{request.user}}</strong>! Get started with common business activities</p>
-        <hr class="my-2">
-        <p>Quick links to the most frequent actions and get a visual overview of a typical workflow.</p>
-
-    </div>
+    
     <style>
-    @keyframes load{
-        from{ 
-            color: #fff;
-            };
-        to{ 
-            color: #007bff;
-        };
-    }
-
-    #flow{
-        color: #007bff;
-        animation: load;
-        animation-duration:2s;
-        transition-duration: 1s;
-        transition-property:transform;
-    }
-    #flow:hover{
-        transform: rotate(360deg);
-    }
-
     .workflow-img{
         color: #007bff;
         padding: 5px;
-    }
-    .workflow-label{
-
     }
 
     .workflow-widget{
@@ -234,4 +209,7 @@
     </div>
 
 </div>
+
+
+
 {% endblock %}

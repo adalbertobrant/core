@@ -381,7 +381,7 @@ class LicenseTaskTests(TestCase):
                 'http://nakamura9.pythonanywhere.com/validate',
                 body=json.dumps({'status': 'valid'}))
             
-            license = json.load(open('../license.json', 'r'))
+            license = json.load(open('license.json', 'r'))
             license_verification_func(license, 
                 'http://nakamura9.pythonanywhere.com/validate')
 

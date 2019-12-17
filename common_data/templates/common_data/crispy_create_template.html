@@ -5,32 +5,13 @@
 {% block head %}
 <link rel="stylesheet" href="{% static 'common_data/css/forms.css' %}">
 {% endblock %}
+
+{% block heading %}
+{{title}}
+
+{% endblock heading %}
 {% block content %}
 
-<div class="jumbotron">
-    <div class="container">
-        <h1 class="display-3">{{title}}</h1>
-        <p class="lead">{{description}}</p>
-        {% if related_links %}
-        <p>Actions</p>
-            <script>
-            function linkClickHandler(link){
-      
-        $('#popup-frame').attr('src', link);
-        var modal = document.getElementById('id-my-modal');
-        modal.style.display = 'block';
-    }
-            </script>
-            <div class="btn btn-group">
-                    {% for item in related_links %}
-                        <a class="btn btn-primary text-white"  onclick="linkClickHandler('{{item.url}}')" target="popup">{{item.name}}</a>
-                    {% endfor %}
-            </div>
-        <p class="lead">
-        
-        {% endif %}
-    </div>
-</div>
 
 <input type="hidden" id="box-array" value="{{box_array}}">
 
@@ -42,18 +23,41 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-9">
             <div class="shadow card ">
                 <div class="card-body">
                        {% crispy form %}
                 </div>
             </div>
         </div>
+        <div class="col-sm-3">
+            <div class="card">
+                <div class="card-header primary text-white">
+                    <h4 class="card-title">Actions</h4>
+                </div>
+                <div class="card-body">
+                    {% if related_links %}
+                    
+                    {% for item in related_links %}
+                        <a class='action-link' onclick="linkClickHandler('{{item.url}}')" target="popup">{{item.name}}</a>
+                    {% endfor %}
+                    {% else %}
+                    No actions for this form.
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
     
-</div><script>
-            
-    </script>
+</div>
+<script>
+        function linkClickHandler(link){
+    
+    $('#popup-frame').attr('src', link);
+    var modal = document.getElementById('id-my-modal');
+    modal.style.display = 'block';
+}
+        </script>
 
 {% render_bundle "widgets" %}
 {% endblock %}
