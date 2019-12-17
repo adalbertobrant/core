@@ -1,12 +1,12 @@
 {% extends "window.html" %}
+{% block heading %}
+Create Inventory Check
+
+{% endblock heading %}
 {% block content %}
 {% load render_bundle from webpack_loader %}
 {% load crispy_forms_tags %}
-<div class="jumbotron">
-    <h1 class="display-3">Inventory Check Form</h1>
-    <p class="lead">Provide data for the inventory check.</p>
-    <hr class="my-2">
-</div>
+
 
 <div class="container">
     <div class="row">

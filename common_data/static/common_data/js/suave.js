@@ -19,6 +19,28 @@ function inIframe() {
     }
 }
 
+function updateNotifications() {
+    $.ajax({
+        'method': 'GET',
+        'url': '/messaging/api/notifications'
+    }).then(function (data) {
+        if (data.unread > 0) {
+            $('#notification-title').text(data.latest.title);
+            $('#notification-timestamp').text(data.latest.stamp);
+            $('#notification-message').text(data.latest.message);
+            $('#notification-dismiss').attr({
+                'onclick': "$.get('/messaging/api/notifications/mark-read/" + data.latest.id + "')"
+            });
+            $('#notification-action').attr({
+                'href': data.latest.action,
+                'onclick': "$.get('/messaging/api/notifications/mark-read/" + data.latest.id + "')"
+            });
+            $('.notification-overlay').show(500);
+
+        }
+    })
+}
+
 setInterval(function () {
     if (scrolling) {
         scrolling = false;
@@ -55,4 +77,23 @@ $(document).ready(function () {
             }
         })
     }
+
+    //button handlers
+
+    document.getElementById('notifications-button').addEventListener('click',
+        function () {
+            $('.notifications').show()
+            $('.notification-window').addClass('visible-notification-window')
+
+        })
+    document.getElementById('close-notifications').addEventListener('click',
+        function () {
+            $('.notifications').hide()
+
+        })
+
+
+    //notification polling
+    updateNotifications();
+    setInterval(updateNotifications, 60000)
 })

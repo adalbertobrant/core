@@ -4,17 +4,23 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="dash-container">
-                <div class="dashbox">
+                <div class="dashbox" style='border-top: 15px solid limegreen;'>
                     <h4>Assets:</h4>
                     <h3>{{assets|active_currency}}</h3>
+                    <i class="fas fa-key dash-icon fa-7x" ></i>
+
                 </div>
-                <div class="bg-danger text-white dashbox">
+                <div class="dashbox" style='border-top: 15px solid crimson;'>
                     <h4>Liabilities: </h4>
                     <h3>{{liabilities|active_currency}}</h3>
+                    <i class="fas fa-file-invoice-dollar dash-icon fa-7x" ></i>
+
                 </div>
-                <div class="bg-warning text-white dashbox">
+                <div class="dashbox" style='border-top: 15px solid cadetblue;'>
                     <h4>Equity:</h4>
                     <h3>{{equity|active_currency}}</h3>
+                    <i class="fas fa-hand-holding-usd dash-icon fa-7x" ></i>
+
                 </div>
             </div>
         </div>

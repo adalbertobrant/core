@@ -310,11 +310,13 @@ class ShippingExpenseListView(DetailView):
         "shipping_list.html")
 
 
-class ImportInvoiceFromExcelView(FormView):
+class ImportInvoiceFromExcelView(ContextMixin, FormView):
     form_class = forms.ImportInvoiceForm
     template_name = os.path.join('common_data', 'crispy_create_template.html')
     success_url = reverse_lazy('invoicing:invoices-list')
-    
+    extra_context ={
+        'title': 'Import Invoices from Excel'
+    }
     def form_valid(self, form):
         resp = super().form_valid(form)
         def null_buster(arg):

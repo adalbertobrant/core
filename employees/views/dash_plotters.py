@@ -7,7 +7,8 @@ from services.models import ServicePerson
 from invoicing.models import SalesRepresentative
 from accounting.models import Bookkeeper
 from inventory.models import InventoryController
-
+from pygal.style import BlueStyle
+from common_data.utilities.plotting import CustomStyle
 
 def employee_roles_chart():
     # take all 5 role categories and count the number of employees with each role
@@ -18,10 +19,7 @@ def employee_roles_chart():
             'Sales Representatives':SalesRepresentative, 
             'Inventory Controllers':InventoryController}
 
-    chart = pygal.Pie(print_values=True, style=DefaultStyle(
-        value_font_size=30, 
-        value_colors=('white', )
-        ) 
+    chart = pygal.Pie(print_values=True, style=CustomStyle
     )
     for role in roles.keys():
         chart.add(role, roles[role].objects.all().count())

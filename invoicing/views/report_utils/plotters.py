@@ -5,9 +5,15 @@ from dateutil import relativedelta
 from django.db.models import Q
 
 import pygal
-from pygal.style import DefaultStyle
+from pygal.style import DefaultStyle, Style,BlueStyle
+from common_data.utilities.plotting import CustomStyle
 
+custom_style = Style(
+    guide_stroke_dasharray='0',
+    major_guide_stroke_dasharray='0',
+    colors=('#23374d','steelblue','cadetblue','#23374d','#23374d','#23374d','#23374d','#23374d',)
 
+)
 def plot_sales(start, end, filters=Q()):
     y = None
     delta = None
@@ -32,8 +38,8 @@ def plot_sales(start, end, filters=Q()):
     y = [get_sales_totals(q) for q in y_query]
 
 
-    chart = pygal.Bar(x_title="Periods", x_label_rotation=15)
-    chart.title = 'Sales Report'
+    chart = pygal.Bar(x_title="Periods", x_label_rotation=15,
+        style=CustomStyle)
     chart.x_labels = pygal_date_formatter(start, end)
     chart.add('Sales($)', y)
     
@@ -52,12 +58,8 @@ def plot_sales_by_customer(start, end):
         sbc.setdefault(str(i.customer), 0) 
         sbc[str(i.customer)] += i.subtotal
 
-    chart = pygal.Pie(print_values=True, style=DefaultStyle(
-        value_font_size=30, 
-        value_colors=('white', )
-        ) 
+    chart = pygal.Pie(print_values=True, style=CustomStyle
     )
-    chart.title = 'Sales By Customer'
     for key in sbc.keys():
         chart.add(key, sbc[key])
 
@@ -77,12 +79,8 @@ def plot_sales_by_products_and_services(start, end):
         sbps.setdefault(l.name, 0) 
         sbps[l.name] += l.subtotal
 
-    chart = pygal.Pie(print_values=True, style=DefaultStyle(
-        value_font_size=30, 
-        value_colors=('white', )
-        ) 
+    chart = pygal.Pie(print_values=True, style=CustomStyle
     )
-    chart.title = 'Sales By Products and Services'
     ordered = sorted([(key, sbps[key]) for key in sbps.keys()], 
         key=lambda x: x[1], reverse=True)
     for item in ordered[:10]:
@@ -173,24 +171,14 @@ def pygal_date_formatter(start, end):
     return [d.strftime(formatter) for d in dates]
 
 def plot_ar_by_customer():
-    chart = pygal.Pie(print_values=True, style=DefaultStyle(
-        value_font_size=30, 
-        value_colors=('white', )
-        ) 
-    )
-    chart.title = 'A/R By Customer'
+    chart = pygal.Pie(print_values=True, style=CustomStyle)
     for cus in Customer.objects.filter(account__balance__gt=0):
         chart.add(str(cus), cus.total_accounts_receivable)
 
     return chart.render(is_unicode=True)
 
 def plot_ar_by_aging():
-    chart = pygal.Pie(print_values=True, style=DefaultStyle(
-        value_font_size=30, 
-        value_colors=('white', )
-        ) 
-    )
-    chart.title = 'A/R By Aging'
+    chart = pygal.Pie(print_values=True, style=CustomStyle)
 
     invs = Invoice.objects.filter(status__in=['invoice', 'paid-partially'])
 

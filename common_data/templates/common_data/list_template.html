@@ -7,31 +7,16 @@
 {% block heading %}
 {{title}}
 {% endblock heading %}
+{% block actions %}
+{% if new_link %}
+<a class="dropdown-item" href="{{new_link}}">Create New <i class="fas fa-pen"></i></a>
+{% endif %}
+{% for action in action_list %}
+    <a class="dropdown-item" href="{{action.link}}">{{action.label}} <i class="fas fa-{{action.icon}}"></i></a>
+{% endfor %}
+
+{% endblock actions %}
 {% block content %}
-
-<div class="jumbotron">
-    <div class="container">
-        <p class="lead">{{description}}</p>
-            {% if new_link %}
-            <div class="dropdown shrink-invisible">
-                <button class="btn btn-primary dropdown-toggle" type="button" id="page-actions" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">
-                            Actions
-                        </button>
-                <div class="dropdown-menu" aria-labelledby="page-actions">
-                    <a class="dropdown-item" href="{{new_link}}">Create New <i class="fas fa-pen"></i></a>
-                    {% for action in action_list %}
-                        <a class="dropdown-item" href="{{action.link}}">{{action.label}} <i class="fas fa-{{action.icon}}"></i></a>
-                    {% endfor %}
-                </div>
-            </div>
-
-            
-            {% endif %}    
-        <p class="lead">
-        </p>
-    </div>
-</div>
 
 
 <div class="container">
@@ -46,8 +31,8 @@
             
             {% endif %}
 
-            <div class="card bg-primary text-white">
-                <div class="card-header">
+            <div class="card shadow ">
+                <div class="card-heading">
                     <h3 class="cart-title"><i class="fas fa-filter"></i> Filters</h3>
                 </div>
                 <div class="card-body">

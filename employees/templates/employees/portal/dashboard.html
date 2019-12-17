@@ -9,17 +9,6 @@
     <p>Use this page to manage your interactions with the company</p>
     <a  onclick="linkClickHandler('/employees/time-logger/{{object.pk}}')" target="popup" class="text-white btn btn-primary">Login/Logout Timesheet</a>
 </div>
-<script>
-    function linkClickHandler(link){
-        /*window.open(link ,'popup','width=900,height=480');
-        $('#refresher-button').css('display', 'block');
-        return false;
-        */
-        $('#popup-frame').attr('src', link);
-        var modal = document.getElementById('id-my-modal');
-        modal.style.display = 'block';
-    }   
-</script>
 
 <div class="container">
     <div class="row">

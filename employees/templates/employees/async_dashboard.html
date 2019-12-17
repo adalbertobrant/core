@@ -7,21 +7,29 @@
     <div class="row">
         <div class="col-12">
             <div class="dash-container">
-                <div class="bg-primary text-white dashbox">
+                <div class="dashbox" style='border-top: 15px solid steelblue;'>
                     <h4># Employees:</h4>
                     <h3>{{employees}}</h3>
+                    <i class="fas fa-users dash-icon fa-7x" ></i>
+
                 </div>
-                <div class="dashbox white-on-blue">
+                <div class="dashbox" style='border-top: 15px solid orange;'>
                     <h4>Pending Payslips:</h4>
                     <h3>{{slips}}</h3>
+                    <i class="fas fa-file-invoice dash-icon fa-7x" ></i>
+
                 </div>
-                <div class="bg-primary text-white dashbox">
+                <div class="dashbox" style='border-top: 15px solid purple;'>
                     <h4>Total Pending Leave days:</h4>
                     <h3>{{leaves}}</h3>
+                    <i class="fas fa-calendar dash-icon fa-7x" ></i>
+
                 </div>
-                <div class="bg-primary text-white dashbox">
+                <div class="dashbox" style='border-top: 15px solid crimson;'>
                     <h4>Unpaid Wages:</h4>
                     <h3>{{unpaid_wages | active_currency}}</h3>
+                    <i class="fas fa-receipt dash-icon fa-7x" ></i>
+
                 </div>
             </div>
         </div>
