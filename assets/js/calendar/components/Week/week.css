@@ -8,7 +8,7 @@
     border-collapse: collapse;
     border:1px solid #aaaaaa;
     color: white;
-    background-color: #007bff;
+    background-color: #23374d;
     padding: 0.5rem;   
 }
 .cellStyle {
@@ -31,5 +31,5 @@
     margin: 0px;
     width: 79vw;
     padding:0.5rem;
-    background-color: #007bff;
+    background-color: #23374d;
 }

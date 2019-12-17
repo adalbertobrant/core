@@ -19,7 +19,7 @@ const ActionGrid = () =>{
             <div className={styles.action_row}>
                 <ActionButton 
                     action='suspend'
-                    text='SUSPEND'
+                    text='SUSPEND | Restore'
                     keyboardKey='F1' />
                 <ActionButton 
                     action='discount'
@@ -53,7 +53,7 @@ const ActionGrid = () =>{
                     text='PAYMENT' />
                 <ActionButton 
                     action='quote'
-                    text='QUOTE'
+                    text='QUOTE | SALE'
                     keyboardKey='F10' />
             </div>
         </div>
@@ -62,7 +62,7 @@ const ActionGrid = () =>{
 
 const ActionButton = (props)=>{
     const hoverEffectStyle = {
-        backgroundColor: '#007bff',
+        backgroundColor: '#23374d',
         color: 'white',
         border: '0px'
     }

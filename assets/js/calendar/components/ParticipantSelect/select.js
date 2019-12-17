@@ -72,7 +72,7 @@ class ParticipantSelectWidget extends Component{
 
     render(){
         const containerStyle = {
-            backgroundColor: "#007bff",
+            backgroundColor: "#23374d",
             color: 'white',
             padding: "3px",
             margin: "3px",

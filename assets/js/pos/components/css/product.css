@@ -3,3 +3,20 @@
     padding: 5px;
     border: 1px solid #aaa;
 }
+
+.container thead>tr, .container tfoot>tr{
+    background-color: #23374d;
+    color: #eee;
+}
+
+thead td:last-child, tfoot td:last-child{
+    text-align: right;
+}
+
+.card {
+    padding-bottom: 5px;
+    box-shadow: 0 2px 5px #ccc;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: row;;
+}

@@ -47,7 +47,7 @@
 
 .timelineLine {
     width: 1px;
-    background-color:#007bff;
+    background-color:#23374d;
     height: 100px;
     padding:0px;
     margin: 0px auto;
@@ -92,7 +92,7 @@
     width: 25px;
     height: 25px;
     border-radius: 25px;
-    border: 2px solid #007bff;
+    border: 2px solid #23374d;
     box-shadow: 3px 5px 20px powderblue;
 
     background-color: white;

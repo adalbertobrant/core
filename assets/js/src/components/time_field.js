@@ -142,9 +142,9 @@ class Picker extends Component {
                             {this.hours.map((i) =>(
                                 <li style={{
                                     color: this.state.hour === i ? 
-                                        'white' : '#007bff',
+                                        'white' : '#23374d',
                                     backgroundColor: this.state.hour === i ? 
-                                    '#007bff' : 'white'
+                                    '#23374d' : 'white'
                                 }}
                                     className={styles.time_list_item}
                                     onClick={() => this.selectHour(i)}>{i}</li>
@@ -157,9 +157,9 @@ class Picker extends Component {
                         {this.minutes.map((i) =>(
                             <li style={{
                                 color: this.state.minute === i ? 
-                                    'white' : '#007bff',
+                                    'white' : '#23374d',
                                 backgroundColor: this.state.minute === i ? 
-                                '#007bff' : 'white'
+                                '#23374d' : 'white'
                             }}
                                 className={styles.time_list_item}
                                 onClick={() => this.selectMinute(i)}>{i}</li>

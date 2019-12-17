@@ -3,7 +3,7 @@
     height: 100%;
     min-width: 30px;
     min-height: 30px;
-    font-size: 1rem;
+    font-size: 1.5rem;
     text-align: center;
     vertical-align: middle;
     border: 1px solid #aaa;
@@ -11,7 +11,7 @@
 
 
 .button:hover {
-    background-color: #007bff;
+    background-color: #23374d;
     color: white;
     border: 0px;
 }

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
 
-class CustomersPage extends Component{
+class Void extends Component{
     render(){
         return(
             <h1>Checkout Page</h1>
@@ -9,4 +9,4 @@ class CustomersPage extends Component{
     }
 }
 
-export default CustomersPage;
+export default Void;

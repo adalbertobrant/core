@@ -125,7 +125,7 @@ const ListTextBox = (props) => {
 
 
     const buttonStyle ={
-        color: "#007bff",
+        color: "#23374d",
         border: "0px",
         backgroundColor: "rgba(0,0,0,0)"
     }

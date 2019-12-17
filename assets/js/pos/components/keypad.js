@@ -5,7 +5,7 @@ const Keypad = (props) =>{
     
     return(
         <div className={styles.keypad_container}>
-            <h2>Barcode / Price</h2>
+            <h2>Barcode | Price | Quantity</h2>
             <input 
                 type="text" 
                 value={props.text}

@@ -5,7 +5,7 @@
     vertical-align: middle;
     background-color: #ccc;
     border-radius: 3px;
-    border: 1px solid #999
+    border: 1px solid #999;
 }
 
 .btn-group .button {
@@ -17,8 +17,12 @@
     color: #777;
 }
 
+.button p:first-child {
+    font-weight: 500;
+}
+
 .button:hover {
-    background-color: #007bff;
+    background-color: #23374d;
     color: white;
     border: 0px;
 }

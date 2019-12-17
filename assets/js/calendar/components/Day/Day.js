@@ -32,7 +32,7 @@ const day = (props) => {
             minWidth: "740px",
             minHeight: "500px",
             padding:"10px",
-            border: '2px solid  #007bff',
+            border: '2px solid  #23374d',
             borderRadius: '5px',
             overflowY: 'auto',
         }

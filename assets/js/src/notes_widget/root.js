@@ -67,7 +67,7 @@ class NotesWidget extends Component{
             margin: "5px",
             padding: "10px",
             borderRadius: "5px",
-            backgroundColor: "#007bff",
+            backgroundColor: "#23374d",
             color: 'white'
         };
         const notesListStyle = {

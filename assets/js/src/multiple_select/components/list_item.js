@@ -11,7 +11,7 @@ const selectedItem = (props) =>{
         width: "100%",
         height: "30px",
         padding: "0px 5px",
-        border: "1px solid #007bff",
+        border: "1px solid #23374d",
         backgroundColor: "white"
     };
 

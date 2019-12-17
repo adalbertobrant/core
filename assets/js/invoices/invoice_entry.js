@@ -76,7 +76,7 @@ class EntryWidget extends Component{
         return(
             <div style={{
                 color: 'white',
-                backgroundColor: '#007bff',
+                backgroundColor: '#23374d',
                 padding: '5px'
             }}>
                 <ul style={{listStylePosition: 'inside', paddingLeft: '0px'}}>

@@ -39,11 +39,11 @@ const ProductList = (props) =>{
             </table>
             <div style={{width: '100%'}}>
                         <ActionButton 
-                            action={() =>console.log('add product')}
+                            action='addProduct'
                             text='Add Product'
                             keyboardKey='Shift'/>
                         <ActionButton 
-                            action={() =>console.log('removed product')}
+                            action='removeProduct'
                             text='Remove Product'
                             keyboardKey='Control'/>
             </div>

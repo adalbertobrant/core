@@ -9,7 +9,7 @@ const chatInput = (props) =>{
                     className="form-control"
                     rows={2} 
                     style={{
-                        border: "1px solid #007bff",
+                        border: "1px solid #23374d",
                         width: "80%",
                         resize: 'none'
                     }} 

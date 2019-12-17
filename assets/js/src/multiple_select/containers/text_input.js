@@ -74,7 +74,7 @@ class SearchableTextInputWidget extends Component{
             padding: "3px",
             backgroundColor: "white",
             borderRadius: "3px",
-            border: "1px solid #007bff"
+            border: "1px solid #23374d"
         };
         const inputStyle = {
             width:"85%", 

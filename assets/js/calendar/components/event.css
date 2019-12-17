@@ -5,7 +5,7 @@
 
 }
 .eventBox {
-    background-color: #007bff;
+    background-color: #23374d;
     color: white;
     padding:5px;
     box-sizing: border-box;
@@ -14,7 +14,7 @@
 }
 
 .eventBox:hover{
-    color: #007bff;
+    color: #23374d;
     background-color: white;
-    border: 1px solid #007bff;
+    border: 1px solid #23374d;
 }

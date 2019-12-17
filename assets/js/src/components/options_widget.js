@@ -24,7 +24,7 @@ class OptionsWidget extends Component{
                     padding: "0px 10px",
                     ":hover": {
                         'color':'white',
-                        'backgroundColor':'#007bff'
+                        'backgroundColor':'#23374d'
                     }
                 }} key={i} onClick={() => this.props.onSelectValue(i)}>
                         {item.split('-')[1]}
@@ -36,7 +36,7 @@ class OptionsWidget extends Component{
 
         const linkStyle = {
             padding: "5px 2px",
-            color: "#007bff",
+            color: "#23374d",
             borderBottom: '1px solid #aaa'
         }
         return(

@@ -55,12 +55,12 @@ class  MiniCalendar extends Component{
                                         style={{
                                             textDecoration: "none",
                                         color: (i==0 && day.day > 7) || (i == 4 && day.day < 7)
-                                        ? '#007bff' 
+                                        ? '#23374d' 
                                         : 'white' ,
                                         width:" 100%",
                                         display: 'inline-block',
                                         ":hover": {
-                                            color: '#007bff',
+                                            color: '#23374d',
                                             backgroundColor: 'white'
                                         }
                                     }}>{day.day}</a></td>
