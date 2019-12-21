@@ -3,37 +3,51 @@ import styles from './css/product.css';
 import {ActionButton} from './actions';
 
 const ProductList = (props) =>{
+    const subtotal = props.products.reduce((total, product) =>{
+        return(total + (product.quantity * product.price))
+    }, 0)
+    const total = props.products.reduce((total, product) =>{
+        if(product.tax != null){
+            return(total + (product.quantity * (product.price * (product.tax.rate / 100.0)))) 
+        }else{
+            return total + (product.quantity * product.price )
+        }
+    }, 0)
+
+
     return(
         <div className={styles.container}>
             <table className="table table-sm">
                 <thead>
                     <tr>
-                        <th>Product</th>
+                        <th style={{width: '60%'}}>Product</th>
                         <th>Qty</th>
                         <th>Subtotal</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr className={styles.emptyRow}>
-                        <td></td>
+                    <tr >
+                        <td className={styles.emptyRow}></td>
                         <td></td>
                         <td></td>
                     </tr>
-                    {props.products.map(product => (
-                        <ProductListing {...product}/>))}
+                    {props.products.map((product, i) => (
+                        <ProductListing {...product}
+                            active={props.active == i}
+                            handler={() => props.setActive(i)}/>))}
                 </tbody>
                 <tfoot>
                     <tr>
                         <td colSpan={2}>NET</td>
-                        <td>40.00</td>
+                        <td>{subtotal.toFixed(2)}</td>
                     </tr>
                     <tr>
                         <td colSpan={2}>TAX</td>
-                        <td>5.00</td>
+                        <td>{(total - subtotal).toFixed(2)}</td>
                     </tr>
                     <tr>
                         <td colSpan={2}><h3>TOTAL</h3></td>
-                        <td><h3>45.00</h3></td>
+                        <td><h3>{total.toFixed(2)}</h3></td>
                     </tr>
                 </tfoot>
             </table>
@@ -53,10 +67,13 @@ const ProductList = (props) =>{
 
 const ProductListing = (props) =>{
     return(
-        <tr>
-            <td>{props.product}</td>
+        <tr className={styles.listing + ' ' + (props.active
+            ? styles.activeListing
+            : null )}
+            onClick={props.handler}>
+            <td>{props.name}</td>
             <td>{props.quantity}</td>
-            <td>{props.subtotal}</td>
+            <td>{props.price * props.quantity}</td>
         </tr>
     )
 }

@@ -7,7 +7,8 @@
     <link rel="stylesheet" type="text/css" media="screen" href="{% static 'common_data/css/document-styles.css' %}" />
     <link rel="stylesheet" type="text/css" 
         href="{% static 'common_data/css/animate.css' %}" />
-    
+    <link rel="stylesheet" type="text/css" 
+        href="{% static 'common_data/css/suave.css' %}" />
      <link rel="stylesheet" type="text/css" 
         href="{% static 'common_data/assets/css/all.min.css' %}" />
     <script type="text/javascript" src="{% static 'common_data/js/jquery-3.3.1.min.js' %}"></script>
@@ -25,7 +26,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'common_data/css/document-styles.css' %}" >
 </head>
 <body>
-    <style>
+<style>
         .custom-page {
             width: 100%;
             height: 100%;
@@ -36,7 +37,7 @@
 
         .custom-page::-webkit-scrollbar {
             width: 5px;
-            background-color: #F5F5F5;
+            background-color: rgba(33,33,33,0.3);
         }
 
         .custom-page::-webkit-scrollbar-thumb {
@@ -70,18 +71,39 @@
         }
     </style>
     
-        {% if pdf_link %}
-        {% include "nav.html" %}
-        {% block pre_page %}{% endblock %}
-        {% endif %}
+    {% if pdf_link %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">{% block pre_page %}{% endblock %}</div>
+            </div>
+            <div class="row no-gutters">
+                <div class="col-lg-3 col-sm-12" id='nav'>
+                    {% include "nav.html" %}
+                </div>
+                <div class="col-lg-9 col-sm-12">
+    {% endif %}
         <div class="page-container"> 
             <div class="custom-page">
                 {% block page_contents %}{% endblock %}
             </div>
         </div>
-        {% if pdf_link %}
-        {% include "footer.html" %}
-        {% endif %}
+
+    {% if pdf_link %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12" id='footer'>
+                    {% include "footer.html" %}
+                </div>
+            </div>
+        </div>
+    
+        
+
+    
+    {% endif %}
+    
+
         
 <script>
     $(document).ready(function(){

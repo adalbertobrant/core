@@ -2,10 +2,22 @@ import React, {useState, useEffect} from 'react';
 import styles from './css/keypad.css';
 
 const Keypad = (props) =>{
-    
+    console.log(props.mode=='quantity')
     return(
         <div className={styles.keypad_container}>
-            <h2>Barcode | Price | Quantity</h2>
+            <h2><KeypadState 
+                    active={props.mode =='barcode'}
+                    setKeypadMode={props.changeMode}
+                    mode='barcode'/>
+                <KeypadState 
+                    active={props.mode =='price'}
+                    setKeypadMode={props.changeMode}
+                    mode='price'/>
+                <KeypadState 
+                    active={props.mode =='quantity'}
+                    setKeypadMode={props.changeMode}
+                    mode='quantity'/>
+            </h2>
             <input 
                 type="text" 
                 value={props.text}
@@ -67,6 +79,14 @@ const Keypad = (props) =>{
                     inputValue={props.text}
                     value=".00"/>
             </div>
+            <div>
+                <button 
+                  className={styles.enterButton}
+                  onClick={props.handleEnter}
+                  type="button"> 
+                    <i className="fas fa-angle-up"></i> Enter
+                </button>
+            </div>
         </div>
 
     )
@@ -75,12 +95,20 @@ const Keypad = (props) =>{
 const KeyPadButton = (props) =>{
     return (
         <button 
-            class={styles.button}
+            className={styles.button}
             onClick={() =>{
                 props.handler(props.inputValue + props.value)
             }} 
             type="button">{props.value}</button>
     )
+}
+
+const KeypadState = (props) =>{
+    return(<span style={{textTransform: 'capitalize'}} 
+                className={ props.active ? styles.activeMode : null}
+                onClick={() => props.setKeypadMode(props.mode)}>
+            {props.mode}
+        </span>)
 }
 
 export default Keypad;

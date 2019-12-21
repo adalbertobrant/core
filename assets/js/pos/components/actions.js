@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import styles from './css/action.css'
-import Coontext from '../container/provider';
 import Context from '../container/provider';
 
 const ActionGrid = () =>{
@@ -10,11 +9,11 @@ const ActionGrid = () =>{
                 <ActionButton 
                     action='search'
                     text='SEARCH'
-                    keyboardKey='F1' />
+                    keyboardKey='F2' />
                 <ActionButton 
                     action='void'
                     text='VOID'
-                    keyboardKey='F1' />
+                    keyboardKey='F4' />
             </div>
             <div className={styles.action_row}>
                 <ActionButton 
@@ -24,37 +23,38 @@ const ActionGrid = () =>{
                 <ActionButton 
                     action='discount'
                     text='DISCOUNT'
-                    keyboardKey='F1' />
+                    keyboardKey='F6' />
             </div>
             <div className={styles.action_row}>
                 <ActionButton 
                     action='customers'
                     text='CUSTOMERS'
-                    keyboardKey='F1' />
+                    keyboardKey='F7' />
                 <ActionButton 
                     action={() => {alert('Action!')}}
                     text='REFUND'
-                    keyboardKey='F1' />
+                    keyboardKey='F9' />
             </div>
             <div className={styles.action_row}>
                 <ActionButton 
                     action='products'
                     text='PRICE CHECK'
-                    keyboardKey='F1' />
+                    keyboardKey='F10' />
                 <ActionButton 
                     action='endSession'
                     text='LOGOUT'
-                    keyboardKey='F1' />
+                    keyboardKey='Insert' />
                 
             </div>
             <div className={styles.action_row}>
                 <ActionButton 
                     action='checkout'
-                    text='PAYMENT' />
+                    text='PAYMENT'
+                    keyboardKey='PageUp' />
                 <ActionButton 
                     action='quote'
                     text='QUOTE | SALE'
-                    keyboardKey='F10' />
+                    keyboardKey='PageDown' />
             </div>
         </div>
     )
@@ -67,14 +67,15 @@ const ActionButton = (props)=>{
         border: '0px'
     }
     return(
-        <Context.Consumer>{context =>(
-            <button 
+        <Context.Consumer>{context =>{
+            context.updateMapping(props.keyboardKey, props.action)
+            return(<button 
                 onClick={() => context.actionHandler(props.action)}
                 className={styles.button}>
             <p>{props.text}</p>
                 <p>{props.keyboardKey}</p>
             </button>
-        )}</Context.Consumer>
+        )}}</Context.Consumer>
     )
 }
 

@@ -48,7 +48,7 @@ class OptionsWidget extends Component{
                 zIndex: 1,
                 boxShadow: "0px 5px 20px grey",
                 backgroundColor: "#fff",
-                maxWidth: "300px",
+                maxWidth: "500px",
                 minWidth: "150px"
             }}>
 

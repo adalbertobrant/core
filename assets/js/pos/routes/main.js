@@ -14,6 +14,8 @@ import CustomersPage from './customers'
 import DiscountPage from './discount'
 import LogoutPage from './logout'
 import Context from '../container/provider'
+import Head from '../components/head'
+import axios from 'axios'
 
 
 const history = createBrowserHistory()
@@ -27,21 +29,31 @@ class MainPage extends Component{
         isQuote: false,
         suspendedSale: null,
         currentCustomer: null,
+        salesPerson: null,
         modalOpen: false,
+        sessionStart: new Date(),
         keyMapping: {
+            'Enter': 'enterKeypadValue'
+        },
+    }
 
+    //used with action buttons
+    setKeyMapper = (key, action) =>{
+        if("undefined" === typeof(this.state.keyMapping[key])){
+            let newMapping = {...this.state.keyMapping}
+            newMapping[key] = action
+
+            this.setState({keyMapping:newMapping})    
         }
     }
-
-    setKeyMapper = (key, action) =>{
-        let newMapping = {...this.state.keyMapping}
-        newMapping[key] = action
-        this.setState({keyMapping})
-    }
-
+    //#############################################################
+    // Handles Routing
+    //##############################################################
     openCheckout =() =>{
-        this.setState({modalOpen: true});
-        history.push("/payment")
+        if(this.state.isQuote){
+            this.setState({modalOpen: true});
+            history.push("/payment")
+        }
     }
 
     openSearch =() =>{
@@ -57,16 +69,17 @@ class MainPage extends Component{
 
     quote =() =>{
         //change to quotation mode 
-        if(this.state.products.length > 0){
-            alert('Modes can only be switched before any products have been entered. Please complete the current transaction or suspend the transaction')
+        if(this.state.products.length > 0 && !this.state.isQuote){
+            alert('Sales cannot be changed to quotes, either do a price check or suspend the current sale or void it in order to change modes')
+            return
         }
         if(this.state.isQuote){
-            alert('Changed to Quote Mode')    
-        }else{
             alert('Changed to Sale Mode')
+        }else{
+            alert('Changed to Quote Mode')
         }
         
-        this.setState((prevState) => {isQuote:!prevState.isQuote})
+        this.setState((prevState) => ({isQuote:!prevState.isQuote}))
     }
 
 
@@ -77,6 +90,7 @@ class MainPage extends Component{
             'Are you sure you want to remove the currently selected product?')){
                 let newProducts = [...this.state.products]
                 newProducts.splice(this.state.active, 1)
+                this.setState({products: newProducts})
         }
 
     }
@@ -110,24 +124,38 @@ class MainPage extends Component{
     }
 
     suspendSale = () =>{
-        if(!this.state.suspendedSale){
-            this.setState({
-                suspendSale: {
-                    products: [...this.state.products],
-                    customer: this.state.currentCustomer
-                }
-            })
+        if(!this.state.suspendedSale ){
+            this.setState(prevState =>({
+                suspendedSale: {
+                    products: [...prevState.products],
+                    customer: prevState.currentCustomer
+                },
+                customer: null, 
+                products: []
+            }))
             alert('Sale Suspended Successfully')
-        }else{
+            return
+        }else if(this.state.products.length > 0){
             alert('A sale is already suspended in this session, restore it before suspending another sale.')
+            return
+        }else if((this.state.suspendedSale && this.state.products.length == 0)
+                    || this.state.isQuote){
+            this.setState(prevState => ({
+                suspendSale: null,
+                products: prevState.suspendedSale.products,
+                customer: prevState.customer
+            }))
         }
-        
+        alert('Sale restored')
     }
 
     executeAction = (name) =>{
         switch(name){
             case 'search': 
                 this.openSearch()
+                break;
+            case 'quote': 
+                this.quote()
                 break;
             case 'discount': 
                 this.discount()
@@ -153,15 +181,72 @@ class MainPage extends Component{
             case 'suspend': 
                 this.suspendSale()
                 break;
+            // from keypad not action buttons
+            case 'enterKeypadValue': 
+                console.log('keyboard')
+                this.handleEnterButtonPress()
+                break;
             default:
                 return null;
         }
     }
 
+    //#######################################################
+    // Handles Route Events 
+    //#######################################################
+
+    insertProduct =(productString) =>{
+        const productID = productString.split('-')[0]
+        axios.get('/inventory/api/product/' + productID)
+            .then(res =>{
+                let newProducts = [...this.state.products]
+                newProducts.push({
+                    name: res.data.name,
+                    price: res.data.unit_sales_price,
+                    id: res.data.id,
+                    quantity: 1,
+                    tax: typeof(res.data.tax) ==="undefined" ? null : res.data.tax 
+                })
+                this.setState({
+                    modalOpen: false,
+                    products: newProducts,
+                    active: this.state.products.length
+                })
+            })
+    }
+
+    handleEnterButtonPress = () =>{
+        console.log('handled')
+        if(this.state.keypadState == 'quantity' && this.state.active != null){
+            let newProducts = [...this.state.products]
+            newProducts[this.state.active].quantity = parseFloat(
+                this.state.keypadText)
+            this.setState({
+                products: newProducts,
+                keypadText: ""
+            })
+        }else if(this.state.keypadState == 'barcode'){
+            // get barcodes from the server, if none create an alert
+            if(false){
+                this.setState({
+                    keypadState:'quantity',
+                    keypadText: ""
+                })
+            }else{
+                alert('No product matching this code exists')
+            }
+        }else if(this.state.keypadState== 'price' && this.state.active != null){
+            let newProducts = [...this.state.products]
+            newProducts[this.state.active].price = parseFloat(
+                this.state.keypadText)
+            this.setState({
+                products: newProducts,
+                keypadText: ""
+            })
+        }
+    }
     componentDidMount(){
         //Master keyboard event handler
-        
-
 
         const handler = (evt) =>{
             console.log(evt.key)
@@ -173,8 +258,9 @@ class MainPage extends Component{
                 const newText = this.state.keypadText.slice(0, 
                     this.state.keypadText.length-2)
                 this.setState({keypadText: newText})
-            }else if(){
-
+            }else if(!("undefined" === typeof(this.state.keyMapping[evt.key]))){
+                //for action buttons
+                this.executeAction(this.state.keyMapping[evt.key])
             }
                 document.addEventListener('keydown', handler, {once:true})
             }
@@ -201,12 +287,22 @@ class MainPage extends Component{
                 actionHandler: this.executeAction,
                 updateMapping: this.setKeyMapper
             }}>
+                <Head {...this.state}/>
                 <div style={styles}>
-                    <ProductList {...this.state}/>
+                    <ProductList {...this.state}
+                        setActive={(index) =>{
+                            this.setState({active: index})
+                        }}/>
                     <Keypad text={this.state.keypadText}
-                            setText={this.updateKeypad}/>
+                            setText={this.updateKeypad}
+                            mode={this.state.keypadState}
+                            changeMode={(mode) =>{
+                                this.setState({keypadState: mode})}}
+                            handleEnter={this.handleEnterButtonPress}/>
                     <ActionGrid />
-                    <Modal  isOpen={this.state.modalOpen} >
+                    <Modal 
+                        ariaHideApp={false}
+                        isOpen={this.state.modalOpen} >
                         <div style={{
                             display:'flex',
                             justifyContent: 'flex-end'
@@ -219,7 +315,10 @@ class MainPage extends Component{
                     
                     <Router history={history}>
                             <Switch>
-                            <Route path='/add-product' component={ManualAddProduct}/>
+                                <Route path='/add-product'>
+                                    <ManualAddProduct 
+                                        insertProduct={this.insertProduct}/>   
+                                </Route>
                                 <Route path='/products' component={ProductsPage} />
                                 <Route path='/payment' component={CheckoutPage}/>
                                 <Route path='/search' component={SearchPage}/>

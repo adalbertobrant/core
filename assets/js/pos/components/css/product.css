@@ -9,14 +9,55 @@
     color: #eee;
 }
 
-thead td:last-child, tfoot td:last-child{
-    text-align: right;
+.emptyRow {
+    height: min-100%;
 }
 
+thead th:last-child, tfoot td:last-child{
+    text-align: right;
+}
+.container table {
+    min-height: 60vh;
+}
 .card {
-    padding-bottom: 5px;
+    padding: 15px;
+    margin-bottom: 5px;
     box-shadow: 0 2px 5px #ccc;
     border-radius: 2px;
     display: flex;
-    flex-direction: row;;
+    flex-direction: row;
+    height: 70px;
+}
+
+.card:hover, .card_selected {
+    color: white;
+    background-color: #1089ff;
+}
+
+.cardIcon {
+
+}
+
+.cardText {
+    border-left: 1px solid #aaa;
+    padding-left: 15px;
+    margin-left: 15px;
+}
+
+.listing {
+    padding: 5px;
+    border-bottom: 1px solid #aaa;
+    margin-bottom: 1px;
+    font-weight: 500;
+    font-size: 1.4rem;
+}
+
+.listing td:last-child {
+    text-align: right;
+}
+
+
+.activeListing, .listing:hover {
+    color: white;
+    background-color: #1089ff
 }
