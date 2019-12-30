@@ -2,6 +2,13 @@ from rest_framework import serializers
 
 from .models import *
 from accounting.serializers import TaxSerializer
+
+class UnitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UnitOfMeasure
+        fields = ['id', 'name']
+
+
 class ProductComponentSerializer(serializers.ModelSerializer):
     tax = TaxSerializer(many=False)
     class Meta:
@@ -17,6 +24,7 @@ class InventoryItemSerializer(serializers.ModelSerializer):
     product_component = ProductComponentSerializer(many=False)
     equipment_component = EquipmentComponentSerializer(many=False)
     unit_sales_price = serializers.ReadOnlyField()
+    unit = UnitSerializer(many=False)
     class Meta:
         model = InventoryItem
         fields = "__all__"
@@ -63,17 +71,6 @@ class SupplierSerializer(serializers.ModelSerializer):
     class Meta:
         model = Supplier
         fields = ['id', 'name']
-
-class UnitSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UnitOfMeasure
-        fields = ['id', 'name']
-
-
-
-
-
-
 
 
 class OrderItemSerializer(serializers.ModelSerializer):

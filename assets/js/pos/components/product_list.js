@@ -17,7 +17,7 @@ const ProductList = (props) =>{
 
     return(
         <div className={styles.container}>
-            <table className="table table-sm">
+            <table className="table table-sm" height="500">
                 <thead>
                     <tr>
                         <th style={{width: '60%'}}>Product</th>
@@ -26,15 +26,16 @@ const ProductList = (props) =>{
                     </tr>
                 </thead>
                 <tbody>
-                    <tr >
-                        <td className={styles.emptyRow}></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
+                    
                     {props.products.map((product, i) => (
                         <ProductListing {...product}
                             active={props.active == i}
                             handler={() => props.setActive(i)}/>))}
+                    <tr className={styles.emptyRow}>
+                        <td ></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -73,7 +74,7 @@ const ProductListing = (props) =>{
             onClick={props.handler}>
             <td>{props.name}</td>
             <td>{props.quantity}</td>
-            <td>{props.price * props.quantity}</td>
+            <td>{(props.price * props.quantity).toFixed(2)}</td>
         </tr>
     )
 }

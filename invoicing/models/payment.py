@@ -35,6 +35,7 @@ class Payment(SoftDeletionModel):
     comments = models.TextField(default="Thank you for your business")
     entry = models.ForeignKey('accounting.JournalEntry', null=True, blank=True, 
         on_delete=models.SET_NULL)
+    timestamp = models.DateTimeField(null=True, blank=True, auto_now=False) # for pos
     
     
     def __str__(self):

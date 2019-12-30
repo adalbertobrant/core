@@ -499,3 +499,7 @@ def current_db(request):
         return JsonResponse({
             'db': config['current'].strip('sqlite3')
         })
+
+class ConfigAPIView(RetrieveAPIView):
+    queryset = GlobalConfig.objects.all()
+    serializer_class = serializers.ConfigSerializer

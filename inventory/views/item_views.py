@@ -36,6 +36,13 @@ class ProductAPIView(ModelViewSet):
     queryset = models.InventoryItem.objects.filter(type=0)
     serializer_class = serializers.InventoryItemSerializer
 
+# class SearchProductByBarcodeAPIView(RetrieveAPIView):
+#     def get_queryset(self):
+#         return models.InventoryItem.objects.filter(type=0,
+#             pk__startswith=self.kwargs['code'])
+
+    serializer_class= serializers.InventoryItemSerializer
+
 class ItemsExcludingProducts(ListAPIView):
     queryset = models.InventoryItem.objects.exclude(type=0)
     serializer_class = serializers.InventoryItemSerializer

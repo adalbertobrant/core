@@ -19,8 +19,7 @@ def employee_roles_chart():
             'Sales Representatives':SalesRepresentative, 
             'Inventory Controllers':InventoryController}
 
-    chart = pygal.Pie(print_values=True, style=CustomStyle
-    )
+    chart = pygal.Pie(print_values=True, style=CustomStyle,height=300)
     for role in roles.keys():
         chart.add(role, roles[role].objects.all().count())
 

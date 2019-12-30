@@ -7,14 +7,18 @@ product_router = routers.DefaultRouter()
 product_router.register(r'^api/product', views.ProductAPIView)
 
 product_urls = [
-    re_path(r'^product-create/?$', views.ProductCreateView.as_view(), name="product-create"),
-    re_path(r'^product-list/?$', views.ProductListView.as_view(), name="product-list"),
-    re_path(r'^product-update/(?P<pk>[\w]+)/?$', views.ProductUpdateView.as_view(), 
-        name="product-update"),
-    re_path(r'^product-detail/(?P<pk>[\w]+)/?$', views.ProductDetailView.as_view(), 
-        name="product-detail"),
-    re_path(r'^product-delete/(?P<pk>[\w]+)/?$', views.ProductDeleteView.as_view(), 
-        name="product-delete")
+    re_path(r'^product-create/?$', views.ProductCreateView.as_view(), 
+        name="product-create"),
+    re_path(r'^product-list/?$', views.ProductListView.as_view(), 
+        name="product-list"),
+    re_path(r'^product-update/(?P<pk>[\w]+)/?$', 
+        views.ProductUpdateView.as_view(), name="product-update"),
+    re_path(r'^product-detail/(?P<pk>[\w]+)/?$', 
+        views.ProductDetailView.as_view(), name="product-detail"),
+    re_path(r'^product-delete/(?P<pk>[\w]+)/?$', 
+        views.ProductDeleteView.as_view(), name="product-delete"),
+    # path('api/search-product-barcode/<str:code>', 
+    #     views.SearchProductByBarcodeAPIView.as_view())
 ] + product_router.urls
 
 

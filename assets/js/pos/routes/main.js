@@ -1,31 +1,37 @@
 import React, {Component} from 'react';
 import ProductList from '../components/product_list'
-import Keypad from '../components/keypad'
+import {Keypad} from '../components/keypad'
 import ActionGrid from '../components/actions'
 import Modal from 'react-modal';
 import {Router, Route, Switch} from 'react-router-dom';
 import {createBrowserHistory} from 'history'
-import ProductsPage from './products'
+import PriceCheckPage from './products'
 import CheckoutPage from './payment'
-import SearchPage from './search'
 import ManualAddProduct from './add_product'
 import VoidPage from './void'
 import CustomersPage from './customers'
-import DiscountPage from './discount'
 import LogoutPage from './logout'
+import CompletedSalePage from './completed_sale'
 import Context from '../container/provider'
 import Head from '../components/head'
+import StartSession from '../routes/start_session'
 import axios from 'axios'
 
+
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 
 const history = createBrowserHistory()
 
 class MainPage extends Component{
     state = {
         products: [],
+        currentSaleID: null,
+        sessionID: null,
+        checkoutState: {},
         active: null,
         keypadText: "",
-        keypadState: "quantity", //quantity, price, barcode, discount
+        keypadState: "barcode", //quantity, price, barcode
         isQuote: false,
         suspendedSale: null,
         currentCustomer: null,
@@ -34,7 +40,7 @@ class MainPage extends Component{
         sessionStart: new Date(),
         keyMapping: {
             'Enter': 'enterKeypadValue'
-        },
+        }
     }
 
     //used with action buttons
@@ -50,16 +56,12 @@ class MainPage extends Component{
     // Handles Routing
     //##############################################################
     openCheckout =() =>{
-        if(this.state.isQuote){
-            this.setState({modalOpen: true});
-            history.push("/payment")
-        }
+        if(this.state.currentCustomer == null){alert('A sale cannot be completed without a valid customer.'); return}
+        this.setState({modalOpen: true});
+        history.push("/payment")
+        
     }
 
-    openSearch =() =>{
-        this.setState({modalOpen: true});
-        history.push("/search")
-    }
 
     openCustomers =() =>{
         //list of customers, set current
@@ -82,6 +84,10 @@ class MainPage extends Component{
         this.setState((prevState) => ({isQuote:!prevState.isQuote}))
     }
 
+    priceCheck =() =>{
+        this.setState({modalOpen: true})
+        history.push('/price-check')
+    }
 
     removeProduct = () =>{
         //no route
@@ -103,22 +109,19 @@ class MainPage extends Component{
         history.push("/add-product")
     }
 
-    discount = () =>{
-        //prompt a discount precentage
-        this.setState({modalOpen: true});
-        history.push("/discount")
-    }
-
     voidSale = () =>{
         this.setState({modalOpen: true});
         history.push("/void")
-        //prompt
-        //authenticate
-        //void sale
     }
 
     endSession = () =>{
         //log session and then conclude
+        if(this.state.products.length > 0){
+            const choice = confirm('You have some products in the queue, are you sure you want to end the current session?')
+            if(!choice){
+                return
+            }
+        }
         this.setState({modalOpen: true});
         history.push("/pos-logout")
     }
@@ -151,14 +154,11 @@ class MainPage extends Component{
 
     executeAction = (name) =>{
         switch(name){
-            case 'search': 
-                this.openSearch()
-                break;
             case 'quote': 
                 this.quote()
                 break;
-            case 'discount': 
-                this.discount()
+            case 'price-check': 
+                this.priceCheck()
                 break;
             case 'checkout': 
                 this.openCheckout()
@@ -183,7 +183,6 @@ class MainPage extends Component{
                 break;
             // from keypad not action buttons
             case 'enterKeypadValue': 
-                console.log('keyboard')
                 this.handleEnterButtonPress()
                 break;
             default:
@@ -216,7 +215,7 @@ class MainPage extends Component{
     }
 
     handleEnterButtonPress = () =>{
-        console.log('handled')
+        if(this.state.keypadText == ""){alert('Please enter a number.');return}
         if(this.state.keypadState == 'quantity' && this.state.active != null){
             let newProducts = [...this.state.products]
             newProducts[this.state.active].quantity = parseFloat(
@@ -227,14 +226,29 @@ class MainPage extends Component{
             })
         }else if(this.state.keypadState == 'barcode'){
             // get barcodes from the server, if none create an alert
-            if(false){
-                this.setState({
-                    keypadState:'quantity',
-                    keypadText: ""
+            axios.get('/inventory/api/product/' + this.state.keypadText)
+                .then(res =>{
+                    let newProducts = [...this.state.products]
+                    newProducts.push({
+                        name: res.data.name,
+                        price: res.data.unit_sales_price,
+                        id: res.data.id,
+                        quantity: 1,
+                        tax: typeof(res.data.tax) ==="undefined" ? null : res.data.tax 
+                    })
+                    
+                    this.setState(prevState =>({
+                        keypadState:'quantity',
+                        keypadText: "",
+                        products: newProducts,
+                        active: prevState.products.length
+                    }))
                 })
-            }else{
-                alert('No product matching this code exists')
-            }
+                .catch(error => {
+                        alert('No product matching this code exists')
+                        console.log(error)
+                    })
+        
         }else if(this.state.keypadState== 'price' && this.state.active != null){
             let newProducts = [...this.state.products]
             newProducts[this.state.active].price = parseFloat(
@@ -245,6 +259,55 @@ class MainPage extends Component{
             })
         }
     }
+
+    
+    handleSessionStart = (user) =>{
+        const timestamp = new Date()
+        axios.post('/invoicing/pos/start-session/', {
+            sales_person: user,
+            timestamp: timestamp
+        }).then(res =>{
+            this.setState({
+                modalOpen: false,
+                sessionStart: timestamp,
+                salesPerson: user,
+                sessionID: res.data.id
+            })
+        })
+    }
+
+    handleCheckoutAction = (checkoutState) =>{
+        // create invoice 
+        //create list of payments
+        //create sale
+        // go to completed sale page
+        
+        
+        axios.post('/invoicing/pos/process-sale/', {
+            timestamp: new Date(),
+            session: this.state.sessionID,
+            invoice: {
+                //date extracted from timestamp
+                customer: this.state.currentCustomer,
+                sales_person: this.state.salesPerson,
+                lines: this.state.products
+            },
+            payments: checkoutState.payments,
+
+        }).then(res =>{
+            //returns a receipt number 
+            console.log('axios')
+            console.log(res)
+            this.setState({
+                modalOpen: true,
+                checkoutState: checkoutState,
+                currentSaleID: res.data.sale_id
+            }, () =>history.push('/complete'))
+        }).catch(error =>{
+            console.log('error')
+        })
+    }
+
     componentDidMount(){
         //Master keyboard event handler
 
@@ -256,7 +319,7 @@ class MainPage extends Component{
                 
             }else if(evt.key=='Backspace' && !this.state.modalOpen){
                 const newText = this.state.keypadText.slice(0, 
-                    this.state.keypadText.length-2)
+                    this.state.keypadText.length-1)
                 this.setState({keypadText: newText})
             }else if(!("undefined" === typeof(this.state.keyMapping[evt.key]))){
                 //for action buttons
@@ -265,6 +328,8 @@ class MainPage extends Component{
                 document.addEventListener('keydown', handler, {once:true})
             }
             document.addEventListener('keydown', handler, {once:true})
+            history.push('/start-session')
+            this.setState({modalOpen: true})
         }
 
     updateKeypad =(value) =>{
@@ -307,25 +372,79 @@ class MainPage extends Component{
                             display:'flex',
                             justifyContent: 'flex-end'
                             }}>
+                        {this.state.salesPerson !=null 
+                            ? <button className="btn btn-sm"
+                                onClick={()=>{
+                                    this.setState({modalOpen: false})
+                                }}><i className="fas fa-times"></i></button>
+                            : null}
                         
-                        <button className="btn btn-sm"
-                            onClick={()=>{
-                                this.setState({modalOpen: false})
-                            }}><i className="fas fa-times"></i></button></div>
-                    
+                            </div>
                     <Router history={history}>
                             <Switch>
+                                <Route path='/payment'>
+                                    <CheckoutPage 
+                                        currentCustomer={this.state.currentCustomer}
+                                        products={this.state.products}
+                                        checkoutAction={this.handleCheckoutAction}/>
+                                </Route>
+                                <Route path='/complete'>
+                                    <CompletedSalePage 
+                                        products={this.state.products}
+                                        salesPerson={this.state.salesPerson}
+                                        checkout={this.state.checkoutState}
+                                        receiptID={this.state.currentSaleID}
+                                        completeSale={() =>{
+                                            this.setState({
+                                                modalOpen: false,
+                                                currentCustomer: null,
+                                                active: null,
+                                                products: []
+                                            })
+                                        }}/>
+                                </Route>
                                 <Route path='/add-product'>
                                     <ManualAddProduct 
                                         insertProduct={this.insertProduct}/>   
                                 </Route>
-                                <Route path='/products' component={ProductsPage} />
-                                <Route path='/payment' component={CheckoutPage}/>
-                                <Route path='/search' component={SearchPage}/>
-                                <Route path='/discount' component={DiscountPage}/>
-                                <Route path='/customers' component={CustomersPage}/>
-                                <Route path='/pos-logout' component={LogoutPage}/>
-                                <Route path='/void' component={VoidPage}/>
+                                <Route path='/price-check'>
+                                        <PriceCheckPage 
+                                            handler={() =>this.setState({
+                                                modalOpen: false
+                                            })}/>
+                                </Route>
+                                <Route path='/start-session' >
+                                    <StartSession 
+                                        sessionStartSuccessful={this.handleSessionStart}/>
+                                </Route>
+                                <Route path='/customers'>
+                                        <CustomersPage 
+                                            selectHandler={(val) =>{
+                                                this.setState({
+                                                    modalOpen: false,
+                                                    currentCustomer: val
+                                                })
+                                            }}/>
+                                </Route>
+                                <Route path='/pos-logout'>
+                                        <LogoutPage 
+                                            sessionID={this.state.sessionID}
+                                            cancelAction={() =>this.setState({
+                                                modalOpen: false
+                                            })}
+                                            />
+                                </Route>
+                                <Route path='/void'>
+                                    <VoidPage 
+                                        cancelAction={()=>this.setState({
+                                            modalOpen: false
+                                        })}
+                                        voidAction={() =>this.setState({
+                                            products: [], 
+                                            customer: null,
+                                            modalOpen: false
+                                        })}/>
+                                </Route>
                                 
                             </Switch>
                         </Router>

@@ -44,7 +44,10 @@ class AsyncSelect extends Component{
             <select 
                 value={this.state.currValue}
                 id={this.props.ID}
-                onChange={(evt) => this.props.handler(evt.target.value)}
+                onChange={(evt) => {
+                    this.setState({currValue: evt.target.value})
+                    this.props.handler(evt.target.value)
+                }}
                 className={this.props.noCSS ? "" : "form-control"}
                 name={this.props.name}
                 >

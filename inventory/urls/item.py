@@ -13,5 +13,6 @@ inventory_item_urls = [
         name="product-detail"),
     re_path(r'^product-delete/(?P<pk>[\w]+)/?$', views.InventoryItemDeleteView.as_view(), 
         name="product-delete"),
-    path('item-selection', views.ItemSelectionPage.as_view(), name='item-selection')
+    path('item-selection', views.ItemSelectionPage.as_view(), name='item-selection'),
+    
 ] + item_router.urls

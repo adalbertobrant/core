@@ -180,7 +180,7 @@ class GlobalConfig(SingletonModel):
     logo_aspect_ratio = models.PositiveSmallIntegerField(
         default=0, 
         choices=LOGO_CHOICES)
-    
+    pos_supervisor_password = models.CharField(max_length=16, default='1234')
     
     def generate_hardware_id(self):
         result = subprocess.run('wmic csproduct get uuid', 

@@ -150,7 +150,9 @@ class GlobalConfigForm(forms.ModelForm, BootstrapMixin):
                 Tab('Backups',
                     'use_backups',
                     'backup_frequency',
-                )
+                ),
+                Tab('POS',
+                    'pos_supervisor_password')
             )
         )
         self.helper.add_input(Submit('submit', 'Submit'))

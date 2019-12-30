@@ -10,7 +10,7 @@ const ProductCard =(props) =>{
             </div>
             <div className={styles.cardText}>
                 <h6>{props.data.name}</h6>
-                <p>{props.data.unit_sales_price}</p>
+                <p>{props.data.unit_sales_price.toFixed(2)}</p>
             </div>
         </div>
     )

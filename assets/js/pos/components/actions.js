@@ -7,9 +7,9 @@ const ActionGrid = () =>{
         <div className={styles.action_container}>
             <div className={styles.action_row}>
                 <ActionButton 
-                    action='search'
-                    text='SEARCH'
-                    keyboardKey='F2' />
+                    action='price-check'
+                    text='PRICE CHECK'
+                    keyboardKey='F1' />
                 <ActionButton 
                     action='void'
                     text='VOID'
@@ -19,33 +19,24 @@ const ActionGrid = () =>{
                 <ActionButton 
                     action='suspend'
                     text='SUSPEND | Restore'
-                    keyboardKey='F1' />
-                <ActionButton 
-                    action='discount'
-                    text='DISCOUNT'
                     keyboardKey='F6' />
-            </div>
-            <div className={styles.action_row}>
+                
                 <ActionButton 
                     action='customers'
                     text='CUSTOMERS'
                     keyboardKey='F7' />
+            </div>
+            {/*<div className={styles.action_row}>
+                <ActionButton 
+                    action='discount'
+                    text='DISCOUNT'
+                keyboardKey='F6' />
                 <ActionButton 
                     action={() => {alert('Action!')}}
                     text='REFUND'
                     keyboardKey='F9' />
-            </div>
-            <div className={styles.action_row}>
-                <ActionButton 
-                    action='products'
-                    text='PRICE CHECK'
-                    keyboardKey='F10' />
-                <ActionButton 
-                    action='endSession'
-                    text='LOGOUT'
-                    keyboardKey='Insert' />
-                
-            </div>
+            </div>*/}
+            
             <div className={styles.action_row}>
                 <ActionButton 
                     action='checkout'
@@ -55,6 +46,13 @@ const ActionGrid = () =>{
                     action='quote'
                     text='QUOTE | SALE'
                     keyboardKey='PageDown' />
+            </div>
+            <div className={styles.action_row}>
+                <ActionButton 
+                    action='endSession'
+                    text='LOGOUT'
+                    keyboardKey='Insert' />
+                
             </div>
         </div>
     )
