@@ -1,23 +1,19 @@
 {% extends "window.html" %}
+{% block heading %}
+Unit Details
+{% endblock heading %}
+{% block actions %}
+<a class="dropdown-item" href="{% url 'inventory:unit-update' pk=object.pk %}" role="button">Edit</a>
+{% endblock actions %}
 
 {% block content %}
 
-<div class="jumbotron">
-    <h1 class="display-3">Unit Details</h1>
-    <p class="lead">Unit Information</p>
-    <hr class="my-2">
-    <p>Actions</p>
-    <p class="lead">
-        <a class="btn btn-primary btn-lg" href="{% url 'inventory:unit-update' pk=object.pk %}" role="button">Edit</a>
-    </p>
-</div>
 
 <div class="container">
     <div class="row">
         <div class="col-sm-4">
             <div class="card shadow">
                 <div class="card-body">
-                    <h4 class="card-title">Unit Details</h4>
                     <p class="card-text">Name: {{object.name}}</p>
                     <p class="card-text">Base Unit: {{object.base_unit}}</p>
                     <p class="card-text">Description: {{object.description}}</p>

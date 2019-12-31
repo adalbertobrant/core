@@ -1,13 +1,9 @@
 {% extends "window.html" %} 
 {% load render_bundle from webpack_loader %}
+{% block heading %}
+Update Category
+{% endblock heading %}
 {% block content %}
-
-<div class="jumbotron">
-    <div class="container">
-        <h1 class="display-3">Update category</h1>
-
-    </div>
-</div>
 
 <div class="container">
     <div class="row">
@@ -29,8 +25,8 @@
             </div>
         </div>
         <div class="col-sm-3">
-                <h5>Current Parent Category: {{object.parent}}</h5>
-                <button class="btn" onclick="displayParentChangeView()">Change</button>
+                <h5>Current Parent Category: <u>{{object.parent}}</u></h5>
+                <button class="btn primary" onclick="displayParentChangeView()">Change</button>
                 <script>
                     $(document).ready(function(){
                         $('#category-select-widget').hide();

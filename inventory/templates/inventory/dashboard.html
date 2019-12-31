@@ -29,14 +29,14 @@
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'inventory:scrap-inventory' pk=1 %}"> Scrap Inventory</a>
                     </li>
-                    <li class="nav-item"><i class="fas fa-warehouse"></i> Warehouses</li>
+                    {% comment %} <li class="nav-item"><i class="fas fa-warehouse"></i> Warehouses</li>
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'inventory:warehouse-create' %}">Add Warehouse</a>
                     </li>
 
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'inventory:warehouse-list' %}"> Manage Warehouses</a>
-                    </li>
+                    </li> {% endcomment %}
                     <li class="nav-item"><i class="fas fa-shipping-fast"></i> Vendors</li>
                     <li class="list-group-item hvr-grow">
                         <a class="card-link" href="{% url 'inventory:supplier-create' %}">Create

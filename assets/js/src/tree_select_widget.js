@@ -11,14 +11,14 @@ const commonStyle = {
 
 const blurredStyle = {
     ...commonStyle,
-    backgroundColor: "#eee",
+    backgroundColor: "#ddd",
     fontWeight: "2"
      
 }
 
 const focusedStyle = {
     ...commonStyle,
-    backgroundColor: '#08f',
+    backgroundColor: '#23374d',
     color: "white"
 }
 
@@ -139,7 +139,7 @@ class BranchNode extends Component{
                     onClick={this.toggleDropdown}
                     style={{
                         'border': '0px',
-                        'backgroundColor': this.state.highlight ? '#08f' : '#eee',
+                        'backgroundColor': this.state.highlight ? '#23374d' : '#eee',
                         'color': this.state.highlight ? 'white' : 'black',
                         'minWidth': '20px'}}>
                     <i className="fas fa-ellipsis-v"></i>
@@ -240,7 +240,7 @@ class  LeafNode extends Component{
                         onClick={this.toggleDropdown}
                         style={{
                             'border': '0px',
-                            'backgroundColor': this.state.highlight ? '#08f' : '#eee',
+                            'backgroundColor': this.state.highlight ? '#23374d' : '#eee',
                             'color': this.state.highlight ? 'white' : 'black',
                             'minWidth': '20px'}}>
                         <i className="fas fa-ellipsis-v"></i>

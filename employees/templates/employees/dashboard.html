@@ -8,7 +8,7 @@
         <div class="col-md-3 col-sm-12">
             <nav class="nav flex-column primary" style='padding:5px;'>
                 <ul class='navbar-nav dashboard-nav'>
-                    <li class="nav-item"><i class="fas fa-puzzle-piece"></i> Payroll</li>
+                    {% comment %} <li class="nav-item"><i class="fas fa-puzzle-piece"></i> Payroll</li>
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:list-pay-slips' %}"> Pay Slips</a>
                     </li>
@@ -22,14 +22,14 @@
                     <li class="list-group-item hvr-grow"><a href="{% url 'employees:deductions-list' %}">Deductions</a>
                     </li>
                     <li class="list-group-item hvr-grow"><a href="{% url 'employees:allowances-list' %}">Benefits</a><a
-                            href="{% url 'employees:commissions-list' %}">Commission Rules</a></li>
+                            href="{% url 'employees:commissions-list' %}">Commission Rules</a></li> {% endcomment %}
                     <li class="nav-item"><i class="fas fa-users"></i> Employees</li>
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:list-employees' %}">
                             Employees
                         </a>
                     </li>
-                    <li class="list-group-item hvr-grow">
+                    {% comment %} <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:department-list' %}"> Departments</a>
 
                     </li>
@@ -56,7 +56,7 @@
                     </li>
                     <li class="list-group-item hvr-grow">
                         <a href="{{calendar_url}}">Leave Calendar</a>
-                    </li>
+                    </li> {% endcomment %}
                     <li class="nav-item"><i class="fas fa-user-cog"></i> Employee Roles</li>
                     <li class="list-group-item hvr-grow">
                         <a class="card-link" href="{% url 'inventory:inventory-controller-list' %}">
@@ -68,22 +68,22 @@
                     </li>
                     <li class="list-group-item hvr-grow"><a href="{% url 'accounting:bookkeeper-list' %}">
                             Bookkeepers </a></li>
-                    <li class="list-group-item hvr-grow"><a href="{% url 'services:service-person-list' %}">
+                    {% comment %} <li class="list-group-item hvr-grow"><a href="{% url 'services:service-person-list' %}">
                             Service Employees </a></li>
                     <li class="list-group-item hvr-grow"><a href="{% url 'employees:payroll-officer-list' %}">
-                            Payroll Officers </a></li>
+                            Payroll Officers </a></li> {% endcomment %}
                     <li class="nav-item"><i class="fas fa-sliders-h"></i> Configuration</li>
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:config' pk=1 %}">Settings</a>
                     </li>
-                    <li class="list-group-item hvr-grow">
+                    {% comment %} <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:payroll-date-list' %}">Manage Payroll Schedule</a>
                     </li>
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:manual-config' %}">Run
                             Manual Payroll</a>
 
-                    </li>
+                    </li> {% endcomment %}
                 </ul>
             </nav>
         </div>
