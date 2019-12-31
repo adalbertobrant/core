@@ -1,15 +1,12 @@
 {% extends "window.html" %}
+{% block heading %}
+Order Payments
+{% endblock heading %}
+{% block actions %}
+<a class="dropdown-item" href="{% url 'inventory:order-payment' pk=object.pk %}" role="button">Create New</a>
+{% endblock actions %}
 {% block content %}
 
-<div class="jumbotron">
-    <h1 class="display-3">Order Payments</h1>
-    <p class="lead">List of payments for a single order.</p>
-    <hr class="my-2">
-    <p>Actions</p>
-    <p class="lead">
-        <a class="btn btn-primary" href="{% url 'inventory:order-payment' pk=object.pk %}" role="button">Create New</a>
-    </p>
-</div>
 <div class="container">
     <div class="row">
         <div class="col-sm-4">

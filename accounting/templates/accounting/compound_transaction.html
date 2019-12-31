@@ -1,17 +1,10 @@
 {% extends "window.html" %}
 {% load render_bundle from webpack_loader %}
+{% block heading %}
+Create Journal Entry
+{% endblock heading %}
 {% block content %}
 {% load crispy_forms_tags %}
-<div class="container">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="jumbotron">
-                <h1 class="display-3">Journal Entry</h1>
-                <p class="lead">Record a transaction into the accounting system</p>
-                <hr class="my-2">
-            </div>
-        </div>
-    </div>
 
     <div class="row">
         <div class="col-sm-12">

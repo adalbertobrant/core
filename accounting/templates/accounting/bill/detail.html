@@ -1,12 +1,14 @@
 {% extends 'window.html' %}
+{% block heading %}
+Bill Details
+{% endblock heading %}
+{% block actions %}
+<a href="{% url 'accounting:create-bill-payment' pk=object.pk %}" class="dropdown-item">Add Payment</a>
+{% endblock actions %}
+
 {% block content %}
 
 
-<div class="jumbotron">
-    <h1 class="display-3">Bill</h1>
-    <p class="lead">Details that describe the expense categories of the money owed vendors</p>
-    
-</div>
 
 <div class="container">
     <div class="row">
@@ -15,7 +17,7 @@
                 <div class="card-body">
                 <h4 class="card-title">Payments</h4>
                 <br>
-                <a href="{% url 'accounting:create-bill-payment' pk=object.pk %}" class="btn btn-primary btn-sm">Add Payment</a>
+                
                 <table class="table table-sm">
                     <thead>
                         <tr class="bg-primary text-white">

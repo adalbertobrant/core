@@ -34,6 +34,7 @@ import pygal
 #constants
 import openpyxl
 import csv
+from common_data.utilities.plotting import CustomStyle
 
 
 CREATE_TEMPLATE = os.path.join('common_data', 'create_template.html')
@@ -422,7 +423,7 @@ class AssetDetailView( DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        chart = pygal.Line()
+        chart = pygal.Line(style=CustomStyle)
         start = self.object.init_date.year
         period = list(range(start, start + self.object.depreciation_period + 1))
         chart.x_labels = map(str, period)
@@ -484,7 +485,7 @@ class ExpenseDetailView( DetailView):
 class ExpenseDeleteView( DeleteView):
     template_name = os.path.join('common_data', 'delete_template.html')
     model = models.Expense
-    success_url = "/accounting/expense-list"
+    success_url = "/accounting/expense/list"
 
 class RecurringExpenseCreateView(ContextMixin,  
         CreateView):

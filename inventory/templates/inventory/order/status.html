@@ -1,15 +1,9 @@
 {% extends "window.html" %}
-{% block content %}
-
-<div class="jumbotron">
-    <h1 class="display-3">Order Status Page</h1>
-    <div class="dropdown">
-            <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
-                aria-expanded="false">
-                Actions
-            </button>
-            <div class="dropdown-menu" aria-labelledby="triggerId">
-                {% if order.status == "draft" %}
+{% block heading %}
+Order Status 
+{% endblock heading %}
+{% block actions %}
+{% if order.status == "draft" %}
                     <a href="{% url 'inventory:order-create' %}" class="dropdown-item">
                         <i class="fas fa-plus"></i> Create New Purchase Order
                     </a>
@@ -28,10 +22,10 @@
                         <i class="fas fa-file-pdf"></i> Generate PDF
                         <!--Change this ! -->
                     </a>
-                    <a href="{% url 'inventory:order-email' pk=object.pk %}" class="dropdown-item">
+                    {% comment %} <a href="{% url 'inventory:order-email' pk=object.pk %}" class="dropdown-item">
                             <i class="fas fa-at"></i> Send Email
                             <!--Change this ! -->
-                        </a>
+                        </a> {% endcomment %}
                 {% if order.status != 'draft' %}
                 <h6 class="dropdown-header">Returns</h6>
                 
@@ -74,9 +68,9 @@
                     <!--Change this ! -->
                 </a>
                 {% endif %}
-            </div>
-        </div>
-</div>
+{% endblock actions %}
+{% block content %}
+
 <div class="container">
     <div class="row">
         <div class="card-deck">

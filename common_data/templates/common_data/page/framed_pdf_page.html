@@ -1,0 +1,16 @@
+<html>
+{% include 'common_data/page/page_common.html' %}
+<body>
+        {% if pdf_link %}
+        {% block pre_page %}
+        {% endblock pre_page %}
+        {% endif %}
+    
+
+    <div class="page-container"> 
+            <div class="custom-page">
+                {% block page_contents %}{% endblock %}
+            </div>
+        </div>
+</body>
+</html>

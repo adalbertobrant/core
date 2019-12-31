@@ -1,20 +1,16 @@
 {% extends "window.html" %}
 {% load render_bundle from webpack_loader %}
+{% block heading %}
+{{title}}
+{% endblock heading %}
 {% block content %}
 {% load crispy_forms_tags %}
 
-
-<div class="jumbotron">
-    <div class="container">
-        <h1 class="display-3">{{title}}</h1>
-        
-    </div>
-</div>
-
 <div class="container">
     <div class="row">
-        <div class="col-sm-4">
-            <div class="card">
+        <div class="col-sm-5">
+            <div class="card shadow">
+                <div class="card-body">
                 <form method="POST" action="" enctype="multipart/form-data" >
                 {% csrf_token %}
                 <table class="table table-sm">
@@ -23,9 +19,10 @@
                 <input type="hidden" name="items" id="id_items">
                 <button class="btn btn-primary pull-right" type="submit">Submit</button>
                 </form>
+                </div>
         </div>
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-7">
             <div id="order-root"></div>
         </div>
     </div>

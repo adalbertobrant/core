@@ -29,7 +29,7 @@ const StartSessionPage =(props) =>{
             <button className="btn btn-block btn-lg primary"
                 onClick={() =>{
                     if(usr == ''){alert('Please select a user');return;}
-                    axios.get('employees/api/employee/' + usr)
+                    axios.get('/employees/api/employee/' + usr)
                         .then(res =>{
                             if(res.data.pin == pwd){
                                 props.sessionStartSuccessful(

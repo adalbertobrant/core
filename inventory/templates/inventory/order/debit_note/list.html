@@ -1,16 +1,11 @@
 {% extends "window.html" %}
-
+{% block heading %}
+Debit Notes
+{% endblock heading %}
+{% block actions %}
+<a class="dropdown-item" href="{% url 'inventory:debit-note-create' pk=object.pk %}" >Create Debit Note</a>
+{% endblock %}
 {% block content %}
-<div class="jumbotron">
-        <h1 class="display-3">Purchase Order Debit notes</h1>
-        <p class="lead">List of returns for a purchase order.</p>
-        <hr class="my-2">
-        <p>Actions</p>
-        <p class="lead">
-            <a class="btn btn-primary " href="{% url 'inventory:debit-note-create' pk=object.pk %}" >Create Debit Note</a>
-        </p>
-    </div>
-    
     <div class="container">
         <div class="row">
             <div class="col-sm-4">

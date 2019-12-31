@@ -32,10 +32,10 @@ class LicenseMiddlewareTest(TestCase):
         self.config = GlobalConfig.objects.first()
 
     def test_license_check_with_no_license(self):
-        shutil.move('license.json', '.')
+        shutil.move('license.json', '..')
         resp = self.client.get('/base/workflow')
         self.assertRedirects(resp, '/base/license-error-page')
-        shutil.move('license.json', '..')
+        shutil.move('../license.json', '.')
 
     def test_no_debug_license_middleware(self):
         latrom.settings.DEBUG=False

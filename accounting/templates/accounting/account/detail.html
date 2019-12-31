@@ -1,23 +1,25 @@
 {% extends "window.html" %} 
 {% load accounting %}
+{% block heading %}
+{{object.name}} Details
+
+{% endblock heading %}
+{% block actions %}
+<a class="dropdown-item" href="{% url 'accounting:account-update' pk=object.pk %}" role="button">Edit Details</a>
+        <a class="dropdown-item" href="{% url 'accounting:account-report-form' pk=object.pk %}" role="button">Generate Report</a>
+
+{% endblock actions %}
 
 {% block content %}
+
+
 
 <style>
     .bg-primary th, .bg-primary td {
         color:white;
     }
 </style>
-<div class="jumbotron">
-    <h1 class="display-3">{{object.name}} Details</h1>
-    <p class="lead">Record of Entries and other features</p>
-    <hr class="my-2">
-    <p>Actions:</p>
-    <p class="lead">
-        <a class="btn btn-success" href="{% url 'accounting:account-update' pk=object.pk %}" role="button">Edit Details</a>
-        <a class="btn btn-success" href="{% url 'accounting:account-report-form' pk=object.pk %}" role="button">Generate Report</a>
-    </p>
-</div>
+
 
 <div class="container">
     <div class="row">
@@ -85,12 +87,12 @@
         <div class="col-sm-12">
                 <div style="display:inline-block;width:48%;border-right:2px solid black;border-top: 2px solid black;margin-top:20px;">
                     <h4 style="text-align:center;">Credits</h4>
-                    <iframe width="500" height="500" frameborder="0" id="journal-frame" src="/accounting/account/{{object.pk}}/entry-list/credit">
+                    <iframe class='sub-frame'  id="journal-frame"  frameborder="0" src="/accounting/account/{{object.pk}}/entry-list/credit">
                     </iframe>
                 </div>
                 <div style="display:inline-block;width:48%;border-top: 2px solid black;margin-top:20px;">
                     <h4 style="text-align:center;">Debits</h4>
-                    <iframe width="500" height="500" frameborder="0"  id="journal-frame" src="/accounting/account/{{object.pk}}/entry-list/debit">
+                    <iframe class='sub-frame' frameborder="0"  id="journal-frame" src="/accounting/account/{{object.pk}}/entry-list/debit">
                     </iframe>
                 </div>
         </div>

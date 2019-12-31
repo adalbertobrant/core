@@ -3,7 +3,7 @@ import ProductList from '../components/product_list'
 import {Keypad} from '../components/keypad'
 import ActionGrid from '../components/actions'
 import Modal from 'react-modal';
-import {Router, Route, Switch} from 'react-router-dom';
+import {HashRouter as Router, Route, Switch} from 'react-router-dom';
 import {createBrowserHistory} from 'history'
 import PriceCheckPage from './products'
 import CheckoutPage from './payment'
@@ -21,7 +21,12 @@ import axios from 'axios'
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 
-const history = createBrowserHistory()
+const history = {
+    name: 'History',
+    push: function(url){
+        window.location.hash = url
+    }
+}
 
 class MainPage extends Component{
     state = {
@@ -57,6 +62,7 @@ class MainPage extends Component{
     //##############################################################
     openCheckout =() =>{
         if(this.state.currentCustomer == null){alert('A sale cannot be completed without a valid customer.'); return}
+        if(this.state.isQuote){alert('You cannot checkout a quote.'); return}
         this.setState({modalOpen: true});
         history.push("/payment")
         
@@ -380,7 +386,7 @@ class MainPage extends Component{
                             : null}
                         
                             </div>
-                    <Router history={history}>
+                    <Router>
                             <Switch>
                                 <Route path='/payment'>
                                     <CheckoutPage 

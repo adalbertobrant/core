@@ -31,6 +31,7 @@ from .report_utils.plotters import (plot_sales,
                                     plot_ar_by_aging)
 from inventory.models import InventoryItem
 from services.models import Service
+from common_data.utilities.plotting import CustomStyle
 
 
 import pygal
@@ -432,12 +433,12 @@ class AverageDaysToPayReportView(ContextMixin,
 
     @staticmethod
     def common_context(context):
-        chart = pygal.Bar()
+        chart = pygal.HorizontalBar(style=CustomStyle)
         chart.title = 'Average Days to Pay'
         customer_names = [str(i) for i in models.Customer.objects.all()]
         customer_averages = [i.average_days_to_pay \
             for i in models.Customer.objects.all()]
-        chart.x_labels = customer_names
+        
         chart.add('Days To Pay', customer_averages)
 
         context['graph'] = chart.render(is_unicode=True)

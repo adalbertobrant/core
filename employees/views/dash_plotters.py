@@ -7,7 +7,6 @@ from services.models import ServicePerson
 from invoicing.models import SalesRepresentative
 from accounting.models import Bookkeeper
 from inventory.models import InventoryController
-from pygal.style import BlueStyle
 from common_data.utilities.plotting import CustomStyle
 
 def employee_roles_chart():

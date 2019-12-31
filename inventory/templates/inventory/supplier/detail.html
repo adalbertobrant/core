@@ -1,17 +1,9 @@
 {% extends "window.html" %}
-{% block content %}
-
-<div class="jumbotron">
-    <h1 class="display-3">Vendor Detail</h1>
-    <p class="lead">Information Regarding supplier Products, Contact Information and Accounting Data</p>
-    <hr class="my-2">
-    <div class="dropdown">
-        <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            Actions
-        </button>
-        <div class="dropdown-menu" aria-labelledby="triggerId">
-            <a href="{% url 'inventory:supplier-create' %}" class="dropdown-item">
+{% block heading %}
+Vendor Details
+{% endblock heading %}
+{% block actions %}
+<a href="{% url 'inventory:supplier-create' %}" class="dropdown-item">
                 <i class="fas fa-plus"></i> Create Vendor
             </a>
             <a href="{% url 'inventory:supplier-update' pk=object.pk %}" class="dropdown-item">
@@ -26,10 +18,10 @@
             <a class="dropdown-item" href="{% url 'accounting:direct-payment-supplier'  supplier=object.pk  %}">
                 <i class="fas fa-money-check"></i> Make Payment To supplier
             </a>
+{% endblock actions %}
 
-        </div>
-    </div>
-</div>
+{% block content %}
+
 <div class="container">
     <div class="row">
         <div class="col-sm-6">

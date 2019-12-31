@@ -1,16 +1,13 @@
 {% extends "window.html" %}
 {% load accounting %}
+{% block heading %}
+Shipping Expenses
+{% endblock heading %}
+{% block actions %}
+<a class="dropdown-item" href="{% url 'inventory:order-expense' pk=object.pk %}" role="button">Record shipping cost</a>
+{% endblock actions %}
 {% block content %}
 
-<div class="jumbotron">
-    <h1 class="display-3">Shipping Costs</h1>
-    <p class="lead">Lists accumulated costs incurred in receiving an order from a supplier</p>
-    <hr class="my-2">
-    <p>Actions</p>
-    <p class="lead">
-        <a class="btn btn-primary " href="{% url 'inventory:order-expense' pk=object.pk %}" role="button">Record shipping cost</a>
-    </p>
-</div>
 
 <div class="container">
     <div class="row">

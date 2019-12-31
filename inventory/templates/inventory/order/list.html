@@ -50,10 +50,10 @@
                         <i class="fas fa-file-pdf"></i> Generate PDF
                         <!--Change this ! -->
                     </a>
-                    <a href="{% url 'inventory:order-email' pk=order.pk %}" class="dropdown-item">
+                    {% comment %} <a href="{% url 'inventory:order-email' pk=order.pk %}" class="dropdown-item">
                             <i class="fas fa-at"></i> Send Email
                             <!--Change this ! -->
-                        </a>
+                        </a> {% endcomment %}
                 {% if order.status != 'draft' %}
                 <h6 class="dropdown-header">Returns</h6>
                 

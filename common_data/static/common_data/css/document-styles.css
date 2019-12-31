@@ -1,22 +1,22 @@
 #item-table thead td{
     padding: 10px;
     color: white;
-    background-color: black;
+    background-color: #222;
     border-right: 1px solid white;
 }
 
 #item-table tbody{
-    border: 1px solid black;
+    border: 1px solid #999;
     
 }
 
 #item-table{
     min-height: 500px;
-    border: 1px solid black;
+    border: 1px solid #999;
 }
 
 #item-table tbody td{
-    border-right: 1px solid black;
+    border-right: 1px solid #555;
     padding: 10px;
 }
 
@@ -26,20 +26,21 @@ table {
 
 
 .simple-content thead td {
-    font-size: 11pt;
+    font-size: 1.125rem;
+    padding: 5px;
     border-right: 1px solid white;
     color: white;
-    background-color: black;
+    background-color: #222;
 }
 
 .simple-content tbody td {
     font-size: 11pt;
 
-    border-right: 1px solid black;
+    border-right: 1px solid #999;
 }
 
 .simple-content tbody{
-    border: 1px solid black;
+    border: 1px solid #999;
 }
 
 .simple-content tfoot td {
@@ -52,13 +53,13 @@ table {
 }
 
 .footer-cell {
-    border: 1px solid black;
+    border: 1px solid #999;
     min-height: 150px;
 }
 
 .footer-cell-heading{
     color: white;
-    background-color: black;
+    background-color: #222;
     padding: 2px 5px;
 }
 
@@ -66,3 +67,37 @@ table {
     padding: 2px 5px;
 }
 
+.custom-page {
+    width: 100%;
+    height: 100%;
+    
+}
+
+.page-container-iframe {
+    height: 100%                 !important;
+    border: 0px                  !important;
+    box-shadow: 0px 0px 0px #fff !important;
+}
+
+.page-container-iframe > div {
+    overflow-y: visible !important;
+}
+
+.page-container {
+    margin: 30px auto;
+    padding: 0.5in;
+    width: 21cm;
+    height: 29.7cm;
+    box-shadow: 5px 5px 20px #ccc;
+    overflow-y: auto;
+}
+
+.page-container::-webkit-scrollbar {
+    width: 1px;
+    background-color: rgba(33,33,33,0);
+}
+
+
+.eop {
+    page-break-before: always;
+}

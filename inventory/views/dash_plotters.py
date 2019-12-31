@@ -1,7 +1,6 @@
 from inventory.models import InventoryItem, WareHouseItem
 import datetime
 import pygal
-from pygal.style import DefaultStyle
 from common_data.utilities.plotting import CustomStyle
 
 

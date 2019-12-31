@@ -1,22 +1,19 @@
 {% extends "window.html" %}
-
-{% block content %}
-<div class="jumbotron">
-        <h1 class="display-3">Invoice Payments</h1>
-        <p class="lead">List of payments to date for the </p>
-        <hr class="my-2">
-        <p>Actions</p>
-        <p class="lead">
-            {% if object.invoice.status != "paid" %}
+{% block heading %}
+Invoice Payments
+{% endblock heading %}
+{% block actions %}
+{% if object.invoice.status != "paid" %}
             <a class="btn btn-primary btn-lg" href="{% url 'invoicing:invoice-payment' pk=invoice.pk %}" >Add Payment</a>
             {% endif %}
-        </p>
-    </div>
+{% endblock actions %}
+
+{% block content %}
     
     <div class="container">
         <div class="row">
             <div class="col-sm-4">
-                <div class="card">
+                <div class="card shadow">
                     <div class="card-body">
                         <h4 class="card-title">Invoice Details</h4>
                         <p class="card-text">Invoice Number: {{invoice.id}}</p>

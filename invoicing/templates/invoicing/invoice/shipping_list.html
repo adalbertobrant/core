@@ -1,24 +1,19 @@
 {% extends "window.html" %}
+{% block heading %}
+Shipping Expenses
+{% endblock heading %}
+{% block actions %}
+        <a class="dropdown-item " href="{% url 'invoicing:invoice-shipping-costs' pk=object.pk %}" role="button">Add shipping expense</a>
 
+{% endblock actions %}
 {% block content %}
-
-<div class="jumbotron">
-    <h1 class="display-3">Shipping Expenses</h1>
-    <p class="lead">Lists accumulated expenses incurred in fulfilling the order to a customer</p>
-    <hr class="my-2">
-    <p>Actions</p>
-    <p class="lead">
-        <a class="btn btn-primary " href="{% url 'invoicing:invoice-shipping-costs' pk=object.pk %}" role="button">Add shipping expense</a>
-    </p>
-</div>
 
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
             <div class="card-deck">
-                <div class="card bg-primary text-white">
+                <div class="card shadow">
                     <div class="card-body">
-                        <h4 class="card-title">Meta Data</h4>
                         <p class="card-text">Invoice: {{object.invoice_number}}</p>
                         <p class="card-text">Invoice Value: ${{object.total | floatformat:2}}</p>
                         <p class="card-text">Total shipping costs: ${{object.total_shipping_costs | floatformat:2}}</p>

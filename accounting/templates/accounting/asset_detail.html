@@ -1,23 +1,13 @@
 {% extends "window.html" %}
-
+{% block heading %}
+Asset Details
+{% endblock heading %}
+{% block actions %}
+<a class="dropdown-item" href="{% url 'accounting:asset-create' %}"><i class="fas fa-plus"></i>Register New Asset</a>
+                    <a class="dropdown-item" href="{% url 'accounting:asset-update' pk=object.pk %}"><i class="fas fa-edit"></i>Update</a>
+{% endblock actions %}
 {% block content %}
 
-<div class="jumbotron">
-    <h1 class="display-3">Asset Details</h1>
-    <p class="lead">Information regarding current and future value of assets</p>
-    <hr class="my-2">
-    <div class="dropdown">
-                <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
-                    Actions
-                </button>
-                <div class="dropdown-menu" aria-labelledby="triggerId">
-                 <a class="dropdown-item" href="{% url 'accounting:asset-create' %}"><i class="fas fa-plus"></i>Register New Asset</a>
-                    <a class="dropdown-item" href="{% url 'accounting:asset-update' pk=object.pk %}"><i class="fas fa-edit"></i>Update</a>
-                    
-                </div>
-            </div>
-</div>
 
 <div class="container">
     <div class="row">
