@@ -1,7 +1,7 @@
 import os
 import socket
 
-DEBUG = False
+DEBUG = True
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 # set to the ip address of the server
@@ -46,15 +46,10 @@ LOGGING = {
         },
     },
     'loggers': {
-        'django.db.backends.schema': {
+        'django.request': {
             'handlers': ['file'],
-            'level': 'DEBUG',
+            'level': 'ERROR',
             'propagate': True,
-        },
-        'django.db.backends': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
+        }
     },
 }

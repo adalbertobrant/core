@@ -161,7 +161,6 @@ class GlobalConfig(SingletonModel):
         max_length=255, 
         blank=True, 
         default="")
-    last_license_check = models.DateField(null=True)
     last_automated_service_run = models.DateTimeField(null=True, blank=True)
     use_backups = models.BooleanField(
         blank=True,
@@ -170,10 +169,6 @@ class GlobalConfig(SingletonModel):
         max_length=32, 
         choices=BACKUP_FREQUENCY_CHOICES, 
         default="D")
-    verification_task_id = models.CharField(
-        default="", 
-        blank=True,
-        max_length=255)
     is_configured = models.BooleanField(
         default=False
     )
@@ -216,7 +211,6 @@ class GlobalConfig(SingletonModel):
         with open(json_config, 'w+') as fil:
             fields = copy.deepcopy(self.__dict__)
             del fields['hardware_id']
-            del fields['last_license_check']
             del fields['last_automated_service_run']
             del fields['_state']
             json.dump(fields, fil)

@@ -51,7 +51,12 @@ class AsyncDashboard(TemplateView):
         context = super().get_context_data(**kwargs)
         first = TODAY - datetime.timedelta(days=TODAY.day)
         context['sales_to_date'] = sum([i.total for i in \
-             Invoice.objects.filter(status="invoice", date__gt=first )])
+             Invoice.objects.filter(Q(
+                 Q(status="invoice") | 
+                 Q(status="paid") | 
+                 Q(status='paid-partially')
+                 ) & 
+                Q(date__gt=first) )])
         context['customers'] = Customer.objects.filter(active=True).count()
         context['outstanding_invoices'] = Invoice.objects.filter(Q(
             status="invoice") | Q(status="paid-partially")).count()

@@ -11,10 +11,8 @@ from common_data.models import GlobalConfig
 from latrom import settings
 import logging 
 import os
-from common_data.tasks import remote_license_verification
-from background_task.models import Task
-from background_task.models_completed import CompletedTask
 logger =logging.getLogger(__name__)
+
 
 
 class UserTrackerException(Exception):
@@ -109,6 +107,7 @@ class UserTracker(object):
 
 #the tracker is reset every time the server is restarted
 TRACKER = UserTracker()
+HID = GlobalConfig.objects.first().generate_hardware_id()
 
 class LicenseMiddleware(object):
     def __init__(self, get_response):
@@ -146,40 +145,20 @@ class LicenseMiddleware(object):
             logger.critical('The license file is not found')
             return HttpResponseRedirect('/base/license-error-page')
 
-        data_string = json.dumps(license['license'])
+        data_string = HID + json.dumps(license['license'])
         byte_data = bytes(data_string, 'ascii')
         hash = hashlib.sha3_512(byte_data).hexdigest()
 
         if not hmac.compare_digest(hash, license['signature']):
             logger.critical('the license hash check has failed')
             return HttpResponseRedirect('/base/license-error-page')
+        
+        if not license['license']['expiry_date'] == "*":
+            expiry = datetime.datetime.strptime(
+                license['license']['expiry_date'], '%d/%m/%Y')
 
+            if datetime.date.today() > expiry.date():
+                logger.critical(f'The license expired on {expiry.date}')
+                return HttpResponseRedirect('/base/license-error-page')
 
-        #check with remote server every three days
-        config = GlobalConfig.objects.get(pk=1)
-        #not settings.DEBUG and
-        if (config.last_license_check == None or \
-                (datetime.date.today() - \
-                config.last_license_check).days > 2):
-            
-            if config.verification_task_id == '':
-                # if not generate that task and store the task id
-                task = remote_license_verification(license)
-                config.verification_task_id = task.task_hash
-                config.save()
-                return self.get_response(request)
-
-            else:
-                if CompletedTask.objects.filter(
-                        task_hash=config.verification_task_id).exists():
-                    task = CompletedTask.objects.filter(
-                        task_hash=config.verification_task_id).latest('pk')
-                    if task.attempts > 0:
-                        return HttpResponseRedirect(
-                            '/base/license-error-page')
-                    else:
-                        return self.get_response(request)
-                else:
-                    return self.get_response(request)
-        else:
-            return self.get_response(request)
+        return self.get_response(request)

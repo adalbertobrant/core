@@ -465,19 +465,6 @@ class ConfigWizard(ConfigWizardBase):
         return super().done(form_list, **kwargs)
     
 
-def reset_license_check(request):
-    #delete the hash
-    config = GlobalConfig.objects.first()
-    
-    #remove all the completed tasks
-    CompletedTask.objects.filter(
-        task_hash=config.verification_task_id).delete()
-
-    config.verification_task_id = ''
-    config.save()
-
-    return HttpResponseRedirect('/login')
-
 def document_notes_api(request, document=None, id=None):
     notes =[]
     

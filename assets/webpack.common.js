@@ -1,8 +1,6 @@
 var path = require("path");
-var webpack = require("webpack");
+var webpack = require('webpack')
 var BundleTracker = require("webpack-bundle-tracker");
-var terserPlugin = require("terser-webpack-plugin");
-var uglifyPlugin = require("uglifyjs-webpack-plugin");
 
 module.exports = {
 
@@ -26,8 +24,6 @@ module.exports = {
     plugins: [
         new BundleTracker({filename: './webpack-stats.json'}),
     ],
-    mode: 'development',
-
     module: {
         rules: [
             {
@@ -56,10 +52,4 @@ module.exports = {
     resolve: {
         extensions: [ '.js', '.jsx']
     },
-    /*
-    optimization: {
-        minimize:true,
-        minimizer: [new terserPlugin()]
-    }
-    */
 }

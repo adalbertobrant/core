@@ -26,7 +26,8 @@ def process_sale(request):
         due=timestamp.date(),
         customer=customer,
         salesperson=sales_person,
-        draft=False
+        draft=False,
+        status='paid'
     )
     for line in data['invoice']['lines']:
         product = InventoryItem.objects.get(pk=line['id'])
