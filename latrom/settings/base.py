@@ -63,6 +63,7 @@ INSTALLED_APPS = [
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 LOGIN_REQUIRED_FOR_CRUD = True
+LOGOUT_REDIRECT_URL = '/login'
 PROJECT_NAME = 'Smart business solutions'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
