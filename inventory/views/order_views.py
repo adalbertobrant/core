@@ -376,8 +376,6 @@ def verify_order(request, pk=None):
         order.validated_by = form.cleaned_data['user']
         order.save()
 
-        order.create_entry()
-
 
     return HttpResponseRedirect('/inventory/order-detail/{}'.format(pk))
     
