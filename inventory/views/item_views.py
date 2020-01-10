@@ -502,7 +502,8 @@ class ImportItemsView(ContextMixin, FormView):
                 warehouse.add_item(item, row[
                     form.cleaned_data['quantity']-1].value)
                 #handle products equipment components
-                if row[form.cleaned_data['type'] -1].value == 0:
+                print(row[form.cleaned_data['type'] -1].value)
+                if row[form.cleaned_data['type'] -1].value == 'product':
                     component =models.ProductComponent.objects.create(
                         pricing_method=0,
                         tax=settings.sales_tax,
@@ -511,7 +512,7 @@ class ImportItemsView(ContextMixin, FormView):
                     )
                     item.product_component=component
                     item.save()
-                elif row[form.cleaned_data['type'] -1].value == 1:
+                elif row[form.cleaned_data['type'] -1].value == 'equipment':
                     component = models.EquipmentComponent.objects.create()
                     item.equipment_component = component
                     item.save()
