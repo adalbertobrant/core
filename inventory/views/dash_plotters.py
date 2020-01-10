@@ -8,6 +8,8 @@ def composition_plot():
     
     stock =  InventoryItem.objects.filter(type=0)
     chart = pygal.Pie(print_values=True, style=CustomStyle, height=300)
+    # ordered = [i for i in stock].sort(key=lambda x: x.quantity)
+    # print(ordered)
     for i in stock:
         chart.add(i.name, i.quantity)
 
