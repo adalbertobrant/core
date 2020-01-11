@@ -8,5 +8,5 @@ CustomStyle = BlueStyle(
     guide_stroke_dasharray='0',
     major_guide_stroke_dasharray='0',
     value_colors=('white', ),
-    colors=('#23374d','#007bff','steelblue','#1089ff','deepskyblue','midnightblue','lightsteelblue','powderblue',)
+    colors=('#23374d','#007bff','#4682b4','#1089ff','#00bfff','#191970','#B0C4DE','#B0E0E6',)
 )

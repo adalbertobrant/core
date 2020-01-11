@@ -268,7 +268,6 @@ class ProductComponent(models.Model):
         cummulative_quantity = 0
         orders_with_items_in_stock = []
         partial_orders = False
-
         if current_quantity == 0:
             return 0
 
@@ -280,6 +279,9 @@ class ProductComponent(models.Model):
                 Q(order__status="received-partially") |
                 Q(order__status="received")
             )).order_by("order__date").reverse()
+
+        if order_items.count() == 0:
+            return D(current_quantity) * self.parent.unit_purchase_price
 
         #iterate over items
         for item in order_items:

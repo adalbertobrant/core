@@ -9,7 +9,7 @@ const ActionGrid = () =>{
                 <ActionButton 
                     action='price-check'
                     text='PRICE CHECK'
-                    keyboardKey='F1' />
+                    keyboardKey='F2' />
                 <ActionButton 
                     action='void'
                     text='VOID'

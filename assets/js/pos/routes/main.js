@@ -111,8 +111,12 @@ class MainPage extends Component{
         // manually add product by entering code(only)
         //show list of popular products
         
-        this.setState({modalOpen: true});
+        this.setState({
+            modalOpen: true,
+            keypadState: 'quantity'
+        });
         history.push("/add-product")
+
     }
 
     voidSale = () =>{
@@ -316,6 +320,13 @@ class MainPage extends Component{
 
     componentDidMount(){
         //Master keyboard event handler
+        //select the first customer
+        axios.get('/invoicing/api/customer/').then(res =>{
+            if(res.data.length > 0){
+                let first = res.data[0]
+                this.setState({currentCustomer: `${first.id} - ${first.name}`})
+            }
+        })
 
         const handler = (evt) =>{
             console.log(evt.key)
@@ -403,9 +414,16 @@ class MainPage extends Component{
                                         completeSale={() =>{
                                             this.setState({
                                                 modalOpen: false,
-                                                currentCustomer: null,
                                                 active: null,
                                                 products: []
+                                            });
+
+                                            //select the first customer
+                                            axios.get('/invoicing/api/customer/').then(res =>{
+                                                if(res.data.length > 0){
+                                                    let first = res.data[0]
+                                                    this.setState({currentCustomer: `${first.id} - ${first.name}`})
+                                                }
                                             })
                                         }}/>
                                 </Route>

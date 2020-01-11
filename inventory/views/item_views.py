@@ -466,9 +466,10 @@ class ImportItemsView(ContextMixin, FormView):
                 form.cleaned_data['type'],
                 form.cleaned_data['unit'],
             ]
-            wb = openpyxl.load_workbook(file.file)
+            wb = openpyxl.load_workbook(file.file, data_only=True)
             try:
-                ws = wb[form.cleaned_data['sheet_name']]
+                print(wb.get_sheet_names())
+                ws = wb.get_sheet_by_name(form.cleaned_data['sheet_name'])
             except:
                 ws = wb.active
 

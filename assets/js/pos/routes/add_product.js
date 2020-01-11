@@ -41,7 +41,8 @@ class ManualAddProduct extends Component{
                     </div>
                     <div style={{
                         minHeight: '300px',
-                        maxHeight: '300px'
+                        maxHeight: '50vh',
+                        overflowY: 'auto'
                     }}>
                         
                         {this.state.popularProducts.map(product =>(
