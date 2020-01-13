@@ -192,7 +192,7 @@ class GlobalConfigView(ContextMixin,  LoginRequiredMixin, UpdateView):
     template_name = os.path.join("common_data", "config.html")
     model = models.GlobalConfig
     form_class = forms.GlobalConfigForm
-    success_url = '/base/workflow'
+    success_url = '/invoicing/'
     extra_context = {
         'title': 'Configure global application features'
     }

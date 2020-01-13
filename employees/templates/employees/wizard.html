@@ -4,25 +4,26 @@
 {% block window %}
 {% load static %}
 
+<div class="scroll-frame">
 <div class="jumbotron">
-<h1 class="display-3">Welcome To The Employees Module</h1>
-<p class="lead">To Proceed Please Fill In These Forms</p>
-<hr class="my-2">
-<p>Step {{wizard.steps.step1}} of {{wizard.steps.count}}.</p>
-<style>
-    .li-focused {
-        font-weight: bold;
-        font-size: 16px;
-    }
-</style>
-<ul>
-    <li class="{% if wizard.steps.step1 == 1 %}li-focused{% endif%}">Create a Payroll Date</li>
-    <li class="{% if wizard.steps.step1 == 2 %}li-focused{% endif%}">Create a PayGrade</li>
-    <li class="{% if wizard.steps.step1 == 3 %}li-focused{% endif%}">Create An Employee</li>
-    <li class="{% if wizard.steps.step1 == 4 %}li-focused{% endif%}" >Create a Payroll Officer</li>
-    <li class="{% if wizard.steps.step1 == 5 %}li-focused{% endif%}" >Configure Your Employee Settings</li>
+    <h1 class="display-3">Welcome To The Employees Module</h1>
+    <p class="lead">To Proceed Please Fill In These Forms</p>
+    <hr class="my-2">
+    <p>Step {{wizard.steps.step1}} of {{wizard.steps.count}}.</p>
+    <style>
+        .li-focused {
+            font-weight: bold;
+            font-size: 16px;
+        }
+    </style>
+    <ul>
+        <li class="{% if wizard.steps.step1 == 1 %}li-focused{% endif%}">Create a Payroll Date</li>
+        <li class="{% if wizard.steps.step1 == 2 %}li-focused{% endif%}">Create a PayGrade</li>
+        <li class="{% if wizard.steps.step1 == 3 %}li-focused{% endif%}">Create An Employee</li>
+        <li class="{% if wizard.steps.step1 == 4 %}li-focused{% endif%}" >Create a Payroll Officer</li>
+        <li class="{% if wizard.steps.step1 == 5 %}li-focused{% endif%}" >Configure Your Employee Settings</li>
 
-</ul>
+    </ul>
 </div>
 
 <div class="container">
@@ -53,6 +54,7 @@
     </div>
 </div>
 
+</div>
 {% render_bundle "widgets" %}
 
 <script>

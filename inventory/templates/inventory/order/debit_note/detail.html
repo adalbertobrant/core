@@ -1,7 +1,22 @@
 {% extends "common_data/page/pdf_page.html" %}
 
-{% block page_contents %}
+{% block pre_page %}
+<section id='title'>
+    <div id='title-text'>Debit Note</div>
+    <div id='action-icon dropdown'>
 
+        <button class="btn btn-block primary " id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
+
+            <div class="dropdown-menu" aria-labelledby="triggerId">
+                <a href="{% url 'inventory:debit-note-pdf' pk=object.pk %}" class="dropdown-item"> <i class="fas fa-file-pdf    "></i> Generate PDF</a>
+            </div>
+    </div>
+</section>
+{% endblock pre_page %}
+
+
+{% block page_contents %}
 <table style="width:100%;">
     <tbody>
         <tr>
@@ -68,6 +83,4 @@
         </tr>
     </tbody>
 </table>
-
-
 {% endblock page_contents %}

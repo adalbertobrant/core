@@ -46,7 +46,7 @@ class WareHouseUpdateView(ContextMixin, UpdateView):
 
 class WareHouseItemListView(ListView):
     template_name = os.path.join('inventory', 'warehouse', 'item_list.html')
-    paginate_by = 20
+    paginate_by = 12
     def get_queryset(self):
         return models.WareHouseItem.objects.filter(
             warehouse=models.WareHouse.objects.get(pk=self.kwargs['pk']))

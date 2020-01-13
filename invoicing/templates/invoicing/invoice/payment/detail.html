@@ -4,7 +4,7 @@ Invoice Payments
 {% endblock heading %}
 {% block actions %}
 {% if object.invoice.status != "paid" %}
-            <a class="btn btn-primary btn-lg" href="{% url 'invoicing:invoice-payment' pk=invoice.pk %}" >Add Payment</a>
+            <a class="dropdown-item" href="{% url 'invoicing:invoice-payment' pk=invoice.pk %}" >Add Payment</a>
             {% endif %}
 {% endblock actions %}
 

@@ -1,24 +1,11 @@
 {% extends "common_data/page/framed_pdf_page.html" %}
-
-{% block pre_page %}
-{% load accounting %}
-<div class="jumbotron">
-    <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            Actions
-        </button>
-        <div class="dropdown-menu" aria-labelledby="triggerId">
-                <a href="/invoicing/customer-statement-pdf/{{start}}/{{end}}/{{customer.pk}}" class="dropdown-item"><i
-                        class="fas fa-file-pdf"></i> Generate PDF</a>
-        </div>
-    </div>
-</div>
-
-{% endblock  %}
-
 {% block page_contents %}
 {% load accounting %}
+<script>
+var url = "/invoicing/customer-statement-pdf/{{start}}/{{end}}/{{customer.pk}}";
+var el = window.parent.document.getElementById('pdf-button');
+el.href = url;
+</script>
 <style>
     .cell {
         border-collapse: collapse;

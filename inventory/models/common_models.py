@@ -62,6 +62,7 @@ class InventorySettings(SingletonModel):
     #TODO capitalization_limit = models.DecimalField(max_digits=16, decimal_places=2)
     is_configured = models.BooleanField(default=False)
     service_hash = models.CharField(max_length=255, default="", blank=True)
+    default_warehouse = models.ForeignKey('inventory.warehouse', default=1, on_delete=models.SET_DEFAULT)
 
 
 class InventoryController(models.Model):

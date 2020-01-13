@@ -82,6 +82,12 @@ class InventoryControllerListView(ContextMixin,   PaginationMixin, FilterView):
 class InventoryDashboard(InventoryConfigMixin, TemplateView):
     template_name = os.path.join("inventory", "dashboard.html")
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['primary_warehouse'] = \
+            models.InventorySettings.objects.first().default_warehouse.pk
+        return context
+
     def get(self, *args, **kwargs):
         if models.InventorySettings.objects.first().is_configured:
             resp = super().get(*args, **kwargs)
@@ -207,19 +213,19 @@ def inventory_controller_condition(self):
 def employee_condition(self):
     return Employee.objects.all().count() == 0
 
+
 class ConfigWizard(ConfigWizardBase):
     template_name = os.path.join('inventory', 'wizard.html')
     form_list = [
         forms.ConfigForm, 
         EmployeeForm,
         forms.InventoryControllerForm,
-        forms.WareHouseForm, 
         forms.SupplierForm, 
         ]
 
     condition_dict = {
         '1': employee_condition,
-        '2': inventory_controller_condition
+        '2': inventory_controller_condition,
     }
     config_class = models.InventorySettings
     success_url = reverse_lazy('inventory:home')
@@ -227,7 +233,7 @@ class ConfigWizard(ConfigWizardBase):
 
     def get_form_initial(self, step):
         initial = super().get_form_initial(step)
-        if step == '4':
+        if step == '3':
             initial.update({'vendor_type': 'organization'})
 
         return initial

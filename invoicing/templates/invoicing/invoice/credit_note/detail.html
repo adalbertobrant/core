@@ -1,5 +1,18 @@
 {% extends "common_data/page/pdf_page.html" %} 
+{% block pre_page %}
+<section id='title'>
+    <div id='title-text'>Credit Note</div>
+    <div id='action-icon dropdown'>
 
+        <button class="btn btn-block primary " id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
+
+        <div class="dropdown-menu" aria-labelledby="triggerId">
+           <a href=" {% url 'invoicing:credit-note-pdf' pk=object.pk %} " class="dropdown-item"><i class="fas fa-file-pdf    "></i> Generate PDF</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
 {% block page_contents %}
 
 {% include "invoicing/invoice/credit_note/document.html"%}

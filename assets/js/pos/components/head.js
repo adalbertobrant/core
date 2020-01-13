@@ -45,7 +45,7 @@ const head =(props) =>{
         <Context.Consumer>
             {(context) =>{
                 return (<div className={styles.head_container}>
-            <div className={styles.logo}><a className='text-white' href="/invoicing/"><h4>Umisoft</h4></a></div>
+            <div className={styles.logo}><a className='text-white' href="/invoicing/"><h4 className='logo' style={{textAlign:'left'}}>Bentsch</h4></a></div>
             <div className={styles.status}>
             Status
             <table className="table-sm">

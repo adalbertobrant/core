@@ -12,15 +12,8 @@
     <h6>{{object.invoice.customer}}</h6>
     <p>{{object.invoice.customer.address | linebreaks}} </p>
 </div>
-{% endblock left_content %}
 
-{% block right_content %}
-{% include 'common_data/common/business.html' %}
-
-{% endblock right_content %}
-
-{% block lower_left %}
-    <table style="width:100%;">
+<table style="width:100%;">
         <tbody>
             <tr>
                 <td>Date:</td>
@@ -36,6 +29,16 @@
             </tr>
         </tbody>
     </table>
+
+{% endblock left_content %}
+
+{% block right_content %}
+{% include 'common_data/common/business.html' %}
+
+{% endblock right_content %}
+
+{% block lower_left %}
+    
 {% endblock lower_left %}
 
 

@@ -78,6 +78,7 @@ class ExpenseEntry extends Component{
                         <button 
                         style={{width:"100%"}}
                         className="btn"
+                        type='button'
                         onClick={() => window.open(
                             '/accounting/expense/create' ,'popup','width=900,height=480')}>
                         Add Expense <i className="fas fa-plus"></i>
@@ -133,6 +134,7 @@ class ExpenseEntry extends Component{
                             <td>
                             <button 
                                 onClick={this.props.insertHandler} 
+                                type='button'
                                 className="invoice-btn" >Insert</button>
                             </td>
                         </tr>

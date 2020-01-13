@@ -104,12 +104,21 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                {% autoescape off %}
-                        {{ar_by_customer}}
-                {% endautoescape %}
-                {% autoescape off %}
-                        {{ar_by_aging}}
-                {% endautoescape %}
+                {% if ar_by_aging %}
+                    <div class="eop"></div>
+                    <div class="no-break">
+                        {% autoescape off %}
+                            {{ar_by_customer}}
+                        {% endautoescape %}
+                    </div>
+                    <div class="eop"></div>
+                    <div class="no-break">
+                        {% autoescape off %}
+                                {{ar_by_aging}}
+                        {% endautoescape %}
+                    </div>
+                {% endif %}
+                
                 
             </td>
         </tr>

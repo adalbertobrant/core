@@ -30,6 +30,7 @@ Quotation {% if object.draft %}(Draft){% endif %}
         </tr>
     </tbody>
 </table>
+{% include "common_data/common/customer_data.html" %}
 
 {% endblock left_content %}
 
@@ -40,7 +41,7 @@ Quotation {% if object.draft %}(Draft){% endif %}
 
 {% block lower_left %}
 
-{% include "common_data/common/customer_data.html" %}
+
 
 {% endblock lower_left %}
 

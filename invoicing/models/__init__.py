@@ -26,6 +26,7 @@ class SalesConfig(SingletonModel):
     use_bill_invoice = models.BooleanField(default=True)
     use_combined_invoice = models.BooleanField(default=True)
     is_configured = models.BooleanField(default=False)
+    default_warehouse = models.ForeignKey('inventory.warehouse', default=1, on_delete=models.SET_DEFAULT)
 
 
     @classmethod

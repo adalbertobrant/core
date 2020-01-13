@@ -96,6 +96,9 @@ class ConfigAPIView(generics.RetrieveAPIView):
 def employee_condition(self):
     return Employee.objects.all().count() == 0
 
+def rep_condition(self):
+    return SalesRepresentative.objects.all().count() == 0
+
 class ConfigWizard(ConfigWizardBase):
     template_name = os.path.join('invoicing', 'wizard.html')
     form_list = [
@@ -106,7 +109,8 @@ class ConfigWizard(ConfigWizardBase):
     ]
 
     condition_dict = {
-        '2' : employee_condition
+        '2' : employee_condition,
+        '3' : rep_condition
     }
 
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'logo'))

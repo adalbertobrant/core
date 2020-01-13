@@ -7,17 +7,17 @@
 
     #item-table tbody td{
         border-collapse: collapse;
-        border-right: 1px solid black;
+        border-right: 1px solid #aaa;
     }
 
     #item-table tbody{
-        border: 1px solid black;
+        border: 1px solid #aaa;
     }
 
 
     .subtotals{
         padding: 5px;
-        border: 1px solid black;
+        border: 1px solid #aaa;
     }
 
     #item-table{
@@ -38,23 +38,24 @@
         <tr>
             <th colspan="2" >
                 {% for page in pages %}                
-                <table id="item-table" class=" table-sm" >
+                <table id="item-table" class=" table-sm" height='500'>
                     <thead>
                         <tr>
-                            <th >Qty</th>
-                            <th  style="width:40%;">Description</th>
+                            
+                            <th  style="width:50%;">Description</th>
                             <th>Unit</th>
                             <th >Unit Price</th>
+                            <th >Qty</th>
                             <th >Total</th>
                         </tr>
                     </thead>
                     <tbody>                        
                         {% for item in page %}
                         <tr>
-                            <td >{{item.quantity}}</td>
                             <td >{{item.item.name}}</td>
                             <td>{{item.item.unit}}</td>
                             <td >{{item.order_price}}</td>
+                            <td >{{item.quantity}}</td>
                             <td >{{item.subtotal}}</td>
                         </tr>
                         {% endfor %}
@@ -67,7 +68,7 @@
                         </tr>
                     </tbody>
                     {% if not page.has_next %}
-                    <tfoot style="border-top:1px solid black;">
+                    <tfoot style="border-top:1px solid #aaa;">
                         <tr>
                             <td colspan="2"></td>
                             <td colspan="2" class="subtotals">

@@ -10,7 +10,6 @@ class EntryWidget extends Component{
         focused: "product",
         billables: [],
         inputs: {},
-        
     }
 
     componentDidMount =() =>{
@@ -46,6 +45,9 @@ class EntryWidget extends Component{
             alert('tax is required')
         }else if(!this.state.inputs.selected){
             alert('a valid choice must be selected')
+        }else if(this.state.focused == "product" && 
+                    this.state.inputs.quantity == 0){
+            alert('The product quantity must be greater than 0')
         }else{
             const data = {
                 type: this.state.focused,

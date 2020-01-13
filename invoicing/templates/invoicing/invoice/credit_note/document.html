@@ -1,36 +1,36 @@
 <style>
-    #item-table thead td{
+    #item-table thead td {
         padding: 10px;
         color: white;
         background-color: black;
         border-right: 1px solid white;
     }
 
-    #item-table tbody{
-        border: 1px solid black;
-        
+    #item-table tbody {
+        border: 1px solid #aaa;
+
     }
 
-    #item-table{
+    #item-table {
         min-height: 500px;
     }
-    #item-table tbody td{
-        border-right: 1px solid black;
+
+    #item-table tbody td {
+        border-right: 1px solid #aaa;
         padding: 10px;
     }
-
 </style>
-<table id="page-layout" style="width:100%">
+<table id="page-layout" style="width:100%;" >
     <tbody>
         <tr>
-            <td colspan="2">
+            <td colspan="2" style='vertical-align:top;'>
                 {% include "invoicing/invoice/credit_note/header.html" %}
             </td>
         </tr>
         <tr>
-            <td colspan="2">
+            <td colspan="2" style='vertical-align:top;'>
                 {% for page in pages %}
-                <table style="width:100%" id="item-table">
+                <table style="width:100%" height='500' id="item-table">
                     <thead>
                         <tr>
                             <td style="width:80%">Description</td>
@@ -39,50 +39,49 @@
                     </thead>
                     <tbody>
                         {% for item in page %}
-                            <tr>
-                                <td>{{item}}</td>
-                                <td>{{item.returned_value | floatformat:2}}</td>
-                            </tr>
-                            {% endfor %}
-                            <tr style="height:100%">
-                                <td></td>
-                                <td></td>
-                            </tr>
+                        <tr>
+                            <td>{{item}}</td>
+                            <td>{{item.returned_value | floatformat:2}}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr style="height:100%">
+                            <td></td>
+                            <td></td>
+                        </tr>
                     </tbody>
                     {% if not page.has_next %}
                     <tfoot>
-    <tr>
-        <td>
-            <b>SubTotal:</b>
-        </td>
-        <td>{{object.subtotal | floatformat:2 }}</td>
-    </tr>
-    <tr>
-        <td>
-            <b>Tax Due :</b>
-        </td>
-        <td>{{object.tax_amount | floatformat:2 }}</td>
-    </tr>
-    {% endif %}
-    <tr>
-        <td >
-            <b>Total:</b>
-        </td>
-        <td>{{object.total | floatformat:2 }}</td>
-    </tr>
-</tfoot>
-                    </table>
-                    <p>{{page}}</p>
-                    {% if page.has_next %}
-                    <p class="eop"></p>
-                    {% endif %}
-                    {% endfor %}
+                        <tr>
+                            <td>
+                                <b>SubTotal:</b>
+                            </td>
+                            <td>{{object.subtotal | floatformat:2 }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Tax Due :</b>
+                            </td>
+                            <td>{{object.tax_amount | floatformat:2 }}</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <td>
+                                <b>Total:</b>
+                            </td>
+                            <td>{{object.total | floatformat:2 }}</td>
+                        </tr>
+                    </tfoot>
                 </table>
+                <p>{{page}}</p>
+                {% if page.has_next %}
+                <p class="eop"></p>
+                {% endif %}
+                {% endfor %}
             </td>
         </tr>
         <tr>
             <td colspan="2">
-                {% include "common_data/common/terms_and_comments.html" %}
+                {% include "common_data/common/comments.html" %}
             </td>
         </tr>
     </tbody>

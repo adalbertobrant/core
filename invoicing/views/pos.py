@@ -5,7 +5,7 @@ import json
 import datetime
 from inventory.models import InventoryItem
 from accounting.models import Tax
-from invoicing.models import ProductLineComponent
+from invoicing.models import ProductLineComponent, SalesConfig
 
 
 def process_sale(request):
@@ -27,7 +27,8 @@ def process_sale(request):
         customer=customer,
         salesperson=sales_person,
         draft=False,
-        status='paid'
+        status='paid',
+        ship_from= SalesConfig.objects.first().default_warehouse
     )
     for line in data['invoice']['lines']:
         product = InventoryItem.objects.get(pk=line['id'])
@@ -64,6 +65,10 @@ def process_sale(request):
             timestamp=timestamp,
             method=payment['method']
         )
+
+    # update inventory
+    invoice.update_inventory()
+
     return JsonResponse({'sale_id': invoice.pk})
 
 def start_session(request):

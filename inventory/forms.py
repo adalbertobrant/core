@@ -55,6 +55,7 @@ class ConfigForm(forms.ModelForm, BootstrapMixin):
                     ),
                 Tab('WareHousing Settings',
                     'use_warehousing_model',
+                    'default_warehouse',
                     'use_storage_media_model'),
                 Tab('Inventory Types',
                     'use_product_inventory',

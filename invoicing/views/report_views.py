@@ -292,8 +292,12 @@ class AccountsReceivableDetailReportView(ContextMixin,
         context['more'] = list(filter(
             lambda x: x.overdue_days > 60, invs))
 
-        context['ar_by_customer'] = plot_ar_by_customer()
-        context['ar_by_aging'] = plot_ar_by_aging()
+        has_ar = len(context['month'] + context['two_months'] + context['more'] + context['week'] + \
+                context['week_two']) > 0
+
+
+        context['ar_by_customer'] = plot_ar_by_customer() if has_ar else None
+        context['ar_by_aging'] = plot_ar_by_aging() if has_ar else None
         context['date'] = datetime.date.today()
 
     def get_context_data(self, **kwargs):
@@ -433,13 +437,12 @@ class AverageDaysToPayReportView(ContextMixin,
 
     @staticmethod
     def common_context(context):
-        chart = pygal.HorizontalBar(style=CustomStyle)
+        chart = pygal.HorizontalBar(style=CustomStyle, height=500)
         chart.title = 'Average Days to Pay'
         customer_names = [str(i) for i in models.Customer.objects.all()]
-        customer_averages = [i.average_days_to_pay \
-            for i in models.Customer.objects.all()]
+        for cus in models.Customer.objects.all():
+            chart.add(cus.name, cus.average_days_to_pay)
         
-        chart.add('Days To Pay', customer_averages)
 
         context['graph'] = chart.render(is_unicode=True)
         return context 

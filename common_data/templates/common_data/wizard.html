@@ -1,39 +1,43 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+
 {% block window %}
 
-<div class="jumbotron">
-    <h1 class="display-3">Welcome to Suave Business Tools</h1>
-    <p class="lead">To get started Please configure the application using the following forms</p>
-    <hr class="my-2">
-    <p>Step {{wizard.steps.step1}} of {{wizard.steps.count}}.</p>
-</div>
-
-<div class="container">
-    <div class="row">
-        <div class="col-sm-12 shadow">
-        <form action="" method="POST"  enctype="multipart/form-data">
-        
-            {{wizard.management_form}}
-
-            {% if wizard.form.forms %}
-                {{wizard.form.management_form}}
-                {% for form in wizard.form.forms %}
-                    {% crispy form %}
-                {% endfor %}
-
-            {% else %}
-
-                {% crispy wizard.form %}
-
-            {% endif %}        
-        
-        </form>
+<div class="scroll-frame">
+    <div class="jumbotron">
+        <h1 class="display-3">Welcome to Suave Business Tools</h1>
+        <p class="lead">To get started Please configure the application using the following forms</p>
+        <hr class="my-2">
+        <p>Step {{wizard.steps.step1}} of {{wizard.steps.count}}.</p>
+    </div>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 shadow">
+            <form action="" method="POST"  enctype="multipart/form-data">
             
+                {{wizard.management_form}}
+    
+                {% if wizard.form.forms %}
+                    {{wizard.form.management_form}}
+                    {% for form in wizard.form.forms %}
+                        {% crispy form %}
+                    {% endfor %}
+    
+                {% else %}
+    
+                    {% crispy wizard.form %}
+    
+                {% endif %}        
+            
+            </form>
+                
+            </div>
         </div>
     </div>
-</div>
+    
 
+</div>
 <script type="text/javascript">
     $("#id_0-logo_aspect_ratio").change(function(evt){
                     console.log('changed')

@@ -1,22 +1,35 @@
+:root {
+    --primary: #23374d;
+    --secondary: #1089ff;
+    --tertiary: #e5e5e5;
+    --quarternary: #eeeeee;
+}
+
+body {
+    overflow-y:hidden;
+}
+.white {
+    background-color: white;
+}
 .primary {
-    background-color: #23374d;
-    color: #eee;
+    background-color: var(--primary);
+    color: var(--quarternary);
 } 
 
 .hover-primary:hover {
-    background-color: #23374d;
-    color: #eee;
+    background-color: var(--primary);
+    color: var(--quarternary);
 }
 
 .secondary {
-    background-color: #1089ff;
-    color: #eee;
+    background-color: var(--secondary);
+    color: var(--quarternary);
 }
-Fertiary {
-    background-color: #e5e5e5;
+.tertiary {
+    background-color: var(--tertiary);
 }
 .qaurternary {
-    background-color: #eeeeee;
+    background-color: var(--quarternary);
 }
 
 
@@ -29,11 +42,11 @@ Fertiary {
     flex-direction: row;
 }
 .bg-primary th {
-    color:#EEE;
+    color:var(--quarternary);
 }
 
 .bg-primary td {
-    color:#EEE;
+    color:var(--quarternary);
 }
 
 input[type="checkbox"] {
@@ -80,7 +93,7 @@ input:required, textarea:required, select:required {
     text-align:center;
     border-radius: 10px;
     box-shadow: 2px 5px 10px #ccc;
-    color: #23374d;
+    color: var(--primary);
     position: relative;
     display: flex;
     flex-direction: column;
@@ -97,9 +110,9 @@ input:required, textarea:required, select:required {
 }
 
 .white-on-blue {
-    background-color: #EEE;
-    border: 1px solid #1089ff;
-    color: #1089ff;
+    background-color:var(--quarternary);
+    border: 1px solid var(--secondary);
+    color: var(--secondary);
 }
 
 .entry-style td{
@@ -124,7 +137,7 @@ input:required, textarea:required, select:required {
 
 #product-widget-text-box, #service-widget-text-box, #expense-widget-text-box {
     padding: 1px;
-    background-color: #EEE;
+    background-color: var(--quarternary);
 }
 .entry-style select{
     width: 100%;
@@ -133,9 +146,9 @@ input:required, textarea:required, select:required {
 .invoice-btn {
     width: 100%;
     padding: 3px;
-    background-color: #1089ff;
-    color: #EEE;
-    border: 1px solid #EEE;
+    background-color: var(--secondary);
+    color: var(--quarternary);
+    border: 1px solid var(--quarternary);
 }
 
 .shadow {
@@ -144,17 +157,17 @@ input:required, textarea:required, select:required {
 }
 
 nav .nav-link:hover{
-    color: #eee;
-    background-color: #1089ff;
+    color: var(--quarternary);
+    background-color: var(--secondary);
 }
 
 nav .nav-link{
-    color: #eee;
+    color: var(--quarternary);
 }
 
 li.active .nav-link{
-    color: #eee;
-    background-color: #1089ff;
+    color: var(--quarternary);
+    background-color: var(--secondary);
 }
 
 .jumbo-gradient{
@@ -168,7 +181,7 @@ background: linear-gradient(90deg, rgba(0,123,255,1) 0%, rgba(176,224,230,1) 100
 }
 
 .list-group-item:hover {
-    border-left: 3px solid #1089ff;
+    border-left: 3px solid var(--secondary);
 }
 
 .list-group-item a{
@@ -249,7 +262,7 @@ table tr{
     left: 0px;
     bottom: 0px;
     z-index: 10;
-    background-color: #EEE;
+    background-color: var(--quarternary);
 }
 
 .floating-submit button {
@@ -266,10 +279,10 @@ table tr{
 }
 
 .notification-button{
-    color: #EEE;
+    color: var(--quarternary);
     font-size: 1.5rem;
     text-align: center;
-    background-color: #1089ff;
+    background-color: var(--secondary);
     border-radius: 15px;
     width:45px;
     float:right;
@@ -281,8 +294,8 @@ table tr{
 }
 
 .dropdown-item:hover {
-    color: #EEE;
-    background-color: #1089ff;
+    color: var(--quarternary);
+    background-color: var(--secondary);
 }
 
 
@@ -291,7 +304,7 @@ table tr{
 /* Umisoft */
 
 body {
-    background-color: #eee;
+    background-color: var(--quarternary);
 }
 
 main {
@@ -302,20 +315,19 @@ main {
 #nav {
     flex: 1;
     padding: 5px;
-    min-height: 100vh;
-    background-color: #23374d;
+    height: 100vh !important;
+    background-color: var(--primary);
 }
 
 #window {
     flex: 6;
+    height: 100vh !important;
 }
 
 section#title {
     width: 100%;
-    height: 10vh;
-    max-height: 4rem;
-    background-color: #23374d;
-    color: #eee;
+    background-color: var(--primary);
+    color: var(--quarternary);
     position: sticky;
     top:0;
     font-size: 2rem;
@@ -324,6 +336,11 @@ section#title {
     display:flex;
     flex-direction: row;
 }
+
+section#title button{
+    height: 100% !important
+}
+
 #title-text {
     flex: 20;
 }
@@ -334,36 +351,87 @@ section#title {
     padding: 2px;
 }
 
+@media(max-height: 720px){
+    #content{
+        height: 80vh !important;
+    }
+    section#title{
+        height: 10vh !important;
+    }
+    #footer{
+        height: 10vh !important;
+    }
+}
+
+@media(min-height: 721px){
+    #content{
+        height: 87.5vh !important;
+    }
+
+    section#title{
+        height: 7.5vh !important;
+    }
+    #footer{
+        height: 5vh !important;
+    }
+}
+
 #content {
-    min-height: 80vh;
     padding-bottom: 30px;
     padding-top: 3px;
+    overflow-y:scroll;
+}
+
+#content::-webkit-scrollbar {
+    width: 5px;
+    background-color: var(--tertiary);
+ }
+
+#content::-webkit-scrollbar-thumb {
+    width: 5px;
+    background: var(--secondary);
+}
+
+
+#content::-webkit-scrollbar-thumb:hover {
+    width: 15px;
+    background: var(--secondary);
 }
 
 #footer {
-    height: 10vh;
-    max-height: 4rem;
-    background-color: #23374d;
+    background-color: var(--primary);
     z-index: 999;
 }
 
-.navbar-brand {
-    color: #eee;
+.hero {
+    width: 400px;
+    margin: 20vh auto;
+    background-color: var(--primary);
+    color: white;
+}
+
+.logo {
+    text-align:center;
+}
+
+
+.navbar-brand, .logo {
+    color: var(--quarternary);
     margin: 0.5rem 0;
 }
 
-.navbar-brand:hover {
-    color: #eee;
-    background-color: #1089ff;
+.navbar-brand:hover, .logo:hover {
+    color: var(--quarternary);
+    background-color: var(--secondary);
     padding: 0.5rem;
     border-radius: 0.25rem
 }
 
-.navbar-brand:hover::first-letter {
+.navbar-brand:hover::first-letter, .logo:hover::first-letter {
     padding-right: 0
 }
-.navbar-brand::first-letter{
-    background-color: #1089ff;
+.navbar-brand::first-letter, .logo::first-letter{
+    background-color: var(--secondary);
     padding: 0.5rem;
     border-radius: 0.25rem;
 
@@ -372,12 +440,12 @@ section#title {
 /* forms */
 
 .action-link {
-    color: #23374d !important;
+    color: var(--primary) !important;
     display:block !important;
 }
 
 .action-link:hover {
-    color: #1089ff !important;
+    color: var(--secondary) !important;
     text-decoration: underline !important;
     display:block !important;
 }
@@ -407,13 +475,13 @@ section#title {
 }
 
 .dash-visualization h4 {
-    color: #eee;
-    background-color: #23374d;
+    color: var(--quarternary);
+    background-color: var(--primary);
     padding: 5px;
 }
 
 .dash-icon {
-    color: #23374d;
+    color: var(--primary);
     opacity: 0.2;
     z-index: -1;
     transform: rotateZ(-20deg);
@@ -441,7 +509,7 @@ section#title {
     right: -40vw;
     top: 0px;
     padding: 5px;
-    background-color: #23374d;
+    background-color: var(--primary);
     transition: right 2.5s linear;
 }
 
@@ -451,7 +519,7 @@ section#title {
 
 .notification-window h4{
     color:white;;
-    background-color: #1089ff;
+    background-color: var(--secondary);
     padding: 10px;
 
 }
@@ -466,15 +534,20 @@ section#title {
 }
 
 .nav-tabs a.nav-link.active {
-    border-top: 3px solid #23374d;
+    border-top: 3px solid var(--primary);
 }
 
 .nav-tabs a.nav-link:hover {
-    background-color: #23374d;
+    background-color: var(--primary);
     color: white
 }
 
 .sub-frame {
     width: 100%;
     min-height: 500px;
+}
+
+.scroll-frame{
+    overflow-y: scroll;
+    height: 100vh !important;
 }

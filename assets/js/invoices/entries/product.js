@@ -33,22 +33,30 @@ class ProductEntry extends Component{
     }
 
     handleProductSelect = (value) =>{
+        console.log('called')
         const pk = value.split('-')[0];
         axios({
             'method': 'get',
             'url': '/inventory/api/inventory-item/' + pk 
         }).then((res)=>{
             //tax 
+            let taxString
             let tax = document.getElementById('product-tax');
             if(res.data.product_component.tax){
                 tax.value = res.data.product_component.tax.id;
-            }
+                taxString = res.data.product_component.tax.id + ' - ' + 
+                    res.data.product_component.tax.name + '@' +
+                    res.data.product_component.tax.rate
+            }else{
+                taxString = '1 - None@0'
+                tax.value = "1"
+            } 
 
+
+            
             this.setState({
                 unitPrice: res.data.unit_sales_price,
-                tax:res.data.product_component.tax.id + ' - ' + 
-                        res.data.product_component.tax.name + '@' +
-                        res.data.product_component.tax.rate,
+                tax: taxString,
                 selected: value
             }, 
                 () => this.props.changeHandler(this.state))
@@ -152,6 +160,7 @@ class ProductEntry extends Component{
                             <td>
                                 <button 
                                     onClick={this.props.insertHandler} 
+                                    type='button'
                                     className="invoice-btn" >Insert</button>
                             </td>
                         </tr>

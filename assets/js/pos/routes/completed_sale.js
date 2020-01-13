@@ -30,7 +30,7 @@ const completedSalePage =(props) =>{
             {/*Auto print receipt */}
             <h1>Validated Sale</h1>
             <hr className="my-2"/>
-            <h4>Change: {change}</h4>
+            <h4>Change: {change.toFixed(2)}</h4>
             <hr className="my-2"/>
             <h4>Receipt</h4>
             <div>
@@ -71,7 +71,7 @@ const completedSalePage =(props) =>{
                                 </tr>
                                 <tr>
                                     <td colSpan={2}>Change</td>
-                                    <td>{change}</td>
+                                    <td>{change.toFixed(2)}</td>
                                 </tr>
                             </tfoot>
                         </table>

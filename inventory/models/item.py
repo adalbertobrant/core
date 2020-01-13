@@ -191,9 +191,8 @@ class ProductComponent(models.Model):
     markup = models.DecimalField(max_digits=16, decimal_places=2, default=0)
     sku = models.CharField(max_length=16, blank=True)
     tax = models.ForeignKey('accounting.tax', 
-        blank=True, 
-        null=True, 
-        on_delete=models.SET_NULL)
+        default=1, 
+        on_delete=models.SET_DEFAULT)
     
 
 

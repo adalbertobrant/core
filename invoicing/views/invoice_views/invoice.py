@@ -164,7 +164,6 @@ class InvoicePaymentView(ContextMixin, CreateView):
     model = Payment
     template_name = os.path.join('common_data', 'create_template.html')
     form_class = forms.InvoicePaymentForm
-    success_url = reverse_lazy('invoicing:invoices-list')
     extra_context= {
         'title': 'Apply Payment to  Invoice'
     }

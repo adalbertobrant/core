@@ -1,16 +1,22 @@
 <html>
 {% include 'common_data/page/page_common.html' %}
 <body>
+        
         {% if pdf_link %}
+        <div id="scroll-frame">
         {% block pre_page %}
         {% endblock pre_page %}
         {% endif %}
     
 
-    <div class="page-container"> 
+    
+        <div class="{% if pdf_link %}page-container{% else %}print-page-container{% endif %}"> 
             <div class="custom-page">
                 {% block page_contents %}{% endblock %}
             </div>
         </div>
+    {% if pdf_link %}
+        </div>
+    {% endif %}
 </body>
 </html>

@@ -33,7 +33,26 @@ import setMultipleAttrs from '../../utils';
 
 class MutableTable extends Component{
     state = {
-        data: []
+        data: [],
+        processed: [],
+        next: null,
+        previous: null
+    }
+
+    urlHandler = (url, postStateChange) =>{
+        axios({
+            'url': url,
+            'method': 'GET'
+        }).then(res =>{
+            //check pagination
+            this.setState({data: this.props.resProcessor(res).map((data) =>({
+                ...data,
+                verified: false,         
+            })),
+            next: 'next' in res.data ? res.data.next : null,
+            previous: 'previous' in res.data ? res.data.previous : null,
+        }, postStateChange())
+    })
     }
 
     componentDidMount(){
@@ -44,16 +63,8 @@ class MutableTable extends Component{
         }
 
         let form = document.forms[0];
-
-        axios({
-            'url': this.props.dataURL,
-            'method': 'GET'
-        }).then(res =>{
-            this.setState({data: this.props.resProcessor(res).map((data) =>({
-                ...data,
-                verified: false
-            }))}, () =>{
-                let input = document.createElement("input");
+        this.urlHandler(this.props.dataURL, () =>{
+            let input = document.createElement("input");
                 setMultipleAttrs(input, {
                     'type': 'hidden',
                     'name': this.props.formHiddenFieldName,
@@ -61,8 +72,19 @@ class MutableTable extends Component{
                     'id': `id_${this.props.formHiddenFieldName}`
                 })
                 form.appendChild(input);
-            })
-        });
+        })
+    }
+
+    nextHandler = () =>{
+        this.urlHandler(this.state.next, () =>{
+            console.log(this.state)
+        })
+    }
+
+    prevHandler = () =>{
+        this.urlHandler(this.state.previous, () =>{
+            console.log(this.state)
+        })
     }
 
     toggleVerify = (rowID) =>{
@@ -142,6 +164,20 @@ class MutableTable extends Component{
                         }
                     </tbody>
                 </table>
+                <div style={{
+                    display: this.state.previous == null && 
+                             this.state.next == null
+                        ? 'none'
+                        : 'block'}}>
+                    <button className='primary text-white btn'
+                        disabled={this.state.previous == null}
+                        onClick={this.prevHandler}>
+                        <i className="fa fa-arrow-left" aria-hidden="true"></i> Prev</button>
+                    <button className='primary text-white btn'
+                        disabled={this.state.next == null}
+                        onClick={this.nextHandler}>
+                        Next <i className="fa fa-arrow-right" aria-hidden="true"></i></button>
+                </div>
             </div>
             )
     }

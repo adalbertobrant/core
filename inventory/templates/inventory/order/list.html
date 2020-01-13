@@ -60,9 +60,11 @@
                 <a class="dropdown-item" href="{% url 'inventory:debit-note-create' pk=order.pk %}">
                     <i class="fas fa-trash"></i> Create Debit Note
                 </a>
+                {% if order.debitnote_set.all.count > 0 %}
                 <a class="dropdown-item" href="{% url 'inventory:debit-note-list' pk=order.pk %}">
                         <i class="fas fa-list-ol"></i> View Debit Notes
                 </a>
+                {% endif %}
 
                 <h6 class="dropdown-header">Shipping and Handling</h6>                
                 <a href="{% url 'inventory:order-expense' pk=order.pk %}" class="dropdown-item">

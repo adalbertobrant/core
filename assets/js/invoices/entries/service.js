@@ -165,6 +165,7 @@ class ServiceEntry extends Component{
                             <td>
                                 <button 
                                     onClick={this.insertHandler} 
+                                    type='button'
                                     className="invoice-btn" >Insert</button>
                             </td>
                         </tr>

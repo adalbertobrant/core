@@ -161,7 +161,8 @@ LOGIN_REDIRECT_URL = '/invoicing/'
 
 
 WKHTMLTOPDF_CMD_OPTIONS = {
-    'quiet': False,
+    'quiet': True,
+    'disable-smart-shrinking': True
 }
 
 

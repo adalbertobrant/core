@@ -50,6 +50,9 @@ class SalesConfigForm(forms.ModelForm, BootstrapMixin):
                 'next_quotation_number',
                 'include_units_in_sales_invoice',
                 'include_shipping_address',
+                ),
+            Tab('POS Settings',
+                'default_warehouse',
                 )
         ))
 

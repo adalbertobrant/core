@@ -70,7 +70,6 @@ table {
 .custom-page {
     width: 100%;
     height: 100%;
-    
 }
 
 .page-container-iframe {
@@ -89,15 +88,67 @@ table {
     width: 21cm;
     height: 29.7cm;
     box-shadow: 5px 5px 20px #ccc;
-    overflow-y: auto;
 }
 
-.page-container::-webkit-scrollbar {
-    width: 1px;
-    background-color: rgba(33,33,33,0);
+.table-frame {
+    padding: 2cm;
+    box-shadow: 5px 5px 20px #ccc;
 }
 
+.print-page-container {
+    padding-left: 0.5in;
+    padding-right: 0.5in;
+    width: 20cm !important;
+    height: 29.7cm !important;
+    background-color: white;
+    margin: 0;
+}
+
+.page-container .eop{
+    margin-bottom: 10cm;
+}
 
 .eop {
     page-break-before: always;
+}
+
+#page-layout {
+    width: 100%;
+    /* height: 100%; */
+}
+
+#title {
+    text-align: center;
+}
+
+#scroll-frame {
+    height: 100vh !important;
+    overflow-y: scroll;
+}
+
+.no-break {
+    page-break-inside: avoid;
+    /* page-break-before: always;
+    page-break-after: always; */
+    max-height: 500px;
+    height: 500px;
+    margin-bottom:5mm;
+}
+
+.my-modal{
+    position: absolute;
+    top: 0;
+    z-index: 10000;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    background-color: rgba(30,30,30,0.7);
+}
+
+.my-modal-content {
+    width: 400px;
+    padding: 30px;
+    margin: 30px auto;
+    background-color: white;
 }

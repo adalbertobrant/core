@@ -1,22 +1,18 @@
 {% extends "common_data/page/pdf_page.html" %} 
 
 {% block pre_page %}
+<section id='title'>
+    <div id='title-text'>Invoice</div>
+    <div id='action-icon dropdown'>
 
+        <button class="btn btn-block primary " id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
 
-<div class="jumbotron">
-<script>
-    function toggleValidateForm(){
-        $('#validate-form').toggle();
-    }
-</script>
-<div class="dropdown ">
-            <button class=" btn btn-primary btn-lg dropdown-toggle " type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
-                aria-expanded="false">
-                Actions
-            </button>
-            <div class="dropdown-menu" aria-labelledby="triggerId">
-                
-                {% if object.status == "quotation" %}
+        <div class="dropdown-menu" aria-labelledby="triggerId">
+            {% if object.draft %}
+                <button class="dropdown-item" onclick='toggleValidateForm()'>Validate Invoice</button>
+            {% endif %}
+            {% if object.status == "quotation" %}
                 {% if object.quotation_is_valid %}
                     <a class="dropdown-item" href="{% url 'invoicing:make-invoice' pk=object.pk %}"> <i class="fa fa-file-alt" aria-hidden="true"></i> Make Invoice from Quotation</a>
                     <a class="dropdown-item" href="{% url 'invoicing:make-proforma' pk=object.pk %}"> <i class="fa fa-file" aria-hidden="true"></i> Make Proforma Invoice from Quotation</a>
@@ -29,7 +25,6 @@
 
                 {% if object.draft %}
 
-                <button class="dropdown-item" onclick="toggleValidateForm()">Validate Invoice</button>
 
                 <a class="dropdown-item" href="{% if object.status == 'quotation' %} {% url 'invoicing:quotation-update' pk=object.pk %} {% else %} {% url 'invoicing:invoice-update' pk=object.pk %} {% endif %}">
                     <i class="fas fa-edit"></i> Update
@@ -71,36 +66,32 @@
                 {% comment %} <a class="dropdown-item" href="{% if object.status == 'quotation' %} {% url 'invoicing:quotation-email' pk=object.pk %} {% else %} {% url 'invoicing:invoice-email' pk=object.pk %} {% endif %}">
                         <i class="fas fa-at"></i> Send Email
                     </a> {% endcomment %}
-                
-            </div>
         </div>
+    </div>
+</section>
+<script>
+    function toggleValidateForm(){
+        $('.my-modal').toggle();
+    }
+</script>
 
 
-<div id="validate-form" style="margin:0px auto;width:320px;padding:10px;display:none" >
-    <form action="{% url 'invoicing:invoice-verify' pk=object.pk %}" method="POST">
-    <h5>Validate Document</h5>
-    {% csrf_token %}
-    {{validate_form.as_p}}
-    <button class="btn btn-primary">Submit</button>
-    </form>
-</div>
-
-
+<div class="my-modal">
+    <div class='my-modal-content' id="validate-form">
+        <form action="{% url 'invoicing:invoice-verify' pk=object.pk %}" method="POST">
+        <h5>Validate Document</h5>
+        {% csrf_token %}
+        {{validate_form.as_p}}
+        <button class="btn btn-primary">Submit</button>
+        </form>
+        <button class="btn btn-danger" onclick='toggleValidateForm()'>Cancel</button>
+    </div>
 </div>
 
 {% endblock %}
 
 {% block page_contents %}
-<style>
-    #page-layout {
-        width: 100%;
-        height: 100%;
-    }
 
-    #title {
-        text-align: center;
-    }
-</style>
 
 {% include "invoicing/invoice/document.html" %}
 {% endblock %}

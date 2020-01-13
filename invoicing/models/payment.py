@@ -3,6 +3,7 @@ from django.db import models
 from accounting.models import Account, Journal, JournalEntry
 from decimal import Decimal as D
 from common_data.models import SoftDeletionModel
+from django.shortcuts import reverse
 
 class Payment(SoftDeletionModel):
     '''Model represents payments made by credit customers only!
@@ -40,6 +41,10 @@ class Payment(SoftDeletionModel):
     
     def __str__(self):
         return 'PMT' + str(self.pk)
+
+    def get_absolute_url(self):
+        return reverse("invoicing:invoice-payment-detail", kwargs={"pk": self.invoice.pk})
+    
 
     @property
     def due(self):
