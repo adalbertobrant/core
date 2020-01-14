@@ -262,9 +262,19 @@ class GoodsReceivedVoucherView(ContextMixin,
     def get_multipage_queryset(self):
         return self.object.stockreceiptline_set.all()
         
-class GoodsReceivedVoucherPDFView( ConfigMixin, PDFDetailView):
+class GoodsReceivedVoucherPDFView(ConfigMixin,
+                                  MultiPageDocument, 
+                                  PDFDetailView):
     template_name = os.path.join("inventory", "goods_received", "voucher.html")
     model = models.StockReceipt
+    page_length=20
+
+    def get_multipage_queryset(self):
+        return models.StockReceipt.objects.get(
+            pk=self.kwargs['pk']
+        ).stockreceiptline_set.all()
+        
+
 class GoodsReceiptsList(TemplateView):
     template_name=os.path.join('inventory','goods_received', 'list.html')
 

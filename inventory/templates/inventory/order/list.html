@@ -70,9 +70,11 @@
                 <a href="{% url 'inventory:order-expense' pk=order.pk %}" class="dropdown-item">
                     <i class="fas fa-truck"></i> Add Shipping And Handling Expenses
                 </a>
-                <a href="{% url 'inventory:order-expense-list' pk=order.pk %}" class="dropdown-item">
-                    <i class="fas fa-list-ol"></i> List Shipping And Handling Expenses
-                </a>
+                {% if order.shipping_cost_entries.all.count > 0 %}
+                    <a href="{% url 'inventory:order-expense-list' pk=order.pk %}" class="dropdown-item">
+                        <i class="fas fa-list-ol"></i> List Shipping And Handling Expenses
+                    </a>
+                {% endif %}
                 <h6 class="dropdown-header">Goods Receipts</h6>                
 
                 <a class="dropdown-item" href="{% url 'inventory:stock-receipt-create' warehouse=order.ship_to.pk pk=order.pk %}">

@@ -26,6 +26,7 @@ class DebitNote(models.Model):
     comments = models.TextField()#never allow blank comments
     entry = models.ForeignKey('accounting.JournalEntry', null=True, 
         on_delete=models.SET_NULL)
+        
     def get_absolute_url(self):
         return reverse("inventory:debit-note-detail", kwargs={"pk": self.pk})
     

@@ -142,8 +142,35 @@ class WareHouseItem(models.Model):
     location = models.ForeignKey('inventory.StorageMedia', blank=True, 
         on_delete=models.SET_NULL, null=True)
     verified = models.BooleanField(default=False)
+    last_check_date = models.DateField(blank=True, null=True)
     #verification expires after the next inventory check date
 
+    @property
+    def quantity_color(self):
+        if self.quantity == 0:
+            return 'red'
+
+        
+        if self.item.minimum_order_level == 0 and \
+                self.item.maximum_stock_level == 0:
+            return 'green'
+
+        if self.quantity < self.item.minimum_order_level or \
+                self.quantity > self.item.maximum_stock_level:
+            return 'red'
+        return 'green'
+
+    @property
+    def check_color(self):
+        if self.last_check_date == None:
+            return 'red'
+        delta = (datetime.date.today() - self.last_check_date).days
+        if delta > 60:
+            return 'red'
+        elif delta < 60:
+            return 'orange'
+        elif delta < 30:
+            return 'green'
 
     def increment(self, amt):
         amount = float(amt)
@@ -169,6 +196,8 @@ class WareHouseItem(models.Model):
     
     def __str__(self):
         return self.name
+
+
     
     @property
     def stock_value(self):

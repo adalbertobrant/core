@@ -1,5 +1,22 @@
 {% extends "common_data/page/pdf_page.html" %}
 
+{% block pre_page %}
+<section id='title'>
+    <div id='title-text'>Goods Received Note</div>
+    <div id='action-icon dropdown'>
+
+        <button class="btn btn-block primary " id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
+
+            <div class="dropdown-menu" aria-labelledby="triggerId">
+                <a href="{% url 'inventory:goods-received-pdf' pk=object.pk %}" class="dropdown-item"> <i class="fas fa-file-pdf" aria-hidden="true"></i> Generate PDF</a>
+       </div>
+    </div>
+</section>
+    
+{% endblock pre_page %}
+
+
 {% block page_contents %}
 
 <div style="width:100%">
@@ -48,9 +65,4 @@
 
 {% endfor %}
 </div>
-
-
-{% if pdf_link %}
-<a href="{% url 'inventory:goods-received-pdf' pk=object.pk %}" class="btn btn-danger">Generate PDF</a>
-{% endif %}
 {% endblock %}

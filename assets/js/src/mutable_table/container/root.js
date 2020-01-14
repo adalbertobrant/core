@@ -97,7 +97,7 @@ class MutableTable extends Component{
 
     verifyHandler = () =>{
         // iterate over all lines if all are verified enable the submit button 
-
+        //create list with verified items, when the length of this is equal to the data list, allow submitting of the form.
         let i;
         let verified = true;
         for(i=0; i < this.state.data.length; i++){

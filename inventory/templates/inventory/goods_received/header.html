@@ -12,14 +12,6 @@ Goods Received Note
     <h6>{{object.order.supplier}}</h6>
     <p>{{object.order.supplier.address | linebreaks}} </p>
 </div>
-{% endblock left_content %}
-
-{% block right_content %}
-    {% include 'common_data/common/business.html' %}
-{% endblock right_content %}
-
-{% block lower_left %}
-
 <table style="width:100%;">
     <tbody >
         <tr>
@@ -36,5 +28,11 @@ Goods Received Note
         </tr>
     </tbody>
 </table>
+{% endblock left_content %}
 
+{% block right_content %}
+    {% include 'common_data/common/business.html' %}
+{% endblock right_content %}
+
+{% block lower_left %}
 {% endblock lower_left %}
