@@ -13,7 +13,8 @@ const titleBar = (props) =>{
                 {props.fieldOrder.map((fieldName, i)=>(
                     <th key={i}
                         style={{
-                            padding: "10px",
+                            padding: "5px",
+                            borderRight: "1px solid white",
                             width: `${props.fields[i].width}%`
                         }}>
                         {fieldName}

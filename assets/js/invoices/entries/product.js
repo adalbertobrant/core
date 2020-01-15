@@ -33,7 +33,6 @@ class ProductEntry extends Component{
     }
 
     handleProductSelect = (value) =>{
-        console.log('called')
         const pk = value.split('-')[0];
         axios({
             'method': 'get',
@@ -121,6 +120,7 @@ class ProductEntry extends Component{
                             <td >
                                 <input 
                                     type="number"
+                                    className='form-control'
                                     name="unitPrice"
                                     onChange={this.handler}
                                     value={this.state.unitPrice}
@@ -129,6 +129,8 @@ class ProductEntry extends Component{
                             <td >
                                 <input 
                                     type="number"
+                                    className='form-control'
+
                                     name="quantity"
                                     value={this.state.quantity}
                                     onChange={this.handler}/>
@@ -136,6 +138,7 @@ class ProductEntry extends Component{
                             <td >
                                 <input 
                                     type="number"
+                                    className='form-control'
                                     name="discount"
                                     value={this.state.discount}
                                     
@@ -144,8 +147,7 @@ class ProductEntry extends Component{
                             
                             <td >
                                 {/*Use a tax choice field */}
-                                <AsyncSelect 
-                                    noCSS
+                                <AsyncSelect
                                     ID='product-tax'
                                     dataURL="/accounting/api/tax"
                                     name="tax"

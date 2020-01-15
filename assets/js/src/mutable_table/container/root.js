@@ -34,6 +34,7 @@ import setMultipleAttrs from '../../utils';
 class MutableTable extends Component{
     state = {
         data: [],
+        verified: [],
         processed: [],
         next: null,
         previous: null
@@ -91,21 +92,30 @@ class MutableTable extends Component{
         let newData = [...this.state.data];
         let newRow = {...this.state.data[rowID]};
         newRow['verified'] = !newRow.verified;
+
         newData[rowID] =  newRow;
-        this.setState({data: newData}, this.verifyHandler);
+        let newVerified = [...this.state.verified]
+        if(newRow.verified){
+            newVerified.push({
+                rowID: rowID,
+                ...newRow
+            })
+        }else{
+            newVerified = newVerified.filter(item =>{
+                return item.rowID !== rowID
+            })
+        }
+
+        this.setState({
+            data: newData,
+            verified: newVerified
+        }, this.verifyHandler);
     }
 
     verifyHandler = () =>{
         // iterate over all lines if all are verified enable the submit button 
-        //create list with verified items, when the length of this is equal to the data list, allow submitting of the form.
-        let i;
-        let verified = true;
-        for(i=0; i < this.state.data.length; i++){
-            if(!this.state.data[i].verified){
-                verified = false;
-            }
-        }
-        if(verified){
+        this.updateForm()
+        if(this.state.verified.length > 0){
             let submitButton = getSubmit();
             if(submitButton){
                 submitButton.removeAttribute('disabled');
@@ -121,7 +131,7 @@ class MutableTable extends Component{
     updateForm = () =>{
         let input = document.getElementById(`id_${this.props.formHiddenFieldName}`);
         const formValue = encodeURIComponent(JSON.stringify(
-            this.state.data));
+            this.state.verified));
         input.setAttribute('value', formValue);
                 
     }
@@ -142,7 +152,7 @@ class MutableTable extends Component{
         return(
             <div>
                 <ProgressBar data={this.state.data} />
-                <table className="table">
+                <table className="table tight">
                 <TitleBar headings={this.props.headings}/>          
                     <tbody>
                         {this.state.data.length === 0 ? 
@@ -164,7 +174,7 @@ class MutableTable extends Component{
                         }
                     </tbody>
                 </table>
-                <div style={{
+                <div className='btn-group' style={{
                     display: this.state.previous == null && 
                              this.state.next == null
                         ? 'none'

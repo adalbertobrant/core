@@ -162,7 +162,7 @@ class SearchableWidget extends Component {
     }
     render(){
         return(
-            <div id={this.props.widgetID} style={this.props.widgetID ? {} :{
+            <div className='search-widget' id={this.props.widgetID} style={{
                 width:"100%",
                 margin: "2px",
                 position:"relative",
@@ -206,9 +206,10 @@ class TextBoxWidget extends Component{
             icon = "fa-times"
         }
         return(<div 
+                className='search-widget-text'
                 id={this.props.idRoot ?  `${this.props.idRoot}-text-box` : '' } 
                 style={this.props.idRoot ? {} :{
-            padding: "3px", 
+            width: '100%',
             backgroundColor: "white", 
             borderRadius: "2px"}}>
         <input 
@@ -218,14 +219,16 @@ class TextBoxWidget extends Component{
             onChange={this.props.handleChange}
             placeholder="Select item..."
             style={{
-                padding: "3px",
+                margin: '0px',
+                padding: ".25rem",
+                fontSize: '.875rem',
                 border: this.props.bordered ? "1px" : "0px",
-                width:"85%",
+                flex: 5,
                 backgroundColor: this.props.validChoice === "" ?
                     "#fff" : "#b0e0e6"
         }}/>
         <button type="button" style={{
-            width: "15%",
+            flex: 1,
             height: "100%",
             border: "0px",
             backgroundColor: "#fff",

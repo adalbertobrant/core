@@ -56,11 +56,17 @@ Warehouse Details
         <div class="col-sm-4">
             <div class="card shadow">
                 <div class="card-body">
-                <h4 class="card-title">Warehouse Details</h4>
-                <p class="card-text"><b>Name:</b> {{object.name}}</p>
-                <p class="card-text"><b>Location:</b> <br>
-                    {{object.address | linebreaks}} </p>
-                <p class="card-text"># of unique SKUs: {{object.all_items.count}} </p>
+                <h4 class="card-title">{{object.name}}</h4>
+                <p class="card-text"><table>
+                    <tbody>
+                        <tr>
+                            <td style='padding-right: 0.5rem;'><i class="fa fa-home fa-2x" aria-hidden="true"></i></td>
+                            <td>{{object.address | linebreaks}}</td>
+                        </tr>
+                    </tbody>
+                </table> 
+                     </p>
+                <p class="card-text"><span class="important">{{object.all_items.count}}</span> unique SKUs  </p>
             </div>
             </div>
         </div>

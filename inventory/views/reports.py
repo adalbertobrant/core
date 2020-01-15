@@ -15,6 +15,7 @@ from inventory.views.common import CREATE_TEMPLATE
 from wkhtmltopdf.views import PDFTemplateView
 from accounting.models import JournalEntry, Credit, Debit
 from django.db.models import Q
+from inventory.views.dash_plotters import average_delivery_plot
 
 class InventoryReport( ConfigMixin, MultiPageDocument,TemplateView):
     template_name = os.path.join('inventory', 'reports', 'inventory',
@@ -67,9 +68,12 @@ class InventoryReportPDFView( ConfigMixin, MultiPageDocument,  PDFTemplateView):
         return context
 
 
-class OutstandingOrderReportPDFView( ConfigMixin, PDFTemplateView):
+class OutstandingOrderReportPDFView( ConfigMixin, MultiPageDocument, PDFTemplateView):
     template_name = OutstandingOrderReport.template_name
 
+    def get_multipage_queryset(self):
+        return models.Order.objects.all()
+        
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         #TODO limit to orders that are not yet fully received
@@ -156,6 +160,11 @@ class VendorAverageDaysToDeliverReportView(ConfigMixin,
         'pdf_link': True
     } 
 
+    def get_context_data(self, *args, **kwargs):
+        context =  super().get_context_data(*args, **kwargs)
+        context['chart'] = average_delivery_plot().render(is_unicode=True)
+        return context
+
     def get_multipage_queryset(self):
         return models.Supplier.objects.all()
 
@@ -168,6 +177,11 @@ class VendorAverageDaysToDeliverPDFView(ContextMixin,
     extra_context = {
         'date': datetime.date.today()
     }
+
+    def get_context_data(self, *args, **kwargs):
+        context =  super().get_context_data(*args, **kwargs)
+        context['chart'] = average_delivery_plot().render(is_unicode=True)
+        return context
 
     def get_multipage_queryset(self):
         return VendorAverageDaysToDeliverReportView.get_multipage_queryset(self)

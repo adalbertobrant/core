@@ -145,7 +145,7 @@ class CustomerStatementPDFView(ConfigMixin, MultiPageDocument,PDFTemplateView):
 
 class InvoiceAgingReport(ConfigMixin, MultiPageDocument, TemplateView):
     template_name = os.path.join('invoicing', 'reports', 'aging.html')
-    page_length = 20
+    page_length = 30
 
     def get_multipage_queryset(self):
         return models.Customer.objects.all()

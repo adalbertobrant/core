@@ -121,6 +121,7 @@ class ServiceEntry extends Component{
                             </td>
                             <td>
                                 <input 
+                                    className='form-control'
                                     type="number"
                                     name="fee"
                                     value={this.state.fee}
@@ -128,6 +129,7 @@ class ServiceEntry extends Component{
                             </td>
                             <td>
                                 <input 
+                                    className='form-control'
                                     type="number"
                                     name="rate"
                                     value={this.state.rate}
@@ -135,6 +137,7 @@ class ServiceEntry extends Component{
                             </td>
                             <td>
                                 <input 
+                                    className='form-control'
                                     type="number"
                                     name="hours"
                                     value={this.state.hours}
@@ -142,6 +145,7 @@ class ServiceEntry extends Component{
                             </td>
                             <td>
                                 <input 
+                                    className='form-control'
                                     type="number"
                                     name="discount"
                                     value={this.state.discount}
@@ -150,7 +154,6 @@ class ServiceEntry extends Component{
                             <td>
                                 {/*Use a tax choice field */}
                                 <AsyncSelect 
-                                    noCSS
                                     ID='service-tax'
                                     dataURL="/accounting/api/tax"
                                     name="tax"

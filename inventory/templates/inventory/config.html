@@ -3,12 +3,12 @@
 {% load crispy_forms_tags %}
 {% block head %}
 <link rel="stylesheet" href="{% static 'common_data/css/forms.css' %}">
-{% endblock %} {% block content %}
-<div class="jumbotron">
-    <h1 class="display-3">Inventory Configuration</h1>
-    <p class="my-2">Settings for inventory</p>
-    <hr class="my-2" />
-</div>
+{% endblock %} 
+{% block heading %}
+Inventory Configuration
+{% endblock heading %}
+{% block content %}
+
 <div class="container">
     <div class="row">
         <div class="col-sm-12">

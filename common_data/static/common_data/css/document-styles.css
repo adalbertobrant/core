@@ -16,7 +16,7 @@
 }
 
 #item-table tbody td{
-    border-right: 1px solid #555;
+    border-right: 1px solid #999;
     padding: 10px;
 }
 
@@ -24,6 +24,21 @@ table {
     border-collapse: collapse;
 }
 
+.align-right {
+    text-align: right;
+}
+
+.align-left {
+    text-align: left;
+}
+
+th.bordered, td.bordered {
+    border: 1px solid #999
+}
+
+.align-center {
+    text-align: center;
+}
 
 .simple-content thead td {
     font-size: 1.125rem;

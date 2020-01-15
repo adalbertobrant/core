@@ -113,6 +113,7 @@ class ExpenseEntry extends Component{
                             </td>
                             <td>
                                 <input 
+                                    className='form-control'
                                     type="number"
                                     name="discount"
                                     value={this.state.discount}
@@ -120,7 +121,6 @@ class ExpenseEntry extends Component{
                             </td>
                             <td>
                             <AsyncSelect 
-                            noCSS
                             dataURL="/accounting/api/tax"
                             name="tax"
                             resProcessor={(res) =>{

@@ -85,7 +85,7 @@ if(inventoryCheck){
                 {
                     name: 'item',
                     type: 'search',
-                    width: 35,
+                    width:40,
                     'model': 'inventoryitem',
                     'app': 'inventory',
                     'newLink': '/inventory/product-create',

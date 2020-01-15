@@ -7,6 +7,7 @@ from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView
 
 from common_data.utilities import ConfigMixin, ContextMixin
+from common_data.views import PDFDetailView
 from inventory import forms, models
 from invoicing.models import SalesConfig
 
@@ -59,5 +60,14 @@ class ScrappingReportDetailView(ContextMixin, ConfigMixin, DetailView):
     template_name = os.path.join('inventory', 'scrapping', 'detail.html')
     model = models.InventoryScrappingRecord
     extra_context = {
-        'title': 'Inventory Scrapping Report'
+        'title': 'Inventory Scrapping Report',
+        'pdf_link': True
+    }
+
+
+class ScrappingReportPDFView(ContextMixin, ConfigMixin, PDFDetailView):
+    template_name = os.path.join('inventory', 'scrapping', 'detail.html')
+    model = models.InventoryScrappingRecord
+    extra_context = {
+        'title': 'Inventory Scrapping Report',
     }

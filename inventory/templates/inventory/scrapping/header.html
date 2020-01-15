@@ -1,0 +1,34 @@
+{% extends 'common_data/common/document_header.html' %}
+
+{% block title %}
+Scrap Report
+{% endblock title %}
+
+{% block left_content %}
+<table>
+    <tbody>
+        <tr>
+            <td>Date:</td>
+            <td>{{object.date}}</td>
+        </tr>
+        <tr>
+            <td>Performed By:</td>
+            <td>{{object.controller}}</td>
+        </tr>
+        <tr>
+            <td>Scrapping Record Number:</td>
+            <td>{{object.pk}}</td>
+        </tr>
+    </tbody>
+</table>
+<p><b>Warehouse:</b></p>
+<p>{{object.warehouse}}</p>
+<p>{{object.warehouse.address}}</p>
+{% endblock left_content %}
+
+{% block right_content %}
+    {% include 'common_data/common/business.html' %}
+{% endblock right_content %}
+
+{% block lower_left %}
+{% endblock lower_left %}

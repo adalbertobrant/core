@@ -111,7 +111,7 @@ class inputLine extends Component{
                 //controlled without a reset flag
                 return <input 
                         type="text"
-                        className="form-control"
+                        className="form-control form-control-sm"
                         onChange={this.inputHandler}
                         name={field.name}
                         value={this.state.data[field.name]}
@@ -121,7 +121,7 @@ class inputLine extends Component{
                 //controlled without a resetFlag
                 return <input 
                         type="date"
-                        className="form-control"
+                        className="form-control form-control-sm"
                         onChange={this.inputHandler}
                         name={field.name}
                         value={this.state.data[field.name]}
@@ -131,7 +131,7 @@ class inputLine extends Component{
                 //controlled without a reset flag
                 return <input 
                     type="number"
-                    className="form-control"
+                    className="form-control form-control-sm"
                     onChange={this.inputHandler}
                     name={field.name}
                     value={this.state.data[field.name]}
@@ -165,34 +165,23 @@ class inputLine extends Component{
     render(){
         return(
                 <tbody>
-                    <tr className="bg-primary text-white"
+                    <tr className="bg-primary text-white tight"
                     style={{
                         borderTop: '2px solid white',
                     }}>
                     {this.props.fieldOrder.map((fieldName, i) =>(
                         <td key={i}>
-                            <div style={{
-                                paddingTop: '10px',
-                                height: '70px',
-                                margin: '0px auto'
-                            }}>
-                                {this.fieldSelector(i)}
-
-                            </div>
+                            {this.fieldSelector(i)}
                         </td>
                     ))}
                     <td colSpan={this.props.hasLineTotal 
                         ? 2
                         : 1}>
                         
-                        <div style={{
-                            paddingTop: '10px',
-                            height: '70px',
-                            margin: 'auto'
-                        }}>
+                        <div>
                         <button 
-                            style={{float: 'right', marginRight: '10px'}}
-                            className="btn btn-block"
+                            style={{ margin: '5px'}}
+                            className="btn btn-sm"
                             type="button"
                             onClick={this.insertHandler}>Insert</button>
                         </div>

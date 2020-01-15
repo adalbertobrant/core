@@ -37,7 +37,7 @@ Goods Receipts List
                         <td>{{r.receive_date}}</td>
                         <td>{{r.pk}}</td>
                         <td>{{r.note |truncatechars:50}}</td>
-                        <td><a href="{% url 'inventory:goods-received' pk=r.pk %}" class="btn">View</a></td>
+                        <td><a href="{% url 'inventory:goods-received' pk=r.pk %}" class="btn btn-primary">View</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

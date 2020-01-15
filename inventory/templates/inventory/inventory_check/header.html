@@ -1,0 +1,36 @@
+{% extends 'common_data/common/document_header.html' %}
+
+{% block title %}
+Inventory Check
+{% endblock title %}
+
+{% block left_content %}
+<table class="table table-sm">
+                        <tbody>
+                            <tr>
+                                <th>Warehouse</th>
+                                <td>{{object.warehouse}}</td>
+                            </tr>
+                            <tr>
+                                <th>Check Date</th>
+                                <td>{{object.date}}</td>
+                            </tr>
+                            <tr>
+                                <th>Next Check Date</th>
+                                <td>{{object.next_adjustment_date}}</td>
+                            </tr>
+                            <tr>
+                                <th>Supervisor</th>
+                                <td>{{object.adjusted_by}}</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+{% endblock left_content %}
+
+{% block right_content %}
+    {% include 'common_data/common/business.html' %}
+{% endblock right_content %}
+
+{% block lower_left %}
+{% endblock lower_left %}

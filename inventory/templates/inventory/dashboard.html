@@ -24,10 +24,10 @@
                     </li>
 
                     <li class="list-group-item hvr-grow">
-                        <a href="{% url 'inventory:create-inventory-check' pk=primary_warehouse %}"> Check Inventory</a>
+                        <a href="{% url 'inventory:inventory-check-list' pk=primary_warehouse %}">Inventory Checks</a>
                     </li>
                     <li class="list-group-item hvr-grow">
-                        <a href="{% url 'inventory:scrap-inventory' pk=primary_warehouse %}"> Scrap Inventory</a>
+                        <a href="{% url 'inventory:scrap-history' pk=primary_warehouse %}">Scrapped Inventory</a>
                     </li>
                     {% comment %} <li class="nav-item"><i class="fas fa-warehouse"></i> Warehouses</li>
                     <li class="list-group-item hvr-grow">

@@ -48,7 +48,7 @@ class AsyncSelect extends Component{
                     this.setState({currValue: evt.target.value})
                     this.props.handler(evt.target.value)
                 }}
-                className={this.props.noCSS ? "" : "form-control"}
+                className={this.props.noCSS ? "" : "form-control form-control-sm"}
                 name={this.props.name}
                 >
                 <option value="">-------</option>

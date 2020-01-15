@@ -92,16 +92,16 @@ class CreditNoteLine(models.Model):
     quantity = models.FloatField()
 
     def __str__(self):
-        return "{}".format((str(self.line)))
+        return f'{self.line.name} x {self.quantity}'
 
     @property
     def returned_value(self):
         '''Factors for line by line discount'''
         # support other kinds of objects
         if self.line and self.line.product:
-            discount =  self.line.product.nominal_price * \
+            discount =  self.line.product.unit_price * \
                 (self.line.discount / D(100))
-            discounted_price = self.line.product.nominal_price - discount
+            discounted_price = self.line.product.unit_price - discount
             return D(self.quantity) * discounted_price
 
         return 0.0

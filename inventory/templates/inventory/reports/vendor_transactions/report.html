@@ -1,18 +1,11 @@
 {% extends "common_data/page/framed_pdf_page.html" %}
 
 {% block pre_page %}
-<div class="jumbotron">
-    <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            Actions
-        </button>
-        <div class="dropdown-menu" aria-labelledby="triggerId">
-            <a href="{% url 'inventory:vendor-transactions-pdf' start=start end=end %}" class="dropdown-item"><i class="fas fa-file-pdf"></i>
-                Generate PDF</a>
-        </div>
-    </div>
-</div>
+<script>
+var url = "{% url 'inventory:vendor-transactions-pdf' start=start end=end %}";
+var el = window.parent.document.getElementById('pdf-button');
+el.href = url;
+</script>
 {% endblock  %}
 
 {% block page_contents %}

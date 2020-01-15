@@ -93,7 +93,7 @@ export default class InvoiceTable extends Component{
 
     render(){
         return(
-            <table className="table">
+            <table className="table tight">
                 <thead>
                     <tr style={{
                         padding: '2mm',

@@ -23,7 +23,7 @@ const progressBar = (props) =>{
     }
     return(
         <div style={{width: "100%"}}>
-            <div><h5 style={{textAlign:"center"}}>Table Completion: {percentage}%</h5></div>
+            <div><h5 style={{textAlign:"center"}}>Data Entry Status: {percentage}%</h5></div>
             <div style={backgroundStyle}>
                 <div style={barStyle}>
                 </div>

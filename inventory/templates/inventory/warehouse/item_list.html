@@ -10,8 +10,8 @@
 {% endblock %}
 {% block list_content %}
         {% for i in object_list %}
-        <tr>
-            <td scope="row">{{i}}</td>
+            <tr>
+            <td scope="row"><a target="_parent" href="{{i.item.url}}" style='text-decoration: none;'>{{i}}</a></td>
             <td style='color:white;background-color:{{i.quantity_color}};'>
                 {{i.quantity}}</td>
             <td>{{i.item.minimum_order_level}}</td>

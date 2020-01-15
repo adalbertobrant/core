@@ -61,19 +61,42 @@ class InventoryCheckCreateView(CreateView):
             delta = float(adj['quantity']) - float(adj['measured'])
             if delta != 0:
                 wh_item = models.WareHouseItem.objects.get(pk=pk)
-                models.StockAdjustment.objects.create(
+                adj = models.StockAdjustment.objects.create(
                     warehouse_item = wh_item,
                     inventory_check = self.object,
                     note = "",# could add note widget
                     adjustment = delta
                 )
 
+                adj.adjust_inventory()
+
         return resp
 
 
-class InventoryCheckDetailView(DetailView):
+class InventoryCheckDetailView(ContextMixin, 
+                               ConfigMixin, 
+                               MultiPageDocument, 
+                               DetailView):
     model = models.InventoryCheck
-    template_name = os.path.join('inventory', 'inventory_check', 'summary.html')
+    extra_context ={
+        'pdf_link': True
+    }
+    template_name = os.path.join('inventory', 'inventory_check', 'detail.html')
+
+    def get_multipage_queryset(self):
+        return self.object.adjustments
+
+class InventoryCheckPDFView(ContextMixin, 
+                               ConfigMixin, 
+                               MultiPageDocument, 
+                               PDFDetailView):
+    model = models.InventoryCheck
+    template_name = os.path.join('inventory', 'inventory_check', 'detail.html')
+
+    def get_multipage_queryset(self):
+        return models.InventoryCheck.objects.get(
+            pk=self.kwargs['pk']
+        ).adjustments
 
 class InventoryCheckListView(ContextMixin ,PaginationMixin, FilterView):
     paginate_by = 20
@@ -193,7 +216,6 @@ class TransferOrderReceiveView(ContextMixin, UpdateView):
 class StockReceiptCreateView(CreateView):
     form_class = forms.StockReceiptForm
     model = models.StockReceipt
-    success_url = reverse_lazy('inventory:home')
     template_name = os.path.join("inventory", "goods_received",
         "stock_receipt.html")
     extra_context = {"title": "Receive Ordered goods"}

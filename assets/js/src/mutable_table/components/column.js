@@ -3,16 +3,15 @@ import React from 'react';
 const column = (props) => {
     if(props.field.mutable){
         if(props.field.widget){
-            console.log(props.rowID)
-            return(<td>
+            return(<td style={{verticalAlign: 'middle'}}>
                 {props.field.widgetCreator(props.root, props.rowID)}
             </td>)
         }else{
             return(
-                <td>
+                <td style={{verticalAlign: 'middle'}}>
                     <input 
                     type="number" 
-                    className="form-control"
+                    className="form-control form-control-sm"
                     value={props.data}
                     onChange={props.inputHandler}
                     name={props.columnID}/>
@@ -22,7 +21,7 @@ const column = (props) => {
         
     }else{
         return(
-            <td>
+            <td style={{verticalAlign: 'middle'}}>
                 {props.data}
             </td>
         )

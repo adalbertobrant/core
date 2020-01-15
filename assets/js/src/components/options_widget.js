@@ -21,7 +21,7 @@ class OptionsWidget extends Component{
                 //always display id and display field
                 return(<div style={{
                     color: "black",
-                    padding: "0px 10px",
+                    padding: "0.5rem 1rem",
                     ":hover": {
                         'color':'white',
                         'backgroundColor':'#23374d'
@@ -37,22 +37,27 @@ class OptionsWidget extends Component{
         const linkStyle = {
             padding: "5px 2px",
             color: "#23374d",
-            borderBottom: '1px solid #aaa'
+            borderBottom: '1px solid #aaa',
+            borderTop: '1px solid #aaa',
+            ":hover": {
+                'color':'white',
+                'backgroundColor':'#23374d',
+            }
         }
         return(
-            <div style={{
+            <div className='custom-scroll' key='container' style={{
                 border: "1px solid grey",
                 display: this.props.hidden ? "none" : "block",
                 position:"absolute",
-                width: "100%",
+                width: "inherit",
                 zIndex: 1,
-                boxShadow: "0px 5px 20px grey",
                 backgroundColor: "#fff",
-                maxWidth: "500px",
-                minWidth: "150px"
             }}>
 
-            <div style={linkStyle} >
+            <div key='exit' style={{
+                padding: "5px 2px",
+                color: "#23374d",
+            }} >
                 <button onClick={this.props.closeDropdown}
                         type="button"
                         className="btn btn-sm">
@@ -60,11 +65,11 @@ class OptionsWidget extends Component{
                 </button>
             </div>
             {this.props.newLink ? 
-                <div onClick={this.openPopup} style={linkStyle}>Create new</div>
+                <div key='link' onClick={this.openPopup} style={linkStyle}>Create new</div>
                 : null
             }
                 <div style={{
-                    maxHeight: "150px",
+                    maxHeight: "300px",
                     overflowY: "auto",}}>
                 {rendered}
                     

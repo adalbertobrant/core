@@ -143,7 +143,7 @@ class AsyncSelect extends Component{
             <select
                 selected={this.state.selected} 
                 onChange={this.selectHandler}
-                className="form-control">
+                className="form-control form-control-sm">
                 <option selected={this.state.selected==""} value="">-------</option>
                 {this.state.options.map((opt, i) =>{
                     return(<option 

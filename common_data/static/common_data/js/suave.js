@@ -62,6 +62,9 @@ function linkClickHandler(link){
 
 // for employees deduction page
 $(document).ready(function () {
+
+    window.scrollTo(0, 0);
+
     if ($('#id_deduction_method').length > 0) {
         $('.custom-options').hide();
         $('.fixed-options').hide();

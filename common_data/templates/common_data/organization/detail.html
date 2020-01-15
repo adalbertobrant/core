@@ -1,18 +1,20 @@
-{% extends "window.html" %} {% block content %}
-<div class="jumbotron">
-    <h1 class="display-3">Organization Details</h1>
-    <p class="lead">View Recorded Data on an organization as well as its members and recent interactions</p>
-    <hr class="my-2">
-    <p>Actions</p>
-    <p class="lead">
-        <a class="btn btn-primary btn-lg" href="{% url 'base:organization-update' pk=object.pk %}" role="button">Edit</a>
-    </p>
-</div>
+{% extends "window.html" %} 
+{% block heading %}
+Organization Details
+{% endblock  %}
+
+{% block actions %}
+
+<a class="dropdown-item" href="{% url 'base:organization-update' pk=object.pk %}" role="button">Edit</a>
+{% endblock actions %}
+
+{% block content %}
+
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
             <div class="card-deck">
-                <div class="card">
+                <div class="card shadow">
                     <div class="card-body">
                         <h4 class="card-title">Details</h4>
                         <table class="table table-sm">
@@ -20,10 +22,12 @@
                                 <tr>
                                     <td colspan="2">
                                         <h5>Logo:</h5>
-                                        {% if object.logo %}
+                                        <center>
+                                            {% if object.logo %}
                                             <img src="{{object.logo.url}}" class="img-thumbnail" width="128" height="128" alt="Photo thumbnail">
                                         {% else %}
-                                            <i class="fas fa-building" style="font-size:72;"></i>
+                                            <i class="fas fa-building fa-3x" ></i>
+                                        </center>
 
                                             
                                         {% endif %}
@@ -54,7 +58,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card shadow">
                     <div class="card-body">
                         <h4 class="card-title">Members</h4>
                         <table class="table table-sm">
@@ -78,7 +82,7 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card shadow">
                     <div class="card-body">
                         <h4 class="card-title">Interactions</h4>
                         <table class="table table-sm">

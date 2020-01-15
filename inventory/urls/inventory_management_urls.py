@@ -25,6 +25,9 @@ inventory_management_urls = [
     re_path(r'^inventory-check-summary/(?P<pk>[\w]+)/?$', 
         views.InventoryCheckDetailView.as_view(), 
             name='inventory-check-summary'),
+    re_path(r'^inventory-check-pdf/(?P<pk>[\w]+)/?$', 
+        views.InventoryCheckPDFView.as_view(), 
+            name='inventory-check-pdf'),
     re_path(r'^scrap-inventory/(?P<pk>[\w]+)/?$', 
         views.ScrappingRecordCreateView.as_view(), 
             name='scrap-inventory'),
@@ -34,4 +37,7 @@ inventory_management_urls = [
     re_path(r'^scrapping-report/(?P<pk>[\w]+)/?$', 
         views.ScrappingReportDetailView.as_view(), 
             name='scrapping-report'),
+    re_path(r'^pdf-scrapping-report/(?P<pk>[\w]+)/?$', 
+        views.ScrappingReportPDFView.as_view(), 
+            name='pdf-scrapping-report'),
 ] + stock_adjustment_router.urls

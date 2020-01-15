@@ -77,13 +77,17 @@ class InventoryItem(SoftDeletionModel):
 
         raise AttributeError(f'{type(self)} has no attribute {name}')
 
-    def get_absolute_url(self):
+    @property
+    def url(self):
         if self.type == 0:
             return reverse("inventory:product-detail", kwargs={"pk": self.pk})
         elif self.type == 1:
             return reverse("inventory:equipment-detail", kwargs={"pk": self.pk})
         else:
             return reverse("inventory:consumable-detail", kwargs={"pk": self.pk})
+            
+    def get_absolute_url(self):
+        self.url()
             
     @property
     def consumable_value(self):

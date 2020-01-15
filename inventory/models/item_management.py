@@ -15,6 +15,7 @@ from accounting.models import Account, Journal, JournalEntry
 from common_data.models import SingletonModel, SoftDeletionModel
 
 from .warehouse_models import StorageMedia, WareHouseItem
+from django.shortcuts import reverse 
 
 class OrderPayment(models.Model):
     date = models.DateField()
@@ -78,6 +79,9 @@ class StockReceipt(models.Model):
         self.order.received_to_date = self.order.received_total
         self.order.save()
 
+    def get_absolute_url(self):
+        return reverse('inventory:goods-received', kwargs={"pk": self.pk})
+
 class StockReceiptLine(models.Model):
     receipt = models.ForeignKey('inventory.StockReceipt'
         ,on_delete=models.CASCADE)
@@ -127,10 +131,10 @@ class StockAdjustment(models.Model):
 
     def adjust_inventory(self):
         self.warehouse_item.decrement(self.adjustment)
+        self.warehouse_item.last_check_date = self.inventory_check.date
+        self.warehouse_item.save()
 
-    def save(self, *args, **kwargs):
-        super(StockAdjustment, self).save(*args, **kwargs)
-        self.adjust_inventory()
+    
 
 class TransferOrder(models.Model):
     date = models.DateField()
@@ -207,6 +211,10 @@ class InventoryScrappingRecord(models.Model):
         #must be called after all the lines are created
         for item in self.scrapped_items:
             self.warehouse.decrement_item(item.item, item.quantity)
+
+    def get_absolute_url(self):
+        return reverse("inventory:scrapping-report", kwargs={"pk": self.pk})
+    
 
 class InventoryScrappingRecordLine(models.Model):
     item = models.ForeignKey('inventory.inventoryitem', 

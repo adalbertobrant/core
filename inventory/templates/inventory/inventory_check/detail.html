@@ -1,30 +1,75 @@
-{% extends "window.html" %}
-{% load render_bundle from webpack_loader %}
-{% block content %}
+{% extends "common_data/page/pdf_page.html" %}
 
-<div class="jumbotron">
-    <h1 class="display-3">Inventory Check</h1>
-    <p class="lead">Verify Inventory in Each Warehouse.</p>
-    <hr class="my-2">
-</div>
+{% block pre_page %}
+<section id='title'>
+    <div id='title-text'>Inventory Check</div>
+    <div id='action-icon dropdown'>
 
-<div class="container">
-    <div class="row">
-        {{warehouse}}
-        <div class="col-sm-2">
-            <form action="">
-                
-                {% csrf_token %}
-            </form>
-        </div>
-        <div class="col-sm-8">
-            <h3>Items:</h3>
-            <div id="inventory-checker">
+        <button class="btn btn-block primary " id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
 
-                
-            </div>
-        </div>
-        <div class="col-sm-2"></div>
+            <div class="dropdown-menu" aria-labelledby="triggerId">
+                <a href="{% url 'inventory:inventory-check-pdf' pk=object.pk %}" class="dropdown-item"> <i class="fas fa-file-pdf" aria-hidden="true"></i> Generate PDF</a>
+       </div>
     </div>
+</section>
+    
+{% endblock pre_page %}
+
+
+{% block page_contents %}
+
+<div style="width:100%">
+    {% include "inventory/inventory_check/header.html" %}
 </div>
-{% endblock content %}
+
+{% for page in pages %}
+<div style="width:100%">
+    <table class="simple-content table table-sm" style="height:500px;width:100%;">
+                <thead>
+                    <tr class="">
+                        <td style="width:20%">Item</td>
+                        <td style="width:15%">Recorded Quantity</td>
+                        <td style="width:15%">Actual Quantity</td>
+                        <td style="width:10%">Difference</td>
+                        <td style="width:40%">Note</td>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for sa in page %}
+                    <tr>
+                        <td>{{sa.warehouse_item.item.name}}</td>
+                        <td>{{sa.prev_quantity}}</td>
+                        <td>{{sa.warehouse_item.quantity}}</td>
+                        <td>{{sa.adjustment}}</td>
+                        <td>{{sa.note}}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr style="height:100%">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>{{page}}</p>
+    {% if not page.has_next %}
+
+    <div class="footer-cell">
+        <div class="footer-cell-heading">
+            <h5>Note</h5>    
+        </div>
+        <div class="footer-cell-contents">
+            <p>{{object.comments}}</p>
+        </div>
+    </div>
+    {% else %}
+        <p class="eop"></p>
+    {% endif %}
+
+    {% endfor %}
+</div>
+{% endblock %}

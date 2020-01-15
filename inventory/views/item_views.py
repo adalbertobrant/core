@@ -24,7 +24,8 @@ from common_data.views import PaginationMixin
 from inventory import filters, forms, models, serializers
 from invoicing.models import SalesConfig
 from services.models import EquipmentRequisition
-from inventory.views.dash_plotters import single_item_composition_plot
+from inventory.views.dash_plotters import (inventory_track_plot,
+                                            single_item_composition_plot)
 
 from .common import CREATE_TEMPLATE
 import openpyxl
@@ -69,6 +70,9 @@ class ProductDetailView(ContextMixin, DetailView):
         context =super().get_context_data(*args, **kwargs)
         context['graph'] = single_item_composition_plot(
             self.object).render(is_unicode=True)
+        if self.object.product_component:
+            context['history'] = inventory_track_plot(self.object).render(
+                is_unicode=True)
         return context
 
 class ProductListView( ContextMixin, PaginationMixin, FilterView):
@@ -503,7 +507,6 @@ class ImportItemsView(ContextMixin, FormView):
                 warehouse.add_item(item, row[
                     form.cleaned_data['quantity']-1].value)
                 #handle products equipment components
-                print(row[form.cleaned_data['type'] -1].value)
                 if row[form.cleaned_data['type'] -1].value == 'product':
                     component =models.ProductComponent.objects.create(
                         pricing_method=0,

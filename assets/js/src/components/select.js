@@ -19,7 +19,7 @@ class SelectWidget extends Component{
     render(){
         return(
             <select 
-                className='form-control' 
+                className='form-control form-control-sm' 
                 selected={this.state.selected}
                 onChange={this.handleChange}>
                 <option value='' selected={this.state.selected==""}>--------</option>

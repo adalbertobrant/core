@@ -9,7 +9,7 @@ import Column from './column'
 const row = (props) =>{
     const icon = props.fieldData.verified ? "edit" : "check";
     return(
-        <tr>
+        <tr style={{borderBottom: "1.5px solid #999"}}>
             {props.fields.map((field, i) =>(
                 <Column 
                     key={i}
@@ -24,7 +24,7 @@ const row = (props) =>{
                     type='button'
                     onClick={() =>props.toggle(props.rowID)}
                     className={
-                        `btn btn-${props.fieldData.verified ? 'success' : 'primary'}`}>
+                        `btn btn-sm btn-${props.fieldData.verified ? 'success' : 'primary'}`}>
                 <i className={`fa fa-${icon}`} ></i>
             </button></td>
         </tr>

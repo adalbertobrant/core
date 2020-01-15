@@ -1,18 +1,20 @@
-{% extends "window.html" %} {% block content %}
-<div class="jumbotron">
-    <h1 class="display-3">Individual Details</h1>
-    <p class="lead">View Recorded Data on a person associated with the business as well as their organization and recent activities</p>
-    <hr class="my-2">
-    <p>Actions</p>
-    <p class="lead">
-        <a class="btn btn-primary btn-lg" href="{% url 'base:individual-update' pk=object.pk %}" role="button">Edit</a>
-    </p>
-</div>
+{% extends "window.html" %} 
+{% block heading %}
+Individual Details
+{% endblock  %}
+
+{% block actions %}
+
+<a class="dropdown-item" href="{% url 'base:individual-update' pk=object.pk %}" role="button">Edit</a>
+{% endblock actions %}
+
+{% block content %}
+
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
             <div class="card-deck">
-                <div class="card">
+                <div class="card shadow">
                     <div class="card-body">
                         <h4 class="card-title">Details</h4>
                         <table class="table table-sm">
@@ -21,11 +23,13 @@
                                             <tr>
                                                 <td colspan="2">
                                                     <h5>Photo:</h5>
-                                                    {% if object.photo %}
+                                                    <center>
+                                                        {% if object.photo %}
                                                     <img src="{{object.photo.url}}" class="img-thumbnail" width="320" height="240" alt="Photo thumbnail">
                                                     {% else %}
-                                                    <i class="fas fa-user" style="font-size:72;"></i>
+                                                    <i class="fas fa-user fa-3x"></i>
                                                     {% endif %}
+                                                    </center>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -46,7 +50,7 @@
                                     </table>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card shadow">
                     <div class="card-body">
                         <h4 class="card-title">Organization {% if object.organization %}<a href="{% url 'base:organization-detail' pk=object.organization.pk %}" class="btn btn-success">View</a>{% endif %}</h4>
                         <table class="table table-sm">
@@ -70,7 +74,7 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card shadow">
                     <div class="card-body">
                         <h4 class="card-title">Activities</h4>
                         <table class="table table-sm">
