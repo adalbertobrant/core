@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
 from common_data.utilities import (ContextMixin, 
+                                    ConfigMixin,
                                    MultiPageDocument,
                                    extract_period, 
                                    PeriodReportMixin, 
@@ -32,7 +33,9 @@ class ServicePersonUtilizationFormView(ContextMixin, FormView):
         'action':reverse_lazy('services:reports-service-person-utilization'),
     }
 
-class ServicePersonUtilizationReport( PeriodReportMixin, TemplateView):
+class ServicePersonUtilizationReport(PeriodReportMixin, 
+                                    ConfigMixin, 
+                                    TemplateView):
     template_name = os.path.join('services', 'reports', 'service_person_utilization.html')
 
     @staticmethod
@@ -76,7 +79,7 @@ class ServicePersonUtilizationReport( PeriodReportMixin, TemplateView):
     
 
 
-class ServicePersonUtilizationReportPDFView(PDFTemplateView):
+class ServicePersonUtilizationReportPDFView(ConfigMixin, PDFTemplateView):
     template_name = os.path.join('services', 'reports', 'service_person_utilization.html')
 
     def get_context_data(self, **kwargs):
@@ -98,7 +101,7 @@ class JobProfitabilityReportFormView(ContextMixin, FormView):
         'action':reverse_lazy('services:reports-job-profitability'),
     }
 
-class JobProfitabilityReport(ContextMixin, MultiPageDocument, TemplateView):
+class JobProfitabilityReport(ContextMixin,ConfigMixin, MultiPageDocument, TemplateView):
     template_name = os.path.join('services', 'reports', 
         'job_profitability.html')
     page_length = 20
@@ -144,7 +147,7 @@ class JobProfitabilityReport(ContextMixin, MultiPageDocument, TemplateView):
 
         return context
 
-class JobProfitabilityPDFView(MultiPageDocument, PDFTemplateView):
+class JobProfitabilityPDFView(MultiPageDocument, ConfigMixin, PDFTemplateView):
     template_name = JobProfitabilityReport.template_name
     page_length = JobProfitabilityReport.page_length
 
@@ -215,6 +218,7 @@ class UnbilledCostsByJobReportFormView(ContextMixin, FormView):
     }
 
 class UnbilledCostsByJobReportView(ContextMixin,
+                                   ConfigMixin,
                                    MultiPageDocument, 
                                    TemplateView):
     template_name = os.path.join('services', 'reports', 'unbilled_costs.html')
@@ -240,7 +244,9 @@ class UnbilledCostsByJobReportView(ContextMixin,
         return context
     
 
-class UnbilledCostsByJobPDFView(MultiPageDocument, PDFTemplateView):
+class UnbilledCostsByJobPDFView(MultiPageDocument, 
+                                ConfigMixin, 
+                                PDFTemplateView):
     template_name = UnbilledCostsByJobReportView.template_name
     page_length = UnbilledCostsByJobReportView.page_length
 

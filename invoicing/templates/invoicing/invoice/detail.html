@@ -71,13 +71,13 @@
 </section>
 <script>
     function toggleValidateForm(){
-        $('.my-modal').toggle();
+        $('.dom-modal').toggle();
     }
 </script>
 
 
-<div class="my-modal">
-    <div class='my-modal-content' id="validate-form">
+<div class="dom-modal">
+    <div class='dom-modal-content' id="validate-form">
         <form action="{% url 'invoicing:invoice-verify' pk=object.pk %}" method="POST">
         <h5>Validate Document</h5>
         {% csrf_token %}

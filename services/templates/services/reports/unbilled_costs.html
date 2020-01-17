@@ -1,34 +1,21 @@
-{% extends 'common_data/page/pdf_page.html' %}
+{% extends 'common_data/page/framed_pdf_page.html' %}
 
 {% block pre_page %}
-
-<div class="jumbotron">
-
-<div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false">
-                Actions
-            </button>
-    <div class="dropdown-menu" aria-labelledby="triggerId">
-        <a class="dropdown-item" href="{% url 'services:reports-unbilled-costs-by-job-pdf' start=start end=end %}">  <i class="fas fa-file-pdf"></i> Generate PDF</a>
-        
-    </div>
-</div>
-
-</div>
-
+<script>
+var url = "{% url 'services:reports-unbilled-costs-by-job-pdf' start=start end=end %}";
+var el = window.parent.document.getElementById('pdf-button');
+el.href = url;
+</script>
 
 {% endblock pre_page %}
 
 {% block page_contents %}
 
-<h4>Unbilled Costs By Job report</h4>
-<p>Created: {{date}}</p>
-<p>For period spanning {{start}} to {{end}}</p>
+{% include 'services/reports/ubc_header.html' %}
 
 {% for page in pages %}
 
-<table class="table table-sm">
+<table class="table table-sm simple-content">
     <thead>
         <tr>
             <th>Cost ID</th>

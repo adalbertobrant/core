@@ -120,5 +120,3 @@ class AutomatedServiceMixin(object):#not really a mixin
                 (datetime.datetime.now() - config.last_automated_service_run).total_seconds() > 86400 and not self.config[self.service_name]:
             self._run()
             self.update_config()
-
-        

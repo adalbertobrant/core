@@ -51,7 +51,8 @@
                         <a href="{% url 'inventory:product-list' %}">Manage Products</a>
                     </li>
                     {% endif %}
-                    {% comment %} {% if use_equipment_inventory %}
+                    
+                    {% if use_equipment_inventory %}
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'inventory:equipment-list' %}">Manage Equipment</a>
                     </li>
@@ -60,10 +61,8 @@
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'inventory:consumable-list' %}">Manage Consumables</a>
                     </li>
-                    {% endif %} {% endcomment %}
-
-
-                    {% comment %} {% if use_equipment_inventory or use_consumables_inventory %}
+                    {% endif %} 
+                    {% if use_equipment_inventory or use_consumables_inventory %}
 
                     <li class="nav-item"><i class="fas fa-file-signature"></i> Requisitions</li>
                     <li class="list-group-item hvr-grow">
@@ -74,7 +73,7 @@
                         <a href="{% url 'services:consumable-requisition-list' %}">Manage Consumables
                             Requisitions</a>
                     </li>
-                    {% endif %} {% endcomment %}
+                    {% endif %}
                     <li class="nav-item"><i class="fas fa-chart-bar"></i> Reports</li>
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'inventory:inventory-report' %}">Item Stock Level Report</a>

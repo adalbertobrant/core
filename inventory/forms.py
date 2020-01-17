@@ -991,11 +991,11 @@ class EquipmentandConsumablesPurchaseForm(forms.ModelForm, BootstrapMixin):
                     Row(
                         Column('date', css_class='col-6'),
                         Column('due', css_class='col-6'),
-                    ),  'vendor',css_class='col-6'),
-                Column('reference', 'warehouse', 'paid_in_full',
+                    ),  'vendor',  'warehouse', 'paid_in_full',css_class='col-6'),
+                Column('reference', 'memo',
                     css_class='col-6')
                 ),
-                'memo',
+                
                 'data',
                 HTML("""
                     <div id='purchase-table'></div>

@@ -1,50 +1,21 @@
 
 
-{% extends "common_data/page/pdf_page.html" %}
+{% extends "common_data/page/framed_pdf_page.html" %}
 
 {% block pre_page %}
-{% url 'services:reports-job-profitability-pdf' start=start end=end %}
+
+<script>
+var url = "{% url 'services:reports-job-profitability-pdf' start=start end=end %}";
+var el = window.parent.document.getElementById('pdf-button');
+el.href = url;
+</script>
 {% endblock  %}
 
 {% block page_contents %}
-
-<h4>Job Profitability Report</h4>
-<h6>Period spanning: {{start}} to {{end}}</h6>
-<style>
-    td {
-        padding: 5px;
-        align: left;
-    }
-</style>
-<table class="table table-sm">
-    <tbody>
-        <tr>
-            <th>Date Created</th>
-            <td>{{date}}</td>
-        </tr>
-        <tr>
-            <th>Number of Jobs Summarized</th>
-            <td>{{jobs_count}}</td>
-        </tr>
-        <tr>
-            <th>Service Revenue</th>
-            <td>{{revenue | floatformat:2 }}</td>
-        </tr>
-        <tr>
-            <th>Total Costs</th>
-            <td>{{expenses | floatformat:2 }}</td>
-        </tr>
-        <tr>
-            <th>Gross Income</th>
-            <td>{{income | floatformat:2 }}</td>
-        </tr>
-    </tbody>
-</table>
-
-<h4>Job Summary</h4>
+{% include 'services/reports/jp_header.html' %}
 
 {% for page in pages %}
-<table class="table-striped table-sm">
+<table class="table table-sm simple-content">
     <thead>
         <tr>
             <th>Invoice</th>
@@ -58,7 +29,7 @@
         {% for job in page %}
             <tr>
                 <td>{{job.invoice.invoice_number |stringformat:"06d"}}</td>
-                <td>{{job.service.service.description |truncatechars:40}}</td>
+                <td>{{job.service.service |truncatechars:40}}</td>
                 <td>{{job.subtotal | floatformat:2 }}</td>
                 <td>{{job.service.cost_of_sale  | floatformat:2  }}</td>
                 <td>{{job.service.gross_income  | floatformat:2 }}</td>

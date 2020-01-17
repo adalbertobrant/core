@@ -1,26 +1,81 @@
 {% extends "window.html" %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'common_data/css/document-styles.css' %}">
+{% endblock head %}
+{% block heading %}
+
+Authorize/Release Equipment Requisition
+
+{% endblock heading %}
+{% block actions %}
+
+
+{% if not object.authorized_by %}
+<button class="dropdown-item" onclick='toggleValidateForm()'>Authorize</button>
+{% elif not object.released_by %}
+
+<button class="dropdown-item" onclick='toggleValidateForm()'>Release</button>
+
+{% else %}
+<p class="dropdown-item">The item has already been released</p>
+{% endif %}
+
+{% endblock actions %}
 
 {% block content %}
 
-<div class="jumbotron">
-    <h1 class="display-3">Equipment Requisition Details</h1>
-    <p class="lead">View Details About items requested and release or authorize the requisition</p>
-    <hr class="my-2">
+<script>
+    function toggleValidateForm(){
+        $('.dom-modal').toggle();
+    }
+</script>
+<div class="dom-modal">
+    <div class='dom-modal-content' id="validate-form">
+        {% if not object.authorized_by %}
+        <h5>Authorize</h5>
+            <form action="{% url 'services:equipment-requisition-authorize' pk=object.pk %}"
+                                method="POST">
+                                {% csrf_token %}
+                                {{authorize_form.as_p}}
+                                <button class="btn">Submit</button>
+                            </form>
+        {% else %}
+        <h5>Release</h5>
+        <form action="{% url 'services:equipment-requisition-release' pk=object.pk %}"
+                                method="POST">
+                                {% csrf_token %}
+                                {{authorize_form.as_p}}
+                                <button class="btn btn-primary">Submit</button>
+                            </form>
+        {% endif %}
+        
+        <button class="btn btn-danger" onclick='toggleValidateForm()'>Cancel</button>
+    </div>
 </div>
 
+
+<br>
 <div class="container">
     <div class="row">
-        <div class="col-sm-4 shadow">
-            <div class="card">
+        <div class="col-sm-4">
+            <div class="card shadow">
                 <div class="card-body">
-                    <h4 class="card-title">Requisition Details</h4>
+                    <h4 class="card-title">#{{object.id|stringformat:"06d"}}</h4>
                     <p class="card-text">Date: {{object.date}}</p>
                     <p class="card-text">Department: {{object.department}}</p>
                     <p class="card-text">Reference: {{object.reference}}</p>
                     <p class="card-text">Requested By: {{object.requested_by}}</p>
+                    <hr class="my-2">
+                    <h4 style='opacity:0.7'>Status</h4>
+                    <ul>
+                        <li>Authorized by: {{object.authorized_by}}</li>
+                        <li>Released: {{object.released_by}}</li>
+                        <li>Released: {{object.received_by}}</li>
+                    </ul>
                 </div>
             </div>
-            <div class="card text-left">
+            {% comment %} <div class="card text-left">
                 <div class="card-body">
                     <ul class="nav nav-tabs">
                         <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#authorize">Authorize</a></li>
@@ -59,10 +114,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> {% endcomment %}
         </div>
         <div class="col-sm-8">
-            <h4>Requested Items</h4>
 
             <table class="table table-sm  table-hover ">
                 <thead>

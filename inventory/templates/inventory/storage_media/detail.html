@@ -17,8 +17,9 @@ Storage Medium Detail
                     {% if object.location %}
                     <p class="card-text">Location: {{object.location}}</p>
                     {% endif %}
-                    <h6>Description</h6>
+                    <hr>
                     <p class="card-text"></p>{{object.description}}</p>
+                    <hr>
                     <p class="card-text">Number of items: {{object.contents.count}}</p>
                     <h6>Dimensions</h6>
                     <p>Unit: {{object.unit}}</p>

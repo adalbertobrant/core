@@ -159,7 +159,7 @@ th.bordered, td.bordered {
     margin-bottom:5mm;
 }
 
-.my-modal{
+.dom-modal{
     position: absolute;
     top: 0;
     z-index: 10000;
@@ -170,7 +170,7 @@ th.bordered, td.bordered {
     background-color: rgba(30,30,30,0.7);
 }
 
-.my-modal-content {
+.dom-modal-content {
     width: 400px;
     padding: 30px;
     margin: 30px auto;

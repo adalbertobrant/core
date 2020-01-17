@@ -1,12 +1,10 @@
 {% extends "window.html" %}
 {% load render_bundle from webpack_loader %}
+{% block heading %}
+Create Consumable Requisition
+{% endblock heading %}
 {% block content %}
 {% load crispy_forms_tags %}
-<div class="jumbotron">
-    <h1 class="display-3">Create Consumable Requisition</h1>
-    <p class="lead">Request consumables that are stored in inventory for the purpose of completing a work order.</p>
-    <hr class="my-2">
-</div>
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
@@ -17,7 +15,6 @@
         <div class="col-sm-12">
             <div class="shadow card">
                 <div class="card-body">
-                    <h4 class="card-title">Requisition Form</h4>
                         {% crispy form %}
                         
                     <div id="consumable-requisition-table"></div>

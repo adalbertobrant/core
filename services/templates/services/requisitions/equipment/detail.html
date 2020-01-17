@@ -1,21 +1,19 @@
 {% extends "window.html" %}
+{% block heading %}
+Equipment Requisition Detail
+{% endblock heading %}
 
 {% block content %}
-
-<div class="jumbotron">
-    <h1 class="display-3">Equipment Requisition Details</h1>
-    <p class="lead">View requested equipment and requisition status</p>
-    
-</div>
+<br>
 <div class="container">
     <div class="row">
 
         <div class="col-sm-4">
             <div class="card shadow ">
                 <div class="card-body">
-                    <h4 class="card-title">Details</h4>
-                    <p>Date Requested:{{object.date}}</p>
-                    <p>Date Returned:{% if object.returned_date %} 
+                    <h4 class="card-title"># {{object.pk|stringformat:"06d"}}</h4>
+                    <p>Requested:{{object.date}}</p>
+                    <p>Returned:{% if object.returned_date %} 
                         {{object.returned_date}} 
                         {% else %} 
                             Pending 
@@ -24,18 +22,20 @@
                     <p>Department: {{object.department}}</p>
                     <p>Reference: {{object.reference}}</p>
                     <hr>
-                    <h5>Personnel chain</h5>
-                    <p>Requested By: {{object.requested_by}}</p>
-                    <p>Authorized By: {{object.authorized_by}}</p>
-                    <p>Released By: {{object.released_by}}</p>
-                    <p>Received By: {{object.received_by}}</p>
+                    <h5 style='opacity:0.7'>Personnel chain</h5>
+                    <ul>
+                        <li>Requested: {{object.requested_by}}</li>
+                    <li>Authorized: {{object.authorized_by}}</li>
+                    <li>Released: {{object.released_by}}</li>
+                    <li>Received By: {{object.received_by}}</li>
+                    </ul>
+                    
+                    
 
                 </div>
             </div>
         </div>
         <div class="col-sm-8">
-            <h3>Returns:</h3>
-            <hr class="my-4" />
             <table class="table table-sm">
             <thead>
                 <tr class="bg-primary">

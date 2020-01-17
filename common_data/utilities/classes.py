@@ -65,7 +65,6 @@ class MultiPagePDFDocument(CMixin):
         if self.multipage_queryset: return self.multipage_queryset
         return None
 
-        
 
 class ConfigWizardBase(SessionWizardView):
     '''This class saves instances of each model after each step

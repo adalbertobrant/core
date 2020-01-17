@@ -235,10 +235,6 @@ class ConsumableCreateView( ContextMixin,
             'type': 2 #for consumables
         }
 
-class ConsumablesPurchaseView(CreateView):
-    pass
-
-
 
 ####################################################
 #                   Equipment Views                #
@@ -290,6 +286,12 @@ class EquipmentListView( ContextMixin,
                 'label': 'Import Items from Excel',
                 'icon': 'file-excel',
                 'link': reverse_lazy('inventory:import-items-from-excel')
+            },
+            {
+                'label': 'Purchase',
+                'icon': 'cart-arrow-down',
+                'link': reverse_lazy(
+                    'inventory:equipment-and-consumables-purchase')
             }
         ]
     }
@@ -370,9 +372,11 @@ class EquipmentandConsumablesPurchaseView(ContextMixin, CreateView):
                 expense= exp
             )
 
-            #increment inventory
+            #increment inventory and set purchase price
             item_pk = line['item'].split('-')[0]
             item = models.InventoryItem.objects.get(pk=item_pk)
+            item.unit_purchase_price = line['unit_price']
+            item.save()
             warehouse.add_item(item, line['quantity'])
 
         if form.cleaned_data['paid_in_full']:

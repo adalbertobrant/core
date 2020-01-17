@@ -44,17 +44,21 @@
             </td>
         </tr>
         <tr>
-            <td class="header-content">
-                {% block lower_left %}
+            <td colspan="3">
+                <table style='width: 100%;'>
+                    <tbody>
+                        <tr>
+                            <td class="header-content">
+                                {% block lower_left %}
                 {% endblock lower_left %}
-            </td>
-            <td class="header-content">
-                {% block lower_center %}
-                {% endblock lower_center %}
-            </td>
-            <td class="header-content">
-                {% block lower_right %}
+                            </td>
+                            <td class="header-content">
+                                            {% block lower_right %}
                 {% endblock lower_right %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </td>
         </tr>
     </tbody>

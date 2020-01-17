@@ -5,6 +5,7 @@ import json
 import os
 import urllib
 
+from django.contrib import messages
 from inventory.views.util import InventoryConfigMixin 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -89,6 +90,19 @@ class InventoryDashboard(InventoryConfigMixin, TemplateView):
     template_name = os.path.join("inventory", "dashboard.html")
 
     def get_context_data(self, **kwargs):
+        #check for outstanding requisitions
+        
+        eq_count = EquipmentRequisition.objects.filter(
+            released_by__isnull=True).count()
+        if eq_count > 0:
+            messages.info(self.request, 
+                f'There are {eq_count} unreleased equipment requisition(s)')
+        con_count = ConsumablesRequisition.objects.filter(
+            released_by__isnull=True).count()
+        if con_count > 0:
+            messages.info(self.request, 
+            f'There are {con_count} unreleased consumable requisition(s)')
+        
         context = super().get_context_data(**kwargs)
         context['primary_warehouse'] = \
             models.InventorySettings.objects.first().default_warehouse.pk

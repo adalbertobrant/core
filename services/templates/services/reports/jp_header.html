@@ -1,0 +1,59 @@
+{% extends 'common_data/common/document_header.html' %}
+{% load accounting %}
+{% block title %}
+Job Profitability Report
+{% endblock title %}
+
+{% block left_content %}
+
+<table>
+    <tbody>
+        
+        <tr>
+            <td>Date:</td>
+            <td>{{date}}</td>
+        </tr>
+        <tr>
+            <td># Jobs:</td>
+            <td>{{jobs_count}}</td>
+        </tr>
+        <tr>
+            <td>Revenue:</td>
+            <td>{{revenue |active_currency}}</td>
+        </tr>
+        <tr>
+            <td>Costs:</td>
+            <td>{{expenses|active_currency}}</td>
+        </tr>
+        <tr>
+            <td>Gross Income:</td>
+            <td>{{income|active_currency}}</td>
+        </tr>
+    <tbody>
+</table>
+
+{% endblock left_content %}
+
+{% block right_content %}
+{% include "common_data/common/business.html" %}
+
+{% endblock right_content %}
+
+{% block lower_left %}
+<table>
+    <tbody>
+    <tr>
+            <td>
+                Period:
+            </td>
+            <td>
+                {{start}} to {{end}}
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% endblock lower_left %}
+
+
+{% block lower_center %}
+{% endblock lower_center %}
