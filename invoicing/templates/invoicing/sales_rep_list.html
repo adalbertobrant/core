@@ -16,10 +16,23 @@
         <td>{{rep.employee.title}}</td>
         <td>{{rep.employee.phone}}</td>
         <td>
-        
-        <a href="{% url 'invoicing:update-sales-rep' pk=rep.pk %}" class="btn btn-primary">
-                <i class="fas fa-file"></i> Update
-        </a>
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                            Actions
+                        </button>
+                <div class="dropdown-menu" aria-labelledby="triggerId">
+                    <a href="{% url 'invoicing:update-sales-rep' pk=rep.pk %}" class="dropdown-item">
+                            <i class="fas fa-file"></i> Update
+                    </a>
+                    <a href="{% url 'employees:employee-detail' pk=rep.employee.pk %}" class="dropdown-item">
+                            <i class="fas fa-user"></i> Employee
+                    </a>
+                    <a href="{% url 'invoicing:delete-sales-rep' pk=rep.pk %}" class="dropdown-item">
+                            <i class="fas fa-trash"></i> Delete
+                    </a>
+                </div>
+            </div>
         </td>
     </tr>
     {% endfor %}

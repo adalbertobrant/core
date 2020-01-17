@@ -141,25 +141,29 @@ class Employee(ContactsMixin, Person, SoftDeletionModel):
 
     @property
     def is_sales_rep(self):
-        return(invoicing.models.SalesRepresentative.objects.filter(employee=self).exists())
+        return hasattr(self, 'salesrepresentative') and \
+            self.salesrepresentative.active
 
     @property
     def is_inventory_controller(self):
-        return hasattr(self, 'inventorycontroller')
+        return hasattr(self, 'inventorycontroller') and \
+            self.inventorycontroller.active
 
     @property
     def is_bookkeeper(self):
-        return(accounting.models.Bookkeeper.objects.filter(employee=self).exists())
-        
+        return hasattr(self, 'bookkeeper') and \
+            self.bookkeeper.active
 
     @property
     def is_payroll_officer(self):
-        return(PayrollOfficer.objects.filter(employee=self).exists())
+        return hasattr(self, 'payrollofficer') and \
+            self.payrollofficer.active
 
 
     @property
     def is_serviceperson(self):
-        return hasattr(self, 'serviceperson')
+        return hasattr(self, 'serviceperson') and \
+            self.serviceperson.active
 
     @property
     def is_manufacturing_associate(self):

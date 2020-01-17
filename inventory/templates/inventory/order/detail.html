@@ -21,12 +21,12 @@
                     <i class="fas fa-trash"></i> Delete
                 </a>
                 <a href="{% url 'inventory:order-status' pk=object.pk %}" class="dropdown-item">
-                    <i class="fas fa-eye"></i> Status
+                    <i class="fas fa-file-alt"></i> Status
                     <!--Change this ! -->
                 </a>
                 {% if object.status == 'draft' %}
                 <button onclick="toggleValidateForm()" class="dropdown-item">
-                    <i class="fas fa-eye"></i> Verify Order
+                    <i class="fas fa-file-alt"></i> Verify Order
                 </button>
                 {% endif %}
                 <div class="dropdown-divider"></div>
@@ -64,7 +64,7 @@
 
                 {% if order.stockreceipt_set.all.count > 0 %}
                 <a href="{% url 'inventory:stock-receipts-list' pk=object.pk %}" class="dropdown-item">
-                    <i class="fas fa-eye"></i> View Goods Receipts List</a>
+                    <i class="fas fa-file-alt"></i> View Goods Receipts List</a>
                 {% endif %}
 
 

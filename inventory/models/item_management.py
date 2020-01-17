@@ -64,7 +64,8 @@ class StockReceipt(models.Model):
     order = models.ForeignKey('inventory.Order', on_delete=models.SET_NULL, 
         null=True)
     received_by = models.ForeignKey('inventory.InventoryController', 
-        on_delete=models.SET_NULL, 
+        on_delete=models.SET_NULL,
+        limit_choices_to=Q(active=True),
         null=True,
         default=1)
     receive_date = models.DateField()
@@ -94,6 +95,7 @@ class InventoryCheck(models.Model):
     date = models.DateField()
     adjusted_by = models.ForeignKey('inventory.InventoryController', 
         on_delete=models.SET_NULL, 
+        limit_choices_to=Q(active=True),
         null=True )
     warehouse = models.ForeignKey('inventory.WareHouse', 
         on_delete=models.SET_NULL, 
@@ -140,10 +142,14 @@ class TransferOrder(models.Model):
     date = models.DateField()
     expected_completion_date = models.DateField()
     issuing_inventory_controller = models.ForeignKey('inventory.InventoryController',
-        related_name='issuing_inventory_controller', 
-        on_delete=models.SET_NULL, null=True)
+        related_name='issuing_inventory_controller',
+        limit_choices_to=Q(active=True),
+        on_delete=models.SET_NULL, 
+        null=True)
     receiving_inventory_controller = models.ForeignKey('inventory.InventoryController', 
-        on_delete=models.SET_NULL, null=True)
+        on_delete=models.SET_NULL, 
+        limit_choices_to=Q(active=True),
+        null=True)
     actual_completion_date =models.DateField(null=True)#provided later
     source_warehouse = models.ForeignKey('inventory.WareHouse',
         related_name='source_warehouse', on_delete=models.SET_NULL, null=True,)
@@ -191,8 +197,10 @@ class TransferOrderLine(models.Model):
 
 class InventoryScrappingRecord(models.Model):
     date = models.DateField()
-    controller = models.ForeignKey('inventory.InventoryController', 
-        on_delete=models.SET_NULL, null=True)
+    controller = models.ForeignKey('inventory.InventoryController',
+        limit_choices_to=Q(active=True),
+        on_delete=models.SET_NULL, 
+        null=True)
     warehouse = models.ForeignKey('inventory.WareHouse', on_delete=models.SET_NULL, null=True)
     comments = models.TextField(blank=True)
 

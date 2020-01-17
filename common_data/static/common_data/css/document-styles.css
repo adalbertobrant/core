@@ -40,23 +40,25 @@ th.bordered, td.bordered {
     text-align: center;
 }
 
-.simple-content thead td {
-    font-size: 1.125rem;
-    padding: 5px;
+.simple-content thead td,.simple-content thead th {
+    font-size: 1rem;
+    padding: 0.25rem;
     border-right: 1px solid white;
-    color: white;
-    background-color: #222;
+    border-bottom: 0.25rem solid #333;
+    font-weight: 700;
 }
+
 
 .simple-content tbody td {
-    font-size: 11pt;
+    font-size: 0.875rem;
+    border-bottom: 1.5px solid #999;
+    padding: 0.25rem;
 
-    border-right: 1px solid #999;
 }
 
-.simple-content tbody{
-    border: 1px solid #999;
-}
+/* .simple-content tbody{
+    border: 2px solid #999;
+} */
 
 .simple-content tfoot td {
     text-align: right;
@@ -103,6 +105,7 @@ th.bordered, td.bordered {
     width: 21cm;
     height: 29.7cm;
     box-shadow: 5px 5px 20px #ccc;
+    background-color: white;
 }
 
 .table-frame {

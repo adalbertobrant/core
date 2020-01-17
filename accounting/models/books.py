@@ -88,7 +88,9 @@ class Adjustment(models.Model):
         on_delete=models.CASCADE,null=True)
     description = models.TextField()
     created_by = models.ForeignKey('accounting.bookkeeper', 
-        on_delete=models.SET_NULL, null=True,
+        limit_choices_to=Q(active=True),
+        on_delete=models.SET_NULL,
+         null=True,
         default=1)
     date_created = models.DateField(default=datetime.date.today)
 

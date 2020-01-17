@@ -1,7 +1,7 @@
 {% extends "window.html" %} 
 {% load accounting %}
 {% block heading %}
-{{object.name}} Details
+Account Details
 
 {% endblock heading %}
 {% block actions %}
@@ -27,7 +27,7 @@
             <div class="card-deck" >
                 <div class="card shadow" style="max-width:33%;">
                     <div class="card-header">
-                        <h4 class="card-title">Details</h4>
+                        <h4 class="card-title">{{object.name}}</h4>
                     </div>
                     <div class="card-body">
                         <table class="table table-sm">
@@ -45,12 +45,16 @@
                                     <td>{{object.type}}</td>
                                 </tr>
                                 <tr>
-                                    <th>Bank Account?</th>
-                                    <td>{{object.bank_account}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Control Account?</th>
-                                    <td>{{object.control_account}}</td>
+                                    <td colspan=2>
+                                        Account Features:
+                                        <ul>
+                                            {% if object.bank_account %} <li>Bank Account</li>
+                                            {% endif %}
+                                            {% if object.control_account %}
+                                            <li>Control Account</li>
+                                            {% endif %}
+                                        </ul>
+                                    </td>\
                                 </tr>
                                 <tr>
                                     <th>Parent:</th>

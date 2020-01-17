@@ -29,7 +29,9 @@ class AccountingSettings(SingletonModel):
         on_delete=models.SET_NULL, 
         null=True)
     default_bookkeeper = models.ForeignKey('accounting.Bookkeeper', null=True,  
-        blank=True, on_delete=models.SET_NULL)
+        limit_choices_to=Q(active=True),
+        blank=True, 
+        on_delete=models.SET_NULL)
     equipment_capitalization_limit = models.DecimalField(max_digits=12, 
         decimal_places=2,default=0.0)
     is_configured = models.BooleanField(default=False)

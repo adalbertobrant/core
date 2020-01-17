@@ -162,7 +162,7 @@ class CustomerForm(BootstrapMixin, forms.Form):
 
 class SalesRepForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        exclude = 'active',
+        fields = 'employee',
         model = models.SalesRepresentative
 
     def __init__(self, *args, **kwargs):

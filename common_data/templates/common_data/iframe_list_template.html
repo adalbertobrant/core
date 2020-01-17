@@ -4,6 +4,9 @@
 <link rel="stylesheet" href="{% static 'common_data/css/filters.css' %}">
 {% endblock %}
 {% block window %}
+<div>
+    {% include 'common_data/pagination.html' %}
+</div>
 <div style="min-height:400px;">
     <table class="table table-sm  table-striped  table-hover">
         <thead>
@@ -14,9 +17,7 @@
         </tbody>
     </table>
 </div>
-<div>
-    {% include 'common_data/pagination.html' %}
-</div>
+
 
 
 {% endblock %}

@@ -153,7 +153,42 @@ input:required, textarea:required, select:required {
 
 .shadow {
     padding: 20px ;
-    box-shadow: 5px 10px 15px #ccc;
+    box-shadow: 0px 5px 30px #ddd,
+                0px 2px 5px #bbb;
+}
+
+.accent {
+    border-top: 3px solid var(--primary);
+}
+
+.accent-md {
+    border-top: 6px solid var(--primary);
+}
+
+.accent-lg {
+    border-top: 9px solid var(--primary);
+}
+
+.tertiary-link {
+    color: var(--primary);
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.sec-ico {
+    opacity: 0.7;
+}
+
+.tertiary-link:hover {
+    text-decoration: none;
+    
+}
+
+.flex-centered {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 
 nav .nav-link:hover{
@@ -164,21 +199,20 @@ nav .nav-link:hover{
 nav .nav-link{
     color: var(--quarternary);
 }
+.nav-link .fas {
+    opacity: 0.7;
+    margin-right: 1rem;
+    margin-left: 0.3rem;
+    box-sizing: border-box;
+}
+
+
 
 li.active .nav-link{
     color: var(--quarternary);
     background-color: var(--secondary);
 }
 
-.jumbo-gradient{
-    background: rgb(176,224,230);
-background: linear-gradient(90deg, rgba(176,224,230,1) 0%, rgba(0,123,255,1) 100%, rgba(0,0,0,1) 100%);
-}
-
-.jumbo-gradient-reverse{
-    background: rgb(0,123,255);
-background: linear-gradient(90deg, rgba(0,123,255,1) 0%, rgba(176,224,230,1) 100%);
-}
 
 .list-group-item:hover {
     border-left: 3px solid var(--secondary);
@@ -341,6 +375,10 @@ section#title button{
     height: 100% !important
 }
 
+#title-text .fas, .nav-item .fas{
+    opacity: 0.7;
+}
+
 #title-text {
     flex: 20;
 }
@@ -377,7 +415,6 @@ section#title button{
 }
 
 #content {
-    padding-bottom: 30px;
     padding-top: 3px;
     overflow-y:scroll;
 }
@@ -428,7 +465,8 @@ section#title button{
 }
 
 .navbar-brand:hover::first-letter, .logo:hover::first-letter {
-    padding-right: 0
+    padding-right: 0;
+    background: transparent
 }
 .navbar-brand::first-letter, .logo::first-letter{
     background-color: var(--secondary);
@@ -462,7 +500,6 @@ section#title button{
 
 .dashboard-nav > .nav-item {
     font-size: 1.5rem;
-    font-weight: 200;
 }
 .dash-frame {
     width: 100%;

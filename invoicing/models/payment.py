@@ -4,6 +4,7 @@ from accounting.models import Account, Journal, JournalEntry
 from decimal import Decimal as D
 from common_data.models import SoftDeletionModel
 from django.shortcuts import reverse
+from django.db.models import Q
 
 class Payment(SoftDeletionModel):
     '''Model represents payments made by credit customers only!
@@ -32,7 +33,9 @@ class Payment(SoftDeletionModel):
         default='transfer')
     reference_number = models.AutoField(primary_key=True)
     sales_rep = models.ForeignKey("invoicing.SalesRepresentative", 
-        on_delete=models.SET_NULL, null=True,)
+        on_delete=models.SET_NULL, 
+        limit_choices_to=Q(active=True),
+        null=True,)
     comments = models.TextField(default="Thank you for your business")
     entry = models.ForeignKey('accounting.JournalEntry', null=True, blank=True, 
         on_delete=models.SET_NULL)

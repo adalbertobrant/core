@@ -88,7 +88,8 @@ class Invoice(SoftDeletionModel):
         default=DEFAULT_CUSTOMER)
     salesperson = models.ForeignKey('invoicing.SalesRepresentative',
         on_delete=models.SET_NULL, 
-        null=True, 
+        null=True,
+        limit_choices_to=Q(active=True),
         default=DEFAULT_SALES_REP)
     due= models.DateField( default=datetime.date.today)
     date= models.DateField(default=datetime.date.today)
@@ -139,7 +140,6 @@ class Invoice(SoftDeletionModel):
             
         elif data['type'] == 'service':
             pk = data['selected'].split('-')[0]
-            print(f'Primary Key ##: {pk}')
             service = Service.objects.get(pk=pk)
             component = ServiceLineComponent.objects.create(
                 service=service,
@@ -681,7 +681,6 @@ class ServiceLineComponent(models.Model):
         based on expenses recorded and wages earned
         returns total of wages and expenses
         '''
-        print('invoicelin #error ',self.line )
         if not WorkOrderRequest.objects.filter(
                 invoice=self.line.invoice,
                 service=self.service).exists():

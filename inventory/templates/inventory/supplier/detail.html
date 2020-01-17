@@ -1,4 +1,6 @@
 {% extends "window.html" %}
+{% load accounting %}
+
 {% block heading %}
 Vendor Details
 {% endblock heading %}
@@ -21,28 +23,27 @@ Vendor Details
 {% endblock actions %}
 
 {% block content %}
-
+<br>
 <div class="container">
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-md-4">
             <div class="card shadow">
                 <div class="card-body">
-                    <h4 class="card-title">Vendor Information</h4>
+                    <h4 class="card-title">{{object}}</h4>
                     <p class="card-text">Type: {% if object.is_organization %} Organization {% else %} Individual
                         {% endif %} </p>
-                    <p class="card-text">Name: {{object}}</p>
-                    <h5>Contact Details</h5>
-                    <p class="card-text">Email: <a href="{% url 'messaging:create-message' %}">{{object.email}}</a></p>
-                    <p class="card-text">Address: {{object.address}}</p>
-                    <h4 class="card-title">Vendor Account</h4>
-                    <p class="card-text">Name: {{object.account}}</p>
-                    <p class="card-text">Balance: {{object.account.balance}}</p>
+                        <hr>
+                    <p class="card-text"><i class="fa fa-at" aria-hidden="true"></i> <a href="{% url 'messaging:create-message' %}">{{object.email}}</a></p>
+                    <p class="card-text"><i class="fa fa-home" aria-hidden="true"></i> {{object.address}}</p>
+                    <h4 class="card-title">Account</h4>
+                    <p class="card-text">
                     <a href="{% url 'accounting:account-detail' pk=object.account.pk %}"
-                        class="btn btn-secondary">View</a>
+                        class="tertiary-link">{{object.account}}</a></p>
+                    <p class="card-text">{{object.account.balance | active_currency}}</p>
                 </div>
             </div>
         </div>
-        <div class='col-sm-6'>
+        <div class='col-sm-12 col-md-8'>
             <div class="card" style='min-height:300px;'>
                 <div class="card-body">
                     <nav class="nav nav-tabs nav-stacled">
@@ -116,9 +117,7 @@ Vendor Details
                             </table>
                         </div>
                         <div id="members" class="tab-pane">
-                            <button
-                                onclick="linkClickHandler('/inventory/supplier/add-member/{{object.organization.pk}}')"
-                                target='popup' class="btn btn-primary">Add Member</button>
+                            
                             <table class="table table-sm">
                                 <thead>
                                     <tr>
@@ -132,17 +131,18 @@ Vendor Details
                                     {% for m in object.organization.members %}
                                     <tr>
 
-                                        <td>{{m.full_name}}</td>
+                                        <td><a href="{% url 'base:individual-detail' pk=m.pk %}"
+                                                >{{m.full_name}}</a></td>
                                         <td>{{m.phone}}</td>
                                         <td><a href="{% url 'messaging:create-message' %}">{{m.email}}</a></td>
-                                        <td>
-                                            <a href="{% url 'base:individual-detail' pk=m.pk %}"
-                                                class="btn btn-success btn-sm">View</a>
-                                        </td>
+                                        
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            <button
+                                onclick="linkClickHandler('/inventory/supplier/add-member/{{object.organization.pk}}')"
+                                target='popup' class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i></button>
                         </div>
                     </div>
                 </div>

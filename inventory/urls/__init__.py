@@ -40,6 +40,9 @@ urlpatterns = [
     re_path(r'^update-inventory-controller/(?P<pk>[\d]+)/?$', 
         views.InventoryControllerUpdateView.as_view(), 
             name='update-inventory-controller'),
+    re_path(r'^delete-inventory-controller/(?P<pk>[\d]+)/?$', 
+        views.InventoryControllerDeleteView.as_view(), 
+            name='delete-inventory-controller'),
 ] 
 urlpatterns += item_urls
 urlpatterns += inventory_management_urls

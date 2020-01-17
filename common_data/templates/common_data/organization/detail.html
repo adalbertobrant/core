@@ -65,16 +65,13 @@ Organization Details
                             <thead>
                                 <tr class="bg-primary">
                                     <td>Name</td>
-                                    <td>Actions</td>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for m in object.members %}
                                 <tr>
-                                    <td>{{m}}</td>
-                                    <td>
-                                        <a href="{% url 'base:individual-detail' pk=m.pk %}" class="btn btn-success btn-sm">View</a>
-                                    </td>
+                                    <td><a href="{% url 'base:individual-detail' pk=m.pk %}" class="tertiary-link">{{m}}</a></td>
+                                    
                                 </tr>
                                 {% endfor %}
                             </tbody>

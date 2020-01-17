@@ -1,25 +1,20 @@
 {% extends "window.html" %}
-
+{% block heading %}
+Recurring Expense
+{% endblock heading %}
+{% block actions %}
+<a class="dropdown-item" href="{% url 'accounting:recurring-expense-update' pk=object.pk %}" role="button">Edit</a>
+{% endblock actions %}
 {% block content %}
 
-<div class="jumbotron">
-    <h1 class="display-3">Recurring Expense Details</h1>
-    <p class="lead">Information regarding payment and cycling of recurrent payments</p>
-    <hr class="my-2">
-    <p>Actions</p>
-    <p class="lead">
-        <a class="btn btn-primary btn-lg" href="{% url 'accounting:recurring-expense-update' pk=object.pk %}" role="button">Edit</a>
-    </p>
-</div>
-
+<br>
 <div class="container">
     <div class="row">
         <div class="col-sm-6">
-            <div class="card shadow">
+            <div class="card shadow accent-md">
                 <div class="card-body">
-                    <h4 class="card-title">Details</h4>
-                    <p class="card-text">Date Created: {{object.start_date}}</p>
-                    <p class="card-text">Expiry Date: {{object.expiration_date}}</p>
+                    <p class="card-text">Created: {{object.start_date}}</p>
+                    <p class="card-text">Expiry: {{object.expiration_date}}</p>
                     <p class="card-text">Cycle Frequency: {{object.cycle_string}}</p>
                     <p class="card-text">Category: {{object.category_string}}</p>
                     <p class="card-text">Last Recoreded Payment Date: {{object.last_created_date}}</p>

@@ -22,8 +22,8 @@ from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from formtools.wizard.views import SessionWizardView
 
-from common_data.utilities import ContextMixin, apply_style, ConfigWizardBase
-from common_data.views import PaginationMixin
+from common_data.utilities import ContextMixin, ConfigMixin, apply_style, ConfigWizardBase
+from common_data.views import PDFDetailView,PaginationMixin
 from invoicing.models import Customer
 from accounting import filters, forms, models, serializers
 from accounting.views.reports.balance_sheet import BalanceSheet
@@ -37,7 +37,7 @@ import csv
 from common_data.utilities.plotting import CustomStyle
 
 
-CREATE_TEMPLATE = os.path.join('common_data', 'create_template.html')
+CREATE_TEMPLATE = os.path.join('common_data', 'crispy_create_template.html')
 
 class Dashboard( TemplateView):
     template_name = os.path.join('accounting', 'dashboard.html')
@@ -318,12 +318,17 @@ class AccountConfigView( UpdateView):
     success_url = reverse_lazy('accounting:dashboard')
     model = models.AccountingSettings
 
-class DirectPaymentList( ContextMixin, TemplateView):
+
+class DirectPaymentList( ContextMixin,PaginationMixin, FilterView):
     template_name = os.path.join('accounting', 'direct_payment_list.html')
-    extra_context = {
-        'entries': lambda : models.JournalEntry.objects.filter(
+    paginate_by = 20
+    model = models.JournalEntry
+    filterset_class = filters.EntryFilter
+    
+    def get_queryset(self):
+        return models.JournalEntry.objects.filter(
            journal = models.Journal.objects.get(pk=4)) 
-    }
+    
 
 #############################################################
 #                    Journal Views                         #
@@ -535,7 +540,7 @@ class RecurringExpenseDeleteView( DeleteView):
 
 class BookkeeperCreateView( CreateView):
     form_class = forms.BookkeeperForm
-    template_name = CREATE_TEMPLATE
+    template_name = CREATE_TEMPLATE 
     success_url = reverse_lazy('accounting:bookkeeper-list')
     extra_context = {
         'title': 'Create Bookkeeper',
@@ -628,9 +633,22 @@ class BillListView(ContextMixin, PaginationMixin, FilterView):
     paginate_by=20
     template_name = os.path.join('accounting', 'bill', 'list.html')
 
-class BillDetailView(DetailView):
+class BillDetailView(ContextMixin,ConfigMixin, DetailView):
     template_name = os.path.join('accounting', 'bill', 'detail.html')
     model = models.Bill
+    extra_context = {
+        'pdf_link': True
+    }
+
+class BillPaymentsDetailView(ContextMixin,ConfigMixin, DetailView):
+    template_name = os.path.join('accounting', 'bill', 'payments.html')
+    model = models.Bill
+    
+
+class BillPDFView(ContextMixin,ConfigMixin, PDFDetailView):
+    template_name = os.path.join('accounting', 'bill', 'detail.html')
+    model = models.Bill
+    
 
 class BillPaymentView(ContextMixin, CreateView):
     form_class = forms.BillPaymentForm
@@ -861,7 +879,6 @@ class ImportTransactionView(ContextMixin, FormView):
             'debit': form.cleaned_data['debit'] -1
         }
 
-        print(fields['acc'])
         file = form.cleaned_data['file']
         if file.name.endswith('.csv'):
             #process csv 
@@ -904,7 +921,6 @@ class ImportTransactionView(ContextMixin, FormView):
                         f'Account with ID {row[fields["acc"]].value} does not exist, entry skipped')
                     continue
                 acc = qs.first()
-                print(entry)
                 if row[fields['credit']].value and \
                         row[fields['credit']].value > 0:
                     

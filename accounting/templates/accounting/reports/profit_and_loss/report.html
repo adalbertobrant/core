@@ -1,22 +1,17 @@
 {% extends "common_data/page/framed_pdf_page.html" %}
 
 {% block pre_page %}
-<div class="jumbotron">
-    <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            Actions
-        </button>
-        <div class="dropdown-menu" aria-labelledby="triggerId">
-            <a class="dropdown-item"
-                href="/accounting/csv/profit-and-loss/{{start|urlencode}}/{{end|urlencode}}"><i class="fas fa-file-excel"></i>Export as csv</a>
-            <a class="dropdown-item"
-                href="/accounting/pdf/profit-and-loss/{{start|urlencode}}/{{end|urlencode}}"><i class="fas fa-file-pdf"></i>Generate PDF</a>
-        </div>
-
-    </div>
-
-</div>
+<script>
+var url = "/accounting/pdf/profit-and-loss/{{start|urlencode}}/{{end|urlencode}}";
+var el = window.parent.document.getElementById('pdf-button');
+el.href = url;
+var actions =  window.parent.document.getElementById('action-dropdown-items')
+node = window.parent.document.createElement("a")
+node.href = "/accounting/csv/profit-and-loss/{{start|urlencode}}/{{end|urlencode}}"
+node.classList.add('dropdown-item')
+node.innerHTML = '<i class="fas fa-file-csv    "></i>  Export as csv'
+actions.appendChild(node)
+</script>
 {% endblock  %}
 
 {% block page_contents %}

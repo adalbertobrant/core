@@ -166,13 +166,13 @@ class EntryRow extends Component {
                         <input name="amount" 
                             type="number" 
                             value={this.state.inputs.amount}
-                            className="form-control"
+                            className="form-control form-control-sm"
                             onChange={this.handleInputChange} />
                     </td>
                     <td>
                         <select name="debit" 
                             value={this.state.inputs.debit}
-                            className="form-control"
+                            className="form-control form-control-sm"
                             onChange={this.handleInputChange}>
                             <option value="">-----</option>
                             <option value={1}>Debit</option>

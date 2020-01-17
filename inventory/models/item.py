@@ -210,7 +210,6 @@ class ProductComponent(models.Model):
             on_date = current - orders( + debit notes ) + sold(- credit notes) + scrapped inventory
         '''
         current_quantity = self.inventoryitem.quantity
-        print('Current: ', current_quantity)
         total_orders = inventory.models.order.OrderItem.objects.filter(
             Q(order__date__gte=date) &
             Q(order__date__lte=datetime.date.today()) &

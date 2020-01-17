@@ -25,9 +25,10 @@ def balance_sheet_csv(request):
     writer = csv.writer(response)
     string =render_to_string(
         BalanceSheet.template_name, BalanceSheet.common_context({}))
-    
+
     soup = BeautifulSoup(string)
-    data = soup.find_all('table')[1]
+    tables = soup.find_all('table')
+    data = tables[-1]
     rows = data.find_all('tr')
 
     for row in rows:
@@ -66,7 +67,7 @@ def profit_and_loss_csv(request, start=None, end=None):
             ,start, end))
     
     soup = BeautifulSoup(string)
-    data = soup.find_all('table')[1]
+    data = soup.find_all('table')[-1]
 
     rows = data.find_all('tr')
 

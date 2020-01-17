@@ -593,7 +593,6 @@ class OutstandingPayslipsView(ContextMixin, FormView):
         data = json.loads(urllib.parse.unquote(form.cleaned_data['data']))
 
         for line in data:
-            print(line)
             slip = models.Payslip.objects.get(pk=line['id'])
             if line['status'] != '' and slip.status != 'paid' and \
                     line['status'] != slip.status:

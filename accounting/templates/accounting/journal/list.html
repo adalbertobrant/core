@@ -2,20 +2,17 @@
 {% block list_headings %}
 <tr class="bbg-info">
     <td>Name</td>
-    <td>Start Period</td>
-    <td>End Period</td>
+    <td>Description</td>
     <td>Number of Transactions</td>
-    <td>Actions</td>
 </tr>
 {% endblock %}
 {% block list_content %}
 {% for item in object_list %}
 <tr>
-    <td>{{item.name}}</td>
-    <td>{{item.start_period}}</td>
-    <td>{{item.end_period}}</td>
+
+    <td><a href="{% url 'accounting:journal-detail' pk=item.pk %}">{{item.name}}</a></td>
+    <td>{{item.description | truncatechars:60}}</td>
     <td>{{item.journalentry_set.all.count}}</td>
-    <td><a class="btn btn-success" href="{% url 'accounting:journal-detail' pk=item.pk %}">View</a></td>
 </tr>
 {% endfor %}
 {% endblock %}

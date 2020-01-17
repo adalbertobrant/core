@@ -107,7 +107,6 @@ class Supplier(SoftDeletionModel):
                 total_days += (last_receipt.receive_date - order.date).days
         
         if fully_received > 0:
-            print(f'{self} has {fully_received} orders')
             return total_days / fully_received
 
         return 0

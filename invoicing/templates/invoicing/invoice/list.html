@@ -32,17 +32,17 @@
                     <p class="dropdown-item" style="color:red;"><i class="fas fa-times    "></i> Quotation is no longer valid</p>
                 {% endif %}
                 <a class="dropdown-item" href="{% url 'invoicing:quotation-details' pk=inv.pk %}">
-                        <i class="fas fa-eye"></i> View {% if inv.draft %} / Validate {% endif %}
+                        <i class="fas fa-file-alt"></i> View {% if inv.draft %} / Validate {% endif %}
                     </a>
                 {% elif inv.status == "proforma" %}
                     <a class="dropdown-item" href="{% url 'invoicing:invoice-details' pk=inv.pk %}">
-                        <i class="fas fa-eye"></i> View {% if inv.draft %} / Validate {% endif %}
+                        <i class="fas fa-file-alt"></i> View {% if inv.draft %} / Validate {% endif %}
                     </a>
                     <a class="dropdown-item" href="{% url 'invoicing:make-invoice' pk=inv.pk %}"> <i class="fa fa-file-alt" aria-hidden="true"></i> Make Invoice from Proforma Invoice</a>
                 {% else %} <!-- Invoice or paid -->
 
                 <a class="dropdown-item" href="{% url 'invoicing:invoice-details' pk=inv.pk %}">
-                        <i class="fas fa-eye"></i> View {% if inv.draft %} / Validate {% endif %}
+                        <i class="fas fa-file-alt"></i> View {% if inv.draft %} / Validate {% endif %}
                 </a>
                 {% if inv.quotation_number %}
                     <a class="dropdown-item" href="{% url 'invoicing:quotation-details' pk=inv.pk %}">

@@ -72,3 +72,10 @@ class AssetFilter(django_filters.FilterSet):
 
         }
         
+
+class EntryFilter(django_filters.FilterSet):
+    class Meta:
+        model = models.JournalEntry
+        fields = {
+            'date': ['exact'],
+        }

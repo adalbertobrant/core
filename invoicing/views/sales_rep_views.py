@@ -45,7 +45,7 @@ class SalesRepListView( ContextMixin, PaginationMixin, FilterView):
     paginate_by = 20
 
     def get_queryset(self):
-        return SalesRepresentative.objects.all().order_by('pk')
+        return SalesRepresentative.objects.filter(active=True).order_by('pk')
 
 class SalesRepsAPIViewSet(viewsets.ModelViewSet):
     queryset = SalesRepresentative.objects.all()

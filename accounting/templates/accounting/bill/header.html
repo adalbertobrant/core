@@ -1,31 +1,34 @@
 {% extends 'common_data/common/document_header.html' %}
 
 {% block title %}
-Purchase Order{% if object.status == "draft" %}(Draft){% endif %}
+Bill
 {% endblock title %}
-
 
 {% block left_content %}
 
 <table>
     <tbody>
         <tr>
-            <td>Issue Date:</td>
+            <td>Bill #:</td>
+            <td>{{object.id | stringformat:"06d"}}</td>
+        </tr>
+        <tr>
+            <td>Date:</td>
             <td>{{object.date}}</td>
         </tr>
         <tr>
-            <td>Expected Receipt Date:</td>
-            <td>{{object.expected_receipt_date}}</td>
+            <td>Due Date:</td>
+            <td>{{object.due}}</td>
         </tr>
         <tr>
-            <td>Purchase Order Number:</td>
-            <td>{{object.pk}}</td>
+            <td>Reference:</td>
+            <td>{{object.reference}}</td>
         </tr>
     </tbody>
 </table>
 {% include "common_data/common/supplier_data.html" %}
 
-{% endblock %}
+{% endblock left_content %}
 
 {% block right_content %}
 {% include "common_data/common/business.html" %}
@@ -33,7 +36,9 @@ Purchase Order{% if object.status == "draft" %}(Draft){% endif %}
 {% endblock right_content %}
 
 {% block lower_left %}
+
 {% endblock lower_left %}
 
-{% block lower_right %}
-{% endblock lower_right %}
+
+{% block lower_center %}
+{% endblock lower_center %}

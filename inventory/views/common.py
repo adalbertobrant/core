@@ -68,8 +68,14 @@ class InventoryControllerUpdateView(ContextMixin, UpdateView):
         
     }
 
+class InventoryControllerDeleteView(DeleteView):
+    template_name = os.path.join('common_data', 'delete_template.html')
+    model = models.InventoryController    
+    success_url =  reverse_lazy('inventory:inventory-controller-list')
+    
+
 class InventoryControllerListView(ContextMixin,   PaginationMixin, FilterView):
-    queryset = models.InventoryController.objects.all()
+    queryset = models.InventoryController.objects.filter(active=True)
     template_name = os.path.join('inventory', 'inventory_controller_list.html')
     filterset_class = filters.ControllerFilter
     extra_context = {

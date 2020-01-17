@@ -86,6 +86,7 @@ class ServiceWorkOrder(models.Model):
         '00:00:00', '08:00:00', '00:30:00', delta=True
         ), null=True, blank=True)
     service_people = models.ManyToManyField('services.ServicePerson', 
+        limit_choices_to=Q(active=True),
         blank=True)
     team = models.ForeignKey('services.ServiceTeam', on_delete=models.SET_NULL, null=True, 
         blank=True)

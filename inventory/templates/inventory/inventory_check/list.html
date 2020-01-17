@@ -3,7 +3,7 @@
     <td class="info">Date</td>
     <td class="info">Supervisor</td>
     <td class="info"># of Adjustments</td>
-    <td class="info">Actions</td>
+    
 </tr>
 {% endblock %} {% block list_content %} 
 {% for check in object_list %}
@@ -12,8 +12,8 @@
     <td>{{check.adjusted_by}}</td>
     <td>{{check.adjustments.count}}</td>
     <td>
-        <a class="btn btn-success" href="{% url 'inventory:inventory-check-summary' pk=check.pk %}">
-            Details
+        <a  href="{% url 'inventory:inventory-check-summary' pk=check.pk %}">
+            <i class="fas fa-file-alt fa-2x   "></i>
         </a>
     </td>
 </tr>

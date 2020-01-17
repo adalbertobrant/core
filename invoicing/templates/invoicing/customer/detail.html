@@ -1,4 +1,5 @@
 {% extends "window.html" %}
+{% load accounting %}
 {% block heading %}
 Customer
 
@@ -22,22 +23,21 @@ Customer
                 </a>
 {% endblock actions %}
 {% block content %}
-
+<br>
 <div class="container">
     <div class="row">
         <div class="col-sm-6">
             <div class="card shadow" >
                 <div class="card-body">
-                    <h4 class="card-title">Customer Info</h4>
-                    <p class="card-text">Name: {{object.name}}</p>
-                    <p class="card-text">Email: {{object.customer_email}}</p>
+                    <h4 class="card-title">{{object.name}}</h4>
                     <p class="card-text">Type: {% if object.is_organization %} Organization {% else %} Individual {% endif %}</p>
-                    <p class="card-text">Address: {{object.address}}</p>
+                    <hr>
+                    <p class="card-text"><i class="fa fa-at" aria-hidden="true"></i> {{object.customer_email}}</p>
+                    <p class="card-text"><i class="fa fa-home" aria-hidden="true"></i> {{object.address}}</p>
                     <h4>Account</h4>
-                     <p class="card-text">Name: {{object.account}}</p>
-                     <p class="card-text">Balance: {{object.account.balance}}</p>
-                     <a href="{% url 'accounting:account-detail' pk=object.account.pk %}" class="btn btn-secondary">View</a>
-
+                     <p class="card-text"><a href="{% url 'accounting:account-detail' pk=object.account.pk %}" class="tertiary-link">{{object.account}}</a></p>
+                     <p class="card-text">{{object.account.balance | active_currency}}</p>
+                     
 
                 </div>
             </div>

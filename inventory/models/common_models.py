@@ -65,16 +65,20 @@ class InventorySettings(SingletonModel):
     default_warehouse = models.ForeignKey('inventory.warehouse', default=1, on_delete=models.SET_DEFAULT)
 
 
-class InventoryController(models.Model):
+class InventoryController(SoftDeletionModel):
     '''Model that represents employees with the role of 
     inventory controller and have the ability to make purchase orders,
     receive them, transfer inventory between warehouses and perform other 
     functions.'''
-    employee = models.OneToOneField('employees.Employee', on_delete=models.SET_NULL, null=True, 
-        limit_choices_to=Q(user__isnull=False))
+    employee = models.OneToOneField('employees.Employee', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        limit_choices_to=Q(
+            Q(user__isnull=False) &
+            Q(active=True)
+        ))
     can_authorize_equipment_requisitions = models.BooleanField(default=False)
     can_authorize_consumables_requisitions = models.BooleanField(default=False)
-
     def __str__(self):
         return self.employee.full_name
 

@@ -54,7 +54,7 @@ class ServiceCategoryForm(forms.ModelForm, BootstrapMixin):
 
 class ServicePersonForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        fields = "__all__"
+        exclude = "active",
         model = models.ServicePerson
     
     def __init__(self, *args, **kwargs):

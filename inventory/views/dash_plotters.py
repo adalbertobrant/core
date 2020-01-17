@@ -15,7 +15,6 @@ def composition_plot():
     chart = pygal.Pie(print_values=True, style=CustomStyle, height=300)
     ordered = [i for i in stock]
     ordered.sort(key=lambda x: x.quantity,reverse=True)
-    print([f'{i.name}:{i.quantity}' for i in ordered])
     for i in ordered[:10]:
         chart.add(i.name, i.quantity)
 
@@ -23,15 +22,17 @@ def composition_plot():
 
 def single_item_composition_plot(item):
     stock =  WareHouseItem.objects.filter(item=item)
-    chart = pygal.Pie(print_values=True, style=CustomStyle
-    )
+    chart = pygal.Pie(print_values=True, style=CustomStyle,
+        height=300)
+    chart.title = 'Location Composition Chart'
     for i in stock:
         chart.add(str(i.warehouse), i.quantity)
 
     return chart
 
 def inventory_track_plot(item):
-    chart = pygal.Line(style=CustomStyle)
+    chart = pygal.Line(style=CustomStyle, height=300)
+    chart.title= 'Product movement graph'
     evt_dates = set()
     # receipts
     for line in StockReceiptLine.objects.filter(line__item=item):

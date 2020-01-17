@@ -322,12 +322,16 @@ class NonInvoicedSaleForm(BootstrapMixin,forms.Form):
 
 class BookkeeperForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        exclude = "active",
+        fields = "employee",
         model = models.Bookkeeper
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.layout = Layout(
+            HTML('<p>Only Employees with user accounts are listed below.</p>'),
+            'employee'
+        )
         self.helper.add_input(Submit('submit', 'Submit'))
 
 

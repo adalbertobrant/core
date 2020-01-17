@@ -1,25 +1,22 @@
 {% extends "window.html" %}
+{% block heading %}
+Journal Details
+{% endblock heading %}
+
+{% block actions %}
+<a href="{% url 'accounting:journal-form' pk=object.pk %}" class="dropdown-item">Generate Report</a>
+{% endblock actions %}
+
 {% block content %}
-    <div class="jumbotron">
-        <h1 class="display-3">Journal Detail</h1>
-        <hr class="my-2">
-        <p class="lead">Journal Details and Entries</p>
-        <p class="lead">Actions</p>
-        <a href="{% url 'accounting:journal-form' pk=object.pk %}" class="btn btn-primary">Generate Report</a>
-        
-        
-    </div>
     <div class="container">
         <div class="row">
             <div class="col-sm-4">
                 <div class="card shadow">
                     <div class="card-header">
-                            <h4 class="card-title">Details</h4>
+                            <h4 class="card-title">{{object.name}}</h4>
                     </div>
                     <div class="card-body">
-                        <p>Name: {{object.name}}</p>
-                        <hr class="my-2">
-                        <p class="lead"> Description: {{object.description}}</p>
+                        <p class="card-text">{{object.description}}</p>
                     </div>
                 </div>
             </div>

@@ -25,7 +25,7 @@
                 </a>
 
                 <a class="dropdown-item" href="{% url 'services:work-order-detail' pk=wo.pk %}">
-                    <i class="fas fa-eye"></i> View / Authorize
+                    <i class="fas fa-file-alt"></i> View / Authorize
                 </a>
                 {% if wo.procedure_pk %}
                 <a class="dropdown-item" href="{% url 'services:procedure-details' pk=wo.procedure_pk %}">

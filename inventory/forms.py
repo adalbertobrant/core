@@ -359,9 +359,6 @@ class EquipmentForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
         cleaned_data = super().clean(*args, **kwargs)
         cap_limit = \
             AccountingSettings.objects.first().equipment_capitalization_limit
-        print(cap_limit)
-        print(cleaned_data['record_as_asset'])
-        print(cleaned_data['unit_purchase_price'])
         if not cleaned_data['record_as_asset'] and \
                 cleaned_data['unit_purchase_price'] > cap_limit:
             raise forms.ValidationError("""The purchase price for this equipment is above the capitalization limit, either adjust this limit in the accouting settings or record this equipment as an asset.""")
@@ -728,13 +725,18 @@ class TransferReceiptForm(forms.ModelForm, BootstrapMixin):
 
 class InventoryControllerForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        fields = "__all__"
+        exclude = "active",
         model = models.InventoryController
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         self.helper = FormHelper()
+        self.helper.layout = Layout(
+            HTML('<p>Choices limited to employees with user accounts.</p>'),
+            'employee',
+            'can_authorize_equipment_requisitions',
+            'can_authorize_consumables_requisitions',
+        )
         self.helper.add_input(Submit('submit', 'Submit'))
 
 

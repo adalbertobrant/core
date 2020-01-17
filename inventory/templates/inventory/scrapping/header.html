@@ -12,16 +12,15 @@ Scrap Report
             <td>{{object.date}}</td>
         </tr>
         <tr>
-            <td>Performed By:</td>
+            <td>Scrapped By:</td>
             <td>{{object.controller}}</td>
         </tr>
         <tr>
-            <td>Scrapping Record Number:</td>
-            <td>{{object.pk}}</td>
+            <td>Scrap Record #:</td>
+            <td>{{object.pk | stringformat:"06d"}}</td>
         </tr>
     </tbody>
 </table>
-<p><b>Warehouse:</b></p>
 <p>{{object.warehouse}}</p>
 <p>{{object.warehouse.address}}</p>
 {% endblock left_content %}

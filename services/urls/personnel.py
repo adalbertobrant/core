@@ -15,6 +15,8 @@ personnel_urls = [
         name='service-person-create'),
     re_path(r'^service-person-update/(?P<pk>\d+)/?$', 
         views.ServicePersonUpdateView.as_view(), name='service-person-update'),
+    re_path(r'^delete-service-person/(?P<pk>\d+)/?$', 
+        views.ServicePersonDeleteView.as_view(), name='delete-service-person'),
     path('service-portal', views.ServicePortalView.as_view() ,name='service-portal'),
     re_path(r'^service-person-dashboard/(?P<pk>\d+)/?$', 
         views.ServicePersonDashboardView.as_view(), 

@@ -10,7 +10,6 @@ from invoicing.models import ProductLineComponent, SalesConfig
 
 def process_sale(request):
     data = json.loads(request.body)
-    print(data)
     timestamp = datetime.datetime.strptime(data['timestamp'].split('.')[0],
         '%Y-%m-%dT%H:%M:%S')
     session = models.POSSession.objects.get(pk=data['session'])
@@ -94,7 +93,6 @@ def end_session(request):
     data = json.loads(request.body)
     timestamp =  datetime.datetime.strptime(data['timestamp'].split('.')[0],
         '%Y-%m-%dT%H:%M:%S')
-    print('timestamp')
     session = models.POSSession.objects.get(pk=data['id'])
     session.end = timestamp
     session.save()

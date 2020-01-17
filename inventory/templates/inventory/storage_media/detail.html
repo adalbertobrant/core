@@ -1,23 +1,19 @@
 {% extends "window.html" %}
+{% block heading %}
+Storage Medium Detail
+{% endblock heading %}
+{% block actions %}
+<a class="dropdown-item" href="{% url 'inventory:storage-media-update' pk=object.id %}" role="button">Edit Storage Medium</a>
+{% endblock actions %}
 {% block content %}
 
-<div class="jumbotron">
-    <h1 class="display-3">Storage Media Details</h1>
-    <p class="lead">Information regarding the selected storage medium as well as the inventory it contains</p>
-    <hr class="my-2">
-    <p>Actions</p>
-    <p class="lead">
-        <a class="btn btn-primary btn-lg" href="{% url 'inventory:storage-media-update' pk=object.id %}" role="button">Edit Storage Medium</a>
-    </p>
-</div>
-
+        
 <div class="container">
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-12 col-md-4">
             <div class="card shadow">
                 <div class="card-body">
-                    <h4 class="card-title">Storage Medium Details</h4>
-                    <p class="card-text">Name: {{object.name}}</p>
+                    <h4 class="card-title">{{object.name}}</h4>
                     {% if object.location %}
                     <p class="card-text">Location: {{object.location}}</p>
                     {% endif %}
@@ -34,8 +30,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-8">
-            <h3>Inventory Stored in Medium</h3>
+        <div class="col-sm-12 col-md-8">
+            <div style='max-height:500px;overflow-y:auto;'>
             <table class="table table-sm">
                 <thead >
                     <tr class="bg-primary">
@@ -49,12 +45,13 @@
                     {% for i in object.contents %}
                     <tr>
                         <td>{{i.item.pk}}</td>
-                        <td>{{i.name}}</td>
+                        <td><a href="{{i.item.url}}">{{i.name}}</a></td>
                         <td>{{i.quantity}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 </div>

@@ -21,11 +21,11 @@
             </button>
             <div class="dropdown-menu" aria-labelledby="triggerId">
                 <a class="dropdown-item" href="{% url 'services:equipment-requisition-auth-view' pk=req.pk %}">
-                        <i class="fas fa-eye"></i> Authorize/Release
+                        <i class="fas fa-file-alt"></i> Authorize/Release
                     </a>
 
                 <a class="dropdown-item" href="{% url 'services:equipment-requisition-detail' pk=req.pk %}">
-                        <i class="fas fa-eye"></i> Details
+                        <i class="fas fa-file-alt"></i> Details
                     </a>
 
                 <a class="dropdown-item" href="{% url 'services:equipment-return' pk=req.pk %}">

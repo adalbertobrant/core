@@ -75,7 +75,10 @@ class Order(SoftDeletionModel):
     received_to_date = models.FloatField(default=0.0)
     issuing_inventory_controller = models.ForeignKey(
         'inventory.InventoryController', 
-        default=1, on_delete=models.SET_NULL, null=True)
+        default=1, 
+        limit_choices_to=Q(active=True),
+        on_delete=models.SET_NULL, 
+        null=True)
     entry = models.ForeignKey('accounting.JournalEntry',
          blank=True, on_delete=models.SET_NULL, null=True, 
          related_name="order_entry")

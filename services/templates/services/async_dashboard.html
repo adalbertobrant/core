@@ -2,41 +2,37 @@
 
 {% block window %}
 
-<div class="container">
+<div class="container-fluid">
     <div class="row">
-        <div class="col-sm-2">
-            <ul class="nav nav-pills flex-column">
-                <li class="nav-item"><a data-toggle="pill" href="#Main" class="nav-link active">Data
-                        Grid</a></li>
-                <li class="nav-item"><a data-toggle="pill" href="#Graph" class="nav-link">Graph</a>
-                </li>
-            </ul>
-        </div>
-        <div class="col-sm-10">
-            <div class="tab-content panel-body">
-                <div id="Main" class="tab-pane active">
-                    <div id="dashboard" class="tab-pane">
-                        <div class="dash-container">
-                            <div class="bg-primary text-white dashbox">
-                                <h3># Offered Services: {{services}}</h3>
-                            </div>
-                            <div class="dashbox white-on-blue">
-                                <h3># Open Work Orders: {{wo_open}}</h3>
-                            </div>
-                            <div class="bg-primary text-white dashbox">
-                                <h3># Work Orders Completed: {{wo_closed}}</h3>
-                            </div>
-                        </div>
-                    </div>
+        <div class="col-12">
+            <div class="dash-container" >
+                <div class=" dashbox" style='border-top: 15px solid cadetblue;'>
+                    <h4># Offered Services</h4>
+                    <h3>{{services}}</h3>
+                    <i class="fas fa-concierge-bell dash-icon fa-7x" ></i>
+
                 </div>
-                <div id="Graph" class="tab-pane fade in active">
-                    <hr class="my-4">
-                    <h3>Service Person Utilization over the last 30 days</h3>
-                    {% autoescape off %}
-                    {{graph}}
-                    {% endautoescape %}
+                <div class="dashbox" style='border-top: 15px solid crimson;'>
+                    <h4># Open Work Orders</h4>
+                    <h3>{{wo_open}}</h3>
+                    <i class="fas fa-cogs dash-icon fa-7x" ></i>
+
+                </div>
+                <div class="dashbox" style='border-top: 15px solid limegreen;'>
+                    <h4># Work Orders Completed</h4>
+                    <h3>{{wo_closed}}</h3>
+                    <i class="fas fa-file-invoice dash-icon fa-7x" ></i>
+
                 </div>
             </div>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-12'>
+            <hr class="my-4">
+            {% autoescape off %}
+            {{graph}}
+            {% endautoescape %}
         </div>
     </div>
 </div>

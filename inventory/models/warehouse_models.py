@@ -21,7 +21,9 @@ class WareHouse(models.Model):
     address = models.TextField()
     description = models.TextField(blank=True)
     inventory_controller = models.ForeignKey('inventory.InventoryController', 
-        on_delete=models.SET_NULL, null=True, 
+        limit_choices_to=Q(active=True),
+        on_delete=models.SET_NULL, 
+        null=True, 
         blank=True)
     length = models.FloatField(default=0.0)
     width = models.FloatField(default=0.0)
@@ -83,20 +85,13 @@ class WareHouse(models.Model):
             
         elif location: 
             location = StorageMedia.objects.get(pk=location)
-            print('warehouse location: ', location)
             qs = self.warehouseitem_set.filter(item=item, 
                 location=location)
             
             if qs.exists():
                 wi = qs.first()
                 wi.increment(quantity)
-                print('qs: Exists!')
             else:
-                print('New Item')
-                print('location: ', location)
-                print('quantity: ', quantity)
-                print('warehouse: ', self)
-
                 WareHouseItem.objects.create(
                     item=item, 
                     location=location, 

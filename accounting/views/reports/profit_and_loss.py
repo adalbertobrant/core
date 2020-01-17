@@ -49,7 +49,6 @@ class ProfitAndLossReport(ConfigMixin, PeriodReportMixin, TemplateView):
         
         opening_inventory = sum(
             [D(i.quantity_on_date(start)) * i.unit_value for i in inventory_models.InventoryItem.objects.filter(product_component__isnull=False)])
-        print(opening_inventory)
         
         closing_inventory = inventory_models.InventoryItem.total_inventory_value()
         cogs = opening_inventory +  purchases - closing_inventory

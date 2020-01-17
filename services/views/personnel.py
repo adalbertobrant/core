@@ -4,7 +4,10 @@ import urllib
 
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView
-from django.views.generic.edit import CreateView, UpdateView, FormView
+from django.views.generic.edit import (CreateView, 
+                                       UpdateView, 
+                                       FormView, 
+                                       DeleteView)
 from django_filters.views import FilterView
 from rest_framework.viewsets import ModelViewSet
 
@@ -24,6 +27,13 @@ class ServicePersonCreateView( ContextMixin, CreateView):
     extra_context = {
         'title': 'Add Employee to Service Personnel'
     }
+
+class ServicePersonDeleteView( ContextMixin, DeleteView):
+    template_name = os.path.join('common_data', 'delete_template.html')
+    success_url = reverse_lazy('services:service-person-list')
+    model = models.ServicePerson
+    
+
 
 class ServicePersonUpdateView( ContextMixin, UpdateView):
     template_name = os.path.join('common_data', 'create_template.html')

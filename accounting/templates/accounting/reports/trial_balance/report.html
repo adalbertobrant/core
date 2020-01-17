@@ -2,13 +2,13 @@
 {% load accounting %}
 
 {% block pre_page %}
+<section id='title'>
+    <div id='title-text'>Trial Balance</div>
+    <div id='action-icon dropdown'>
 
-<div class="jumbotron">
-    <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            Actions
-        </button>
+        <button class="btn btn-block primary " id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
+
         <div class="dropdown-menu" aria-labelledby="triggerId">
             <a href="{% url 'accounting:trial-balance-csv' %}" class="dropdown-item"><i
                     class="fas fa-file-excel"></i>Export as csv</a>
@@ -16,7 +16,7 @@
                     class="fas fa-file-pdf"></i>Generate PDF</a>
         </div>
     </div>
-</div>
+</section>
 
 {% endblock  %}
 

@@ -2,34 +2,34 @@
 {% block heading %}
 Expense Details
 {% endblock heading %}
-
+{% load accounting %}
 {% block actions %}
-<a class="dropdown-item" href="/accounting/expense/create"> <i class="fas fa-plus"></i> Record Another Expense</a>
+<a class="dropdown-item" href="/accounting/expense/create"> <i class="fas fa-plus"></i> <i class="fas fa-edit    "></i>  Create Expense</a>
 {% endblock actions %}
 {% block content %}
-
+<br>
 
 <div class="container">
     <div class="row">
             <div class="col-sm-5">
                 <div class="card shadow" >
                 <div class="card-body ">
-                    <h3 class="card-title">Details</h3>
-                    <p class="card-text">Amount: {{object.amount}}</p>
-                    <p class="card-text">Account Debited: {{object.debit_account}}</p>
-                    <p class="card-text">Date Created: {{object.date}}</p>
+                    <h3 class="card-title">{{object.amount|active_currency}}</h3>
+                    <p class="card-text">{{object.date}}</p>
+                    <p class="card-text">Account Debited: {{object.debit_account}}</p> 
                     <p class="card-text">Category: {{object.category_string}}</p>
                 </div>
             </div>
             </div>
             <div class="col-sm-7">
-                <div class="card">
+                <div class="card accent-md">
                     <div class="card-body">
                         <h4 class="card-title">Description</h4>
                         <p class="card-text">{{object.description}}</p>
-                        <h4 class="card-title">Billing Information</h4>
-                        <p class="card-text">Billable?: {% if object.billable %} Yes {% else %} No {% endif %}</p>
-                        {% if object.billable %}<p class="card-text">Customer:  {{object.customer}}</p>{% endif %}
+                        {% if object.billable %}
+                        <h4 class="card-title">Billing</h4>
+                        <p class="card-text">Customer:  {{object.customer}}</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>

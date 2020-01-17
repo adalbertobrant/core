@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.db.models import Q
 from common_data.utilities import time_choices
-from common_data.models import SingletonModel
+from common_data.models import SingletonModel, SoftDeletionModel
 import services
 
 # Create your models here.
@@ -50,8 +50,10 @@ class ServiceCategory(models.Model):
         return self.service_set.all().count()
 
 #might rename 
-class ServicePerson(models.Model):
-    employee = models.OneToOneField('employees.Employee', null=True,
+class ServicePerson(SoftDeletionModel):
+    employee = models.OneToOneField('employees.Employee', 
+        null=True,
+        limit_choices_to=Q(active=True),
         on_delete=models.SET_NULL,)
     is_manager = models.BooleanField(default=False)
     can_authorize_equipment_requisitions = models.BooleanField(default=False)
@@ -95,10 +97,13 @@ class ServiceTeam(models.Model):
     manager = models.ForeignKey('services.ServicePerson', 
         on_delete=models.SET_NULL,
         null=True, 
+        limit_choices_to=Q(active=True),
         blank=True, 
         related_name="service_team_manager")
     members = models.ManyToManyField('services.ServicePerson', 
-        related_name="service_team_members")
+        related_name="service_team_members",
+        limit_choices_to=Q(active=True),
+        )
 
     def __str__(self):
         return self.name

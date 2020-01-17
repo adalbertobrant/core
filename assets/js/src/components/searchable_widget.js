@@ -166,7 +166,8 @@ class SearchableWidget extends Component {
                 width:"100%",
                 margin: "2px",
                 position:"relative",
-                display: "inline-block"
+                display: "inline-block",
+                border: '1px solid #ced4da'
                 }}>
                 <TextBoxWidget 
                     idRoot={this.props.widgetID}

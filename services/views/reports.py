@@ -16,6 +16,7 @@ from common_data.utilities import (ContextMixin,
                                    encode_period,
                                    extract_encoded_period)
 from common_data.forms import PeriodReportForm
+from common_data.utilities.plotting import CustomStyle
 from functools import reduce
 from wkhtmltopdf.views import PDFTemplateView
 from invoicing.models import InvoiceLine
@@ -45,7 +46,7 @@ class ServicePersonUtilizationReport( PeriodReportMixin, TemplateView):
         x = histogram.keys()
         y = [reduce(lambda x, y: x + y, histogram[key], datetime.timedelta(seconds=0)).seconds / 3600  for key in x]
         
-        chart = pygal.Bar()
+        chart = pygal.Bar(style=CustomStyle, height=400)
         chart.title = 'Service Person Utilization'
         chart.x_labels = x
         chart.add('Hours', y)

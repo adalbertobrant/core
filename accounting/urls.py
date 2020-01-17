@@ -35,6 +35,10 @@ bill_urls = [
     path('list-bills/', views.BillListView.as_view(), name='list-bills'),
     path('bill-details/<int:pk>', 
         views.BillDetailView.as_view(), name='bill-details'),
+    path('bill-payments-details/<int:pk>', 
+        views.BillPaymentsDetailView.as_view(), name='bill-payments-details'),
+    path('bill-pdf/<int:pk>', 
+        views.BillPDFView.as_view(), name='bill-pdf'),
     path('create-bill-payment/<int:pk>', 
         views.BillPaymentView.as_view(), name='create-bill-payment'),
 
