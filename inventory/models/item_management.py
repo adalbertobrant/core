@@ -101,6 +101,10 @@ class InventoryCheck(models.Model):
         on_delete=models.SET_NULL, 
         null=True )
     comments = models.TextField()
+
+    def get_absolute_url(self):
+        return reverse("inventory:inventory-check-summary", kwargs={"pk": self.pk})
+    
     
     @property 
     def adjustments(self):

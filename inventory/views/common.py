@@ -126,11 +126,11 @@ class AsyncDashboard(ContextMixin, TemplateView):
             completed=False).count()
 
         context['products'] = models.InventoryItem.objects.filter(
-            type=0).count()
+            type=0,active=True).count()
         context['equipment'] = models.InventoryItem.objects.filter(
-            type=1).count()
+            type=1,active=True).count()
         context['consumables'] = models.InventoryItem.objects.filter(
-            type=2).count()
+            type=2,active=True).count()
         context['graph'] = composition_plot().render(is_unicode=True)
 
         return context

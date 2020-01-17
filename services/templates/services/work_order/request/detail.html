@@ -1,16 +1,12 @@
 {% extends "window.html" %}
+{% block heading %}
+Works Request
+{% endblock heading %}
+{% block actions %}
+        <a class="dropdown-item" href="{% url 'services:work-order-create' pk=object.pk %}" role="button">Add Work Order</a>
 
+{% endblock actions %}
 {% block content %}
-<div class="jumbotron">
-    <h1 class="display-3">Works Request</h1>
-    <p class="lead">View the details of the progress of the Service and other information</p>
-    <hr class="my-2">
-    <p>Actions</p>
-    <p class="lead">
-        <a class="btn btn-primary " href="{% url 'services:work-order-create' pk=object.pk %}" role="button">Add Work Order</a>
-    </p>
-</div>
-
 <div class="container">
     <div class="row">
         <div class="col-sm-12">

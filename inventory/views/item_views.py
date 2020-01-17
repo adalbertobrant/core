@@ -34,7 +34,7 @@ from invoicing.models import SalesConfig
 from accounting.models import BillLine, Expense, BillPayment, Account
 
 class ProductAPIView(ModelViewSet):
-    queryset = models.InventoryItem.objects.filter(type=0)
+    queryset = models.InventoryItem.objects.filter(type=0,active=True)
     serializer_class = serializers.InventoryItemSerializer
 
 # class SearchProductByBarcodeAPIView(RetrieveAPIView):
@@ -152,7 +152,7 @@ class ProductCreateView( ContextMixin,
 ################################################
 
 class ConsumableAPIView(ModelViewSet):
-    queryset = models.InventoryItem.objects.filter(type=2)
+    queryset = models.InventoryItem.objects.filter(type=2,active=True)
     serializer_class = serializers.InventoryItemSerializer
 
 
@@ -246,7 +246,7 @@ class ConsumablesPurchaseView(CreateView):
 
 
 class EquipmentAPIView(ModelViewSet):
-    queryset = models.InventoryItem.objects.filter(type=1)
+    queryset = models.InventoryItem.objects.filter(type=1,active=True)
     serializer_class = serializers.InventoryItemSerializer
 
 

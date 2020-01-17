@@ -11,6 +11,42 @@ class MultipleSelectWidget extends Component{
         selectedList: []
     }
 
+    updateChoices = () =>{
+        // retrieves the latest object from the database
+        // Not connected does not work because the model ishared by equipment consumables and products
+        if(!this.props.model){
+            return
+        }
+        axios({
+            'method': 'GET',
+            url: '/base/models/get-latest/' + this.props.app+ '/' + this.props.model
+        }).then((resp) =>{
+            if(!(resp.data.data === -1)){
+                const pk = resp.data.data[0];
+                const itemString = resp.data.data[1];
+                let label;
+                if(itemString.indexOf('-') === -1){
+                    label=itemString;
+                }else{
+                    label = itemString.split('-')[1]
+                }
+                let isPresent = false;
+                this.state.choices.forEach((i) =>{
+                    const [id, name] = i.split('-');
+                    if(id == pk){
+                        isPresent = true;
+                    }
+                });
+
+                if(!isPresent){
+                    let newChoices = this.state.choices;
+                    newChoices.push(pk.toString() + ' - ' + label);
+                    this.setState({choices: newChoices});
+                }
+            }
+        })
+    }
+
     sourceClickHandler = (index) =>{
         let updatedList = [...this.state.sourceList];
         updatedList[index].clicked = !updatedList[index].clicked;

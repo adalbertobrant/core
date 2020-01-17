@@ -1,53 +1,47 @@
 {% extends "window.html" %}
 
+{% block heading %}
+Work Order Detail
+{% endblock heading %}
+
+{% block actions %}
+<a class="dropdown-item" href="{% url 'services:work-order-update' pk=object.pk %}">
+    <i class="fas fa-edit"></i> Update
+</a>
+
+{% if wo.procedure_pk %}
+<a class="dropdown-item" href="{% url 'services:procedure-details' pk=object.procedure_pk %}">
+    <i class="fas fa-list-ul"></i> View Procedure
+</a>
+
+{% endif %}
+{% if wo.status != 'authorized' %}
+<a class="dropdown-item" href="{% url 'services:work-order-complete' pk=object.pk %}">
+    <i class="fas fa-check"></i> Update Progress
+</a>
+<a class="dropdown-item" href="{% url 'services:work-order-equipment-requisition-create' pk=object.pk %}">
+    <i class="fas fa-file-invoice"></i> Request Equipment
+</a>
+<a class="dropdown-item" href="{% url 'services:work-order-consumable-requisition-create' pk=object.pk %}">
+    <i class="fas fa-file-invoice"></i> Request Consumables
+</a>
+<a class="dropdown-item" href="{% url 'services:work-order-expense-create' pk=object.pk %}">
+    <i class="fas fa-dollar-sign"></i> Record Work Related Expense
+</a>
+<a class="dropdown-item" href="{% url 'services:work-order-costing' pk=object.pk %}">
+    <i class="fas fa-receipt"></i> Costing
+</a>
+{% endif %}
+{% endblock actions %}
 {% block content %}
-<div class="jumbotron">
-    <h1 class="display-3">Work Order Details </h1>
-    <p class="lead">Information regarding work orders</p>
-    <hr class="my-2">
-    <div class="dropdown">
-            <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
-                aria-expanded="false">
-                Actions
-            </button>
-            <div class="dropdown-menu" aria-labelledby="triggerId">
-                <a class="dropdown-item" href="{% url 'services:work-order-update' pk=object.pk %}">
-                    <i class="fas fa-edit"></i> Update
-                </a>
-
-                {% if wo.procedure_pk %}
-                <a class="dropdown-item" href="{% url 'services:procedure-details' pk=object.procedure_pk %}">
-                    <i class="fas fa-list-ul"></i> View Procedure
-                </a>
-                
-                {% endif %}
-                {% if wo.status != 'authorized' %}
-                <a class="dropdown-item" href="{% url 'services:work-order-complete' pk=object.pk %}">
-                    <i class="fas fa-check"></i> Update Progress
-                </a>
-                <a class="dropdown-item" href="{% url 'services:work-order-equipment-requisition-create' pk=object.pk %}">
-                    <i class="fas fa-file-invoice"></i> Request Equipment
-                </a>
-                <a class="dropdown-item" href="{% url 'services:work-order-consumable-requisition-create' pk=object.pk %}">
-                    <i class="fas fa-file-invoice"></i> Request Consumables
-                </a>
-                <a class="dropdown-item" href="{% url 'services:work-order-expense-create' pk=object.pk %}">
-                    <i class="fas fa-dollar-sign"></i> Record Work Related Expense
-                </a>
-                <a class="dropdown-item" href="{% url 'services:work-order-costing' pk=object.pk %}">
-                    <i class="fas fa-receipt"></i> Costing
-                </a>
-                {% endif %}
-            </div>
-        </div>
-</div>
-
 <div class="container">
     <div class="row">
         <div class="col-sm-8">
             <nav class="nav nav-tabs nav-stacked">
                 <a href="#work" class="nav-link active" data-toggle="tab">Work Order Details</a>
+                {% if wo.procedure_pk %}
                 <a href="#procedure" class="nav-link" data-toggle="tab">Service Procedure</a>
+                {% endif %}
                 <a href="#expenses" class="nav-link" data-toggle="tab">Expenses</a>
                 <a href="#service" class="nav-link" data-toggle="tab">Service Time</a>
             </nav>
@@ -78,6 +72,7 @@
                         </div>
                     </div>
                 </div>
+                
                 <div class="tab-pane" id="procedure">
                     <div class="card">
                         <div class="card-body">

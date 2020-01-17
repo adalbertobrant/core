@@ -37,10 +37,16 @@ const InventorySelectWidgets = (props) => {
     
     return(
         <div>
-            <div style={{display: "inline-block", width: "50%"}}>
+            <br/>
+
+            <h4>Equipment</h4>
+            <hr/>
+            <div >
                 <MultipleSelectWidget 
                 title="Select Equipment"
                 dataURL = '/inventory/api/equipment/'
+                model='equipment'
+                app='inventory'
                 inputField = 'equipment'
                 populatedURL = {populatedURL}
                 resProcessor = {(res) =>{
@@ -50,10 +56,16 @@ const InventorySelectWidgets = (props) => {
                         ))}}
                 />
             </div>
-            <div style={{display: "inline-block", width: "50%"}}>
+            <br/>
+            <h4>Consumables</h4>
+            <hr/>
+
+            <div >
                 <MultipleSelectWidget 
                 title="Select Consumables"
                 dataURL = '/inventory/api/consumable/'
+                model='consumable'
+                app='inventory'
                 inputField = 'consumables'
                 populatedURL = {populatedURL}
                 resProcessor = {(res) =>{

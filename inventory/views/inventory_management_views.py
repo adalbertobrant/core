@@ -41,8 +41,6 @@ class InventoryCheckCreateView(CreateView):
     '''
     template_name = os.path.join('inventory', 'inventory_check', 'create.html')
     form_class = forms.InventoryCheckForm
-    success_url = reverse_lazy('inventory:warehouse-list') 
-    
     def get_initial(self):
         return {
             'warehouse': self.kwargs['pk']
@@ -71,7 +69,6 @@ class InventoryCheckCreateView(CreateView):
                 adj.adjust_inventory()
 
         return resp
-
 
 class InventoryCheckDetailView(ContextMixin, 
                                ConfigMixin, 
@@ -103,6 +100,12 @@ class InventoryCheckListView(ContextMixin ,PaginationMixin, FilterView):
     filterset_class = filters.InventoryCheckFilter
     template_name = os.path.join("inventory", "inventory_check", 'list.html')
     extra_context = {"title": "List of Inventory Checks"}
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['warehouse'] = models.WareHouse.objects.get(pk=self.kwargs['pk'])
+        return context
 
     def get_queryset(self):
         w = models.WareHouse.objects.get(pk=self.kwargs['pk'])

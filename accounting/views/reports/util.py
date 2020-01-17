@@ -23,7 +23,8 @@ def net_profit_calculator(start, end):
         [D(i.product_component.quantity_on_date(start)) * \
             i.product_component.unit_value \
                 for i in inventory_models.InventoryItem.objects.filter(
-                    product_component__isnull=False)])
+                    product_component__isnull=False,
+                    active=True)])
     
     closing_inventory = inventory_models.InventoryItem.total_inventory_value()
     cogs = opening_inventory +  purchases - closing_inventory

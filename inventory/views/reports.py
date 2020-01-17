@@ -27,7 +27,7 @@ class InventoryReport( ConfigMixin, MultiPageDocument,TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(InventoryReport, self).get_context_data(*args, **kwargs)
-        context['items'] = models.WareHouseItem.objects.filter(item__type=0)
+        context['items'] = models.WareHouseItem.objects.filter(item__type=0, item__active=True)
         context['date'] = datetime.date.today()
         context['pdf_link'] = True
 
@@ -58,7 +58,7 @@ class InventoryReportPDFView( ConfigMixin, MultiPageDocument,  PDFTemplateView):
     page_length = 20
 
     def get_multipage_queryset(self):
-        return models.WareHouseItem.objects.filter(item__type=0)
+        return models.WareHouseItem.objects.filter(item__type=0, item__active=True)
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)

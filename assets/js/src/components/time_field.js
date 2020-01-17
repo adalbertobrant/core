@@ -60,7 +60,7 @@ class TimeField extends Component{
 
     render(){
         return(
-            <div style={{position: 'relative'}}>
+            <div style={{position: 'relative', width:'100%'}}>
             <input 
                 type="text"
                 value={this.state.value}
@@ -115,12 +115,6 @@ class Picker extends Component {
     }
 
     render(){
-        const dataLists = {
-            'display': 'inline-block',
-            'maxHeight': '150px',
-            'overflowY': 'auto'
-        }
-        
         
         return(
             <div style={{color: 'black', 
@@ -130,13 +124,16 @@ class Picker extends Component {
                         'left': '0px', 
                         'top': '40px', 
                         padding: '15px 7px',
-                        width: 'fit-content'
+                        width: 'inherit'
                     }}>
                 <div>
                     <h5 style={{textAlign:'center'}}>{this.state.hour}:{this.state.minute}</h5>
                 </div>
-                <div>
-                    <div style={dataLists}>
+                <div style={{
+                    display:'flex',
+                    flexDirection: 'row'
+                }}>
+                    <div className={styles.dataLists}>
                         <h6>Hour</h6>
                         <ul className={styles.time_list}>
                             {this.hours.map((i) =>(
@@ -151,7 +148,7 @@ class Picker extends Component {
                             ))}
                         </ul>
                     </div>
-                    <div style={dataLists}>
+                    <div className={styles.dataLists}>
                         <h6>Min</h6>
                         <ul className={styles.time_list}>
                         {this.minutes.map((i) =>(
@@ -168,9 +165,11 @@ class Picker extends Component {
 
                     </div>
                 </div>
+                <div style={{display: 'flex', justifyContent:'center'}}>
                 <div className="btn-group">
-                <button type='button' onClick={this.setTime} className="btn btn-primary btn-sm"> <i className="fas fa-clock"></i> Set</button>
-                <button type='button' onClick={this.clearTime} className="btn btn-secondary btn-sm"> <i className="fas fa-times"></i> Clear</button>
+                    <button type='button' onClick={this.setTime} className="btn btn-primary btn-sm"> <i className="fas fa-clock"></i> Set</button>
+                    <button type='button' onClick={this.clearTime} className="btn btn-secondary btn-sm"> <i className="fas fa-times"></i> Clear</button>
+                </div>
                 </div>
             </div>
         )

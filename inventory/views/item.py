@@ -31,7 +31,7 @@ class ItemSelectionPage(TemplateView):
     template_name = os.path.join('inventory', 'item', 'selection.html')
 
 class InventoryItemAPIView(ModelViewSet):
-    queryset = models.InventoryItem.objects.all()
+    queryset = models.InventoryItem.objects.filter(active=True)
     serializer_class = serializers.InventoryItemSerializer
 
 
@@ -56,4 +56,4 @@ class InventoryItemListView( ContextMixin, PaginationMixin, FilterView):
     }
 
     def get_queryset(self):
-        return models.InventoryItem.objects.all().order_by('pk')
+        return models.InventoryItem.objects.filter(active=True).order_by('pk')

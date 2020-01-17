@@ -1,4 +1,10 @@
-{% extends "common_data/list_template.html" %} {% block list_headings %}
+{% extends "common_data/list_template.html" %} 
+{% block actions %}
+<a href="{% url 'inventory:create-inventory-check' pk=warehouse.pk %}" class="dropdown-item">
+<i class="fas fa-clipboard-check    "></i> Create Inventory Check</a>
+
+{% endblock actions %}
+{% block list_headings %}
 <tr>
     <td class="info">Date</td>
     <td class="info">Supervisor</td>

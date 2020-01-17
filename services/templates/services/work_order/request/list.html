@@ -32,7 +32,7 @@
                 <div class="dropdown-menu" aria-labelledby="triggerId">
                     <a class="dropdown-item" href="{% url 'services:work-order-request-detail' pk=wr.pk %}"> <i class="fas fa-file"></i> Detail</a>
                     {% if wr.invoice %}
-                    <a class="dropdown-item" href="{% url 'invoicing:invoice-detail' pk=wr.invoice.pk %}"><i class="fas fa-file-alt    "></i> View Invoice</a>
+                    <a class="dropdown-item" href="{% url 'invoicing:invoice-details' pk=wr.invoice.pk %}"><i class="fas fa-file-alt    "></i> View Invoice</a>
                     {% endif %}
                     <a class="dropdown-item" href="{% url 'services:work-order-create' pk=wr.pk %}"><i class="fas fa-plus    "></i> Add Work Order</a>
                 </div>

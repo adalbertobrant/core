@@ -75,6 +75,7 @@ class ProcedureUpdateView( ProcedureCRUDMixin, UpdateView):
     form_class = forms.ServiceProcedureForm
     template_name = os.path.join('services', 'procedure', 'update.html')
     model = models.ServiceProcedure
+    extra_context = ProcedureCreateView.extra_context
 
 class ProcedureDetailView( DetailView):
     template_name = os.path.join('services', 'procedure', 'detail.html')

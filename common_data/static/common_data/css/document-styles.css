@@ -49,6 +49,8 @@ th.bordered, td.bordered {
 }
 
 
+
+
 .simple-content tbody td {
     font-size: 0.875rem;
     border-bottom: 1.5px solid #999;
@@ -60,7 +62,11 @@ th.bordered, td.bordered {
     border: 2px solid #999;
 } */
 
-.simple-content tfoot td {
+.simple-content tfoot td,
+.simple-content tfoot th,
+.simple-content tbody td:last-child,
+.simple-content thead td:last-child, 
+.simple-content thead th:last-child {
     text-align: right;
 }
 

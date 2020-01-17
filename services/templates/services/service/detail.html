@@ -1,32 +1,28 @@
-{% extends "window.html" %} {% block content %}
+{% extends "window.html" %} 
+{% block heading %}
+Service Detail
+{% endblock heading %}
+{% load accounting %}
 
-<div class="jumbotron">
-    <h1 class="display-3">Service Listing</h1>
-    <p class="lead">Review details and features of a service offering</p>
-    <hr class="my-2">
-    <div class="dropdown">
-            <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
-                        Actions
-                    </button>
-            <div class="dropdown-menu" aria-labelledby="triggerId">
-                <a href="{% url 'services:create-service' %}" class="dropdown-item"><i class="fas fa-plus"></i>Create Service</a>
-                <a class="dropdown-item" href="{% url 'services:service-update' pk=object.pk %}"><i class="fas fa-edit"></i>Update</a>
-            </div>
-        </div>
-</div>
-<div class="container">
+{% block actions %}
+<a href="{% url 'services:create-service' %}" class="dropdown-item"><i class="fas fa-plus"></i>Create Service</a>
+<a class="dropdown-item" href="{% url 'services:service-update' pk=object.pk %}"><i class="fas fa-edit"></i>Update</a>
+{% endblock actions %}
+{% block content %}
+<br>
+                
+    <div class="container">
     <div class="row">
         <div class="col-sm-6">
-            <div class="card shadow">
+            <div class="card shadow accent-md">
                 <div class="card-body">
-                    <h4 class="card-title">Details</h4>
-                    <p class="card-text">Name: {{object.name}}</p>
+                    <h4 class="card-title">{{object.name}}</h4>
+                    <p class="card-text"></p>
                     
 
-                    <p class="card-text">Flat fee: {{object.flat_fee}}</p>
-                    <p class="card-text">Hourly rate: {{object.hourly_rate}}</p>
-                    <p class="card-text"><b>Description</b>:</p>
+                    <p class="card-text">{{object.flat_fee |active_currency}} Flat fee</p>
+                    <p class="card-text">{{object.hourly_rate|active_currency}} /Hr</p>
+                    <hr>
                     <p class="card-text">{{object.description}}</p>
                 </div>
             </div>
@@ -51,6 +47,44 @@
                 </div>
             </div>
             {% endif %}
+        </div>
+    </div>
+    <hr class="my-4">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="card shadow accent">
+                <h4 class="card-title">Work Orders</h4>
+                <div class="card-body">
+                <p>Work orders for this service</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card shadow accent">
+                <h4 class="card-title">Service People</h4>
+                <div class="card-body">
+                <p>Service personnel that have provided this service</p>
+                
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card shadow accent">
+                <h4 class="card-title">Invoices</h4>
+                <div class="card-body">
+                    <p>{{object.invoices |length}} Invoices</p>
+                    <p>{{object.revenue |active_currency}} In revenue</p>
+                    <p>{{object.average_revenue |active_currency}} average revenue</p>
+                    <ul>
+                        {% for inv in object.invoices %}
+                            <li style='list-style-type:none'>
+                                <a class='tertiary-link' href="{% url 'invoicing:invoice-details' pk=inv.pk %}">
+                                    <i class="fas fa-file-alt    "></i> {{inv}}</a></li>
+                        {% endfor %}
+                        
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </div>

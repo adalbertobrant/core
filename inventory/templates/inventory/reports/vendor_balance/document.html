@@ -1,5 +1,5 @@
 
-<table class="table table-sm" style="width:100%">
+<table class=" table-sm" style="width:100%">
     <tbody>
         <tr>
             <td colspan="2" style="width:100%">
@@ -11,7 +11,7 @@
             {% for page in pages %}
                 <table class="table table-sm simple-content ">
                     <thead>
-                        <tr class='bg-primary text-white'>
+                        <tr>
                             <th style="width:75%;">Vendor</th>
                             <th>Balance</th>
                         </tr>
@@ -26,7 +26,7 @@
                     </tbody>
                     {% if not page.has_next %}
                     <tfoot>
-                        <tr class='bg-primary text-white'>
+                        <tr >
                             <th>Total:</th>
                             <td>{{total}}</td>
                         </tr>

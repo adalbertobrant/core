@@ -1,34 +1,25 @@
 {% extends "window.html" %}
 
+{% block heading %}
+Service Team
+{% endblock heading %}
+{% block actions %}
+<a class="dropdown-item" href="{% url 'services:team-create' %}"><i class="fas fa-plus"></i>Create Service Team</a>
+                    <a class="dropdown-item" href="{% url 'services:team-update' pk=object.pk %}"><i class="fas fa-edit"></i>Update</a>
+{% endblock actions %}
 {% block content %}
 
-<div class="jumbotron">
-    <h1 class="display-3">Service Team</h1>
-    <p class="lead">View Details about the selected Service Team</p>
-    <hr class="my-2">
-    <div class="dropdown">
-                <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">
-                            Actions
-                        </button>
-                <div class="dropdown-menu" aria-labelledby="triggerId">
-                    <a class="dropdown-item" href="{% url 'services:team-create' %}"><i class="fas fa-plus"></i>Create Service Team</a>
-                    <a class="dropdown-item" href="{% url 'services:team-update' pk=object.pk %}"><i class="fas fa-edit"></i>Update</a>
-                </div>
-            </div>
-</div>
 
 <div class="container">
     <div class="row">
             <div class="col-sm-4">
                 <div class="card shadow">
                     <div class="card-body">
-                        <h4 class="card-title">Team Details</h4>
-                        <p class="card-text">Name: {{object.name}}</p>
-                        <p class="card-text">Description: {{object.description}}</p>
-                        <p class="card-text">
-                            Number of Members: {{object.members.all.count}}</p>
+                        <h4 class="card-title">{{object.name}}</h4>
+                        <p class="card-text">{{object.members.all.count}} members</p>
                         <p class="card-text">Manager: {{object.manager}}</p>
+                        <hr class='my-2'>
+                        <p class="card-text">{{object.description}}</p>
 
                     </div>
                 </div>

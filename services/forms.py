@@ -63,7 +63,7 @@ class ServicePersonForm(forms.ModelForm, BootstrapMixin):
         self.helper.add_input(Submit('submit', 'Submit'))
 class ServicePersonUpdateForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        exclude = "employee",
+        exclude = "employee", 'active',
         model = models.ServicePerson
 
 

@@ -22,34 +22,8 @@
 
 {% block page_contents %}
 {% load accounting %}
-<style>
-    .table th {
-        color: white;
-        background-color: black;
-    }
 
-    .btn {
-        padding: 10px;
-        border-radius: 10px;
-        color: white;
-        text-decoration: none;
-    }
-
-    .btn-danger {
-        background-color: red;
-    }
-
-    .btn-success {
-        background-color: green;
-    }
-
-    .actions {
-        background-color: #c5c5c5;
-        padding: 30px;
-        margin: 10px;
-    }
-</style>
-<table class="table table-sm" style="width:100%">
+<table class=" table-sm" style="width:100%">
     <tbody>
       
         <tr>
@@ -60,12 +34,12 @@
         <tr>
             <td colspan="2">
                 {% for page in pages %}
-                <table style="width:100%;" id="data-table">
+                <table style="width:100%;" id="data-table" class='table table-sm simple-content'>
                     <thead>
                         <tr>
                             <th>Account Code</th>
                             <th>Account Title</th>
-                            <th>Debit</th>
+                            <th st>Debit</th>
                             <th>Credit</th>
                         </tr>
                     </thead>
@@ -82,8 +56,8 @@
                     {% if not page.has_next %}
                     <tfoot>
                         <tr>
-                            <th colspan="2">Total</th>
-                            <th>{{total_debit | accounting}}</th>
+                            <th style='text-align:left;' colspan="2">Total</th>
+                            <th style='text-align:left;'>{{total_debit | accounting}}</th>
                             <th>{{total_credit | accounting}}</th>
                         </tr>
                     </tfoot>

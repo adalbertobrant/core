@@ -1,26 +1,26 @@
 {% extends 'common_data/page/pdf_page.html' %}
 
 {% block pre_page %}
+<section id='title'>
+    <div id='title-text'>Procedure</div>
+    <div id='action-icon dropdown'>
 
+        <button class="btn btn-block primary " id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
+
+        <div class="dropdown-menu" aria-labelledby="triggerId">
+        <a class="dropdown-item" href="{% url 'services:procedure-pdf' pk=object.pk %}"> <i class="fas fa-file-pdf"></i> Generate PDF</a>
+
+        </div>
+    </div>
+</section>
 <style>
 #scrollable-page {
     max-height: 29.7cm;
     overflow-y: auto
 }
 </style>
-<div class="jumbotron">
 
-<div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false">
-                Actions
-            </button>
-    <div class="dropdown-menu" aria-labelledby="triggerId">
-        <a class="dropdown-item" href="{% url 'services:procedure-pdf' pk=object.pk %}"> <i class="fas fa-file-pdf"></i> Generate PDF</a>
-    </div>
-</div>
-
-</div>
 {% endblock  %}
 
 
@@ -29,22 +29,23 @@
 <div id="scrollable-page">
 
 {% include 'services/procedure/printable/header.html' %}
-
-<h5>I. Description.</h5>
+<h6>Ref.</h6>
+<p>{{object.reference}}</p>
+<h6>I. Description.</h6>
 <p>{{object.description}}</p>
-<h5>II. Required Equipment.</h5>
+<h6>II. Required Equipment.</h6>
 <ul>
     {% for i in object.required_equipment.all %}
         <li>{{i}}</li>
     {% endfor %}
 </ul>
-<h5>III. Required Consumables.</h5>
+<h6>III. Required Consumables.</h6>
 <ul>
     {% for i in object.required_consumables.all %}
         <li>{{i}}</li>
     {% endfor %}
 </ul>
-<h5>IV. Procedure Stages</h5>
+<h6>IV. Procedure Stages</h6>
 <ol>
     {% for step in object.steps %}
         <li>{{step}}</li>

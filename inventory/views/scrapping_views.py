@@ -15,7 +15,6 @@ from invoicing.models import SalesConfig
 class ScrappingRecordCreateView(CreateView):
     template_name = os.path.join('inventory', 'scrapping', 'create.html')
     form_class = forms.ScrappingRecordForm
-    success_url = reverse_lazy('inventory:warehouse-list')
 
     def get_initial(self):
         return {
@@ -49,6 +48,10 @@ class ScrappingReportListView(ContextMixin, ListView):
     extra_context = {
         'title': 'Scrapping History for Warehouse'
     }
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['warehouse'] = models.WareHouse.objects.get(pk=self.kwargs['pk'])
+        return context 
     def get_queryset(self):
         warehouse = models.WareHouse.objects.get(pk=self.kwargs['pk'])
         return models.InventoryScrappingRecord.objects.filter(

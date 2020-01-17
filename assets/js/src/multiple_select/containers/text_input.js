@@ -73,8 +73,12 @@ class SearchableTextInputWidget extends Component{
         const containerStyle = {
             padding: "3px",
             backgroundColor: "white",
-            borderRadius: "3px",
-            border: "1px solid #23374d"
+            width:"100%",
+            margin: "2px",
+            position:"relative",
+            display: "inline-block",
+            border: '1px solid #ced4da'
+   
         };
         const inputStyle = {
             width:"85%", 
@@ -87,7 +91,7 @@ class SearchableTextInputWidget extends Component{
         };
         
         return(<div style={containerStyle}>
-            <div>
+            <div >
                 <input 
                 onFocus={() => this.setState({optionsHidden: false})}
                 placeholder="Select item..."

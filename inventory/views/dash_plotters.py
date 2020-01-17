@@ -11,7 +11,7 @@ from common_data.utilities.plotting import CustomStyle
 
 def composition_plot():
     
-    stock =  InventoryItem.objects.filter(type=0)
+    stock =  InventoryItem.objects.filter(type=0,active=True)
     chart = pygal.Pie(print_values=True, style=CustomStyle, height=300)
     ordered = [i for i in stock]
     ordered.sort(key=lambda x: x.quantity,reverse=True)

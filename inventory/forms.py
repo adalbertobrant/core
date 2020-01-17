@@ -742,7 +742,7 @@ class InventoryControllerForm(forms.ModelForm, BootstrapMixin):
 
 class InventoryControllerUpdateForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        exclude = "employee",
+        exclude = "employee", 'active',
         model = models.InventoryController
 
 class ScrappingRecordForm(forms.ModelForm, BootstrapMixin):

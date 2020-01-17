@@ -1,4 +1,9 @@
-{% extends "common_data/list_template.html" %} {% block list_headings %}
+{% extends "common_data/list_template.html" %} 
+{% block actions %}
+<a href="{% url 'inventory:scrap-inventory' pk=warehouse.pk %}" class="dropdown-item"><i class="fa fa-trash" aria-hidden="true"></i> Scrap Inventory</a>
+
+{% endblock actions %}
+{% block list_headings %}
 <tr>
     <td class="info">Date</td>
     <td class="info"># of Items</td>

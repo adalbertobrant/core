@@ -9,7 +9,7 @@ el.href = url;
 <style>
     .cell {
         border-collapse: collapse;
-        border-right: 1px solid black;
+        border-right: 1px solid #999;
         
 
     }
@@ -25,21 +25,21 @@ el.href = url;
             <td colspan="2">
                 <div>
                     {% for page in pages %}
-                    <table class="table-sm" style=" border: 1px solid black;width:100%;min-height:600px;" >
+                    <table class="table table-sm" style=" border: 1px solid #999;width:100%;min-height:600px;" >
                         <thead>
-                            <tr style="background-color:black; color:white; ">
-                                <th style="width:15%;">Date</th>
-                                <th style="width:25%;">Description</th>
-                                <th style="width:15%;">Credit</th>
-                                <th style="width:15%;">Debit</th>
-                                <th style="width:15%;">Line Total</th>
+                            <tr style="border-bottom:3px solid #333">
+                                <th style="width:10%;">Date</th>
+                                <th style="width:45%;">Description</th>
+                                <th style="width:10%;">Credit</th>
+                                <th style="width:10%;">Debit</th>
+                                <th style="width:10%;">Line Total</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td style="border-bottom: 1px solid black;" class="cell" colspan="4">Balance Brought
+                                <td style="border-bottom: 1px solid #333;" class="cell" colspan="4">Balance Brought
                                     Forward: </td>
-                                <td style="border-bottom: 1px solid black;" class="cell">
+                                <td style="border-bottom: 1px solid #333;" class="cell">
                                     {{balance_brought_forward | accounting }}</td>
                             </tr>
                             {% for t in page %}
@@ -67,7 +67,7 @@ el.href = url;
                         </tbody>
                         {% if not page.has_next %}
                         <tfoot>
-                            <tr style="border-top: 1px solid black;">
+                            <tr style="border-top: 1px solid #333;">
                                 <td colspan="4">Remaining Balance:</td>
                                 <td>{{balance_at_end_of_period | accounting}}</td>
                             </tr>

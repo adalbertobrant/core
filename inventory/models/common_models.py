@@ -122,7 +122,7 @@ class Category(models.Model):
     @property
     def items(self):
         #deprecating
-        return InventoryItem.objects.filter(category=self)
+        return InventoryItem.objects.filter(category=self, active=True)
 
     @property
     def children(self):

@@ -49,7 +49,9 @@ class WareHouseItemListView(ListView):
     paginate_by = 12
     def get_queryset(self):
         return models.WareHouseItem.objects.filter(
-            warehouse=models.WareHouse.objects.get(pk=self.kwargs['pk']))
+            warehouse=models.WareHouse.objects.get(pk=self.kwargs['pk']),
+            item__active=True
+            )
 
 
 class WareHouseDetailView(InventoryConfigMixin, DetailView):
@@ -91,7 +93,9 @@ class WareHouseItemListAPIView(ListAPIView):
         w_pk = self.kwargs['warehouse']
         warehouse = get_object_or_404(models.WareHouse, pk=w_pk)
         return models.WareHouseItem.objects.filter(
-            warehouse=warehouse)
+            warehouse=warehouse,
+            item__active=True
+            )
 
 
 class UnpaginatedWareHouseItemListAPIView(ListAPIView):
@@ -101,7 +105,8 @@ class UnpaginatedWareHouseItemListAPIView(ListAPIView):
         w_pk = self.kwargs['warehouse']
         warehouse = get_object_or_404(models.WareHouse, pk=w_pk)
         return models.WareHouseItem.objects.filter(
-            warehouse=warehouse)
+            warehouse=warehouse,
+            item__active=True)
 
 
 class WareHouseAPIView(ModelViewSet):

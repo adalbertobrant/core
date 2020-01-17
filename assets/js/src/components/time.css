@@ -13,3 +13,21 @@
     background-color: #fff;
     border: 1px solid rgba(0,0,0,.125);
 }
+
+.dataLists {
+    flex: 1;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.dataLists::-webkit-scrollbar {
+    width: 5px;
+    background-color: #ddd;
+    border-radius: 2.5px;
+}
+
+.dataLists::-webkit-scrollbar-thumb {
+    background-color: #23374d;
+    border-radius: 2.5px;
+}
+

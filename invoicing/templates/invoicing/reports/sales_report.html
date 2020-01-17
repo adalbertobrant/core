@@ -14,12 +14,13 @@ el.href = url;
 
 </style>
 
-            <h1>Sales Report</h1>
-
-            <h4>Period Covering: {{start}} to {{end}}</h4>
-            <p>Total Sales over period: {{total_sales | active_currency}}</p>
-            <p>Average daily sales: {{average_sales | active_currency}}</p>
+            <div style='border-left: 6px solid #333;padding-left:1rem;'>
+                <h1>Sales Report</h1>
+                <p>Period Covering: {{start}} to {{end}}</p>
+                <p>Total Sales over period: {{total_sales | active_currency}}</p>
+                <p>Average daily sales: {{average_sales | active_currency}}</p>
             {% autoescape off %}
+            </div>
             <div class="no-break">
                 {{bar_graph}}
             </div>

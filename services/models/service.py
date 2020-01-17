@@ -6,6 +6,8 @@ from django.db.models import Q
 from common_data.utilities import time_choices
 from common_data.models import SingletonModel, SoftDeletionModel
 import services
+from decimal import Decimal as D
+import itertools
 
 # Create your models here.
 
@@ -36,6 +38,29 @@ class Service(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def invoices(self):
+        return [i.invoiceline.invoice for i in self.servicelinecomponent_set.all()]
+
+    @property
+    def revenue(self):
+        return sum([i.nominal_price for i in self.servicelinecomponent_set.all()], 0)
+
+    @property
+    def average_revenue(self):
+        return sum([i.nominal_price for i in self.servicelinecomponent_set.all()], 0) / \
+            D(len(self.invoices))
+
+    @property
+    def work_orders(self):
+        return WorkOrder.objects.filter(works_request__service=self)
+
+
+    @property
+    def personnel(self):
+        return [person for person in order.service_people\
+            for order in self.work_orders]
 
 class ServiceCategory(models.Model):
     '''Used to organize services'''

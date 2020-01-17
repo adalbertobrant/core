@@ -1,13 +1,16 @@
 {% extends "window.html" %}
 {% load render_bundle from webpack_loader %}
+{% block heading %}
+Update Procedure
+{% endblock  %}
+{% block actions %}
+{% for item in related_links %}
+    <a class="dropdown-item"  onclick="linkClickHandler('{{item.url}}')" target="popup">{{item.name}}</a>
+{% endfor %}
+{% endblock actions %}
 {% block content %}
 {% load crispy_forms_tags %}
 
-<div class="jumbotron">
-    <h1 class="display-3">Update  Procedure</h1>
-    <p class="lead">Review the standard operating activities outlined in the recorded procedure</p>
-    <hr class="my-2">
-</div>
 
 <div class="container">
     <div class="row">

@@ -87,7 +87,7 @@ class InventoryItem(SoftDeletionModel):
             return reverse("inventory:consumable-detail", kwargs={"pk": self.pk})
             
     def get_absolute_url(self):
-        self.url()
+        return self.url
             
     @property
     def consumable_value(self):
@@ -180,7 +180,9 @@ class InventoryItem(SoftDeletionModel):
 
     @staticmethod
     def total_inventory_value():
-        return sum([p.product_component.stock_value for p in InventoryItem.objects.filter(product_component__isnull=False)])
+        return sum([p.product_component.stock_value for p in InventoryItem.objects.filter(
+            product_component__isnull=False,
+            active=True)])
 
 
 class ProductComponent(models.Model):

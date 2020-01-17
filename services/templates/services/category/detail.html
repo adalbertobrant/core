@@ -1,26 +1,18 @@
 {% extends "window.html" %}
+{% block heading %}
+Service Category
+{% endblock heading %}
 
+{% block actions %}
+<a class="dropdown-item" href="{% url 'services:create-category' %}">
+    <i class="fas fa-plus"></i> Create service category
+</a>
+<a class="dropdown-item" href="{% url 'services:update-category' pk=object.pk %}">
+    <i class="fas fa-edit"></i> Update
+</a>
+{% endblock %}
 {% block content %}
 
-<div class="jumbotron">
-    <h1 class="display-3">Service Category Detail</h1>
-    <p class="lead">Category Information and list of related services</p>
-    <hr class="my-2">
-    <div class="dropdown">
-        <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            Actions
-        </button>
-        <div class="dropdown-menu" aria-labelledby="triggerId">
-            <a class="dropdown-item" href="{% url 'services:create-category' %}">
-                <i class="fas fa-plus"></i> Create service category
-            </a>
-            <a class="dropdown-item" href="{% url 'services:update-category' pk=object.pk %}">
-                <i class="fas fa-edit"></i> Update
-            </a>
-        </div>
-    </div>
-</div>
 
 <div class="container">
     <div class="row">
@@ -34,9 +26,9 @@
             </div>
         </div>
         <div class="col-sm-8">
-            <h3>Services under category</h3>
+            <h5>Services under category</h3>
             {% if object.service_set.all.count  == 0 %}
-            <h5>No services listed under this category </h5>
+            <p>No services listed under this category </p>
             {% else %}
             <table class="table table-sm">
                 <thead>

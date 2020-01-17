@@ -440,7 +440,8 @@ def get_model_latest(request, app=None, model_name=None):
     try:
         model = apps.get_model(app_label=app, model_name=model_name)
         latest = model.objects.latest('pk')
-    except:
+    except Exception as e:
+        print(e)
         return JsonResponse({'data': -1})
 
     
