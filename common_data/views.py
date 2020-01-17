@@ -40,6 +40,8 @@ from messaging.email_api.email import EmailSMTP
 from messaging.forms import EmailForm, PrePopulatedEmailForm
 import json 
 
+class DocumentPaginationMixin():pass
+
 class PaginationMixin(object):
     '''quick and dirty mixin to support pagination on filterviews '''
     def get_context_data(self, *args, **kwargs):

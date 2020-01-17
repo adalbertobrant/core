@@ -3,7 +3,8 @@ from django.views.generic.base import ContextMixin as CMixin
 from formtools.wizard.views import SessionWizardView
 from collections import OrderedDict
 from django.http import HttpResponseRedirect
-
+from django.utils.functional import cached_property
+from math import ceil
 
 
 class MultiPageDocument(CMixin):
@@ -11,7 +12,8 @@ class MultiPageDocument(CMixin):
     Makes use of django's built in pagination feature
 
     '''
-    page_length = 10 #default value
+    page_length = 20 #default value
+    first_page_length = None
     multi_page_queryset = None
 
     def get_multipage_queryset(self):
@@ -36,7 +38,12 @@ class MultiPageDocument(CMixin):
         if not self.multi_page_queryset:
             self.multi_page_queryset = self.get_multipage_queryset()
 
-        self._paginator = Paginator(self.multi_page_queryset, self.page_length)
+        if not self.first_page_length:
+            self.first_page_length = self.page_length
+        
+        self._paginator = VariableLengthPaginator(self.multi_page_queryset, 
+            self.page_length, 
+            first_page_length=self.first_page_length)
         context['pages'] = self.pages
         return context
 
@@ -135,3 +142,37 @@ class ConfigWizardBase(SessionWizardView):
         config.save()
         return HttpResponseRedirect(self.success_url)
 
+
+class VariableLengthPaginator(Paginator):
+    def __init__(self, object_list, per_page, orphans=0,
+                 allow_empty_first_page=True,first_page_length=10):
+        self.object_list = object_list
+        self._check_object_list_is_ordered()
+        self._per_page = int(per_page)
+        self.orphans = int(orphans)
+        self.allow_empty_first_page = allow_empty_first_page
+        self.first_page_length= first_page_length
+
+    def page(self, number):
+        """Return a Page object for the given 1-based page number."""
+        number = self.validate_number(number)
+        self._number = number
+        bottom = (number - 1) * self.per_page
+        top = bottom + self.per_page
+        if top + self.orphans >= self.count:
+            top = self.count
+        return self._get_page(self.object_list[bottom:top], number, self)
+
+    @property
+    def per_page(self):
+        if self._number == 1:
+            return self.first_page_length
+        return self._per_page
+
+    @cached_property
+    def num_pages(self):
+        """Return the total number of pages."""
+        if self.count == 0 and not self.allow_empty_first_page:
+            return 0
+        hits = max(1, self.count - self.orphans)
+        return ceil(hits / self._per_page)

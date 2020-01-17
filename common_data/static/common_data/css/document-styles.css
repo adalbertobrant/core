@@ -114,9 +114,10 @@ th.bordered, td.bordered {
     background-color: white;
 }
 
-.table-frame {
+.page-container .table-frame {
     padding: 2cm;
     box-shadow: 5px 5px 20px #ccc;
+    background-color: white;
 }
 
 .print-page-container {

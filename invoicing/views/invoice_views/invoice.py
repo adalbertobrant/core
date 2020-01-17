@@ -68,7 +68,8 @@ class InvoiceDetailView(ContextMixin, ConfigMixin, MultiPageDocument, DetailView
     model = Invoice
     template_name = os.path.join("invoicing", "invoice",
         'detail.html')
-    page_length = 16
+    page_length = 30
+    first_page_length=21
     extra_context = {
         'pdf_link': True,
         'validate_form': AuthenticateForm()
@@ -202,7 +203,8 @@ class InvoicePDFView(ConfigMixin, MultiPageDocument, PDFTemplateView):
     template_name = os.path.join("invoicing", "invoice",
         'pdf.html')
     file_name = 'invoice.pdf'
-    page_length = 16
+    page_length = 30
+    first_page_length=21
     
     def get_multipage_queryset(self):
         return InvoiceLine.objects.filter(invoice=Invoice.objects.get(pk=self.kwargs['pk']))
