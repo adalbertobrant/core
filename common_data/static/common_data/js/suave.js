@@ -82,8 +82,8 @@ $(document).ready(function () {
     }
 
     //button handlers
-
-    document.getElementById('notifications-button').addEventListener('click',
+    try {
+        document.getElementById('notifications-button').addEventListener('click',
         function () {
             $('.notifications').show()
             $('.notification-window').addClass('visible-notification-window')
@@ -95,8 +95,17 @@ $(document).ready(function () {
 
         })
 
-
     //notification polling
     updateNotifications();
     setInterval(updateNotifications, 60000)
+    
+    } catch (error) {
+        console.log(error)
+    }
+
+    
+    $(".jumbotron").addClass('shrink')
+    
+
+    
 })
