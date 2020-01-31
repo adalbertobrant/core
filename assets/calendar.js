@@ -49,7 +49,7 @@ let currentYear = today.getFullYear();
 let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 // let monthAndYear = document.getElementById("monthAndYear");
-showCalendar(currentMonth, currentYear);
+// showCalendar(currentMonth, currentYear);
 
 
 function next() {
@@ -73,8 +73,7 @@ function previous() {
 function showCalendar(month, year) {
 
     let firstDay = (new Date(year, month)).getDay();
-    console.log('first day')
-    console.log(firstDay)
+    
     let daysInMonth = 32 - new Date(year, month, 32).getDate();
     let table = []
     // let tbl = document.getElementById("calendar-body"); // body of the calendar
@@ -101,7 +100,7 @@ function showCalendar(month, year) {
                 // let cellText = document.createTextNode("");
                 // cell.appendChild(cellText);
                 // row.appendChild(cell);
-                console.log(j)
+                // console.log(j)
                 let cell = ""
                 row.push(cell)
             }
@@ -132,4 +131,4 @@ function showCalendar(month, year) {
     console.log(table)
 }
 
-showCalendar(5,2019)
+showCalendar(0,2020)

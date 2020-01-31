@@ -50,8 +50,7 @@ const event = (props) =>{
             href={"/planner/event-detail/" + props.data.id}>
             <div className={styles.eventBox}>
                 <div>
-                    <i className={"fas fa-" + props.data.icon}></i>
-                    <span> {props.data.label}</span>
+                    <span> {props.data.title}</span>
                 </div>
                 {description}
                 

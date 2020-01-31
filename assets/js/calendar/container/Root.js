@@ -6,7 +6,7 @@ import axios from 'axios';
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import Sidebar from '../components/sidebar';
 
-export default class CalendarRouter extends Component{
+export default class CalendarApp extends Component{
     state = {
         year: 2018,
         month: 1,
@@ -119,26 +119,28 @@ export default class CalendarRouter extends Component{
     render(){
         return(
             <Router>
-                <div >
+                <div style={{display: 'flex',flexDirection: 'row'}}>
                     <Sidebar calendarState={{...this.state}}
                             nextHandler={this.nextHandler}
                             prevHandler={this.prevHandler}/>
                     <div style={{
-                        display:'inline-block', 
-                        float: 'left', 
-                    'width':'500px',
-                        clear: 'right'}}>
+                        flex: 4}}>
                         {/*App */}
                         <Route 
                             path="/calendar/month/:year/:month" 
                             render={(props) => 
                                 <Month width={this.state.windowWidth} 
                                         height={this.state.windowHeight}
-                                        {...props} 
+                                        {...props}
+                                        hook={this.props.monthHook} 
                                         linkUpdater={this.setLinks}/>} />
                         <Route 
                             path="/calendar/week/:year/:month/:day" 
-                            render={(props) => <WeekView width={this.state.windowWidth} {...props} linkUpdater={this.setLinks}/>}/>
+                            render={(props) => 
+                                <WeekView width={this.state.windowWidth}    
+                                         {...props}
+                                         hook={this.props.weekHook}
+                                         linkUpdater={this.setLinks}/>}/>
                         <Route 
                             path="/calendar/day/:year/:month/:day" 
                             render={(props) => <DayView {...props} linkUpdater={this.setLinks}/>}/>

@@ -20,7 +20,7 @@ $(document).ready(function(){
             <a class="navbar-brand" href="/invoicing/"  >
                 Bentsch
             </a>
-            {% comment %} {% if request.user %}
+            {% if request.user %}
             <li class="nav-item" id="planner">
                 <a href="{% url 'planner:dashboard' %}" class="nav-link">
                     <i class="fas fa-calendar-alt" style="font-size:24;">
@@ -34,6 +34,9 @@ $(document).ready(function(){
                     </span>
                 </a>
             </li>
+            {% endif %}
+            {% comment %}
+            {% if request.user %}
             <li class="nav-item" id="inbox">
                 <a href="{% url 'messaging:dashboard' %}" class="nav-link">
                     <i class="fas fa-envelope" style="font-size:24;"></i> 

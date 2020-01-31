@@ -8,7 +8,7 @@ const day = (props) => {
         <span style={{
             float:'right'
         }}><h4>
-                <a href={`/calendar/day/${props.data.date}`}>
+                <a href={`/calendar/day/${props.data.date.getFullYear()}/${props.data.date.getMonth() + 1}/${props.data.day}`}>
                     {props.data.day}</a> 
             </h4>
         </span>;
@@ -38,9 +38,8 @@ const day = (props) => {
         }
     }
 
-    let eventList = null;
-    const nEvents = props.data.events.length;    
-    eventList = props.data.events;
+    let eventList = [];
+    // eventList = props.data.events;
     
     //on click handler for date numbers
     const intervals = ['00:00', '01:00', '02:00', '04:00', '05:00', '06:00', 

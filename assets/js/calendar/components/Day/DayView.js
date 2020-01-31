@@ -14,18 +14,20 @@ class DayView extends Component{
     componentDidMount(){
         this.props.linkUpdater();
         const params = this.props.match.params 
-        axios({
-            method: 'GET',
-            url: `/planner/api/calendar/day/${params.year}/${params.month}/${params.day}`
-        }).then(res =>{
-            this.setState({
-                events: res.data.events.events,
-                date: res.data.date
-            })
-        })
-        const windowWidth = document.documentElement.clientWidth;
+        this.setState({date: new Date(params.year, params.month - 1, params.day).toDateString()})
+
+        // axios({
+        //     method: 'GET',
+        //     url: `/planner/api/calendar/day/${params.year}/${params.month}/${params.day}`
+        // }).then(res =>{
+        //     this.setState({
+        //         events: res.data.events.events,
+        //     })
+        // })
+
+        const windowWidth = document.documentElement.offsetWidth;
         const sidebarWidth = document.getElementById('sidebar').offsetWidth;
-        const calendarWidth = windowWidth - sidebarWidth - 5;
+        const calendarWidth = windowWidth - sidebarWidth;
         this.setState({width: calendarWidth})
     }
 
@@ -39,7 +41,7 @@ class DayView extends Component{
     // options
     const hourByHour = 
         (<table style={{
-            width: `${this.state.width - 40}px`,
+            width: `100%`,
             position: "absolute",
             top:  "90px",
             left: "0px"
@@ -62,13 +64,13 @@ class DayView extends Component{
                 ))}
             </tbody>
         </table>);
+        const contentHeight = console.log(window.document.documentElement.offsetHeight - document.getElementById('title').offsetHeight)
     
         const dayWrapper = {
-            width: `${this.state.width - 20}px`,
-            height: '500px',
-           
+            width: `${this.state.width}px`,
+            height: contentHeight + 'px',
             padding: '0px',
-            overflowY: 'auto'
+            overflowY: 'scroll'
         } 
         const dayLabel = 
         <h1 style={{
@@ -94,7 +96,7 @@ class DayView extends Component{
                 style={{
                     position: "relative",
                     width: `${this.state.width -40}px`,//here
-                    height:  "640px",
+                    height:  "576px",
                 }}>
             {hourByHour}
             {this.state.events.map((event, i) =>(

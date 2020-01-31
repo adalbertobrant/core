@@ -2,7 +2,6 @@
 
 {% load render_bundle from webpack_loader %}
 {% block window %}
-{% include "nav.html" %}
 <style>
 ::-webkit-scrollbar {
     width: 0px;
@@ -13,16 +12,23 @@ a:hover {
 }
 </style>
 <article>
+<section id='title'>
+    <div id='title-text'>Planner</div>
+    <div id='action-icon dropdown'>
+
+        <button class="btn btn-block primary " id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
+
+        <div class="dropdown-menu" id='action-dropdown-items' aria-labelledby="triggerId">
+            
+
+        </div>
+    </div>
+</section>
 <div id="calendar-root"></div>
 
 </article>
 
-<script>
-$(document).ready(function(){
-    $(navbar).removeClass('fixed-top');
-})
-
-</script>
 
 {% render_bundle 'calendar' %}
 {% endblock window %}

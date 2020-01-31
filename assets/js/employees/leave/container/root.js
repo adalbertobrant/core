@@ -45,8 +45,8 @@ class LeaveCalendar extends Component{
 
     render(){
 
-        const navHeight = document.getElementById('navbar').offsetHeight;
-        const height = document.documentElement.clientHeight - navHeight -2;
+        const titleHeight = document.getElementById('title').offsetHeight;
+        const height = document.documentElement.clientHeight - titleHeight -2;
     
         return(
             <Router >

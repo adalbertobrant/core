@@ -4,8 +4,8 @@ import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import styles from './sidebar.css';
 
 const sidebar = (props) =>{
-    const navHeight = document.getElementById('navbar').offsetHeight;
-    const height = document.documentElement.clientHeight - navHeight -2;
+    const titleHeight = document.getElementById('title').offsetHeight;
+    const height = document.documentElement.clientHeight - titleHeight -2;
     return(
         <div id="sidebar" className={styles.sidebar} style={{height:height}}>
         <a href="/planner/event-create/"

@@ -1,8 +1,7 @@
 .sidebar {
     background-color: #23374d;
-    display: inline-block;
-    float: left;
-    width: 20vw;
+    flex: 1;
     padding: 30px;
     box-sizing: border-box;
+    margin: 0px;
 }

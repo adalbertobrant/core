@@ -2,20 +2,20 @@ from django.urls import re_path
 from rest_framework.routers import DefaultRouter
 
 from . import views
-from .api import get_month, get_week, get_day
+from .api import get_month_events, get_week_events, get_day_events
 
 event_router = DefaultRouter()
 event_router.register(r'^api/event', views.EventAPIViewSet)
 
 api_urls = [
     re_path(r'^api/calendar/month/(?P<year>[\d]+)/(?P<month>[\d]+)/?$', 
-        get_month),
+        get_month_events),
     re_path(
         r'^api/calendar/day/(?P<year>[\d]+)/(?P<month>[\d]+)/(?P<day>[\d]+)/?$',
-        get_day),
+        get_day_events),
     re_path(
         r'^api/calendar/week/(?P<year>[\d]+)/(?P<month>[\d]+)' \
-        '/(?P<day>[\d]+)/?$', get_week),
+        '/(?P<day>[\d]+)/?$', get_week_events),
 ]
 
 urlpatterns = [

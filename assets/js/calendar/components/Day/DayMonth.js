@@ -10,35 +10,45 @@ const dayMonth = (props) => {
     const cellWidth = (calendarWidth - 15 /**8-5 + !!2 */) / 7;
 
     const daysLabelHeight = 32;
-    const navBarHeight = document.getElementById('navbar').offsetHeight;
+    const titleHeight = document.getElementById('title').offsetHeight;
     const windowHeight = document.documentElement.clientHeight;
-    const contentHeight = windowHeight - daysLabelHeight - navBarHeight;
+    const contentHeight = windowHeight - daysLabelHeight - titleHeight;
     const cellHeight = (contentHeight -5)/ 5;
 
     let labelStyle = {
         clear:'both',
         width:'100%',
         height:'30px',
+        
         };
     let dayWrapper={
             width: `${cellWidth}px`,//here
             height: `${cellHeight}px`,
         };
     
+    let eventsList = [];
+    let evt;
+    for(evt of props.events){
+        if(props.data.current && 
+                evt.date.getDate() == props.data.date.getDate()){
+            eventsList.push(evt)
+        }
+    }
 
-    let eventList = null;
-    const nEvents = props.data.events.length;    
-    eventList = props.data.events;
     
     
     return(
-        <div style={dayWrapper}>
+        <div style={{...dayWrapper,
+                    backgroundColor: props.data.current ? 'white' : '#ddd'}}>
             
             <div style={labelStyle}>
                 <span style={{
                     float:'right'
                 }}><h5>
-                        <a href={`/calendar/day/${props.data.date}`}>
+                        <a href={`/calendar/day/${props.data.date.getFullYear()}/${props.data.date.getMonth() + 1}/${props.data.day}`}
+                            style={{
+                                color: props.data.current ? 'inherit' : '#777!important'
+                            }}>
                             {props.data.day}</a> 
                     </h5>
                 </span>
@@ -49,8 +59,8 @@ const dayMonth = (props) => {
                     width: `100%`,//here
                     height:`2rem`
                 }}>
-            {eventList.length < 2 ? 
-                eventList.map((event, i) =>(
+            {eventsList.length < 2 ? 
+                eventsList.map((event, i) =>(
                     <Event 
                         width={props.width}
                         key={i} 
@@ -62,7 +72,7 @@ const dayMonth = (props) => {
                     <a style={{
                         textDecoration: 'none',
                         color: 'white'
-                    }} href={`/calendar/day/${props.data.date}`}>({eventList.length}) Events</a>
+                    }} href={`/calendar/day/${props.data.date}`}>({eventsList.length}) Events</a>
                     </div>
             }
             </div>
