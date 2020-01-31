@@ -13,17 +13,22 @@
     min-width: 50%;
 }
 
+
+
 .button p:last-child {
     color: #777;
 }
 
+
+
 .button p:first-child {
     font-weight: 500;
+    color: black;
 }
 
 .button:hover {
     background-color: #23374d;
-    color: white;
+    color: white !important;
     border: 0px;
 }
 

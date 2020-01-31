@@ -108,17 +108,17 @@ class SupplierForm(BootstrapMixin, forms.Form):
                         Column('address', css_class='form-group col-6'),
                         Column('banking_details', css_class='form-group col-6'),
                     ),
-                    'billing_address'
                 ),
                     
                 Tab('other',
                     'website',
                     'image',
+                    'billing_address',
                     'organization',
                     'other_details',
                 ),
             ),
-            Div(Submit('submit', 'Submit'), css_class="floating-submit")
+            Submit('submit', 'Submit')
         )
 
     def clean(self, *args, **kwargs):
@@ -213,25 +213,27 @@ class ProductForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
         self.helper.layout = Layout(
             TabHolder(
                 Tab('Main', 
-                    'name',
+                    
                     Row(
                         Column(
+                            'name',
                             Div('unit_purchase_price'),
                             Div('tax'),
-                            Div('initial_quantity'), 
                             css_class="form-group col-sm-6"),
                         Column(
                             HTML("<div id='pricing-widget' style='margin:30px auto;'></div>"), css_class="form-group col-sm-6"),
                     ),
-                    Row(
-                        Column('minimum_order_level', css_class="form-group col-6"),
-                        Column('maximum_stock_level', css_class="form-group col-6"),
-                    ),
+                    
                     'type',#hidden field
                     ),
                 Tab('Details', 
                     'description',
                     'unit',
+                    Row(
+                        Column(Div('initial_quantity'), css_class='form-group col-4'),
+                        Column('minimum_order_level', css_class="form-group col-4"),
+                        Column('maximum_stock_level', css_class="form-group col-4"),
+                    ),
                     Row(
                         Column('length', css_class="form group col-4"),
                         Column('width', css_class="form group col-4"),
@@ -247,7 +249,7 @@ class ProductForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                     ),
                     ),
                 ),
-            Div(Submit('submit', 'Submit'), css_class="floating-submit")
+            Submit('submit', 'Submit')
             )
 
     class Meta:
@@ -308,13 +310,15 @@ class EquipmentForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
         self.helper.layout = Layout(
             TabHolder(
                 Tab('Main', 
-                    'name',
+                    Row(
+                        Column('name',
                     'unit_purchase_price',
                     'type',
-                    'initial_quantity', 
-                    'unit',
-                    'description',
-                    ),
+                    'initial_quantity', css_class='col-6 form-group'),
+                    Column('unit',
+                    'description', css_class='col-6 form-group')
+                    )
+                ),
                 Tab('Details',
                     
                     Row(
@@ -344,7 +348,7 @@ class EquipmentForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                     ),
                 )
             ),
-            Div(Submit('submit', 'Submit'), css_class="floating-submit")
+            Submit('submit', 'Submit')
 
         )
 
@@ -439,11 +443,13 @@ class ConsumableForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
         self.helper.layout = Layout(
             TabHolder(
                 Tab('Main', 
-                    'name',
+                    Row(
+                        Column('name',
                     'unit_purchase_price',
-                    'initial_quantity',
-                    'unit',
-                    'description', 
+                    'initial_quantity',css_class='col-6 form-group'),
+                    Column('unit',
+                    'description', css_class='col-6 form-group')
+                    )
             ),
                 Tab('Details',
                     Row(
@@ -466,10 +472,9 @@ class ConsumableForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                     'type', 
                 )
             ),
-            Div(Submit('submit', 'Submit'), css_class="floating-submit")
+            Submit('submit', 'Submit')
             
         )
-        self.helper.add_input(Submit('submit', 'Submit'))
 
     class Meta:
         exclude = 'quantity', 'product_component', 'equipment_component',
@@ -488,6 +493,8 @@ class OrderForm(forms.ModelForm, BootstrapMixin):
     make_payment= forms.BooleanField(initial=False, required=False)
     status = forms.CharField(widget=forms.HiddenInput)
     ship_to = forms.ModelChoiceField(models.WareHouse.objects.all(), label='Ship To Warehouse')
+    notes = forms.CharField(widget=forms.Textarea(attrs={'rows': 6}),   
+        required=False)
 
 
     def __init__(self, *args, **kwargs):
@@ -498,24 +505,16 @@ class OrderForm(forms.ModelForm, BootstrapMixin):
             TabHolder(
                 Tab('Basic',
                 Row(
-                    Column('date', css_class='form group col-6'),
-                    Column('expected_receipt_date', css_class='form group col-6'),
+                    Column('date', 'expected_receipt_date', 'due', css_class='form group col-6'),
+                    Column('supplier','ship_to', 'issuing_inventory_controller',css_class='form group col-6'),
                 ),
-                Row(
-                    Column('supplier', css_class='form group col-6'),
-                    Column('ship_to', css_class='form group col-6'),
-                ),
-                    
-                Row(
-                    Column('issuing_inventory_controller', css_class='col-6'),
-                    Column('supplier_invoice_number',css_class='col-6')
-                    ),
-                'due',
                 'tax',
                     ),
                 Tab('Shipping and Payment', 
                     Row(
-                        Column('bill_to', 
+                        Column(
+                            'supplier_invoice_number',
+                            'bill_to', 
                             'tracking_number',
                             'make_payment',
                             css_class='col-6'),

@@ -30,15 +30,26 @@ class ManualAddProduct extends Component{
                 <div className='shadow'>
                     <div style={{
                         marginBottom: '5px',
-                        border:'1px solid #23374d'
+                        display: 'flex',
+                        flexDirection: 'row',
+                        
                     }}>
-                        <SearchableWidget 
-                        dataURL='/inventory/api/product/'
-                        displayField="name"
-                        idField="id"
-                        onSelect={val =>{this.setState({selectedProduct: val})}}
-                        onClear={()=>(this.setState({selectedProduct:null}))}/>
-                    </div>
+                        <div style={{flex: 4, padding: '5px'}}>
+                            <SearchableWidget 
+                            
+                            dataURL='/inventory/api/product/'
+                            displayField="name"
+                            idField="id"
+                            onSelect={val =>{this.setState({selectedProduct: val})}}
+                            onClear={()=>(this.setState({selectedProduct:null}))}/>
+                        </div>
+                        <button className='text-white btn primary btn-block btn-lg'
+                        style={{flex: 1}}
+                        disabled={!this.state.selectedProduct}
+                        onClick={() => this.props.insertProduct(this.state.selectedProduct)}
+                        >Add Product</button>
+                    
+                        </div>
                     <div style={{
                         minHeight: '300px',
                         maxHeight: '50vh',
@@ -49,18 +60,14 @@ class ManualAddProduct extends Component{
                             <ProductCard 
                                 key={product.id}
                                 data={product}
-                                handler={() =>{
-                                    this.setState({selectedProduct: `${product.id}-${product.name}`})
+                                handler={() =>{this.props.insertProduct(`${product.id}-${product.name}`)
                                 }}
                                 selected={this.state.selectedProduct === `${product.id}-${product.name}`}
                                 />
                         ))}
                     </div>
                 </div>
-                <button className='text-white btn primary btn-block btn-lg'
-                        disabled={!this.state.selectedProduct}
-                        onClick={() => this.props.insertProduct(this.state.selectedProduct)}
-                        >Add Product</button>
+                
             </div>
 
         )

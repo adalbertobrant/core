@@ -20,9 +20,6 @@ td {
 thead th:last-child, tfoot td:last-child{
     text-align: right;
 }
-.container table {
-    min-height: 60vh;
-}
 .card {
     padding: 15px;
     margin-bottom: 5px;

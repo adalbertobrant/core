@@ -10,12 +10,14 @@ Create Invoice
 {% endblock actions %}
 {% block content %}
     <style>
-        
+        tr, td, th {
+            border: 0px !important;
+        }
     </style>
 
     <div class="container">
         <div class="row">
-            <div class="col-sm-12 shadow">
+            <div class="col-sm-12 shadow bg-white">
                 {{form.errors}}
     <table class="table table-sm">
             <form action="" method="POST">
@@ -34,7 +36,7 @@ Create Invoice
             </tr>
             <tr>
                 <td valign="top">
-                    <table class="table table-sm">
+                    <table class=" table-sm">
                         <tbody>
                             <tr>
                                 <th>Customer</th>
@@ -56,7 +58,7 @@ Create Invoice
                     </table>
                 </td>
                 <td>
-                    <table class="table table-sm">
+                    <table class=" table-sm">
                         <tbody>
                             <tr>
                                 <th>Date</th>

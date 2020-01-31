@@ -76,18 +76,26 @@ th.bordered, td.bordered {
 }
 
 .footer-cell {
-    border: 1px solid #999;
-    min-height: 150px;
+    padding: 4px;
+    margin: 8px;
 }
 
 .footer-cell-heading{
-    color: white;
-    background-color: #222;
-    padding: 2px 5px;
+    color: #333;
+    border-bottom: 3px solid #333;
 }
 
-.footer-cell-contents{
+/* .footer-cell-contents{
     padding: 2px 5px;
+} */
+
+.footer-cell-table {
+    width: 100%;
+}
+
+.footer-cell-table td{
+    width: 50%;
+    vertical-align: top;
 }
 
 .custom-page {

@@ -17,49 +17,55 @@ const ProductList = (props) =>{
 
     return(
         <div className={styles.container}>
-            <table className="table table-sm" height="500">
-                <thead>
-                    <tr>
-                        <th style={{width: '60%'}}>Product</th>
-                        <th>Qty</th>
-                        <th>Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                    {props.products.map((product, i) => (
-                        <ProductListing {...product}
-                            active={props.active == i}
-                            handler={() => props.setActive(i)}/>))}
-                    <tr className={styles.emptyRow}>
-                        <td ></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colSpan={2}>NET</td>
-                        <td>{subtotal.toFixed(2)}</td>
-                    </tr>
-                    <tr>
-                        <td colSpan={2}>TAX</td>
-                        <td>{(total - subtotal).toFixed(2)}</td>
-                    </tr>
-                    <tr>
-                        <td colSpan={2}><h3>TOTAL</h3></td>
-                        <td><h3>{total.toFixed(2)}</h3></td>
-                    </tr>
-                </tfoot>
-            </table>
+            <div style={{maxHeight: window.innerHeight * .65,
+                overflowY: 'scroll'}}>
+            <table className="table table-sm" height={window.innerHeight * .65}>
+            <thead>
+                <tr>
+                    <th style={{width: '60%'}}>Product</th>
+                    <th>Qty</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody style={{overflowY: 'auto'}}>
+                
+                {props.products.map((product, i) => (
+                    <ProductListing {...product}
+                        active={props.active == i}
+                        handler={() => props.setActive(i)}/>))}
+                <tr className={styles.emptyRow}>
+                    <td ></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colSpan={2}>NET</td>
+                    <td>{subtotal.toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td colSpan={2}>TAX</td>
+                    <td>{(total - subtotal).toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td colSpan={2}><h3>TOTAL</h3></td>
+                    <td><h3>{total.toFixed(2)}</h3></td>
+                </tr>
+            </tfoot>
+        </table>
+        
+            </div>
             <div style={{width: '100%'}}>
                         <ActionButton 
+                            sm
                             action='addProduct'
-                            text='Add Product'
+                            text='Product(+)'
                             keyboardKey='Shift'/>
                         <ActionButton 
+                            sm
                             action='removeProduct'
-                            text='Remove Product'
+                            text='Product(-)'
                             keyboardKey='Control'/>
             </div>
         </div>

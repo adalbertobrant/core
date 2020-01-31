@@ -64,5 +64,5 @@ class EventForm(forms.ModelForm, BootstrapMixin):
                     
                     'owner',
                     'json_participants',
-                    Div(Submit('submit', 'Submit'), css_class='floating-submit')
+                    Submit('submit', 'Submit')
                 )

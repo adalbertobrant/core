@@ -360,7 +360,7 @@ class MainPage extends Component{
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'center',
-            height: '80vh'
+            height: '75vh'
         }
 
         return(

@@ -32,19 +32,27 @@ class ServiceForm(forms.ModelForm,BootstrapMixin):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-                    'name',
-                    'description',
-                    Row(
-                        Column('flat_fee', css_class='form-group col-6'),
-                        Column('hourly_rate', css_class='form-group col-6'),
+                    TabHolder(
+                        Tab(
+                            'Basic', 
+                            'name',
+                            Row(
+                                Column('flat_fee', css_class='form-group col-6'),
+                                Column('hourly_rate', css_class='form-group col-6'),
+                            ),
+                        ),
+                        Tab('Other',
+                            'description',
+                            Row(
+                                Column('category', css_class='form-group col-4'),
+                                Column('procedure', css_class='form-group col-4'),
+                                Column('frequency', css_class='form-group col-4'),
+                            ),
+                            'is_listed',
+                        )
                     ),
-                    Row(
-                        Column('category', css_class='form-group col-4'),
-                        Column('procedure', css_class='form-group col-4'),
-                        Column('frequency', css_class='form-group col-4'),
-                    ),
-                    'is_listed',
-                    Div(Submit('submit', 'Submit'), css_class="floating-submit")
+                    
+                    Submit('submit', 'Submit')
     )
 class ServiceCategoryForm(forms.ModelForm, BootstrapMixin):
     class Meta:

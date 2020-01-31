@@ -4,6 +4,8 @@
     padding: 10px;
     background-color: #23374d;
     color: #eee;
+    height: 25vh;
+    font-size: .75rem;
 }
 
 .logo {

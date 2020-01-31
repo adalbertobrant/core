@@ -49,25 +49,25 @@ const completedSalePage =(props) =>{
                                 {props.products.map(product =>(<tr>
                                     <td>{product.name}</td>
                                     <td>{product.quantity}</td>
-                                    <td style={{textAlign: 'right'}}>{product.price * product.quantity}</td>
+                                    <td style={{textAlign: 'right'}}>{(product.price * product.quantity).toFixed(2)}</td>
                                 </tr>))}
                             </tbody>
                             <tfoot>
                                 <tr>
                                     <td colSpan={2}>Subtotal</td>
-                                    <td>{subtotal}</td>
+                                    <td>{subtotal.toFixed(2)}</td>
                                 </tr>
                                 <tr>
                                     <td colSpan={2}>Tax</td>
-                                    <td>{tax}</td>
+                                    <td>{tax.toFixed(2)}</td>
                                 </tr>
                                 <tr>
                                     <td colSpan={2}>Total</td>
-                                    <td>{total}</td>
+                                    <td>{total.toFixed(2)}</td>
                                 </tr>
                                 <tr>
                                     <td colSpan={2}>Tendered</td>
-                                    <td>{tendered}</td>
+                                    <td>{tendered.toFixed(2)}</td>
                                 </tr>
                                 <tr>
                                     <td colSpan={2}>Change</td>

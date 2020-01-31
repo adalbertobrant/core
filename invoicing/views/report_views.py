@@ -441,7 +441,8 @@ class AverageDaysToPayReportView(ContextMixin,
         chart.title = 'Average Days to Pay'
         customer_names = [str(i) for i in models.Customer.objects.all()]
         for cus in models.Customer.objects.all():
-            chart.add(cus.name, cus.average_days_to_pay)
+            if cus.average_days_to_pay > 0:
+                chart.add(cus.name, cus.average_days_to_pay)
         
 
         context['graph'] = chart.render(is_unicode=True)

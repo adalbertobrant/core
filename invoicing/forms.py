@@ -66,7 +66,7 @@ class CustomerForm(BootstrapMixin, forms.Form):
     name=forms.CharField()
     address=forms.CharField(widget=forms.Textarea(attrs={'rows':4, 'cols':10}),
                             required=False)
-    billing_address=forms.CharField(widget=forms.Textarea, 
+    billing_address=forms.CharField(widget=forms.Textarea(attrs={'rows':4, 'cols':10}), 
                             required=False)
     banking_details=forms.CharField(widget=forms.Textarea(attrs={'rows':4, 'cols':10}),
                             required=False)
@@ -88,30 +88,30 @@ class CustomerForm(BootstrapMixin, forms.Form):
             TabHolder(
                 Tab('details',
                 Row(
-                        Column('customer_type', css_class='form-group col-3'),
-                        Column('name', css_class='form-group col-9'),
-                    ),
-                    Row(
-                        Column('address', css_class='form-group col-6'),
-                        Column('banking_details', css_class='form-group col-6'),
-                    ),
-                    Row(
-                        Column(
+                        Column('name', 
                             'phone_1',
-                            'phone_2',
-                            'email', css_class='form group col-6'
-                        ),
-                        Column('billing_address', css_class='form group col-6')
-                    ),                    
+                            'email',
+                        
+                        css_class='form-group col-6'),
+                        Column('customer_type', 'address', css_class='form-group col-6'),
+                        
+                    ),
+                                        
                 ),
                 Tab('other',
                     'website',
+                    'phone_2',
                     'image',
+                    'organization',
+                    Row(
+                        Column('banking_details', css_class='form-group col-6'),
+                        Column('billing_address', css_class='form group col-6')
+                    ),
                     'other_details',
-                    'organization'
+
                 ),
             ),
-            Div(Submit('submit', 'Submit'), css_class="floating-submit")
+            Submit('submit', 'Submit')
         )
 
     def clean(self, *args, **kwargs):
