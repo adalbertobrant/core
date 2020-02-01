@@ -7,9 +7,9 @@
 .eventBox {
     background-color: #23374d;
     color: white;
-    padding:5px;
+    padding:2px;
     box-sizing: border-box;
-    font-size: 1rem;
+    font-size: .9rem;
     border-right: 1px solid white;
 }
 

@@ -14,7 +14,8 @@ const week = (props) => {
                         height={props.height}
                         data={day}
                         events={props.events} 
-                        view='month'/>
+                        view='month'
+                        showDay={props.showDay}/>
                 </td>
             ))}
         </tr>

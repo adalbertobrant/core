@@ -11,6 +11,10 @@ const timeline = document.getElementById('agenda-timeline');
 const participantSelect = document.getElementById('participant-select');
 if(calendar){
     ReactDOM.render(<CalendarApp
+                        eventLink="/planner/event-create/"
+                        showMonth
+                        showWeek
+                        showDay
                         monthHook={(month, year, component)=>{
                             axios({
                                 method: 'GET',
@@ -25,7 +29,7 @@ if(calendar){
                                 })
                             })
                         }}
-                        weekHook={(month, year, component)=>{
+                        weekHook={(day, month, year, component)=>{
                             axios({
                                 method: 'GET',
                                 url: `/planner/api/calendar/week/${year}/${month}/${day}`
@@ -34,12 +38,14 @@ if(calendar){
                                     events: res.data.map(evt =>({
                                         id: evt.id,
                                         date: new Date(evt.date),
-                                        title: evt.title
+                                        title: evt.title,
+                                        start:evt.start,
+                                        end: evt.end
                                     }))
                                 })
                             })
                         }}
-                        dayHook={(month, year, component)=>{
+                        dayHook={(day, month, year, component)=>{
                             axios({
                                 method: 'GET',
                                 url: `/planner/api/calendar/day/${year}/${month}/${day}`
@@ -48,7 +54,9 @@ if(calendar){
                                     events: res.data.map(evt =>({
                                         id: evt.id,
                                         date: new Date(evt.date),
-                                        title: evt.title
+                                        title: evt.title,
+                                        start:evt.start,
+                                        end: evt.end
                                     }))
                                 })
                             })

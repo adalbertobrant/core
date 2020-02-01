@@ -6,6 +6,36 @@ import axios from 'axios';
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import Sidebar from '../components/sidebar';
 
+
+/**
+ * This application supports a variety of customizations
+ * The hook system
+ * ----------------
+ * each view has certain hooks that allows you to feed events to the calendar
+ * the hooks are the monthHook, weekHook and dayHook respectively.
+ * The month hook takes 3 arguments, a year a month and the component.
+ * It expects the hook to connect to an api and fetch events that are valid for 
+ * that month and to set the state of the component's event state so as to 
+ * update the window.
+ * The week and day hooks work similarly. The primary difference is that the 
+ * latter two take a day parameter in addition to the ones stated for the month 
+ * hook.
+ * 
+ * Custom Params
+ * -------------
+ * In addition the interface can be tweaked using flags.
+ * The first flag, showMonth allows us to hide the sidebar buttons for the 
+ * month view.
+ * similarly a showWeek and showDay flag are implemented.
+ * The showDay flag however disables the links in the week and day views so 
+ * that the user cannot open them. 
+ * The eventLink flag takes a string and allows the creation of new events on a 
+ * different page.
+ * if flag is not set the create event button is removed from the interface.
+ */
+
+
+
 export default class CalendarApp extends Component{
     state = {
         year: 2018,
@@ -120,7 +150,12 @@ export default class CalendarApp extends Component{
         return(
             <Router>
                 <div style={{display: 'flex',flexDirection: 'row'}}>
-                    <Sidebar calendarState={{...this.state}}
+                    <Sidebar
+                            eventLink={this.props.eventLink}
+                            showMonth={this.props.showMonth} 
+                            showWeek={this.props.showWeek} 
+                            showDay={this.props.showDay} 
+                            calendarState={{...this.state}}
                             nextHandler={this.nextHandler}
                             prevHandler={this.prevHandler}/>
                     <div style={{
@@ -132,6 +167,7 @@ export default class CalendarApp extends Component{
                                 <Month width={this.state.windowWidth} 
                                         height={this.state.windowHeight}
                                         {...props}
+                                        showDay={this.props.showDay}
                                         hook={this.props.monthHook} 
                                         linkUpdater={this.setLinks}/>} />
                         <Route 
@@ -139,11 +175,15 @@ export default class CalendarApp extends Component{
                             render={(props) => 
                                 <WeekView width={this.state.windowWidth}    
                                          {...props}
+                                         showDay={this.props.showDay}
                                          hook={this.props.weekHook}
                                          linkUpdater={this.setLinks}/>}/>
                         <Route 
                             path="/calendar/day/:year/:month/:day" 
-                            render={(props) => <DayView {...props} linkUpdater={this.setLinks}/>}/>
+                            render={(props) => 
+                                <DayView {...props} 
+                                    linkUpdater={this.setLinks}
+                                    hook={this.props.dayHook}/>}/>
                     </div>
                 </div>
             </Router>

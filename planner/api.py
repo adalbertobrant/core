@@ -60,7 +60,9 @@ def get_week_events(request, year=None, month=None, day=None):
     return JsonResponse([{
         'date': evt.date,
         'title': evt.label,
-        'id': evt.pk
+        'id': evt.pk,
+        'start': evt.start_time,
+        'end': evt.end_time
         } for evt in events], safe=False)
 
 def get_day_events(request, year=None, month=None, day=None):
@@ -80,5 +82,7 @@ def get_day_events(request, year=None, month=None, day=None):
         'date': evt.date,
         'title': evt.label,
         'id': evt.pk,
+        'start': evt.start_time,
+        'end': evt.end_time,
         'description': evt.description
         } for evt in events], safe=False)

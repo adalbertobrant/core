@@ -16,14 +16,7 @@ class DayView extends Component{
         const params = this.props.match.params 
         this.setState({date: new Date(params.year, params.month - 1, params.day).toDateString()})
 
-        // axios({
-        //     method: 'GET',
-        //     url: `/planner/api/calendar/day/${params.year}/${params.month}/${params.day}`
-        // }).then(res =>{
-        //     this.setState({
-        //         events: res.data.events.events,
-        //     })
-        // })
+        this.props.hook(params.day, params.month, params.year, this)
 
         const windowWidth = document.documentElement.offsetWidth;
         const sidebarWidth = document.getElementById('sidebar').offsetWidth;

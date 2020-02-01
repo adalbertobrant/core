@@ -8,15 +8,18 @@ const sidebar = (props) =>{
     const height = document.documentElement.clientHeight - titleHeight -2;
     return(
         <div id="sidebar" className={styles.sidebar} style={{height:height}}>
-        <a href="/planner/event-create/"
-        className="btn btn-primary btn-block"> <i className="fas fa-plus"></i> Create New Event</a>
+        {props.eventLink ? <a href={props.eventLink}
+        className="btn btn-primary btn-block"> <i className="fas fa-plus"></i> Create New Event</a> : null}
             <div className="btn-group">            
-                <Link className="btn btn-primary" 
-                    to={`/calendar/month/${props.calendarState.year}/${props.calendarState.month}`}><i className="fa fas-calendar"></i> Month</Link>
-                <Link className="btn btn-primary" 
-                    to={`/calendar/week/${props.calendarState.year}/${props.calendarState.month}/${props.calendarState.day}`}>Week</Link>
-                <Link className="btn btn-primary" 
-                    to={`/calendar/day/${props.calendarState.year}/${props.calendarState.month}/${props.calendarState.day}`}>Day</Link>
+                {props.showMonth ? 
+                    <Link className="btn btn-primary" 
+                    to={`/calendar/month/${props.calendarState.year}/${props.calendarState.month}`}><i className="fa fas-calendar"></i> Month</Link>:null}
+                {props.showWeek ?
+                    <Link className="btn btn-primary" 
+                    to={`/calendar/week/${props.calendarState.year}/${props.calendarState.month}/${props.calendarState.day}`}>Week</Link> : null}
+                {props.showDay ?
+                    <Link className="btn btn-primary" 
+                    to={`/calendar/day/${props.calendarState.year}/${props.calendarState.month}/${props.calendarState.day}`}>Day</Link>:null}
             </div>
             <div className="btn-group">
                 <button

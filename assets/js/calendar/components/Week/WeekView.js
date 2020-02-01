@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import Day from '../Day/Day';
 import {Aux} from '../../../src/common';
-import axios from 'axios';
 import styles from './week.css';
 import {showWeekCalendar} from '../../calendar'
 import moment from 'moment'
@@ -9,7 +8,8 @@ import moment from 'moment'
 class WeekView extends Component{
     state = {
         week: "",
-        days: []
+        days: [],
+        events: []
     }
 
     componentDidMount(){
@@ -23,7 +23,7 @@ class WeekView extends Component{
             week: m.week()
         })
         
-        this.props.hook(params.day, params.week, params.year, this)
+        this.props.hook(params.day, params.month, params.year, this)
     }
 
     render(){
@@ -65,8 +65,13 @@ class WeekView extends Component{
                                         className={styles.cellStyle}
                                         >
                                         <div >
-                                            <Day data={day} view={'week'} width={this.props.width} height={height}/>
-                                        </div>                                
+                                            <Day data={day} 
+                                                 view={'week'} 
+                                                 width={this.props.width} height={height}
+                                                 events={this.state.events}
+                                                 showDay={this.props.showDay}
+                                                 />
+                                        </div>
                                     </td>
                                 ))}
                             </tr>    

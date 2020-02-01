@@ -13,17 +13,17 @@ const event = (props) =>{
         if(props.data.start){
             const start = parseInt(props.data.start.split(":")[0]);
             const end = parseInt(props.data.end.split(":")[0]);
-
-            startY = 90 + (start * 22);
+            const yOffset = props.view == 'day' ? 100 : 10
+            startY = yOffset + (start * 22);
             // for errors in recording the event times
             if(end > start){
-                height = (end - start) * 22;
+                height = (end - start) * 24;
             }
             
         }
     }
     
-    
+    console.log(props.data)
 
     let description = null;
     if (props.description){

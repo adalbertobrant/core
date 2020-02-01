@@ -51,7 +51,8 @@ class Month extends Component{
                         height={this.props.height}
                         key={i} 
                         days={week}
-                        events={this.state.events}/>
+                        events={this.state.events}
+                        showDay={this.props.showDay}/>
                 ))}
                 </tbody>
             </table>);

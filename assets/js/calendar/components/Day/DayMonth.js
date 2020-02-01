@@ -45,11 +45,11 @@ const dayMonth = (props) => {
                 <span style={{
                     float:'right'
                 }}><h5>
-                        <a href={`/calendar/day/${props.data.date.getFullYear()}/${props.data.date.getMonth() + 1}/${props.data.day}`}
-                            style={{
-                                color: props.data.current ? 'inherit' : '#777!important'
-                            }}>
-                            {props.data.day}</a> 
+                        {props.showDay ? 
+                            <a href={`/calendar/day/${props.data.date.getFullYear()}/${props.data.date.getMonth() + 1}/${props.data.day}`}
+>
+                        {props.data.day}</a>
+                        :<span>{props.data.day}</span>} 
                     </h5>
                 </span>
             </div>

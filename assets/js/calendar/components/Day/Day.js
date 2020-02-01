@@ -8,8 +8,10 @@ const day = (props) => {
         <span style={{
             float:'right'
         }}><h4>
-                <a href={`/calendar/day/${props.data.date.getFullYear()}/${props.data.date.getMonth() + 1}/${props.data.day}`}>
-                    {props.data.day}</a> 
+                {props.showDay ?
+                    <a href={`/calendar/day/${props.data.date.getFullYear()}/${props.data.date.getMonth() + 1}/${props.data.day}`}>
+                    {props.data.day}</a>  
+                        : <span>{props.data.day}</span>}
             </h4>
         </span>;
     if (props.view === 'week'){
@@ -39,7 +41,13 @@ const day = (props) => {
     }
 
     let eventList = [];
-    // eventList = props.data.events;
+    let evt;
+    for(evt of props.events){
+        if(props.data.current && 
+                evt.date.getDate() == props.data.date.getDate()){
+            eventList.push(evt)
+        }
+    }
     
     //on click handler for date numbers
     const intervals = ['00:00', '01:00', '02:00', '04:00', '05:00', '06:00', 
