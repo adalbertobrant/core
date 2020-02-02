@@ -19,7 +19,7 @@ class Card extends Component{
                 <div className={styles.timelineCardLeft}>
                     <div className={styles.timelinePoint}></div>
                 </div>
-                <div className={styles.timelineCardRight + ' hvr-grow'}>
+                <div className={styles.timelineCardRight}>
                     <h6 style={{fontWeight: 200}}>{this.props.timestamp}</h6>
                     <p>{this.props.title}</p>
                             
