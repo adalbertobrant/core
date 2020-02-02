@@ -1,0 +1,55 @@
+{% extends "base.html" %} 
+{% load render_bundle from webpack_loader %}
+{% block window %}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="dash-container">
+                        <div class="dashbox" style='border-top: 15px solid #007bff;'>
+                            <h4>Agenda Items</h4>
+                                <h3>
+                                    {% if request.user.employee %}
+                                    {{request.user.employee.agenda_items}}
+                                    {% else %}
+                                    0
+                                    {% endif %}
+                                </h3>
+                                <i class="fa fa-list dash-icon fa-7x" aria-hidden="true"></i>
+                        </div>
+                        <div class="dashbox" style='border-top: 15px solid #23374d;'>
+                            <h4 class="card-title">Date</h4>
+                            <h3>
+                                    {{day}}
+                                </h3>
+                                <p>{{day_detail}}</p>
+                            <i class="fas fa-calendar-alt fa-7x dash-icon" aria-hidden="true"></i>
+                        </div>
+                        <div class="dashbox" style='border-top: 15px solid crimson;'>
+                            <h4 class="card-title">Missed Events</h4>
+                                <h3 style="font-size:128;text-align-center">
+                                    {% if request.user.employee %}
+                                    {{request.user.employee.missed_events}}
+                                    {% else %}
+                                    0
+                                    {% endif %}
+                                </h3>
+                                <i class="fas fa-times-circle  fa-7x dash-icon  "></i>
+                        </div>
+                    </div>  
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <h2 style='background-color: #23374d;padding:5px;margin-bottom:10px;' class='text-white'>Agenda</h2>
+            <div id="agenda-timeline">
+
+            </div>
+        </div>
+    </div>
+</div>
+    {% render_bundle "calendar" %}
+
+    {% endblock %}
+

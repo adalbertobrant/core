@@ -23,7 +23,10 @@ class Card extends Component{
                     <h6 style={{fontWeight: 200}}>{this.props.timestamp}</h6>
                     <p>{this.props.title}</p>
                             
-                    <i onClick={this.toggleOptions} className="fa fa-ellipsis-h" ></i>
+                    <span onClick={this.toggleOptions} style={{
+                        padding: '3px',
+                        display: 'block',
+                    }}><i  className="fa fa-ellipsis-h" ></i></span>
                     <div className={styles.cardOptions} style={{
                         display: this.state.showOptions ? 'block' :"none"}}>
                         <a className='dropdown-item' href={"/planner/event-detail/" + this.props.id}> <i className="fas fa-file"></i> View</a>

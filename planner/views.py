@@ -32,16 +32,7 @@ class ReactCalendar(LoginRequiredMixin, TemplateView):
 class PlannerDashboard(LoginRequiredMixin, TemplateView):
     template_name = os.path.join('planner', 'dashboard.html')
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        today = datetime.date.today()
-        context['day'] = today.day
-        context['day_detail'] = "{}, {}".format(today.strftime('%B'), today.year) 
-        context['calendar_url'] = '/calendar/month/{}'.format(
-            datetime.date.today().strftime('%Y/%m'))
-
-        return context
-
+    
 class PlannerConfigUpdateView(LoginRequiredMixin, UpdateView):
     template_name = os.path.join('planner', 'config.html')
     form_class = forms.ConfigForm
@@ -154,6 +145,17 @@ class AgendaView(LoginRequiredMixin, TemplateView):
             return HttpResponseRedirect("/login")
 
         return super().get(*args, **kwargs)
+
+class AsyncDashboard(LoginRequiredMixin, TemplateView):
+    template_name = os.path.join('planner', 'async_dashboard.html')
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        today = datetime.date.today()
+        context['day'] = today.day
+        context['day_detail'] = "{}, {}".format(today.strftime('%B'), today.year) 
+        
+        return context
 
 
 class AgendaAPIView(ListAPIView):

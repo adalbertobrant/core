@@ -23,6 +23,8 @@ urlpatterns = [
         name='calendar'),
     re_path(r'^dashboard/?$', views.PlannerDashboard.as_view(), 
         name='dashboard'),
+    re_path(r'^async-dashboard/(?P<pk>\d+)/?$', views.AsyncDashboard.as_view(), 
+        name='async-dashboard'),
     re_path(r'^config/(?P<pk>\d+)/?$', views.PlannerConfigUpdateView.as_view(), 
         name='config'),
     re_path(r'^event-detail/(?P<pk>\d+)/?$', views.EventDetailView.as_view(), 

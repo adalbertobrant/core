@@ -46,9 +46,16 @@ const dayMonth = (props) => {
                     float:'right'
                 }}><h5>
                         {props.showDay ? 
-                            <a href={`/calendar/day/${props.data.date.getFullYear()}/${props.data.date.getMonth() + 1}/${props.data.day}`}
+                            <span onClick={()=>{
+                                props.setDate({
+                                    year: props.data.date.getFullYear(),
+                                    month:props.data.date.getMonth(),
+                                    day: props.data.day,
+                                    view: 'day'
+                                })
+                            }} 
 >
-                        {props.data.day}</a>
+                        {props.data.day}</span>
                         :<span>{props.data.day}</span>} 
                     </h5>
                 </span>

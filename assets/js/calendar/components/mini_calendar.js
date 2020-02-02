@@ -13,9 +13,10 @@ class  MiniCalendar extends Component{
 
     
     componentDidUpdate(prevProps, prevState){
-        if(this.props.year !== prevProps.year || this.props.month !== this.props.month){
-            const data = showCalendar(this.props.month - 1, this.props.year)
-            const dateString = new Date(this.props.year, this.props.month - 1).toDateString()
+        if(this.props.year !== prevProps.year || prevProps.month !== this.props.month){
+            console.log('updated')
+            const data = showCalendar(this.props.month, this.props.year)
+            const dateString = new Date(this.props.year, this.props.month).toDateString()
             const dateArray = dateString.split(' ')
             const period = dateArray[1] + ' ' + dateArray[3]
             this.setState({

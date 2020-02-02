@@ -28,7 +28,7 @@ def get_events(user, filters):
 
 def get_month_events(request, year=None, month=None):
     year = int(year)
-    month=int(month)
+    month=int(month) + 1
     user = request.user
     first = datetime.date(year,month, 1)
     last = datetime.date(year, month, calendar.monthrange(year, month)[1])
@@ -43,7 +43,7 @@ def get_month_events(request, year=None, month=None):
 
 def get_week_events(request, year=None, month=None, day=None):
     year = int(year)
-    month= int(month)
+    month= int(month) + 1
     day=int(day)
 
 
@@ -67,7 +67,7 @@ def get_week_events(request, year=None, month=None, day=None):
 
 def get_day_events(request, year=None, month=None, day=None):
     year = int(year)
-    month= int(month)
+    month= int(month) + 1
     day=int(day)
 
     current_date = datetime.date(year, month, day)

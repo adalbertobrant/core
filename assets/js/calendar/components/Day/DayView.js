@@ -11,10 +11,15 @@ class DayView extends Component{
         width: 640
     }
 
-    componentDidMount(){
-        this.props.linkUpdater();
-        const params = this.props.match.params 
-        this.setState({date: new Date(params.year, params.month - 1, params.day).toDateString()})
+    componentDidUpdate(prevProps, prevState){
+        if(this.props.params != prevProps.params){
+            this.updateCalendar()
+        }
+    }
+
+    updateCalendar =() =>{
+        const params = this.props.params 
+        this.setState({date: new Date(params.year, params.month, params.day).toDateString()})
 
         this.props.hook(params.day, params.month, params.year, this)
 
@@ -22,6 +27,10 @@ class DayView extends Component{
         const sidebarWidth = document.getElementById('sidebar').offsetWidth;
         const calendarWidth = windowWidth - sidebarWidth;
         this.setState({width: calendarWidth})
+    }
+
+    componentDidMount(){
+        this.updateCalendar()
     }
 
     render(){

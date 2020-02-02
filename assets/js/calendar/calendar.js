@@ -53,14 +53,6 @@ function showCalendar(month, year) {
                 }
                 row.push(data)
             }
-            // else if (date > daysInMonth) {
-            //     // add dates to the last day of the month
-            //     var delta = j - lastDate.getDay()
-            //     console.log(lastDate.getDay())
-            //     console.log(delta)
-            //     console.log(new Date(lastDate + daysInMs(delta)))
-            // }
-
             else {
                 let cell = date
                 cell = new Date(year, month, cell)
@@ -97,4 +89,4 @@ function showWeekCalendar(date, month, year){
 
 // console.log(showCalendar(11, 2019))
 
-export {showCalendar, showWeekCalendar}
+export {showCalendar, showWeekCalendar, daysInMs}

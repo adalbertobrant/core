@@ -83,10 +83,6 @@
     transition: background-color 0.5s;
 }
 
-.timelineCardRight:hover {
-    background-color: powderblue;
-    z-index: 10000;
-}
 
 .timelinePoint {
     width: 25px;

@@ -1,6 +1,5 @@
 import React from 'react';
 import MiniCalendar from '../components/mini_calendar';
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import styles from './sidebar.css';
 
 const sidebar = (props) =>{
@@ -12,14 +11,14 @@ const sidebar = (props) =>{
         className="btn btn-primary btn-block"> <i className="fas fa-plus"></i> Create New Event</a> : null}
             <div className="btn-group">            
                 {props.showMonth ? 
-                    <Link className="btn btn-primary" 
-                    to={`/calendar/month/${props.calendarState.year}/${props.calendarState.month}`}><i className="fa fas-calendar"></i> Month</Link>:null}
+                    <button className="btn btn-primary" 
+                    onClick={()=>{props.setView('month')}}><i className="fa fas-calendar"></i> Month</button>:null}
                 {props.showWeek ?
-                    <Link className="btn btn-primary" 
-                    to={`/calendar/week/${props.calendarState.year}/${props.calendarState.month}/${props.calendarState.day}`}>Week</Link> : null}
+                    <button className="btn btn-primary" 
+                    onClick={()=>{props.setView('week')}}><i className="fa fas-calendar"></i> Week</button> : null}
                 {props.showDay ?
-                    <Link className="btn btn-primary" 
-                    to={`/calendar/day/${props.calendarState.year}/${props.calendarState.month}/${props.calendarState.day}`}>Day</Link>:null}
+                    <button className="btn btn-primary" 
+                    onClick={()=>{props.setView('day')}}><i className="fa fas-calendar"></i> Day</button>:null}
             </div>
             <div className="btn-group">
                 <button
@@ -34,13 +33,16 @@ const sidebar = (props) =>{
                 </button>
             </div>
             <div>
-                <MiniCalendar 
-                    year={props.calendarState.year}
-                    month={props.calendarState.month} />
+            <MiniCalendar 
+                year={props.calendarState.year}
+                month={props.calendarState.month} />
+        
             </div>
             
         </div>
     );
+
 }
+
 
 export default sidebar;

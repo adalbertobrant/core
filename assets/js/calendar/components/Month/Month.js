@@ -12,18 +12,24 @@ class Month extends Component{
         events: []
     }
 
-    componentDidMount(){
-        this.props.linkUpdater();
-        const params = this.props.match.params 
-        const data = showCalendar(params.month - 1, params.year)
+    componentDidUpdate(prevProps, prevState){
+        if(prevProps.params != this.props.params){
+            this.updateCalendar()
+        }
+    }
+
+    updateCalendar(){
+        const params = this.props.params
+        const data = showCalendar(params.month, params.year)
         this.setState({
             weeks: data,
             period: 'Period',
         })
         this.props.hook(params.month, params.year, this)
-        
-        
-        
+    }
+    
+    componentDidMount(){
+        this.updateCalendar()
     }
 
     render(){
@@ -52,6 +58,7 @@ class Month extends Component{
                         key={i} 
                         days={week}
                         events={this.state.events}
+                        setDate={this.props.setDate}
                         showDay={this.props.showDay}/>
                 ))}
                 </tbody>

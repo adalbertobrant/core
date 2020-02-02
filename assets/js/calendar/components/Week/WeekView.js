@@ -12,10 +12,15 @@ class WeekView extends Component{
         events: []
     }
 
-    componentDidMount(){
-        this.props.linkUpdater();
-        const params = this.props.match.params 
-        const currWeek = showWeekCalendar(params.day, params.month - 1, params.year)
+    componentDidUpdate(prevProps, prevState){
+        if(prevProps.params != this.props.params){
+            this.updateCalendar()
+        }
+    }
+
+    updateCalendar(){
+        const params = this.props.params 
+        const currWeek = showWeekCalendar(params.day, params.month, params.year)
         const m = moment(new Date(params.year, params.month, params.day))
         
         this.setState({
@@ -24,6 +29,10 @@ class WeekView extends Component{
         })
         
         this.props.hook(params.day, params.month, params.year, this)
+    }
+
+    componentDidMount(){
+        this.updateCalendar()
     }
 
     render(){
@@ -65,7 +74,8 @@ class WeekView extends Component{
                                         className={styles.cellStyle}
                                         >
                                         <div >
-                                            <Day data={day} 
+                                            <Day data={day}
+                                                setDate={this.props.setDate}
                                                  view={'week'} 
                                                  width={this.props.width} height={height}
                                                  events={this.state.events}
