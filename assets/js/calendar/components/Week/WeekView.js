@@ -4,6 +4,8 @@ import {Aux} from '../../../src/common';
 import styles from './week.css';
 import {showWeekCalendar} from '../../calendar'
 import moment from 'moment'
+import COntext from '../../container/provider'
+import Context from '../../container/provider';
 
 class WeekView extends Component{
     state = {
@@ -43,53 +45,55 @@ class WeekView extends Component{
         const titleHeight = document.getElementById('title').offsetHeight;
         const windowHeight = document.documentElement.offsetHeight;
         const height = windowHeight - weekHeaderHeight - titleHeight;
-        console.log(height)
     
         return(
-            <Aux>
-                <h3 className={styles.weekHeader}>Week: {this.state.week}</h3>
-               <div style={{
-                height: height + "px",
-                overflowY: "scroll",
-                width: '80vw',
-                margin: '0px'
-                }}>
-                    <table style={{width:'100%'}}>
-                        <thead>
-                            <tr>
-                            <th className={styles.headStyle}>Sunday</th>
-
-                                <th className={styles.headStyle}>Monday</th>
-                                <th className={styles.headStyle}>Tuesday</th>
-                                <th className={styles.headStyle}>Wednesday</th>
-                                <th className={styles.headStyle}>Thursday</th>
-                                <th className={styles.headStyle}>Friday</th>
-                                <th className={styles.headStyle}>Saturday</th>
-                            </tr>
-                        </thead>
-                        <tbody >
-                            <tr>
-                                {this.state.days.map((day, i) =>(
-                                    <td key={i}
-                                        className={styles.cellStyle}
-                                        >
-                                        <div >
-                                            <Day data={day}
-                                                setDate={this.props.setDate}
-                                                 view={'week'} 
-                                                 width={this.props.width} height={height}
-                                                 events={this.state.events}
-                                                 showDay={this.props.showDay}
-                                                 />
-                                        </div>
-                                    </td>
-                                ))}
-                            </tr>    
-                        </tbody>
-                    </table>
-               </div> 
-               
-            </Aux>
+            <Context.Consumer>
+                {context =>(
+                    <Aux>
+                    <h3  style={{backgroundColor: context.primary}} className={styles.weekHeader}>Week: {this.state.week}</h3>
+                   <div style={{
+                    height: height + "px",
+                    overflowY: "scroll",
+                    width: '80vw',
+                    margin: '0px'
+                    }}>
+                        <table style={{width:'100%'}}>
+                            <thead>
+                                <tr>
+                                <th style={{backgroundColor: context.primary}} className={styles.headStyle}>Sunday</th>
+    
+                                    <th  style={{backgroundColor: context.primary}} className={styles.headStyle}>Monday</th>
+                                    <th  style={{backgroundColor: context.primary}} className={styles.headStyle}>Tuesday</th>
+                                    <th  style={{backgroundColor: context.primary}}className={styles.headStyle}>Wednesday</th>
+                                    <th  style={{backgroundColor: context.primary}}className={styles.headStyle}>Thursday</th>
+                                    <th  style={{backgroundColor: context.primary}}className={styles.headStyle}>Friday</th>
+                                    <th  style={{backgroundColor: context.primary}}className={styles.headStyle}>Saturday</th>
+                                </tr>
+                            </thead>
+                            <tbody >
+                                <tr>
+                                    {this.state.days.map((day, i) =>(
+                                        <td key={i}
+                                            className={styles.cellStyle}
+                                            >
+                                            <div >
+                                                <Day data={{...day, current: true}}
+                                                    setDate={this.props.setDate}
+                                                     view={'week'} 
+                                                     width={this.props.width} height={height}
+                                                     events={this.state.events}
+                                                     showDay={this.props.showDay}
+                                                     />
+                                            </div>
+                                        </td>
+                                    ))}
+                                </tr>    
+                            </tbody>
+                        </table>
+                   </div> 
+                </Aux>
+                )}
+            </Context.Consumer>
         )
     }
 }

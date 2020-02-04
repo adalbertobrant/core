@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import Event from '../Event';
-import axios from 'axios';
-import Day from './Day';
-import styles from './Day.css';
+import Context from '../../container/provider'
 
 class DayView extends Component{
     state = {
@@ -66,7 +64,7 @@ class DayView extends Component{
                 ))}
             </tbody>
         </table>);
-        const contentHeight = console.log(window.document.documentElement.offsetHeight - document.getElementById('title').offsetHeight)
+        const contentHeight = window.document.documentElement.offsetHeight - this.props.offsetTop
     
         const dayWrapper = {
             width: `${this.state.width}px`,
@@ -74,44 +72,44 @@ class DayView extends Component{
             padding: '0px',
             overflowY: 'scroll'
         } 
-        const dayLabel = 
-        <h1 style={{
-            color: 'white',
-            backgroundColor: '#07f',
-            padding: '30px',
-            clear: "both",
-            float: "left",
-            width: "100%"        
-        }}>{this.state.date}</h1>
+        
         // do some overlap detection
         return(
-            <div style={dayWrapper}>
-            
-            <div style={{
-                clear:'both',
-                width:'100%',
-                height:'30px',
-                }}>
-                {dayLabel}
+            <Context.Consumer>{context=>(
+                <div style={dayWrapper}>         
+                <div style={{
+                    clear:'both',
+                    width:'100%',
+                    height:'30px',
+                    }}>
+                    <h1 style={{
+                        color: 'white',
+                        backgroundColor: context.accent,
+                        padding: '30px',
+                        clear: "both",
+                        float: "left",
+                        width: "100%"        
+                    }}>{this.state.date}</h1>
+                </div>
+                <div 
+                    style={{
+                        position: "relative",
+                        width: `${this.state.width -40}px`,//here
+                        height:  "576px",
+                    }}>
+                {hourByHour}
+                {this.state.events.map((event, i) =>(
+                    <Event
+                        index={1 + i}
+                        offset={250 * (i % 3)}
+                        width={this.state.width}
+                        key={i} 
+                        data={event}
+                        view={"day"}/>
+                ))}
+                </div>
             </div>
-            <div 
-                style={{
-                    position: "relative",
-                    width: `${this.state.width -40}px`,//here
-                    height:  "576px",
-                }}>
-            {hourByHour}
-            {this.state.events.map((event, i) =>(
-                <Event
-                    index={1 + i}
-                    offset={250 * (i % 3)}
-                    width={this.state.width}
-                    key={i} 
-                    data={event}
-                    view={"day"}/>
-            ))}
-            </div>
-        </div>
+            )}</Context.Consumer>
     )
     }    
 }

@@ -8,3 +8,10 @@
     color: white;
     text-align: center;
 }
+
+
+@media(max-width: 720px){
+    .calendar {
+        display:none;
+    }
+}

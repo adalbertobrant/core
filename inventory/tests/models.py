@@ -484,7 +484,7 @@ class ItemManagementModelTests(TestCase):
         self.assertEqual(self.adjustment.adjustment_value, 10)
 
     def test_prev_quantity(self):
-        self.assertEqual(self.adjustment.prev_quantity, 10)
+        self.assertEqual(self.adjustment.prev_quantity, 12)
 
     def test_adjust_inventory(self):
         prev_quantity = self.warehouse_item.quantity
@@ -550,7 +550,7 @@ class ItemManagementModelTests(TestCase):
     def test_scrapping_record_scrap(self):
         prev_quantity = self.warehouse_item.quantity
         self.scrap.scrap()
-        self.assertEqual(models.WareHouseItem.objects.first().quantity, 
+        self.assertEqual(models.WareHouseItem.objects.get(pk=self.warehouse_item.pk).quantity, 
             prev_quantity - 1)
         self.warehouse_item.increment(1)
 
@@ -594,7 +594,7 @@ class ItemModelTests(TestCase):
         #and associated functions
 
     def test_product_quantity(self):
-        self.assertEqual(self.product.quantity, 9)
+        self.assertEqual(self.product.quantity, 10)
 
     def test_product_unit_sales_price(self):
         self.assertEqual(self.product.unit_sales_price, 10)
@@ -663,7 +663,7 @@ class ItemModelTests(TestCase):
 
     def test_inventory_on_date(self):
         quantity = self.product.quantity_on_date(datetime.date.today())
-        self.assertEqual(quantity, D(9))
+        self.assertEqual(quantity, D(10))
 
     def test_consumable_value(self):
         #set a consumable quantity
@@ -717,7 +717,7 @@ class WarehouseModelTests(TestCase):
         self.assertEqual(self.warehouse.item_count, 1)
 
     def test_warehouse_total_item_quantity(self):
-        self.assertEqual(self.warehouse.total_item_quantity, 9)
+        self.assertEqual(self.warehouse.total_item_quantity, 10)
 
     def test_warehouse_all_items(self):
         self.assertEqual(self.warehouse.all_items.count(), 1)

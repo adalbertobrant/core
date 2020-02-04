@@ -8,5 +8,12 @@
 }
 
 .calendar {
+    display: 'flex';
+    flex-direction: 'row'
+}
 
+@media(max-width: 720px){
+    .calendar{
+        flex-direction: column;
+    }
 }

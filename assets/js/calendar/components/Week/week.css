@@ -8,17 +8,11 @@
     border-collapse: collapse;
     border:1px solid #aaaaaa;
     color: white;
-    background-color: #23374d;
     padding: 0.5rem;   
 }
 .cellStyle {
     border-collapse: collapse;
     border: 1px solid #aaaaaa;
-}
-.titleStyle {
-    color: white;
-    background-color: #07f;
-    padding: 20px
 }
 
 .dayWrapper {
@@ -31,5 +25,4 @@
     margin: 0px;
     width: 80vw;
     padding:0.5rem;
-    background-color: #23374d;
 }

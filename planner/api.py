@@ -24,7 +24,7 @@ def get_events(user, filters):
     else:
         events = Event.objects.filter(filters & Q(owner=user))
 
-    return events
+    return events.distinct()
 
 def get_month_events(request, year=None, month=None):
     year = int(year)
@@ -51,10 +51,12 @@ def get_week_events(request, year=None, month=None, day=None):
     curr_weekday = current_date.weekday()
     first = current_date + datetime.timedelta(days=(0 - curr_weekday))
     last = current_date + datetime.timedelta(days=(7 - curr_weekday))
+
     filters = get_filters(first, last)
     user = request.user
 
     events = get_events(user, filters)
+    print(events)
 
         
     return JsonResponse([{
@@ -85,4 +87,4 @@ def get_day_events(request, year=None, month=None, day=None):
         'start': evt.start_time,
         'end': evt.end_time,
         'description': evt.description
-        } for evt in events], safe=False)
+        } for evt in events.distinct()], safe=False)

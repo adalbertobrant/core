@@ -10,8 +10,8 @@ const week = (props) => {
                 <td key={i}
                     className={styles.cellStyle}>
                     <Day 
+                        offsetTop={props.offsetTop}
                         width={props.width}
-                        height={props.height}
                         data={day}
                         events={props.events} 
                         view='month'

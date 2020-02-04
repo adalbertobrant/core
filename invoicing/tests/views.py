@@ -30,7 +30,7 @@ TODAY = datetime.datetime.today()
 
 
 class CommonViewsTests(TestCase):
-    fixtures = ['common.json','accounts.json', 'employees.json', 
+    fixtures = ['common.json','accounts.json', 'employees.json',  'inventory.json',
         'invoicing.json' ]
 
     @classmethod
@@ -74,7 +74,8 @@ class CommonViewsTests(TestCase):
                 "business_name": 'test name',
                 "next_invoice_number": 1,
                 "next_quotation_number": 1,
-                "currency": 1
+                "currency": 1,
+                "default_warehouse": 1
 
             })
         self.assertEqual(resp.status_code, 302)
@@ -87,7 +88,7 @@ class CommonViewsTests(TestCase):
 
 
 class ReportViewsTests(TestCase):
-    fixtures = ['common.json','accounts.json', 'employees.json', 
+    fixtures = ['common.json','accounts.json', 'employees.json',  'inventory.json',
         'invoicing.json']
 
     @classmethod
@@ -234,7 +235,7 @@ class ReportViewsTests(TestCase):
 
 
 class CustomerViewsTests(TestCase):
-    fixtures = ['common.json','accounts.json', 'employees.json', 
+    fixtures = ['common.json','accounts.json', 'employees.json',  'inventory.json',
         'invoicing.json']
 
     @classmethod
@@ -359,7 +360,7 @@ class CustomerViewsTests(TestCase):
 
 
 class SalesRepViewsTests(TestCase):
-    fixtures = ['common.json', 'accounts.json', 'employees.json', 
+    fixtures = ['common.json', 'accounts.json', 'employees.json',  'inventory.json',
         'invoicing.json']
 
     @classmethod
@@ -418,7 +419,7 @@ class SalesRepViewsTests(TestCase):
         
 
 class InvoiceViewTests(TestCase):
-    fixtures = ['common.json','accounts.json', 'employees.json', 
+    fixtures = ['common.json','accounts.json', 'employees.json',  'inventory.json',
         'journals.json','invoicing.json']
     
     @classmethod
@@ -643,7 +644,7 @@ class InvoiceViewTests(TestCase):
 
 
 class QuotationViewTests(TestCase):
-    fixtures = ['common.json','accounts.json', 'employees.json', 
+    fixtures = ['common.json','accounts.json', 'employees.json',  'inventory.json',
         'journals.json','invoicing.json']
     
     @classmethod
@@ -757,7 +758,7 @@ class QuotationViewTests(TestCase):
 
 
 class ConfigWizardTests(TestCase):
-    fixtures = ['common.json', 'invoicing.json', 'accounts.json', 'journals.json']
+    fixtures = ['common.json', 'inventory.json', 'invoicing.json', 'accounts.json', 'journals.json']
 
     @classmethod
     def setUpClass(cls):
@@ -780,7 +781,8 @@ class ConfigWizardTests(TestCase):
         config_data = {
             'config_wizard-current_step': 0,
             '0-next_invoice_number': 10,
-            '0-next_quotation_number': 10
+            '0-next_quotation_number': 10,
+            '0-default_warehouse': 1
         }
 
         customer_data = {
@@ -810,8 +812,7 @@ class ConfigWizardTests(TestCase):
                 resp = self.client.post(reverse('invoicing:config-wizard'), 
                     data=data)
 
-                if step == len(data_list):
-                    #print(resp.context['form'].errors)                    
+                if step == len(data_list):                 
                     self.assertEqual(resp.status_code, 302)
                 else:
                     self.assertEqual(resp.status_code, 200)

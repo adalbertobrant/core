@@ -1,26 +1,10 @@
 import React from 'react';
 import Event from '../Event';
+import Context from '../../container/provider'
 
 const day = (props) => {
     //calculate the dimensions of the day
     let dayWrapper = null;
-    let dayLabel = 
-        <span style={{
-            float:'right'
-        }}><h4>
-                {props.showDay ?
-                    <span onClick={()=>{
-                        props.setDate({
-                            year: props.data.date.getFullYear(),
-                            month:props.data.date.getMonth(),
-                            day: props.data.day,
-                            view: 'day'
-                        })
-                    }} >
-                    {props.data.day}</span>  
-                        : <span>{props.data.day}</span>}
-            </h4>
-        </span>;
     if (props.view === 'week'){
         dayWrapper={
             minWidth: `${props.width}px`,
@@ -28,20 +12,11 @@ const day = (props) => {
             padding:"10px"
         }
     }else{ //day
-        dayLabel = 
-        <h1 style={{
-            color: 'white',
-            backgroundColor: '#07f',
-            padding: '30px',
-            clear: "both",
-            float: "left",
-            width: "720px"        
-        }}>{props.data.date}</h1>
+        
         dayWrapper={
             minWidth: "740px",
             minHeight: "500px",
             padding:"10px",
-            border: '2px solid  #23374d',
             borderRadius: '5px',
             overflowY: 'auto',
         }
@@ -89,14 +64,41 @@ const day = (props) => {
             </tbody>
         </table>
     return(
+    <Context.Consumer>{context=>(
         <div style={dayWrapper}>
-            
             <div style={{
                 clear:'both',
                 width:'100%',
                 height:'30px',
                 }}>
-                {dayLabel}
+                {props.view == 'week' 
+                    ?
+                    <span style={{
+                        float:'right'
+                    }}><h4>
+                            {props.showDay ?
+                                <span onClick={()=>{
+                                    props.setDate({
+                                        year: props.data.date.getFullYear(),
+                                        month:props.data.date.getMonth(),
+                                        day: props.data.day,
+                                        view: 'day'
+                                    })
+                                }} >
+                                {props.data.day}</span>  
+                                    : <span>{props.data.day}</span>}
+                        </h4>
+                    </span>
+                    :
+                    <h1 style={{
+                        color: 'white',
+                        backgroundColor: context.accent,
+                        padding: '30px',
+                        clear: "both",
+                        float: "left",
+                        width: "720px"        
+                    }}>{props.data.date}</h1>
+                }
             </div>
             <div 
                 style={{
@@ -114,6 +116,7 @@ const day = (props) => {
             ))}
             </div>
         </div>
+    )}</Context.Consumer>
     )
 }
 

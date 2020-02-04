@@ -1,0 +1,35 @@
+.window {
+    width: 100vw;
+    height: 100vh;
+}
+
+.sidebar {
+    height: 100vh;
+}
+
+.calendar {
+    display: flex;
+    flex-direction: row
+}
+
+.renderedCalendar{
+    flex: 4
+}
+
+.monthText {
+    display: none;
+}
+
+@media(max-width: 720px){
+    .calendar{
+        flex-direction: column;
+    }
+
+    .renderedCalendar{
+        overflow: scroll;
+        flex: 9;
+    }
+    .monthText {
+        display: block
+    }
+}

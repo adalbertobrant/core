@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
+import React, {Component, createContext} from 'react';
 import Month from '../components/Month/Month';
 import WeekView from '../components/Week/WeekView';
 import DayView from '../components/Day/DayView';
 import Sidebar from '../components/sidebar';
-import {daysInMs} from '../calendar'
-
+import styles from './styles.css'
+import Context from './provider'
 /**
  * This application supports a variety of customizations
  * The hook system
@@ -41,8 +41,24 @@ export default class CalendarApp extends Component{
         day: 1,
         view: 'month',
         windowWidth: 135,
-        windowHeight: 95
+        monthText: ""
     }
+
+    setMonthText = () =>{
+        const dateString = new Date(this.state.year, this.state.month).toDateString()
+            const dateArray = dateString.split(' ')
+            const period = dateArray[1] + ' ' + dateArray[3]
+            this.setState({
+                monthText: period
+            })
+    }
+
+    componentDidUpdate(prevProps, prevState){
+        if(prevState.month != this.state.month){
+            this.setMonthText()
+        }
+    }
+
 
     nextHandler = () =>{
         const current = new Date(this.state.year, this.state.month, this.state.day)
@@ -58,12 +74,10 @@ export default class CalendarApp extends Component{
         }else if(this.state.view == 'week'){
             current.setDate(current.getDate() + 7)
             next = current
-            console.log(next)
         }else{
             current.setDate(current.getDate() + 1)
             next = current
         }
-        console.log(next)
 
         this.setState({
             year: next.getFullYear(),
@@ -106,13 +120,13 @@ export default class CalendarApp extends Component{
         // subtract the padding and border widths 
         this.setState({windowWidth: Math.floor(
             ((window.screen.width -250) / 7) - 12)});
-        this.setState({windowHeight: 58});
         const today = new Date()
         this.setState({
             day: today.getDate(),
             month: today.getMonth(),
             year: today.getFullYear()
         })
+        this.setMonthText()
 
     }
 
@@ -122,7 +136,7 @@ export default class CalendarApp extends Component{
         switch(this.state.view){
             case 'month':
                 rendered = <Month width={this.state.windowWidth} 
-                                height={this.state.windowHeight}
+                                offsetTop={this.props.offsetTop}
                                 params={{
                                     month: this.state.month, 
                                     year: this.state.year}}
@@ -144,38 +158,46 @@ export default class CalendarApp extends Component{
                 break;
             case 'day': 
                 rendered = <DayView 
-                params={{
-                    day: this.state.day,
-                    month: this.state.month, 
-                    year: this.state.year}}
-                linkUpdater={this.setLinks}
-                hook={this.props.dayHook}/>
+                                offsetTop={this.props.offsetTop}
+                                params={{
+                                    day: this.state.day,
+                                    month: this.state.month, 
+                                    year: this.state.year}}
+                                linkUpdater={this.setLinks}
+                                hook={this.props.dayHook}/>
                 break; 
             default:
                 rendered=<p>Loading Calendar...</p>
                 break
         }
 
-
         return(
-                <div style={{display: 'flex',flexDirection: 'row'}}>
-                    <Sidebar
-                            setView={(view)=>{
-                                this.setState({view: view})
-                            }}
-                            eventLink={this.props.eventLink}
-                            showMonth={this.props.showMonth} 
-                            showWeek={this.props.showWeek} 
-                            showDay={this.props.showDay} 
-                            calendarState={{...this.state}}
-                            nextHandler={this.nextHandler}
-                            prevHandler={this.prevHandler}/>
-                    <div style={{
-                        flex: 4}}>
-                        {/*App */}
-                        {rendered}
+                <Context.Provider
+                    value={{
+                        primary: this.props.primaryColor,
+                        accent:this.props.accentColor
+                        }}>
+                    <div className={styles.calendar}>
+                        <Sidebar
+                                setView={(view)=>{
+                                    this.setState({view: view})
+                                }}
+                                offsetTop={this.props.offsetTop}
+                                eventLink={this.props.eventLink}
+                                showMonth={this.props.showMonth} 
+                                showWeek={this.props.showWeek} 
+                                showDay={this.props.showDay} 
+                                calendarState={{...this.state}}
+                                nextHandler={this.nextHandler}
+                                monthString={this.state.monthText}
+                                prevHandler={this.prevHandler}/>
+                        <div className={styles.renderedCalendar} >
+        <h4 className={styles.monthText}>{this.state.monthText}</h4>
+                            {/*App */}
+                            {rendered}
+                        </div>
                     </div>
-                </div>
+                </Context.Provider>
         )
     }
     

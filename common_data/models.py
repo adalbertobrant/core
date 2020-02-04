@@ -156,7 +156,7 @@ class GlobalConfig(SingletonModel):
     application_version = models.CharField(
         max_length=16, 
         blank=True, 
-        default="0.0.1")
+        default="1.0.0")
     hardware_id = models.CharField(
         max_length=255, 
         blank=True, 
@@ -213,6 +213,7 @@ class GlobalConfig(SingletonModel):
             del fields['hardware_id']
             del fields['last_automated_service_run']
             del fields['_state']
+            print(fields)
             json.dump(fields, fil)
 
 

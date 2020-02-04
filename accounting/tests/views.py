@@ -403,7 +403,7 @@ class AccountViewTests(TestCase):
 
 class TestReportViews(TestCase):
     fixtures = ['accounts.json', 'employees.json','journals.json', 
-        'common.json','invoicing.json']
+        'common.json', 'inventory.json','invoicing.json']
 
     @classmethod
     def setUpClass(cls):

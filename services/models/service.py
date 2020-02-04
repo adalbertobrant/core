@@ -49,8 +49,10 @@ class Service(models.Model):
 
     @property
     def average_revenue(self):
-        return sum([i.nominal_price for i in self.servicelinecomponent_set.all()], 0) / \
-            D(len(self.invoices))
+        if len(self.invoices) > 0:
+            return sum([i.nominal_price for i in self.servicelinecomponent_set.all()], D(0)) / \
+                D(len(self.invoices))
+        return D(0)
 
     @property
     def work_orders(self):

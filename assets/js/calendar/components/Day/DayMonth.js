@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Event from '../Event';
 import styles from './Day.css';
+import Context from '../../container/provider';
 
 const dayMonth = (props) => {
     //calculate the dimensions of the day
@@ -10,10 +11,10 @@ const dayMonth = (props) => {
     const cellWidth = (calendarWidth - 15 /**8-5 + !!2 */) / 7;
 
     const daysLabelHeight = 32;
-    const titleHeight = document.getElementById('title').offsetHeight;
     const windowHeight = document.documentElement.clientHeight;
-    const contentHeight = windowHeight - daysLabelHeight - titleHeight;
-    const cellHeight = (contentHeight -5)/ 5;
+    const contentHeight = windowHeight - daysLabelHeight - props.offsetTop;
+    //5 for the width of the table borders
+    const cellHeight = (contentHeight -5)/ 6;
 
     let labelStyle = {
         clear:'both',
@@ -38,7 +39,7 @@ const dayMonth = (props) => {
     
     
     return(
-        <div style={{...dayWrapper,
+        <div className={styles.mobileDay} style={{...dayWrapper,
                     backgroundColor: props.data.current ? 'white' : '#ddd'}}>
             
             <div style={labelStyle}>
@@ -66,7 +67,7 @@ const dayMonth = (props) => {
                     width: `100%`,//here
                     height:`2rem`
                 }}>
-            {eventsList.length < 2 ? 
+            {eventsList.length < 3 ? 
                 eventsList.map((event, i) =>(
                     <Event 
                         width={props.width}
@@ -75,16 +76,47 @@ const dayMonth = (props) => {
                         view={props.view}/>
                 ))
                 :
-                    <div className={styles.eventBox}>
-                    <a style={{
-                        textDecoration: 'none',
-                        color: 'white'
-                    }} href={`/calendar/day/${props.data.date}`}>({eventsList.length}) Events</a>
-                    </div>
+                    <HoverableEventList 
+                        width={props.width}
+                        view={props.view}
+                        events={eventsList}/>
             }
             </div>
         </div>
     )
+}
+
+
+const HoverableEventList = (props) =>{
+    const [showEvents, setShowEvents] =  useState(false)
+    return(<Context.Consumer>{context=>(
+        <div> 
+            <div style={{backgroundColor: context.primary}} className={styles.eventBox}
+                onClick={()=>setShowEvents(true)}>
+                ({props.events.length}) Events
+            </div>
+            <div className={styles.hiddenEventsList} style={{
+                display: showEvents ? 'block': 'none'
+            }}>
+                <div style={{display:'flex', flexDirection: 'row', marginBottom:'12px'}}>
+                    <h3 style={{width:'90%'}}>Events: </h3>
+
+                    <button className='btn' onClick={()=>setShowEvents(false)}><i className="fa fa-times" aria-hidden="true"></i></button>
+                </div>
+                {props.events.map((event) =>(
+                <a href={"/planner/event-detail/" + event.id}>
+                        <div className={styles.eventBox} style={{
+                            marginBottom: '5px',
+                            backgroundColor: context.primary
+                        }}>
+                            {event.title}
+                        </div>
+                    </a>
+                ))}
+            </div>
+    </div>
+
+    )}</Context.Consumer>)
 }
 
 export default dayMonth;

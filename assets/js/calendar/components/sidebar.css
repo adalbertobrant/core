@@ -1,7 +1,22 @@
 .sidebar {
-    background-color: #23374d;
     flex: 1;
     padding: 30px;
     box-sizing: border-box;
     margin: 0px;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+@media(max-width:720px) {
+    .createText{
+        display: none;
+    }
+
+    .sidebar {
+        flex-direction: row;
+        padding: 12px;
+    }
 }

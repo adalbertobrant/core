@@ -49,7 +49,7 @@ class ServicePersonUtilizationReport(PeriodReportMixin,
         x = histogram.keys()
         y = [reduce(lambda x, y: x + y, histogram[key], datetime.timedelta(seconds=0)).seconds / 3600  for key in x]
         
-        chart = pygal.Bar(style=CustomStyle, height=400)
+        chart = pygal.Bar(style=CustomStyle, height=300)
         chart.title = 'Service Person Utilization'
         chart.x_labels = x
         chart.add('Hours', y)

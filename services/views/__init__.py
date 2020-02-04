@@ -32,7 +32,7 @@ class AsyncDashboard(TemplateView):
         context =  super().get_context_data(**kwargs)
 
         context['services'] = Service.objects.filter(is_listed=True).count()
-        context['wo_open'] = ServiceWorkOrder.objects.filter(Q(status="request") | Q(status="in-progress")).count()
+        context['wo_open'] = ServiceWorkOrder.objects.filter(Q(status="request") | Q(status="progress")).count()
         context['wo_closed'] = ServiceWorkOrder.objects.filter(Q(status="completed")).count()
         today = datetime.date.today()
         start = today - datetime.timedelta(days = 30)

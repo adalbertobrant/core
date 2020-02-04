@@ -21,7 +21,7 @@ TODAY = datetime.date.today()
 
 
 class CommonModelTests(TestCase):
-    fixtures = ['common.json','accounts.json','employees.json','invoicing.json']
+    fixtures = ['common.json','accounts.json','employees.json', 'inventory.json','invoicing.json']
         
     def test_update_sales_config(self):
         obj = SalesConfig.objects.get(pk=1)
@@ -30,7 +30,7 @@ class CommonModelTests(TestCase):
 
 
 class CustomerModelTests(TestCase):
-    fixtures = ['common.json','accounts.json','employees.json','invoicing.json']
+    fixtures = ['common.json','accounts.json','employees.json', 'inventory.json','invoicing.json']
         
     @classmethod
     def setUpTestData(cls):
@@ -85,7 +85,7 @@ class CustomerModelTests(TestCase):
 
 
 class PaymentModelTests(TestCase):
-    fixtures = ['common.json','accounts.json', 'journals.json', 'employees.json','invoicing.json', 'inventory']
+    fixtures = ['common.json','accounts.json', 'journals.json', 'employees.json', 'inventory.json','invoicing.json']
         
     @classmethod
     def setUpTestData(cls):
@@ -106,7 +106,7 @@ class PaymentModelTests(TestCase):
 
 
 class SalesRepModelTests(TestCase):
-    fixtures = ['common.json','accounts.json','employees.json','invoicing.json', 'inventory.json']
+    fixtures = ['common.json','accounts.json','employees.json', 'inventory.json','invoicing.json']
         
     @classmethod
     def setUpTestData(cls):
@@ -126,7 +126,7 @@ class SalesRepModelTests(TestCase):
 
 
 class CreditNoteModelTests(TestCase):
-    fixtures = ['common.json','accounts.json', 'journals.json', 'employees.json','invoicing.json', 'inventory.json']
+    fixtures = ['common.json','accounts.json', 'journals.json', 'employees.json', 'inventory.json','invoicing.json']
 
     @classmethod
     def setUpTestData(cls):
@@ -159,7 +159,7 @@ class CreditNoteModelTests(TestCase):
 
 
 class ProductInvoiceTests(TestCase):
-    fixtures = ['common.json','accounts.json', 'journals.json','employees.json','invoicing.json', 'settings.json', 'inventory.json']
+    fixtures = ['common.json','accounts.json', 'journals.json','employees.json', 'inventory.json','invoicing.json', 'settings.json']
     
     @classmethod
     def setUpTestData(cls):
@@ -301,7 +301,7 @@ class ProductInvoiceTests(TestCase):
 
 
 class InvoiceModelTests(TestCase):
-    fixtures = ['common.json','accounts.json', 'employees.json','invoicing.json', 'settings.json', 'journals.json']
+    fixtures = ['common.json','accounts.json', 'employees.json', 'inventory.json','invoicing.json', 'settings.json', 'journals.json']
     
     @classmethod
     def setUpTestData(cls):

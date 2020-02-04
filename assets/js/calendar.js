@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import CalendarApp from './calendar/container/Root';
-import TreeSelectWidget from '../js/src/tree_select_widget';
 import ParticipantSelectWidget from '../js/calendar/components/ParticipantSelect/select';
 import TimelineWidget from './src/timeline/container/root';
 import axios from 'axios';
@@ -9,59 +8,81 @@ import axios from 'axios';
 const calendar = document.getElementById('calendar-root');
 const timeline = document.getElementById('agenda-timeline');
 const participantSelect = document.getElementById('participant-select');
-if(calendar){
-    ReactDOM.render(<CalendarApp
-                        eventLink="/planner/event-create/"
-                        showMonth
-                        showWeek
-                        showDay
-                        monthHook={(month, year, component)=>{
-                            axios({
-                                method: 'GET',
-                                url: `/planner/api/calendar/month/${year}/${month}`
-                            }).then(res =>{
-                                component.setState({
-                                    events: res.data.map(evt =>({
-                                        id: evt.id,
-                                        date: new Date(evt.date),
-                                        title: evt.title
-                                    }))
-                                })
-                            })
-                        }}
-                        weekHook={(day, month, year, component)=>{
-                            axios({
-                                method: 'GET',
-                                url: `/planner/api/calendar/week/${year}/${month}/${day}`
-                            }).then(res =>{
-                                component.setState({
-                                    events: res.data.map(evt =>({
-                                        id: evt.id,
-                                        date: new Date(evt.date),
-                                        title: evt.title,
-                                        start:evt.start,
-                                        end: evt.end
-                                    }))
-                                })
-                            })
-                        }}
-                        dayHook={(day, month, year, component)=>{
-                            axios({
-                                method: 'GET',
-                                url: `/planner/api/calendar/day/${year}/${month}/${day}`
-                            }).then(res =>{
-                                component.setState({
-                                    events: res.data.map(evt =>({
-                                        id: evt.id,
-                                        date: new Date(evt.date),
-                                        title: evt.title,
-                                        start:evt.start,
-                                        end: evt.end
-                                    }))
-                                })
-                            })
-                        }} />, calendar);
 
+const config = {
+    primaryColor: '#23374d',
+    accentColor: '#007bff',
+    root: 'calendar-root',
+    eventLink: "/planner/event-create/",
+    showMonth: true,
+    showWeek: true,
+    showDay: true,
+    offsetTop: document.getElementById('title').offsetHeight,
+    monthHook: function(month, year, component){
+        axios({
+            method: 'GET',
+            url: `/planner/api/calendar/month/${year}/${month}`
+        }).then(res =>{
+            component.setState({
+                events: res.data.map(evt =>({
+                    id: evt.id,
+                    date: new Date(evt.date),
+                    title: evt.title
+                }))
+            })
+        })
+    },
+    weekHook: function(day, month, year, component){
+        axios({
+            method: 'GET',
+            url: `/planner/api/calendar/week/${year}/${month}/${day}`
+        }).then(res =>{
+            component.setState({
+                events: res.data.map(evt =>({
+                    id: evt.id,
+                    date: new Date(evt.date),
+                    title: evt.title,
+                    start:evt.start,
+                    end: evt.end
+                }))
+            })
+        })
+    },
+    dayHook: function(day, month, year, component){
+        axios({
+            method: 'GET',
+            url: `/planner/api/calendar/day/${year}/${month}/${day}`
+        }).then(res =>{
+            component.setState({
+                events: res.data.map(evt =>({
+                    id: evt.id,
+                    date: new Date(evt.date),
+                    title: evt.title,
+                    start:evt.start,
+                    end: evt.end
+                }))
+            })
+        })
+    }
+};
+
+function initCalendar(config){
+    ReactDOM.render(<CalendarApp
+        eventLink={config.eventLink}
+        showMonth={config.showMonth}
+        showWeek={config.showWeek}
+        showDay={config.showDay}
+        primaryColor={config.primaryColor}
+        accentColor={config.accentColor}
+        monthHook={config.monthHook}
+        weekHook={config.weekHook}
+        offsetTop={config.offsetTop}
+        dayHook={config.dayHook} />, document.getElementById(config.root));
+}
+
+
+if(calendar){
+    initCalendar(config)
 }else if(participantSelect){
     ReactDOM.render(<ParticipantSelectWidget />, participantSelect);
 }else if(timeline){

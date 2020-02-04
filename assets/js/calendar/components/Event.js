@@ -1,5 +1,7 @@
 import React from 'react';
 import styles from './event.css';
+import Context from '../container/provider'
+import Radium from 'radium'
 
 const event = (props) =>{
 
@@ -13,17 +15,16 @@ const event = (props) =>{
         if(props.data.start){
             const start = parseInt(props.data.start.split(":")[0]);
             const end = parseInt(props.data.end.split(":")[0]);
-            const yOffset = props.view == 'day' ? 100 : 10
-            startY = yOffset + (start * 22);
+            const yOffset = props.view == 'day' ? 108 : 18
+            startY = yOffset + (start * 25);
             // for errors in recording the event times
             if(end > start){
-                height = (end - start) * 24;
+                height = (end - start) * 25;
             }
             
         }
     }
     
-    console.log(props.data)
 
     let description = null;
     if (props.description){
@@ -36,27 +37,38 @@ const event = (props) =>{
     const startX = props.offset ? props.offset: 0;
 
     return(
-        <a className={[styles.event, 'hvr-grow'].join(' ')}
-            style={{
-                zIndex: props.index,
-                left: props.view === "month" ? "0px" :`${40 + startX}px`,
-                top: `${startY}px`,
-                height: `${height}px`,
-                width: props.view === "day" 
-                        ? "250px" : props.view === "week" ?
-                         `${props.width - 40}px` : `100%` ,
-                
-            }} 
-            href={"/planner/event-detail/" + props.data.id}>
-            <div className={styles.eventBox}>
-                <div>
-                    <span> {props.data.title}</span>
+        <Context.Consumer>
+            {context=>(
+                <a className={[styles.event, 'hvr-grow'].join(' ')}
+                style={{
+                    zIndex: props.index,
+                    left: props.view === "month" ? "0px" :`${40 + startX}px`,
+                    top: `${startY}px`,
+                    width: props.view === "day" 
+                            ? "250px" : props.view === "week" ?
+                             `${props.width - 40}px` : `100%` ,
+                    
+                }} 
+                href={"/planner/event-detail/" + props.data.id}>
+                <div style={{
+                    height: `${height}px`,
+                    backgroundColor:context.primary,
+                    ':hover': {
+                        color: context.primary,
+                        backgroundColor: 'white',
+                        border: `1px solid ${context.primary}`
+                    }
+                    }} className={styles.eventBox}>
+                    <div>
+                        <span> {props.data.title}</span>
+                    </div>
+                    {description}
+                    
                 </div>
-                {description}
-                
-            </div>
-        </a>
+            </a>
+            )}
+        </Context.Consumer>
     );
 }
 
-export default event;
+export default Radium(event);

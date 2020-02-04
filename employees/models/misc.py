@@ -4,7 +4,7 @@ from employees.schedules import run_payroll_service
 from background_task.models import Task
 from django.shortcuts import reverse
 
-class PayrollOfficer(models.Model):
+class PayrollOfficer(SoftDeletionModel):
     employee = models.OneToOneField('employees.Employee', 
         on_delete=models.SET_NULL, 
         null=True)

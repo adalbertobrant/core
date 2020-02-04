@@ -39,7 +39,7 @@ def plot_sales(start, end, filters=Q()):
 
 
     chart = pygal.Bar(x_title="Periods", x_label_rotation=15,
-        style=CustomStyle, height=400)
+        style=CustomStyle, height=300)
     chart.x_labels = pygal_date_formatter(start, end)
     chart.add('Sales($)', y)
     

@@ -261,6 +261,7 @@ class EmployeeForm(forms.ModelForm, BootstrapMixin):
                     Tab('Personal',
                         'date_of_birth',
                         'id_number',
+                        'social_security_number',
                         'gender',
                     ),
                     Tab('Conditions of service',

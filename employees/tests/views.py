@@ -149,7 +149,7 @@ class PayGradePageTests(TestCase):
 
 class PaySlipPageTests(TestCase):
     fixtures = ['common.json', 'accounts.json', 'journals.json', 
-        'employees.json', 'invoicing.json', 'payroll.json']
+        'employees.json', 'inventory.json', 'invoicing.json', 'payroll.json']
 
     @classmethod
     def setUpClass(cls):

@@ -11,6 +11,7 @@ module.exports = {
         employees: './js/employees',
         inventory: './js/inventory',
         calendar: './js/calendar',
+        portableCalendar: './js/portableCalendar',
         services: './js/services',
         manufacturing: './js/manufacturing',
         widgets: './js/widgets',
@@ -18,6 +19,9 @@ module.exports = {
         pos: './js/pos',
     },
     output: {
+        library: 'portableCalendar',
+        libraryTarget: 'window',
+        libraryExport: 'default',
         path: path.resolve('./bundles/'),
         filename: '[name].js',
     },

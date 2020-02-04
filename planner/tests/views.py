@@ -51,7 +51,7 @@ class PlannerAPIViewTests(TestCase):
             self.year, self.month, self.day
         ))
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(len(json.loads(resp.content)['events']['events']), 1)
+        self.assertEqual(len(json.loads(resp.content)), 0)
         
 
     def test_get_day_api_view(self):

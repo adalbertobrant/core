@@ -11,7 +11,25 @@
 
 .eventBox {
     padding: 5px;
-    background-color: #23374d;
     width: 100%;
     box-sizing: border-box;
+    color:white;
+}
+
+.hiddenEventsList {
+    width: 30vw;
+    position: fixed;
+    left: 30vw;
+    top:20vh;
+    padding: 12px;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+@media(max-width: 720px){
+    .mobileDay {
+        width: 24vw !important;
+        min-width: 24vw !important;
+    }
 }

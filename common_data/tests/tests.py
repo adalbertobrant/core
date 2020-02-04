@@ -14,7 +14,6 @@ from common_data.utilities import (
 import responses
 import requests
 import services
-from common_data.tasks import license_verification_func
 from services.tests.model_util import ServiceModelCreator
 
 class ModelTests(TestCase):
@@ -212,7 +211,8 @@ class ViewTests(TestCase):
                 'backup_frequency': 'D',
                 'organization_name': 'latrom',
                 'organization_address': 'somewhere',
-                'logo_aspect_ratio': 0
+                'logo_aspect_ratio': 0,
+                "pos_supervisor_password": 1000
             })
         
         self.assertEqual(resp.status_code, 302)
@@ -240,17 +240,13 @@ class ViewTests(TestCase):
                 'backup_frequency': 'D',
                 'organization_name': 'latrom',
                 'organization_address': 'somewhere',
-                'logo_aspect_ratio': 0
+                'logo_aspect_ratio': 0,
+                "pos_supervisor_password": 1000
             })
         
         self.assertEqual(resp.status_code, 302)
         config.organization = None
         config.save()
-
-    def test_reset_license_check(self):
-        resp = self.client.get(reverse('base:reset-license-check'))
-        #redirects
-        self.assertEqual(resp.status_code, 302)
 
     def test_get_model_latest(self):
         resp = self.client.get(reverse('base:get-latest-model', kwargs={
@@ -294,7 +290,7 @@ class ViewTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
 class UtilityTests(TestCase):
-    fixtures = ['common.json','accounts.json', 'employees.json', 'invoicing.json']
+    fixtures = ['common.json','accounts.json', 'employees.json', 'inventory.json', 'invoicing.json']
 
     def test_config_mixin(self):
         class ConfigChild(ConfigMixin):
@@ -359,11 +355,13 @@ class CommonDataWizardTests(TestCase):
             '0-organization_name': 'name',
             '0-organization_address': 'address',
             '0-backup_frequency': "D",
-            '0-logo_aspect_ratio': 0
+            '0-logo_aspect_ratio': 0,
+            '0-pos_supervisor_password': '1000'
 
         }
 
         resp = self.client.post(reverse('base:config-wizard'), data=config_data)
+
         self.assertEqual(resp.status_code, 302)
 
 class LicenseTaskTests(TestCase):
@@ -373,18 +371,3 @@ class LicenseTaskTests(TestCase):
     def setUpTestData(cls):
         pass
 
-
-    def test_verification(self):
-        @responses.activate
-        def responses_action():
-            responses.add(responses.GET, 
-                'http://nakamura9.pythonanywhere.com/validate',
-                body=json.dumps({'status': 'valid'}))
-            
-            license = json.load(open('license.json', 'r'))
-            license_verification_func(license, 
-                'http://nakamura9.pythonanywhere.com/validate')
-
-        responses_action()
-        settings = GlobalConfig.objects.first()
-        self.assertEqual(settings.last_license_check, datetime.date.today())

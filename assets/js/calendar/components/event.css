@@ -5,7 +5,6 @@
 
 }
 .eventBox {
-    background-color: #23374d;
     color: white;
     padding:2px;
     box-sizing: border-box;
@@ -13,8 +12,3 @@
     border-right: 1px solid white;
 }
 
-.eventBox:hover{
-    color: #23374d;
-    background-color: white;
-    border: 1px solid #23374d;
-}

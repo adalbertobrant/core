@@ -194,3 +194,13 @@ class EventParticipant(models.Model):
             return self.customer.pk
         if self.participant_type == 2:
             return self.supplier.pk
+
+    @property
+    def link(self):
+        if self.participant_type == 0:
+            return reverse('employees:employee-detail', kwargs={'pk':self.employee.pk})
+        if self.participant_type == 1:
+            return reverse('invoicing:customer-details', kwargs={'pk':self.customer.pk})
+
+        if self.participant_type == 2:
+            return reverse('inventory:supplier-detail', kwargs={'pk':self.supplier.pk})

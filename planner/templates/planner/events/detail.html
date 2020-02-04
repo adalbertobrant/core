@@ -13,44 +13,46 @@ Event Details
 
  {% block content %}
 
-
+<br>
 <div class="container">
     <div class="row">
         <div class="col-sm-4">
             <div class="card shadow" >
                 <div class="card-body">
-                    <h4 class="card-title">Title: {{object.label}}</h4>
+                    <h4 class="card-title">{{object.label}}</h4>
+                    <p>{{object.date}}</p>
                     <p>Author: {{object.owner}}</p>
-                    <p>Status: {% if object.completed %} Completed on {{object.completion_time}} {% else %} In Progress {% endif %}</p>
+                    <p>{% if object.completed %} Completed on {{object.completion_time}} {% else %} In Progress {% endif %}</p>
                     <p>Priority:{{object.priority}}</p>
-                    <p>Date: {{object.date}}</p>
-                    <p>Start Time: {{object.start_time}}</p>
-                    <p>End Time: {{object.end_time}}</p>
-                    <p>Repeat: {{object.repeat_string}}</p>
-                    <p>Repeat Active? {{object.repeat_active}}</p>
-
+                    <p>Start: {{object.start_time}}</p>
+                    <p>End: {{object.end_time}}</p>
+                    {% if object.repeat_active %}
+                        <p>Repeat: {{object.repeat_string}}</p>
+                    {% endif %}
+                    
+                    
                 </div>
             </div>
         </div>
         <div class="col-sm-6">
             <div class="card bg-info text-white">
-                <div class="card-body">
-                    <h4 class="card-title">Description</h4>
-                    <p class="card-text">
+                <div class="card-body" style='display:flex;flex-direction:row'>
+                    <i class="fas fa-file fa-3x" aria-hidden="true"></i>
+                    <p class="card-text" style='margin:5px;'>
                             {{object.description}}
                     </p>
                 </div>
             </div>
             <hr />
             <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Participants</h4>
-                    <ul>
+                <div class="card-body" style='display:flex;flex-direction:row'>
+                    <i class="fas fa-user fa-3x   "></i>
+                    <ul >
                         {% if object.participants.all.count == 0 %}
                         <li>No participants for this event</li>
                         {% endif %}
                         {% for p in object.participants.all %}
-                        <li>{{p}}</li>
+                        <li><a href="{{p.link}}">{{p}}</a></li>
                         {% endfor %}
                     </ul>
                 </div>

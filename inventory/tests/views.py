@@ -33,8 +33,8 @@ from inventory.views import (InventoryReportPDFView,
         
 
 class CommonViewTests(TestCase):
-    fixtures = ['accounts.json','employees.json','common.json', 
-    'invoicing.json','journals.json', 'inventory.json']
+    fixtures = ['accounts.json','employees.json','common.json', 'inventory.json', 
+    'invoicing.json','journals.json']
 
     @classmethod
     def setUpClass(cls):
@@ -94,6 +94,7 @@ class CommonViewTests(TestCase):
                 'inventory_check_date': 1,
                 'use_warehousing_model': True,
                 'use_storage_media_model': True,
+                'default_warehouse': 1
             })
         self.assertEqual(resp.status_code,  302)
 
@@ -172,8 +173,8 @@ class CommonViewTests(TestCase):
 
 
 class InventoryManagementViewTests(TestCase):
-    fixtures = ['accounts.json','employees.json','common.json', 
-    'invoicing.json','journals.json', 'inventory.json']
+    fixtures = ['accounts.json','employees.json','common.json', 'inventory.json', 
+    'invoicing.json','journals.json']
 
     @classmethod
     def setUpClass(cls):
@@ -291,8 +292,8 @@ class InventoryManagementViewTests(TestCase):
 
 
 class ItemViewTests(TestCase):
-    fixtures = ['accounts.json','employees.json','common.json', 
-    'invoicing.json','journals.json', 'inventory.json']
+    fixtures = ['accounts.json','employees.json','common.json',  'inventory.json',
+    'invoicing.json','journals.json']
 
     @classmethod
     def setUpClass(cls):
@@ -504,8 +505,8 @@ class ItemViewTests(TestCase):
 
 
 class OrderViewTests(TestCase):
-    fixtures = ['accounts.json','employees.json','common.json', 
-    'invoicing.json','journals.json', 'inventory.json']
+    fixtures = ['accounts.json','employees.json','common.json',  'inventory.json',
+    'invoicing.json','journals.json']
 
     @classmethod
     def setUpClass(cls):
@@ -716,8 +717,8 @@ class OrderViewTests(TestCase):
 
 
 class SupplierViewTests(TestCase):
-    fixtures = ['accounts.json','employees.json','common.json', 
-    'invoicing.json','journals.json', 'inventory.json']
+    fixtures = ['accounts.json','employees.json','common.json', 'inventory.json',
+    'invoicing.json','journals.json']
 
     @classmethod
     def setUpClass(cls):
@@ -825,8 +826,8 @@ class SupplierViewTests(TestCase):
 
 
 class WarehouseViewTests(TestCase):
-    fixtures = ['accounts.json','employees.json','common.json', 
-    'invoicing.json','journals.json', 'inventory.json']
+    fixtures = ['accounts.json','employees.json','common.json', 'inventory.json',
+    'invoicing.json','journals.json']
 
     @classmethod
     def setUpClass(cls):
@@ -931,8 +932,8 @@ class WarehouseViewTests(TestCase):
 
 
 class ReportViewTests(TestCase):
-    fixtures = ['accounts.json','employees.json','common.json', 
-    'invoicing.json','journals.json', 'inventory.json']
+    fixtures = ['accounts.json','employees.json','common.json', 'inventory.json',
+    'invoicing.json','journals.json']
 
     @classmethod
     def setUpClass(cls):
@@ -1024,8 +1025,8 @@ class ReportViewTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
 class TransferViewTests(TestCase):
-    fixtures = ['accounts.json','employees.json','common.json', 
-    'invoicing.json','journals.json', 'inventory.json']
+    fixtures = ['accounts.json','employees.json','common.json',  'inventory.json',
+    'invoicing.json','journals.json']
 
     @classmethod
     def setUpClass(cls):
@@ -1127,7 +1128,8 @@ class ConfigWizardTests(TestCase):
             '0-inventory_check_date': 5,
             '0-inventory_check_frequency': 1,
             '0-default_product_sales_pricing_method': 1,
-            '0-inventory_valuation_method': 1
+            '0-inventory_valuation_method': 1,
+            '0-default_warehouse': 1
         }
 
         employee_data = {
@@ -1168,7 +1170,6 @@ class ConfigWizardTests(TestCase):
                     data=data)
 
                 if step == len(data_list):
-
                     self.assertEqual(resp.status_code, 302)
                 else:
                     self.assertEqual(resp.status_code, 200)

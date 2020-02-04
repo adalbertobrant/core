@@ -29,9 +29,9 @@ class Card extends Component{
                     }}><i  className="fa fa-ellipsis-h" ></i></span>
                     <div className={styles.cardOptions} style={{
                         display: this.state.showOptions ? 'block' :"none"}}>
-                        <a className='dropdown-item' href={"/planner/event-detail/" + this.props.id}> <i className="fas fa-file"></i> View</a>
-                        <a className='dropdown-item' href={"/planner/event-update/" + this.props.id}> <i className="fas fa-edit"></i> Edit</a>
-                        <a className='dropdown-item' href={"/planner/event-delete/" + this.props.id}> <i className="fas fa-trash"></i> Delete</a>
+                        <a target="_top" className='dropdown-item' href={"/planner/event-detail/" + this.props.id}> <i className="fas fa-file"></i> View</a>
+                        <a target="_top" className='dropdown-item' href={"/planner/event-update/" + this.props.id}> <i className="fas fa-edit"></i> Edit</a>
+                        <a target="_top" className='dropdown-item' href={"/planner/event-delete/" + this.props.id}> <i className="fas fa-trash"></i> Delete</a>
                             
                     </div>
                 </div>

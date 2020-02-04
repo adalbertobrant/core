@@ -37,17 +37,6 @@ class LicenseMiddlewareTest(TestCase):
         self.assertRedirects(resp, '/base/license-error-page')
         shutil.move('../license.json', '.')
 
-    def test_no_debug_license_middleware(self):
-        latrom.settings.DEBUG=False
-        self.config.verification_task_id = ""
-        self.config.save()
-        resp = self.client.get('/base/workflow')
-        self.config = GlobalConfig.objects.first()
-        self.assertTrue(self.config.verification_task_id != "")
-        self.config.verification_task_id = ""
-        self.config.save()
-        latrom.settings.DEBUG = True
-
     def test_no_debug_license_middleware_with_task_id(self):
         latrom.settings.DEBUG=False
         self.config.verification_task_id = "28374hur98fwhf9832"

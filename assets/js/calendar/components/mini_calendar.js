@@ -1,44 +1,28 @@
 import React, {Component} from 'react';
-import axios from 'axios'
 import Radium from 'radium';
 import styles from './mini_calendar.css';
 import {showCalendar} from '../calendar'
-
-
+import Context from '../container/provider'
 
 class  MiniCalendar extends Component{
     state = {
         weeks: []
     }
-
     
     componentDidUpdate(prevProps, prevState){
         if(this.props.year !== prevProps.year || prevProps.month !== this.props.month){
-            console.log('updated')
             const data = showCalendar(this.props.month, this.props.year)
-            const dateString = new Date(this.props.year, this.props.month).toDateString()
-            const dateArray = dateString.split(' ')
-            const period = dateArray[1] + ' ' + dateArray[3]
             this.setState({
-                weeks: data,
-                period: period
+                weeks: data
                 })
-            // axios({
-            //     method: 'GET',
-            //     url: `/planner/api/calendar/month/${this.props.year}/${this.props.month}`
-            // }).then(res =>{
-            //     this.setState({
-            //         weeks: res.data.weeks,
-            //         period: res.data.period_string
-            //     })
-            // })
         }
     }
     
     render(){
         return(
-            <div>
-            <h4 className={styles.title}>{this.state.period}</h4>
+            <Context.Consumer>{context=>(
+                <div className={styles.calendar}>
+            <h4 className={styles.title}>{this.props.monthString}</h4>
             <table className={styles.miniTable}>
                 <tbody>
                     <tr>
@@ -66,12 +50,12 @@ class  MiniCalendar extends Component{
                                         style={{
                                             textDecoration: "none",
                                         color: (i==0 && day.day > 7) || (i > 3 && day.day < 10)
-                                        ? '#23374d' 
+                                        ? context.primary
                                         : 'white' ,
                                         width:" 100%",
                                         display: 'inline-block',
                                         ":hover": {
-                                            color: '#23374d',
+                                            color: context.primary,
                                             backgroundColor: 'white'
                                         }
                                     }}>{day.day}</a></td>
@@ -81,6 +65,7 @@ class  MiniCalendar extends Component{
                 </tbody>
             </table>
             </div>
+            )}</Context.Consumer>
         );
     }
 }

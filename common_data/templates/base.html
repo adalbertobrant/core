@@ -48,7 +48,9 @@
        $(".ui-date-picker").datepicker({
         changeYear: true,
         changeMonth: true,
-        dateFormat: 'yy-mm-dd' 
+        dateFormat: 'yy-mm-dd',
+        minDate: new Date(1955, 1,1),
+        yearRange: "1955:2035"
         });
     
     
