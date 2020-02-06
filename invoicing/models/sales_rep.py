@@ -16,7 +16,7 @@ class SalesRepresentative(SoftDeletionModel):
     amount sold exclusive of tax. Used in commission calculation
     '''
     employee = models.OneToOneField('employees.Employee', 
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         limit_choices_to=Q(active=True),
         null=True,)
     number = models.AutoField(primary_key=True)

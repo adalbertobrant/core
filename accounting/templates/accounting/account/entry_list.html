@@ -11,6 +11,8 @@
         {% for t in object_list %}
             <tr>
                 <td><a 
+                    style='padding: 8px;border-radius:4px;min-width:32px;display:inline-block;'
+                    class='primary text-white'
                     href="{% url 'accounting:entry-detail' pk=t.entry.id %}"
                     target="_parent" >
                     {{t.entry.id}}</a></td>

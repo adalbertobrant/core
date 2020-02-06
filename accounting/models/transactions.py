@@ -64,7 +64,6 @@ class Debit(Transaction):
             else: #income, liability, equity
                 self.account.decrement(self.amount)
 
-
 class Credit(Transaction):
     '''
     Credit

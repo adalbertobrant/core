@@ -10,9 +10,6 @@
                 <ul class='navbar-nav dashboard-nav'>
                     <li class="nav-item"><i class=" fas fa-book"></i> Journal</li>
                     <li class="list-group-item hvr-grow">
-                        <a href="{% url 'accounting:create-journal' %}">Create Journal</a>
-                    </li>
-                    <li class="list-group-item hvr-grow">
                         <a href="{% url 'accounting:compound-entry' %}">Create Journal Entry</a>
                     </li>
                     <li class="list-group-item hvr-grow">
@@ -23,9 +20,9 @@
                         <li class="list-group-item hvr-grow">
                                         <a href="{% url 'accounting:account-list' %}">View Chart of Accounts</a>
                                     </li>
-                    <li class="list-group-item hvr-grow">
+                    {% comment %} <li class="list-group-item hvr-grow">
                         <a href="{% url 'accounting:transfer' %}">Transfer Between Accounts</a>
-                    </li>
+                    </li> {% endcomment %}
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'accounting:asset-list' %}">Manage Assets</a>
                     </li>

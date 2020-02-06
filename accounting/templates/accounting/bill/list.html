@@ -27,7 +27,9 @@
                 </button>
         <div class="dropdown-menu" aria-labelledby="triggerId">
             <a class="dropdown-item" href="{% url 'accounting:bill-details' pk=bill.pk %}"><i class="fas fa-file"></i> Detail</a>
-            <a class="dropdown-item " href="{% url 'accounting:update-bill' pk=bill.pk %}"> <i class='fas fa-edit'></i> Update</a>        
+            <a class="dropdown-item " href="{% url 'accounting:update-bill' pk=bill.pk %}"> <i class='fas fa-edit'></i> Update</a>
+            <a href="{% url 'accounting:create-bill-payment' pk=bill.pk %}" class="dropdown-item"><i class="fas fa-edit    "></i>  Create Payment</a>
+           <a href="{% url 'accounting:bill-payments-details' pk=bill.pk %}" class="dropdown-item"><i class="fa fa-list-ul" aria-hidden="true"></i> Manage Payments</a>        
         </div>
     </div></td>
 </tr>

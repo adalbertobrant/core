@@ -35,6 +35,7 @@ import pygal
 import openpyxl
 import csv
 from common_data.utilities.plotting import CustomStyle
+from inventory.models import InventoryScrappingRecord, InventoryCheck
 
 
 CREATE_TEMPLATE = os.path.join('common_data', 'crispy_create_template.html')
@@ -47,6 +48,13 @@ class Dashboard( TemplateView):
         if config is None:
             config = models.AccountingSettings.objects.create(is_configured = False)
         if config.is_configured:
+            #check if inventory checks or scrapping could have unbalanced accounts.
+            delta = datetime.date.today() - datetime.timedelta(days=30)
+            if InventoryScrappingRecord.objects.filter(date__gte=delta).exists() or \
+                    InventoryCheck.objects.filter(date__gte=delta):
+                messages.info(self.request, """A recent inventory check or a inventory scrapping record
+                                               could have unbalanced accounts.""")
+
             return super().get(*args, **kwargs)
         else:
             return HttpResponseRedirect(reverse_lazy('accounting:config-wizard'))
@@ -323,12 +331,13 @@ class DirectPaymentList( ContextMixin,PaginationMixin, FilterView):
     template_name = os.path.join('accounting', 'direct_payment_list.html')
     paginate_by = 20
     model = models.JournalEntry
-    filterset_class = filters.EntryFilter
+    filterset_class = filters.DirectPaymentFilter
     
     def get_queryset(self):
-        return models.JournalEntry.objects.filter(
-           journal = models.Journal.objects.get(pk=4)) 
-    
+        return models.Credit.objects.filter(
+            entry__journal=models.Journal.objects.get(pk=4), 
+            account__type='asset').distinct()
+            
 
 #############################################################
 #                    Journal Views                         #
@@ -369,7 +378,6 @@ class JournalListView( ContextMixin, PaginationMixin, FilterView):
     def get_queryset(self):
         return models.Journal.objects.all().order_by('name')
 
-    
 
 #########################################################
 #                  Assets and Expenses                  #
@@ -587,7 +595,13 @@ class BillCreateView(ContextMixin, CreateView):
     template_name =os.path.join('accounting', 'bill','create.html')
     extra_context = {
         'title': 'Create Bill',
-        'description': 'Record money owed vendors for goods or services'
+        'description': 'Record money owed vendors for goods or services',
+        'related_links': [
+            {
+                'url': reverse_lazy('inventory:supplier-create'),
+                'name': 'Create Vendor',
+            }
+        ]
     }
     form_class = forms.BillForm
 
@@ -823,7 +837,7 @@ class ImportAccountsView(ContextMixin, FormView):
             ]
             wb = openpyxl.load_workbook(file.file)
             try:
-                ws = wb[form.cleaned_data['sheet_name']]
+                ws = wb.get_sheet_by_name(form.cleaned_data['sheet_name'])
             except:
                 ws = wb.active
             for row in ws.iter_rows(min_row=form.cleaned_data['start_row'],
@@ -888,7 +902,7 @@ class ImportTransactionView(ContextMixin, FormView):
             cols = fields.values()
             wb = openpyxl.load_workbook(file.file)
             try:
-                ws = wb[form.cleaned_data['sheet_name']]
+                ws = wb.get_sheet_by_name(form.cleaned_data['sheet_name'])
             except:
                 ws = wb.active
             for row in ws.iter_rows(min_row=form.cleaned_data['start_row'],
@@ -1006,7 +1020,7 @@ class ImportExpensesView(ContextMixin, FormView):
             cols = fields.values()
             wb = openpyxl.load_workbook(file.file)
             try:
-                ws = wb[form.cleaned_data['sheet_name']]
+                ws = wb.get_sheet_by_name(form.cleaned_data['sheet_name'])
             except:
                 ws = wb.active
             for row in ws.iter_rows(min_row=form.cleaned_data['start_row'],

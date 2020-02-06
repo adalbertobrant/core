@@ -16,7 +16,9 @@ Expense Details
                 <div class="card-body ">
                     <h3 class="card-title">{{object.amount|active_currency}}</h3>
                     <p class="card-text">{{object.date}}</p>
-                    <p class="card-text">Account Debited: {{object.debit_account}}</p> 
+                    <p class="card-text"> <i class="fas fa-user    "></i> {{object.recorded_by.employee}}</p>
+                    <p class="card-text">Account: <a href=" {% url 'accounting:account-detail' pk=object.debit_account.pk %} ">{{object.debit_account}}</a></p> 
+
                     <p class="card-text">Category: {{object.category_string}}</p>
                 </div>
             </div>

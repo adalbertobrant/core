@@ -37,12 +37,12 @@
                                         </td>
                                         <td>{{t.entry.memo}}</td>
                                         <td>{{t.entry.date}}</td>
-                                        <td>{{t.amount}}</td>
+                                        <td>{% if t.is_credit %}{{t.amount}} {% else %} ({{t.amount}}){% endif %} </td>
                                     </tr>
                                 {% endfor %}
                                 <tr>
                                     <th colspan="4">Total</th>
-                                    <th>{{vendor.total}}</th>
+                                    <th style="text-align:right;">{{vendor.total}}</th>
                                 </tr>
 
                             

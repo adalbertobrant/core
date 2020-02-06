@@ -72,7 +72,8 @@ class BalanceSheet(ConfigMixin,TemplateView):
         current_liabilities_total = sum(
             [i.control_balance for i in current_liabilities]
         )
-
+        #carriage inwards is an asset in the balance sheet
+        #https://www.accountingtools.com/articles/what-are-carriage-inwards-and-carriage-outwards.html
         working_capital =  current_assets_total - current_liabilities_total
         
         #LONG TERM LIABILITIES

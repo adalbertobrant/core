@@ -25,7 +25,7 @@
     {% if '2' in wizard.steps.all %}
     <li class="{% if wizard.steps.current == '2' %}li-focused{% endif%}">Add Inventory Controller</li>
     {% endif %}
-    <li class="{% if wizard.steps.current == '3' %}li-focused{% endif%}">Create Warehouse</li>
+    {% comment %} <li class="{% if wizard.steps.current == '3' %}li-focused{% endif%}">Create Warehouse</li> {% endcomment %}
     <li class="{% if wizard.steps.current == '4' %}li-focused{% endif%}">Make First Vendor</li>
 </ul>
 </div>

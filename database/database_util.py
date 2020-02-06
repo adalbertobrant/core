@@ -156,11 +156,7 @@ def create_new_database():
     # migrate database
     subprocess.run(['python', 'manage.py', 'migrate'])
     # install fixtures
-    subprocess.run(['python', 'manage.py', 'loaddata', 'accounts.json', 
-                    'journals.json', 'settings.json',
-                    'common.json', 'employees.json', 'inventory.json', 
-                    'invoicing.json', 'planner.json', 
-                    'data.json'])# obtained from the data dump
+    subprocess.run(['python', 'manage.py', 'loaddata', 'accounts.json', 'journals.json', 'settings.json','common.json', 'employees.json', 'inventory.json', 'invoicing.json', 'planner.json', 'data.json'])# obtained from the data dump
 
     print("Database created successfully.")
     if os.path.exists('data.json'):

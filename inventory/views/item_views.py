@@ -5,6 +5,7 @@ import json
 import os
 import urllib
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpResponseRedirect
@@ -31,7 +32,7 @@ from .common import CREATE_TEMPLATE
 import openpyxl
 import csv
 from invoicing.models import SalesConfig
-from accounting.models import BillLine, Expense, BillPayment, Account
+from accounting.models import BillLine, Expense, BillPayment, Account, AccountingSettings
 
 class ProductAPIView(ModelViewSet):
     queryset = models.InventoryItem.objects.filter(type=0,active=True)
@@ -352,6 +353,15 @@ class EquipmentandConsumablesPurchaseView(ContextMixin, CreateView):
         'title': 'Record Purchase of Equipment and Consumables'
     }
 
+    def get(self, *args, **kwargs):
+        resp = super().get(*args, **kwargs)
+        settings = AccountingSettings.objects.first()
+        if not settings or not settings.default_bookkeeper:
+            messages.info(self.request, '''To create bills in inventory, please configure a 
+            bookkeeper in the accounting module settings.''')
+            return HttpResponseRedirect(reverse_lazy('inventory:home'))
+        return resp
+
     def form_valid(self, form):
         resp = super().form_valid(form)
 
@@ -379,6 +389,7 @@ class EquipmentandConsumablesPurchaseView(ContextMixin, CreateView):
             item.save()
             warehouse.add_item(item, line['quantity'])
 
+        self.object.create_entry()
         if form.cleaned_data['paid_in_full']:
             pmt = BillPayment.objects.create(
                 date=self.object.date,

@@ -312,6 +312,11 @@ class OrderItem(models.Model):
 
     def _return_to_vendor(self, n):
         self.order.ship_to.decrement_item(self.item, n)
+        self.received -= n
+        self.save()
+        self.order.received_to_date = self.order.received_total
+        self.order.save
+
         
 
     @property

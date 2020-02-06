@@ -104,7 +104,7 @@ def create_account_models(cls):
     )
     if AccountingSettings.objects.all().count() == 0:
         cls.config = AccountingSettings.objects.create(
-            start_of_financial_year = TODAY
+            # start_of_financial_year = TODAY
             )
     else:
         cls.config = AccountingSettings.objects.first()

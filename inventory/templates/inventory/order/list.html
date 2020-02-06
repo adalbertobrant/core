@@ -22,7 +22,7 @@
     <td>{{order.status}}</td>
     <td>{{order.supplier}}</td>
     <td>{{order.orderitem_set.all.count}}</td>
-    <td>{{order.total}}</td>
+    <td>{{order.total|floatformat:2}}</td>
     <td>
         <div class="dropdown">
             <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"

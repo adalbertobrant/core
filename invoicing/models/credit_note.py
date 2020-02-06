@@ -45,7 +45,7 @@ class CreditNote(models.Model):
 
     @property
     def tax_credit(self):
-        return sum([(i.line.tax_) \
+        return sum([(i.line.tax_ *( D(i.quantity )/ i.line.product.quantity)) \
             for i in self.creditnoteline_set.all() if i.line and i.line.tax] ,0)
         
     @property

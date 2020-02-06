@@ -227,6 +227,10 @@ class Bill(models.Model):
         return sum([i.expense.amount for i in self.billline_set.all()])
 
     @property
+    def total_due(self):
+        return self.total - self.total_payments
+
+    @property
     def total_payments(self):
         return sum([i.amount for i in self.billpayment_set.all()])
 

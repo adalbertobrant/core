@@ -79,3 +79,10 @@ class EntryFilter(django_filters.FilterSet):
         fields = {
             'date': ['exact'],
         }
+
+class DirectPaymentFilter(django_filters.FilterSet):
+    class Meta:
+        model = models.Debit
+        fields = {
+            'entry__date': ['exact'],
+        }

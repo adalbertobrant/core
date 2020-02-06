@@ -116,7 +116,7 @@ class CommonViewTests(TestCase):
     def test_post_config_page(self):
         resp = self.client.post(reverse('accounting:config', kwargs={'pk': 1}),
             data={
-                'start_of_financial_year': TODAY,
+                # 'start_of_financial_year': TODAY,
                 'currency_exchange_table': self.currency_table.pk,
                 'default_accounting_period': 0,
                 'active_currency': 1,
@@ -693,7 +693,7 @@ class AccountingWizardTests(TestCase):
 
     def test_accounting_wizard(self):
         config_data = {
-            '0-start_of_financial_year': datetime.date.today(),
+            # '0-start_of_financial_year': datetime.date.today(),
             '0-default_accounting_period': 0,
             '0-currency_exchange_table': 1,
             '0-active_currency': 1,

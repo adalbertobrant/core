@@ -35,7 +35,7 @@
             <td>{{line.item}}</td>
             <td>{{line.quantity}}</td>
             <td>{{line.note}}</td>
-            <td>{{line.scrapped_value}}</td>
+            <td>{{line.scrapped_value |floatformat:2}}</td>
         </tr>
         {% endfor %}
         <tr style="height:100%">
@@ -48,7 +48,7 @@
     <tfoot>
         <tr>
             <td colspan="3"><b>Total:</b></td>
-            <td>{{object.scrapping_value}}</td>
+            <td>{{object.scrapping_value|floatformat:2}}</td>
         </tr>
     </tfoot>
 </table>

@@ -14,7 +14,7 @@
 <tr>
     <td>{{item.date}}</td>
     <td>{{item.inventoryscrappingrecordline_set.all.count}}</td>
-    <td>{{item.scrapping_value}}</td>
+    <td>{{item.scrapping_value |floatformat:2}}</td>
     <td>
         <a  href="{% url 'inventory:scrapping-report' pk=item.pk %}">
                     <i class="fas fa-file-alt fa-2x"></i> 

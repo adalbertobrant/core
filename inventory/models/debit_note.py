@@ -84,3 +84,5 @@ class DebitNoteLine(models.Model):
     @property
     def returned_value(self):
         return self.item.order_price * D(self.quantity)
+
+    

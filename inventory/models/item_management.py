@@ -84,8 +84,8 @@ class StockReceipt(models.Model):
         return reverse('inventory:goods-received', kwargs={"pk": self.pk})
 
 class StockReceiptLine(models.Model):
-    receipt = models.ForeignKey('inventory.StockReceipt'
-        ,on_delete=models.CASCADE)
+    receipt = models.ForeignKey('inventory.StockReceipt',
+        on_delete=models.CASCADE)
     line = models.ForeignKey('inventory.OrderItem', on_delete=models.CASCADE)
     quantity = models.FloatField(default=0.0)
 

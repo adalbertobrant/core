@@ -36,8 +36,8 @@ class Dashboard(ContextMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         config = models.EmployeesSettings.objects.first()
         if config is None:
-
-            config = models.EmployeesSettings.objects.create(is_configured = False)
+            #TODO if implementing payroll set this to true
+            config = models.EmployeesSettings.objects.create(is_configured = True)
         
         if config.is_configured:
             ungraded = models.Employee.objects.filter(pay_grade__isnull=True).count()

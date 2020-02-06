@@ -7,25 +7,26 @@ Works Request
 
 {% endblock actions %}
 {% block content %}
+<br>
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
             <div class="card-deck">            
-                <div class="card">
+                <div class="card accent-lg shadow">
                     <div class="card-body">
-                        <h4 class="card-title">Details</h4>
-                        <p class="card-text">Services: {{object.service}}</p>
-                        <p class="card-text">Date Created: {{object.created}}</p>
+                        <h4 class="card-title">{{object.service}}</h4>
+                        <p class="card-text">{{object.created}}</p>
                         <p class="card-text">Created By: {{object.created_by}}</p>
-                        <p class="card-text">Request Status: {{object.status}}</p>
+                        <p class="card-text">Status: {{object.status}}</p>
 
-                        <p class="card-text">Description: {{object.description}}</p>
+                        <hr>
+                        <p class="card-text">{{object.description}}</p>
+                        <br>
                         {% if object.invoice %}
-                        <h5>Invoice Details</h5>
-                        <p class="card-text">Invoice Number: {{object.invoice.invoice_number |stringformat:"06d"}}</p>
-                        <p class="card-text">Invoice Due Date: {{object.invoice.due}}</p>
-                        <p class="card-text">Customer: {{object.invoice.customer}}</p>
-                        <p class="card-text">Sales Representative: {{object.invoice.salesperson}}</p>
+                        <h5><a href="{% url 'invoicing:invoice-details' pk=object.invoice.pk %} ">Invoice #{{object.invoice.invoice_number |stringformat:"06d"}}</a></h5>
+                        <p class="card-text">Due Date: {{object.invoice.due}}</p>
+                        <p class="card-text">Customer: <a href=" {% url 'invoicing:customer-details' pk=object.invoice.customer.pk %} ">{{object.invoice.customer}}</a></p>
+                        <p class="card-text">Sales Representative: <a href=" {% url 'employees:employee-detail' pk=object.invoice.salesperson.employee.pk %} ">{{object.invoice.salesperson}}</a></p>
                         {% endif %}
 
 

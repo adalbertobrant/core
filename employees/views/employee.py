@@ -353,7 +353,7 @@ class ImportEmployeesView(ContextMixin, FormView):
             ]
             wb = openpyxl.load_workbook(file.file)
             try:
-                ws = wb[form.cleaned_data['sheet_name']]
+                ws = wb.get_sheet_by_name(form.cleaned_data['sheet_name'])
             except:
                 ws = wb.active
 

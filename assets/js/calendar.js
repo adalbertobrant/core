@@ -9,62 +9,7 @@ const calendar = document.getElementById('calendar-root');
 const timeline = document.getElementById('agenda-timeline');
 const participantSelect = document.getElementById('participant-select');
 
-const config = {
-    primaryColor: '#23374d',
-    accentColor: '#007bff',
-    root: 'calendar-root',
-    eventLink: "/planner/event-create/",
-    showMonth: true,
-    showWeek: true,
-    showDay: true,
-    offsetTop: document.getElementById('title').offsetHeight,
-    monthHook: function(month, year, component){
-        axios({
-            method: 'GET',
-            url: `/planner/api/calendar/month/${year}/${month}`
-        }).then(res =>{
-            component.setState({
-                events: res.data.map(evt =>({
-                    id: evt.id,
-                    date: new Date(evt.date),
-                    title: evt.title
-                }))
-            })
-        })
-    },
-    weekHook: function(day, month, year, component){
-        axios({
-            method: 'GET',
-            url: `/planner/api/calendar/week/${year}/${month}/${day}`
-        }).then(res =>{
-            component.setState({
-                events: res.data.map(evt =>({
-                    id: evt.id,
-                    date: new Date(evt.date),
-                    title: evt.title,
-                    start:evt.start,
-                    end: evt.end
-                }))
-            })
-        })
-    },
-    dayHook: function(day, month, year, component){
-        axios({
-            method: 'GET',
-            url: `/planner/api/calendar/day/${year}/${month}/${day}`
-        }).then(res =>{
-            component.setState({
-                events: res.data.map(evt =>({
-                    id: evt.id,
-                    date: new Date(evt.date),
-                    title: evt.title,
-                    start:evt.start,
-                    end: evt.end
-                }))
-            })
-        })
-    }
-};
+
 
 function initCalendar(config){
     ReactDOM.render(<CalendarApp
@@ -82,6 +27,63 @@ function initCalendar(config){
 
 
 if(calendar){
+    const config = {
+        primaryColor: '#23374d',
+        accentColor: '#007bff',
+        root: 'calendar-root',
+        eventLink: "/planner/event-create/",
+        showMonth: true,
+        showWeek: true,
+        showDay: true,
+        offsetTop: document.getElementById('title').offsetHeight,
+        monthHook: function(month, year, component){
+            axios({
+                method: 'GET',
+                url: `/planner/api/calendar/month/${year}/${month}`
+            }).then(res =>{
+                component.setState({
+                    events: res.data.map(evt =>({
+                        id: evt.id,
+                        date: new Date(evt.date),
+                        title: evt.title
+                    }))
+                })
+            })
+        },
+        weekHook: function(day, month, year, component){
+            axios({
+                method: 'GET',
+                url: `/planner/api/calendar/week/${year}/${month}/${day}`
+            }).then(res =>{
+                component.setState({
+                    events: res.data.map(evt =>({
+                        id: evt.id,
+                        date: new Date(evt.date),
+                        title: evt.title,
+                        start:evt.start,
+                        end: evt.end
+                    }))
+                })
+            })
+        },
+        dayHook: function(day, month, year, component){
+            axios({
+                method: 'GET',
+                url: `/planner/api/calendar/day/${year}/${month}/${day}`
+            }).then(res =>{
+                component.setState({
+                    events: res.data.map(evt =>({
+                        id: evt.id,
+                        date: new Date(evt.date),
+                        title: evt.title,
+                        start:evt.start,
+                        end: evt.end
+                    }))
+                })
+            })
+        }
+    };
+
     initCalendar(config)
 }else if(participantSelect){
     ReactDOM.render(<ParticipantSelectWidget />, participantSelect);

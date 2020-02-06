@@ -39,6 +39,9 @@ Employee Details
                         <h4 class="card-title">{{object.full_name}}</h4>
                     <div class="card-body">
                         <p class="card-text">Username : {{object.user.username}}</p>
+                        {% if object.user.is_superuser %}
+                            <p>This user has superuser privileges</p>
+                        {% endif %}
                         <p class="card-text"><i class="fa fa-at" aria-hidden="true"></i> <a href="{% url 'messaging:create-message' %}">{{object.email}}</a>
                         </p>
                         <p class="card-text"><i class="fa fa-phone" aria-hidden="true"></i> {{object.phone}}</p>

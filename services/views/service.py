@@ -128,3 +128,10 @@ class ConfigWizard(ConfigWizardBase):
 
     config_class = models.ServicesSettings
     success_url = reverse_lazy('services:dashboard')
+
+    def get_form_initial(self, step):
+        initial = super().get_form_initial(step)
+        if step == '0':
+            initial.update({'frequency': 'once'})
+
+        return initial

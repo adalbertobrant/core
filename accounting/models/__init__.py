@@ -21,7 +21,7 @@ class AccountingSettings(SingletonModel):
         (1, "Monthly"),
         (2, "Weekly")
     ]
-    start_of_financial_year = models.DateField()
+    # start_of_financial_year = models.DateField()
     default_accounting_period = models.PositiveSmallIntegerField(
         choices=ACCOUNTING_PERIODS, default=1)
     currency_exchange_table = models.ForeignKey(
@@ -39,30 +39,30 @@ class AccountingSettings(SingletonModel):
     active_currency = models.ForeignKey('accounting.currency', 
         on_delete=models.SET_NULL, null=True)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.set_financial_year_reminder()
+    # def save(self, *args, **kwargs):
+    #     super().save(*args, **kwargs)
+    #     self.set_financial_year_reminder()
 
-    def set_financial_year_reminder(self):
-        if Event.objects.filter(
-                date=self.start_of_financial_year,
-                label__contains='financial year').exists():
-            return
-        evt = Event.objects.create(
-            label='Start of financial year',
-            description='Remember to close the books for the current financial' 
-                'year in preparation for the new year.',
-            date=self.start_of_financial_year,
-            repeat=4, 
-            repeat_active=True,
-            icon='calendar',
-            reminder=datetime.timedelta(days=30),
-            end_time="17:00:00"
-        )
+    # def set_financial_year_reminder(self):
+    #     if Event.objects.filter(
+    #             date=self.start_of_financial_year,
+    #             label__contains='financial year').exists():
+    #         return
+    #     evt = Event.objects.create(
+    #         label='Start of financial year',
+    #         description='Remember to close the books for the current financial' 
+    #             'year in preparation for the new year.',
+    #         date=self.start_of_financial_year,
+    #         repeat=4, 
+    #         repeat_active=True,
+    #         icon='calendar',
+    #         reminder=datetime.timedelta(days=30),
+    #         end_time="17:00:00"
+    #     )
 
-        if not self.default_bookkeeper:
-            return 
-        evt.add_participant('employee', self.default_bookkeeper.employee.pk)
+    #     if not self.default_bookkeeper:
+    #         return 
+    #     evt.add_participant('employee', self.default_bookkeeper.employee.pk)
 
 class Bookkeeper(SoftDeletionModel):
     '''
@@ -70,7 +70,7 @@ class Bookkeeper(SoftDeletionModel):
     Model that gives employees access to the bookkeeping function of the 
     software such as order creation and the like.'''
     employee = models.OneToOneField('employees.Employee', 
-        on_delete=models.SET_NULL, null=True, default=1, limit_choices_to=Q(user__isnull=False))
+        on_delete=models.CASCADE, null=True, default=1, limit_choices_to=Q(user__isnull=False))
     can_create_journals = models.BooleanField(default=False, blank=True)
     can_create_orders_and_invoices = models.BooleanField(default=False, blank=True)
     can_record_expenses = models.BooleanField(default=False, blank=True)
@@ -78,8 +78,9 @@ class Bookkeeper(SoftDeletionModel):
 
 
     def __str__(self):
-        return self.employee.full_name
-
+        if self.employee:
+            return self.employee.full_name
+        return ''
 
 class Tax(SoftDeletionModel):
     '''

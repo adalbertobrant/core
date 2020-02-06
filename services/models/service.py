@@ -41,16 +41,16 @@ class Service(models.Model):
 
     @property
     def invoices(self):
-        return [i.invoiceline.invoice for i in self.servicelinecomponent_set.all()]
+        return [i.invoiceline.invoice for i in self.servicelinecomponent_set.filter(invoiceline__isnull=False)]
 
     @property
     def revenue(self):
-        return sum([i.nominal_price for i in self.servicelinecomponent_set.all()], 0)
+        return sum([i.nominal_price for i in self.servicelinecomponent_set.filter(invoiceline__isnull=False)], 0)
 
     @property
     def average_revenue(self):
         if len(self.invoices) > 0:
-            return sum([i.nominal_price for i in self.servicelinecomponent_set.all()], D(0)) / \
+            return sum([i.nominal_price for i in self.servicelinecomponent_set.filter(invoiceline__isnull=False)], D(0)) / \
                 D(len(self.invoices))
         return D(0)
 
@@ -81,7 +81,7 @@ class ServicePerson(SoftDeletionModel):
     employee = models.OneToOneField('employees.Employee', 
         null=True,
         limit_choices_to=Q(active=True),
-        on_delete=models.SET_NULL,)
+        on_delete=models.CASCADE)
     is_manager = models.BooleanField(default=False)
     can_authorize_equipment_requisitions = models.BooleanField(default=False)
     can_authorize_consumables_requisitions = models.BooleanField(default=False)

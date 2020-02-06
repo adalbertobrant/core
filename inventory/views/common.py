@@ -58,7 +58,6 @@ class InventoryControllerCreateView(ContextMixin, CreateView):
             }]))
     }
 
-    
 class InventoryControllerUpdateView(ContextMixin, UpdateView):
     form_class = forms.InventoryControllerUpdateForm
     template_name = CREATE_TEMPLATE
@@ -127,7 +126,7 @@ class AsyncDashboard(ContextMixin, TemplateView):
 
         context['outstanding_orders'] = len([ i for i in models.Order.objects.filter(status="order") if i.payment_status != "paid"])
 
-        context['money_owed'] = sum([i.total_due for i in models.Order.objects.filter(status="order")])
+        context['money_owed'] = sum([i.total_due for i in models.Order.objects.filter(status="order") if i.received_to_date > 0])
 
         context['vendors'] = models.Supplier.objects.filter(active=True).count()
         context['warehouses'] = models.WareHouse.objects.all().count()

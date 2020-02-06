@@ -244,11 +244,16 @@ class EmployeeForm(forms.ModelForm, BootstrapMixin):
     date_of_birth = forms.DateField(required=False)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        user_string = ''
+        if models.Employee.objects.filter(active=True).count() == 0:
+            print('called')
+            user_string = 'Please note that the employee created with this form is linked with the superuser account.'
         
         self.helper = FormHelper()
         self.helper.layout = Layout(
             TabHolder(
                 Tab('Basic', 
+                    HTML(f'<br/><p>{user_string}</p>'),
                     Row(
                         Column('first_name', css_class='form-group col-6'),
                         Column('last_name', css_class='form-group col-6'),
@@ -276,13 +281,10 @@ class EmployeeForm(forms.ModelForm, BootstrapMixin):
     def save(self, *args, **kwargs):
         '''The very first employee created in the application is automatically assigned a user.'''
         resp = super().save(*args, **kwargs)
-        if models.Employee.objects.all().count() == 1 and not \
-                User.objects.filter(username=self.instance.first_name).exists():
-            user = User.objects.create(
-                username=self.instance.first_name,
-                password="1234"
-            )
-            self.instance.user = user
+        if models.Employee.objects.filter(active=True).count() == 1 and not \
+                    models.Employee.objects.first().user:
+
+            self.instance.user = User.objects.first()
             self.instance.save()
 
         return resp
