@@ -188,7 +188,7 @@ class Invoice(SoftDeletionModel):
 
 
         if len(shortages) > 0:
-            qs = InventoryController.objects.all()
+            qs = InventoryController.objects.filter(active=True)
             if qs.exists():
                 usr = qs.first().employee.user
                 Notification.objects.create(

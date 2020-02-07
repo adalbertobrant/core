@@ -1,5 +1,9 @@
 {% extends "window.html" %}
-
+{% load static %}
+{% load accounting %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'common_data/css/document-styles.css' %}">
+{% endblock head %}
 {% block heading %}
 Work Order Detail
 {% endblock heading %}
@@ -8,6 +12,11 @@ Work Order Detail
 <a class="dropdown-item" href="{% url 'services:work-order-update' pk=object.pk %}">
     <i class="fas fa-edit"></i> Update
 </a>
+{% if  object.status != 'authorized' %}
+<button class="dropdown-item" onclick='toggleValidateForm()'>Authorize</button>
+{% else  %}
+    <span class='dropdown-item'>Authorized By: {{object.authorized_by}}</span>
+{% endif %}
 
 {% if wo.procedure_pk %}
 <a class="dropdown-item" href="{% url 'services:procedure-details' pk=object.procedure_pk %}">
@@ -34,75 +43,69 @@ Work Order Detail
 {% endif %}
 {% endblock actions %}
 {% block content %}
+<br>
 <div class="container">
     <div class="row">
-        <div class="col-sm-8">
-            <nav class="nav nav-tabs nav-stacked">
-                <a href="#work" class="nav-link active" data-toggle="tab">Work Order Details</a>
-                {% if wo.procedure_pk %}
-                <a href="#procedure" class="nav-link" data-toggle="tab">Service Procedure</a>
-                {% endif %}
-                <a href="#expenses" class="nav-link" data-toggle="tab">Expenses</a>
-                <a href="#service" class="nav-link" data-toggle="tab">Service Time</a>
-            </nav>
-
-            <div class="tab-content panel-body shadow">
-                <div class="tab-pane active" id="work">
-                    <div class="card">
-                        <div class="card-body">
-                            <p class="card-text">Date: {{object.date}}</p>
-                            <p class="card-text">Time: {{object.time}}</p>
-                            <p class="card-text">Invoice: {{object.works_request.invoice.invoice_number | stringformat:"06d"}}</p>
-                            <p class="card-text">Status: {{object.status}}</p>
-                            <p class="card-text">Description: {{object.description}}</p>
-                            <h4>Resolvers</h4>
-                            <h6>Team</h6>
-                            <p class="card-text">Team Name: {{object.team}}</p>
-                            <ul>
-                                {% for tm in object.team.members.all %}
-                                <li>{{tm}}</li>
-                                {% endfor %}
-                            </ul>
-                            <h6>Service People</h6>
-                            <ul>
-                                {% for sp in object.service_people.all %}
-                                <li>{{sp}}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
+        <div class="col-12">
+            <div class="card-deck">
+                <div class="card shadow accent-md">
+                <div class="card-body">
+                    <h3 >  Status:</h3>
+                    <h1 style='display:inline-block;padding:8px;border-radius:24px;font-size:32px;'>{{object.status}}</h1>
                 </div>
-                
-                <div class="tab-pane" id="procedure">
-                    <div class="card">
-                        <div class="card-body">
-                            <h6 class="card-text">Description:
-                                {{object.works_request.service.procedure.description}}
-                            </h6>
-                            <hr class="my-2">
-                            <h6>Stages</h6>
-                            <hr class="my-2">
-                            <ol>
-                                {% for step in object.works_request.service.procedure.steps %}
-                                <li>{{step}}</li>
-                                {% endfor %}
-                            </ol>
-                            <hr class="my-4">
-                            <h6 class="card-title">Notes</h6>
-                            <hr class="my-4">
-                            <ul>
-                                {% for note in object.notes.all %}
-                                <li>{{note}}</li>
-                                {% endfor  %}
-                            </ul>
-
-                        </div>
+            </div>
+            <div class="card shadow accent-md">
+                <div class="card-body">
+                    <h2><i class="fas fa-file-invoice    "></i> Expenses:</h2>
+                    <h1>{{object.total_expenses|active_currency}}</h1>
+                </div>
+            </div>
+            <div class="card shadow accent-md">
+                <div class="card-body">
+                    <h2> <i class="fas fa-clock "></i> Hours Worked:</h2>
+                    <h1>{{object.total_time}}</h1>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-4 col-sm-12">
+            <div class="card shadow accent-lg">
+                <div class="card-body">
+                    <p class="card-text">{{object.date}}</p>
+                    <p class="card-text">{{object.time}}</p>
+                    <p class="card-text">Invoice: {{object.works_request.invoice.invoice_number | stringformat:"06d"}}</p>
+                    
+                    <hr>
+                    <p class="card-text">{{object.description}}</p>
+                    <h4>Resolvers</h4>
+                    
+                    <div style='background-color:#eee;padding:10px;'>
+                        <h6>Teams</h6>
+                        <p class="card-text">{{object.team}}</p>
+                        <ul>
+                            {% for tm in object.team.members.all %}
+                            <li>{{tm}}</li>
+                            {% endfor %}
+                        </ul>
                     </div>
 
-
+                    <h6>Individuals</h6>
+                    <ul>
+                        {% for sp in object.service_people.all %}
+                        <li>{{sp}}</li>
+                        {% endfor %}
+                    </ul>
                 </div>
-                <div class="tab-pane" id="expenses">
-                    <table class="table table-sm">
+            </div>
+        </div>
+        <div class="col-md-8 col-sm-12">
+            
+            <h4>Expenses</h4>
+            
+            <table class="table table-sm">
                         <thead>
                             <tr class="bg-primary">
                                 <th>Expense ID</th>
@@ -128,9 +131,9 @@ Work Order Detail
                             {% endif %}
                         </tbody>
                     </table>
-                </div>
-                <div class="tab-pane" id="service">
-                    <table class="table table-sm">
+            <hr class="my-4">
+            <h4>Time Logs</h4>
+            <table class="table table-sm">
                         <thead>
                             <tr class="bg-primary">
                                 <th>Employee</th>
@@ -154,26 +157,24 @@ Work Order Detail
                             {% endif %}
                         </tbody>
                     </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            {% if  object.status != 'authorized' %}
-            <h5>Authorization Form</h5>
-            <form action="{% url 'services:work-order-authorize' pk=object.pk %}" method="POST">
-                {% csrf_token %}
-                {{authorization_form}}
-                <button class="btn btn-primary">Authorize</button>
-            </form>
-            {% else  %}
-            {% if object.status == 'authorized' %}
-                <h6>Authorized By:</h6>
-                <h5>{{object.authorized_by}}</h5>
-            {% endif %}
-            {% endif %}
-
         </div>
     </div>
 </div>
+<div class="dom-modal">
+    <div class='dom-modal-content' id="validate-form">
+        <h5>Authorization Form</h5>
+        <form action="{% url 'services:work-order-authorize' pk=object.pk %}" method="POST">
+            {% csrf_token %}
+            {{authorization_form}}
+            <button class="btn-sm btn-primary">Authorize</button>
+        </form>
+        <button class="btn btn-danger" onclick='toggleValidateForm()'>Cancel</button>
+    </div>
+</div>
+<script>
+    function toggleValidateForm(){
+        $('.dom-modal').toggle();
+    }
+</script>
 
 {% endblock %}

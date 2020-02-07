@@ -627,3 +627,8 @@ span.less {
     font-size: 0.5rem;
     color: #888;
 }
+
+.focus-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+}

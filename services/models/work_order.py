@@ -178,6 +178,14 @@ class ServiceWorkOrder(models.Model):
             requisition__work_order=self
         )
 
+    @property 
+    def total_expenses(self):
+        return sum([i.expense.amount for i in self.expenses])
+
+    @property
+    def total_time(self):
+        return self.total_overtime + self.total_normal_time
+
 class TimeLog(models.Model):
     work_order = models.ForeignKey('services.serviceworkorder', null=True, 
         on_delete=models.SET_NULL)
@@ -200,7 +208,7 @@ class TimeLog(models.Model):
         return self.normal_time_cost + self.overtime_cost
 
     def save(self, *args, **kwargs):
-        if not self.pk:
+        if not self.pk and self.employee.pay_grade is not None:
             self.normal_time_cost = D(self.employee.pay_grade.hourly_rate) * \
                 self.normal_time.seconds / 3600
             self.overtime_cost = D(self.employee.pay_grade.overtime_rate) * \

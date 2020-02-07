@@ -62,7 +62,7 @@ Authorize/Release Equipment Requisition
             <div class="card shadow">
                 <div class="card-body">
                     <h4 class="card-title">#{{object.id|stringformat:"06d"}}</h4>
-                    <p class="card-text">Date: {{object.date}}</p>
+                    <p class="card-text">{{object.date}}</p>
                     <p class="card-text">Department: {{object.department}}</p>
                     <p class="card-text">Reference: {{object.reference}}</p>
                     <p class="card-text">Requested By: {{object.requested_by}}</p>
@@ -71,7 +71,7 @@ Authorize/Release Equipment Requisition
                     <ul>
                         <li>Authorized by: {{object.authorized_by}}</li>
                         <li>Released: {{object.released_by}}</li>
-                        <li>Released: {{object.received_by}}</li>
+                        <li>Received: {{object.received_by}}</li>
                     </ul>
                 </div>
             </div>

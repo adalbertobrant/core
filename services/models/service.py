@@ -134,3 +134,16 @@ class ServiceTeam(models.Model):
 
     def __str__(self):
         return self.name
+
+
+    @property
+    def hours_worked(self):
+        return sum([ i.total_normal_time.seconds + i.total_overtime.seconds for i in self.serviceworkorder_set.all()]) / 3600.0
+
+    @property
+    def current_jobs(self):
+        return self.serviceworkorder_set.filter(Q(status='requested') | Q(status='progress'))
+
+    @property
+    def completed_jobs(self):
+        return self.serviceworkorder_set.all().exclude(Q(status='requested') | Q(status='progress'))

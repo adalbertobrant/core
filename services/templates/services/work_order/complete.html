@@ -38,55 +38,20 @@ Complete Work Order
 <div class="container">
     <form action="" method="POST">
         {{form}}
+        <br>
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-md-1 col-sm-12">
                 <nav class="nav nav-tabs nav-stacked">
-                    <a href="#basic" class="nav-link active" data-toggle="tab">Details</a>
-                    <a href="#progress" class="nav-link" data-toggle="tab">Progress</a>
+                    <a href="#progress" class="nav-link active" data-toggle="tab">Progress</a>
                     <a href="#notes-tab" class="nav-link" data-toggle="tab">Notes</a>
                     <a href="#work" class="nav-link" data-toggle="tab">Working Hours</a>
                 </nav>
-
-
+            </div>
+            <div class='col-md-11 col-sm-12'>
                 <div class="tab-content panel-body">
-                    <div class="tab-pane active" id="basic">
+                    <div class="tab-pane active" id="progress">
                         <div class="row">
-                            <div class="col-sm-3"></div>
-                            <div class="col-sm-6">
-                                <div class="card shadow">
-                                    <div class="card-body" style="min-height:500px;">
-                                        <h4 class="card-title">Work Order Details</h4>
-                                        <p class="card-text">Date: {{object.date}}</p>
-                                        <p class="card-text">Time: {{object.time}}</p>
-                                        <p class="card-text">Status: {{object.status}}</p>
-                                        <p class="card-text">Description: {{object.description}}</p>
-                                        <h4>Resolvers</h4>
-                                        <h6>Team</h6>
-                                        <p class="card-text">Team Name: {{object.team}}</p>
-                                        <ul>
-                                            {% for tm in object.team.members.all %}
-                                            <li>{{tm}}</li>
-                                            {% endfor %}
-                                        </ul>
-                                        <h6>Service People</h6>
-                                        <ul>
-                                            {% for sp in object.service_people.all %}
-                                            <li>{{sp}}</li>
-                                            {% endfor %}
-                                        </ul>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="progress">
-                        <div class="row">
-                            <div class="col-sm-3"></div>
-                        <div class="col-sm-6">
+                        <div class="col-12">
                             <div class="card shadow">
                                 <div class="card-body" style="min-height:500px;max-height:500px;overflow-y:auto;">
                                     <script>
@@ -129,8 +94,8 @@ Complete Work Order
                                     <ol>
                                         {% for step in object.works_request.service.procedure.steps %}
                                         <li> {% if forloop.counter in object.progress_list %} <input checked
-                                                style="display:inline;" type="checkbox" name="steps[]"
-                                                value="{{forloop.counter}}">{% else %} <input style="display:inline;"
+                                                type="checkbox" name="steps[]"
+                                                value="{{forloop.counter}}">{% else %} <input 
                                                 type="checkbox" name="steps[]" value="{{forloop.counter}}">
                                             {% endif %}
                                             {{step}}
@@ -140,14 +105,12 @@ Complete Work Order
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-3"></div>
                         </div>
                     </div>
                     <div class="tab-pane" id="notes-tab">
                         <div class="row">
-                            <div class="col-sm-3"></div>
-                        <div class="col-sm-6">
-                            <div class="card shadow">
+                        <div class="col-12">
+                            <div class="card">
                                 <div class="card-body" style="min-height:500px;">
                                     <h4 class="card-title">Notes</h4>
                                     {% csrf_token %}
@@ -155,17 +118,16 @@ Complete Work Order
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-3"></div>
                         </div>
                     </div>
 
 
                     <div class="tab-pane" id="work">
                         <div class="row">
-                            <div class="col-sm-1"></div>
-                            <div class="col-sm-10">
-                                <hr class="my-4">
-                                <table class="table table-sm">
+                            <div class="col-12">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <table class="table table-sm">
                                     <thead>
                                         <tr class="bg-primary">
                                             <th>Date</th>
@@ -193,13 +155,14 @@ Complete Work Order
                                     </tfoot>
                                 </table>
                                 <div id="service-time"></div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-sm-1"></div>
                         </div>
                     </div>
                 </div>
-                <hr class="my-4">
-                <button class="btn btn-primary">Submit</button>
+                <br>
+                <button class="btn-sm btn-primary">Submit</button>
 
             </div>
         </div>

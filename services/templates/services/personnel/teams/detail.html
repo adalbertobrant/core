@@ -8,19 +8,23 @@ Service Team
                     <a class="dropdown-item" href="{% url 'services:team-update' pk=object.pk %}"><i class="fas fa-edit"></i>Update</a>
 {% endblock actions %}
 {% block content %}
-
+<br>
 
 <div class="container">
     <div class="row">
             <div class="col-sm-4">
-                <div class="card shadow">
+                <div class="card shadow accent-md">
                     <div class="card-body">
                         <h4 class="card-title">{{object.name}}</h4>
-                        <p class="card-text">{{object.members.all.count}} members</p>
                         <p class="card-text">Manager: {{object.manager}}</p>
                         <hr class='my-2'>
-                        <p class="card-text">{{object.description}}</p>
 
+                        <p class="card-text"><span class="focus-text">{{object.members.all.count}}</span> members</p>
+
+                        <p class="card-text">{{object.description}}</p>
+                        <p class="card-text"><span class="focus-text">{{object.hours_worked}}</span> Hours Worked</p>
+                        <p class="card-text"><span class="focus-text">{{object.completed_jobs.count}}</span> Jobs completed</p>
+                        <p class="card-text"><span class="focus-text">{{object.current_jobs.count}}</span> Open Jobs</p>
                     </div>
                 </div>
             </div>
@@ -30,26 +34,45 @@ Service Team
                     <table class="table table-sm">
                         <thead>
                             <tr class="bg-primary">
-                                <th>Employee Number</th>
                                 <th>Name</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for sp in object.members.all %}
                             <tr>
-                                <td scope="row">
-                                    {{sp.employee.employee_number}}
-                                </td>
-                                <td>{{sp.employee}}</td>
-                                <td><a href="{% url 'services:service-person-dashboard' pk=sp.pk %}" class="btn btn-info">View Person</a></td>
+                                <td><a href="{% url 'services:service-person-dashboard' pk=sp.pk %}" class="btn btn-primary">{{sp.employee}}</a></td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
                 <div>
-                    <h4>Current Work Orders</h4>
+                    {% if object.serviceworkorder_set.all.count > 0 %}
+                        <h4>Current Work Orders</h4>
+                        <table class='table table-sm' >
+                            <thead>
+                                <tr class="text-white primary">
+                                    <th>#</th>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for wo in object.serviceworkorder_set.all %}
+                                    {% if wo.status != 'completed' or wo.status != 'authorized' %}
+                                    <tr>
+                                        <td><a href=" {% url 'services:work-order-detail' pk=wo.pk %} " class="btn primary text-white">{{wo.pk|stringformat:"06d"}}</a></td>
+                                        <td>{{wo.date}}</td>
+                                        <td>{{wo.description}} {% if wo.description == "" %}None{% endif %}</td>
+                                        <td>{{wo.status}}</td>
+                                    </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        
+                    {% endif %}
                 </div>
             </div>
     </div> 

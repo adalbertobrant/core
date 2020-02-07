@@ -13,15 +13,15 @@ Service Category
 {% endblock %}
 {% block content %}
 
-
+<br>
 <div class="container">
     <div class="row">
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-body shadow">
-                    <h4 class="card-title">Category Data</h4>
-                    <p class="card-text">Name: {{object.name}} </p>
-                    <p class="card-text">Description: {{object.description}} </p>
+                    <h4 class="card-title">{{object.name}}</h4>
+                    <hr class="my-2">
+                    <p class="card-text">{{object.description}} </p>
                 </div>
             </div>
         </div>
@@ -41,9 +41,9 @@ Service Category
                     {% for s in object.service_set.all %}
                     <tr>
                         <td>
-                            <a href="{% url 'services:service-details' pk=s.pk %}">{{s.name}}</a>
+                            <a href="{% url 'services:service-details' pk=s.pk %}" class='btn-sm btn-primary' >{{s.name}}</a>
                         </td>
-                        <td>{{s.description}}</td>
+                        <td>{{s.description}} {% if s.description == '' %}None{% endif %}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

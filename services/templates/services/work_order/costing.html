@@ -5,7 +5,7 @@
     <div id='title-text'>Job Profitability analysis</div>
     <div id='action-icon dropdown'>
 
-        <button class="btn btn-block primary " id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+        <button class="btn-sm btn-block primary " id="triggerId" data-toggle="dropdown" aria-haspopup="true"
             aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
 
             <div class="dropdown-menu" aria-labelledby="triggerId">
@@ -55,7 +55,7 @@
     {{graph}}
     {% endautoescape %}
 </div>
-<p class="eop"></p>
+{% comment %} <p class="eop"></p> {% endcomment %}
 
 <h4 class="text-white roomy bg-primary">Revenue: <span
         style="float:right;">{{object.works_request.invoice_line.subtotal | active_currency}}</span>

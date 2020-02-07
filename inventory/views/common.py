@@ -227,7 +227,7 @@ class CategoryListAPIView(ListAPIView):
 
 
 def inventory_controller_condition(self):
-    return models.InventoryController.objects.all().count() == 0
+    return models.InventoryController.objects.filter(active=True).count() == 0
 
 def employee_condition(self):
     return Employee.objects.all().count() == 0

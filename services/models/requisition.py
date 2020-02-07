@@ -28,7 +28,7 @@ class BaseRequisition(models.Model):
         return '%s: %s' % (self.date, self.reference)
 
 class EquipmentRequisition(BaseRequisition):
-    requested_by = models.ForeignKey('employees.Employee', 
+    requested_by = models.ForeignKey('employees.Employee', limit_choices_to=Q(active=True),
         on_delete=models.CASCADE, 
         related_name='requested_by')
     authorized_by = models.ForeignKey('employees.Employee', 
@@ -62,7 +62,7 @@ class EquipmentRequisitionLine(models.Model):
         return str(self.equipment)
 
 class ConsumablesRequisition(BaseRequisition):
-    requested_by = models.ForeignKey('employees.Employee', 
+    requested_by = models.ForeignKey('employees.Employee', limit_choices_to=Q(active=True),
         related_name='consumable_requested_by', on_delete=models.SET_NULL, null=True)
     authorized_by = models.ForeignKey('employees.Employee', 
         related_name='consumable_authorized_by', on_delete=models.SET_NULL,  null=True)#filter queryset
