@@ -13,6 +13,9 @@ from django.shortcuts import reverse
 class PhoneNumber(models.Model):
     number = models.CharField(max_length=16)
 
+    def __str__(self):
+        return str(self.number)
+
 class Person(models.Model):
     first_name = models.CharField(max_length =32)
     last_name = models.CharField(max_length =32)
