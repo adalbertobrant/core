@@ -107,7 +107,7 @@ class UserTracker(object):
 
 #the tracker is reset every time the server is restarted
 TRACKER = UserTracker()
-HID = GlobalConfig.objects.first().generate_hardware_id()
+HID = GlobalConfig.generate_hardware_id()
 
 class LicenseMiddleware(object):
     def __init__(self, get_response):

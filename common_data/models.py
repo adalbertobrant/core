@@ -8,7 +8,6 @@ from django.db import models
 
 from latrom import settings
 import subprocess
-from background_task.models import Task
 from common_data.utilities.mixins import ContactsMixin
 from django.shortcuts import reverse
 class PhoneNumber(models.Model):
@@ -177,7 +176,8 @@ class GlobalConfig(SingletonModel):
         choices=LOGO_CHOICES)
     pos_supervisor_password = models.CharField(max_length=16, default='1234')
     
-    def generate_hardware_id(self):
+    @staticmethod
+    def generate_hardware_id():
         result = subprocess.run('wmic csproduct get uuid', 
             stdout=subprocess.PIPE, shell=True)
         _id = result.stdout.decode('utf-8')
@@ -202,7 +202,7 @@ class GlobalConfig(SingletonModel):
 
         #setup hardware id
         if self.hardware_id == "":
-            self.hardware_id = self.generate_hardware_id()
+            self.hardware_id = GlobalConfig.generate_hardware_id()
             super().save(*args, **kwargs)
 
 

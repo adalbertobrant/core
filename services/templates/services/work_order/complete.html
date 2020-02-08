@@ -37,7 +37,8 @@ Complete Work Order
 
 <div class="container">
     <form action="" method="POST">
-        {{form}}
+        {{form.progress}}
+        {{form.service_time}}
         <br>
         <div class="row">
             <div class="col-md-1 col-sm-12">
@@ -54,6 +55,52 @@ Complete Work Order
                         <div class="col-12">
                             <div class="card shadow">
                                 <div class="card-body" style="min-height:500px;max-height:500px;overflow-y:auto;">
+                                    <h4 class="card-title">Work Order Progress</h4>
+                                
+                                {% if not object.works_request.service.procedure %}
+                                <div>
+                                        <div
+                                            style="width:85%;height:30px;border:1px solid #bbb;background-color:#eee;display:inline-block;overflow-x:hidden;">
+                                            <div id='progress-bar'
+                                                style="width:{{object.manual_progress}}%;background-color:#3f2;height:100%">
+                                            </div>
+                                        </div>
+                                        <div style="display:inline-block;width:12%;">
+                                            <strong><span
+                                                    id='progress-percentage'>{{object.manual_progress}}<span>%</strong>
+                                        </div>
+                                    </div>
+                            <script>
+                    $(document).ready(function(){
+                        var el = document.getElementById('id_manual_progress')
+                        el.addEventListener(
+                                'input', function(evt){
+                            $('#progress-percentage').text(evt.target.value + '%')
+                            $('#progress-bar').css('width', evt.target.value + '%')
+                            if(evt.target.value > 100){
+                                alert('Progress cannot be set to a value greater than 100')
+                                $('#submit').attr('disabled', true)
+                            }else{
+                                $('#submit').attr('disabled', false)
+
+                            }
+                        })
+                    })
+                    
+                    </script>
+
+
+                                <div style='width: 300px;margin: 0px auto;'>
+                                    <p>For services offered without procedures, an estimate can be offered by those who carry it out.</p>
+                                    
+                                    
+                                    <label for="estimate">Progress Estimate</label>
+                                    {{form.manual_progress}}
+                                </div>
+
+                                
+                                {% else %}
+                                
                                     <script>
                                         var checks = 0;
                                         var checked = 0;
@@ -73,7 +120,6 @@ Complete Work Order
                                         }, 1000)
                                     </script>
 
-                                    <h4 class="card-title">Work Order Progress</h4>
                                     <h5>Procedure: {{object.works_request.service.procedure}}
                                     </h5>
                                     <div>
@@ -88,7 +134,6 @@ Complete Work Order
                                                     id='progress-percentage'>{{object.progress_percentage}}<span>%</strong>
                                         </div>
                                     </div>
-                                    script
 
 
                                     <ol>
@@ -102,6 +147,7 @@ Complete Work Order
                                         </li>
                                         {% endfor %}
                                     </ol>
+                                {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -162,7 +208,7 @@ Complete Work Order
                     </div>
                 </div>
                 <br>
-                <button class="btn-sm btn-primary">Submit</button>
+                <button id='submit' class="btn-sm btn-primary">Submit</button>
 
             </div>
         </div>

@@ -722,6 +722,8 @@ class TransferReceiptForm(forms.ModelForm, BootstrapMixin):
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
+
+
 class InventoryControllerForm(forms.ModelForm, BootstrapMixin):
     class Meta:
         exclude = "active",
@@ -737,6 +739,7 @@ class InventoryControllerForm(forms.ModelForm, BootstrapMixin):
             'can_authorize_consumables_requisitions',
         )
         self.helper.add_input(Submit('submit', 'Submit'))
+
 
 
 class InventoryControllerUpdateForm(forms.ModelForm, BootstrapMixin):

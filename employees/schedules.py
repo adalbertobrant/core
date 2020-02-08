@@ -7,8 +7,8 @@ def run_payroll_service():
     service = AutomatedPayrollService()
     service.run()
 
-try:
-    run_payroll_service(repeat=Task.DAILY)
-except:
-    # TODO handle exceptions better
-    pass
+# try:
+#     run_payroll_service(repeat=Task.DAILY)
+# except:
+#     # TODO handle exceptions better
+#     pass

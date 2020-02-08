@@ -51,15 +51,15 @@ class InventoryService(AutomatedServiceMixin):
             if not Event.objects.filter(Q(date=next_check_date) & 
                                         Q(label="INVENTORY_CHECK")).exists():
                 Event.objects.create(date=next_check_date,
-                                    reminder=datetime.timedelta(days=7),
-                                    start_time="08:00:00",
-                                    end_time="17:00:00",
-                                    label="INVENTORY_CHECK",
-                                    repeat=3,
-                                    repeat_active=True,
-                                    icon="file-chart-line",
-                                    description=f"Event automatically generated"
-                                    f"by the system. Warehouse location " 
-                                    f"{warehouse.name} is scheduled to have"
-                                    f"its inventory checked.",
-                                    owner=warehouse.inventory_controller.employee.user)
+                    reminder=datetime.timedelta(days=7),
+                    start_time="08:00:00",
+                    end_time="17:00:00",
+                    label="INVENTORY_CHECK",
+                    repeat=3,
+                    repeat_active=True,
+                    icon="file-chart-line",
+                    description=f"Event automatically generated"
+                    f"by the system. Warehouse location " 
+                    f"{warehouse.name} is scheduled to have"
+                    f"its inventory checked.",
+                    owner=warehouse.inventory_controller.employee.user)

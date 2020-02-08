@@ -12,6 +12,8 @@ class DBBackupService(AutomatedServiceMixin):
     @property 
     def should_backup_db(self):
         config = GlobalConfig.objects.first()
+        if not config.use_backups:
+            return False
         now = datetime.datetime.now()
         return (now - config.last_automated_service_run).total_seconds() \
                     >= config.task_mapping
@@ -22,12 +24,6 @@ class DBBackupService(AutomatedServiceMixin):
             return 
 
         os.chdir(settings.BASE_DIR)
-        ret = subprocess.run(['python', 'manage.py', 'dbbackup',])
+        ret = subprocess.run(['python', 'manage.py', 'dbbackup'])
         if ret.returncode != 0:
             raise Exception('Failed to backup db')
-
-        if os.path.exists('debug.log'):
-            try:
-                os.remove('debug.log')
-            except:
-                pass
