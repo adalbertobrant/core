@@ -665,31 +665,7 @@ class ItemModelTests(TestCase):
         quantity = self.product.quantity_on_date(datetime.date.today())
         self.assertEqual(quantity, D(10))
 
-    def test_consumable_value(self):
-        #set a consumable quantity
-        models.WareHouseItem.objects.create(
-            item=self.consumable,
-            quantity=10,
-            warehouse=self.warehouse,
-            location=self.medium
-        )
 
-        #set an order price
-        self.order.status = 'order'
-        self.order.save()
-
-        models.OrderItem.objects.create(
-            order=models.Order.objects.get(pk=self.order.pk),
-            item=self.consumable,
-            quantity=12,
-            order_price=1
-        )
-
-        self.assertEqual(self.consumable.consumable_value, 10)
-        self.assertEqual(self.consumable.consumable_unit_value, 1)
-
-        self.order.status = 'draft'
-        self.order.save()
 
 class WarehouseModelTests(TestCase):
     fixtures = ['common.json', 'employees.json','inventory.json','accounts.json', 'journals.json',]
