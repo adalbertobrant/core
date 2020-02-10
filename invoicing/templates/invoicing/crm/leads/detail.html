@@ -90,16 +90,18 @@ Lead Details
                     <tr>
                         <th>Timestamp</th>
                         <th>Contact</th>
-                        <th>Type</th>
+                        <th>Description</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for intr in object.interaction_set.all %}
-                        <tr>
+                        
+                            <tr>
                             <td>{{intr.timestamp}}</td>
                             <td>{{intr.contact}}</td>
-                            <td>{{intr.type}}</td>
+                            <td><a href=" {% url 'invoicing:interaction-detail' pk=intr.pk %} ">{{intr.description|truncatechars:40}}</a></td>
                         </tr>
+                        
                     {% endfor %}
                 </tbody>
             </table>

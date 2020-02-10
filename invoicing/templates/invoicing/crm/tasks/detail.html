@@ -5,8 +5,7 @@ Task Details
 {% endblock heading %}
 
 {% block actions %}
-<a href="" class="dropdown-item">View Event</a>
-<a href="" class="dropdown-item">View Lead</a>
+<a href=" {% url 'invoicing:lead-detail' pk=object.lead.pk %} " class="dropdown-item">View Lead</a>
 {% endblock actions %}
 
 {% block content %}

@@ -1,6 +1,6 @@
 {% extends "window.html" %}
 {% block heading %}
-<i class=" fas fa-cash-register "></i> CRM Dashboard
+<i class="fas fa-handshake    "></i> CRM Dashboard
 
 {% endblock heading %}
 {% block content %}
@@ -11,7 +11,14 @@
             <nav class="nav flex-column primary" style='padding:5px;'>
                 <ul class='navbar-nav dashboard-nav'>
                     <li class="nav-item">
-                        <i class="fas fa-cash-register"></i> Tasks and Contacts
+                        <i class="fas fa-road    "></i> Leads
+                    </li>
+                    <li class="list-group-item hvr-grow"><a class="card-link"
+                            href="{% url 'invoicing:create-lead' %}">Create Lead</a></li>
+                    <li class="list-group-item hvr-grow"><a class="card-link"
+                            href="{% url 'invoicing:list-leads' %}">Manage Leads</a></li>
+                    <li class="nav-item">
+                        <i class="fas fa-clipboard-check    "></i> Tasks and Contacts
                     </li>
                     <li class="list-group-item hvr-grow">
                         <a class="card-link" href="{% url 'invoicing:list-tasks' %}">
@@ -23,15 +30,9 @@
                             Manage Contacts
                         </a>
                     </li>
+                    
                     <li class="nav-item">
-                        <i class="fas fa-shopping-cart"></i> Leads
-                    </li>
-                    <li class="list-group-item hvr-grow"><a class="card-link"
-                            href="{% url 'invoicing:create-lead' %}">Create Lead</a></li>
-                    <li class="list-group-item hvr-grow"><a class="card-link"
-                            href="{% url 'invoicing:list-leads' %}">Manage Leads</a></li>
-                    <li class="nav-item">
-                        <i class="fas fa-cash-register"></i> Customers
+                        <i class="fas fa-users    "></i> Customers
                     </li>
                     <li class="list-group-item hvr-grow"><a class="card-link" href="{% url 'invoicing:customers-list' %}">Manage Customers</a></li>
                     
