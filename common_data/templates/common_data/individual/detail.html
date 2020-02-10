@@ -9,89 +9,72 @@ Individual Details
 {% endblock actions %}
 
 {% block content %}
-
+<br>
 <div class="container">
     <div class="row">
-        <div class="col-sm-12">
-            <div class="card-deck">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <h4 class="card-title">Details</h4>
-                        <table class="table table-sm">
-                                <table class="table table-sm">
-                                        <tbody>
-                                            <tr>
-                                                <td colspan="2">
-                                                    <h5>Photo:</h5>
-                                                    <center>
-                                                        {% if object.photo %}
-                                                    <img src="{{object.photo.url}}" class="img-thumbnail" width="320" height="240" alt="Photo thumbnail">
-                                                    {% else %}
-                                                    <i class="fas fa-user fa-3x"></i>
-                                                    {% endif %}
-                                                    </center>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Full Name</th>
-                                                <td>{{object}}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Email</th>
-                                                <td><a href="{% url 'messaging:create-message' %}">{{object.email}}</a></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Phone</th>
-                                                <td>
-                                                    <a>{{object.phone}}</a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                    </div>
+        <div class="col-sm-12 col-md-4">
+            <div class="card shadow accent-lg">
+                <div class="card-body">
+                    <h4 class="card-title">{{object}}</h4>
+                    <center>
+                        {% if object.photo %}
+                    <img src="{{object.photo.url}}" class="img-thumbnail" width="320" height="240" alt="Photo thumbnail">
+                    {% else %}
+                    <i class="fas fa-user fa-3x"></i>
+                    {% endif %}
+                    </center>
+                    <br>
+                    <p class="card-text"><a href="{% url 'messaging:create-message' %}">{{object.email}}</a></p>
+                    <p class="card-text"><a>{{object.phone}}</a></p>
                 </div>
-                {% if object.organization %}
-                <div class="card shadow">
-                    <div class="card-body">
-                        <h4 class="card-title">Organization </h4>
-                        <table class="table table-sm">
-                            <tbody>
-                                <tr>
-                                    <th>Legal Name</th>
-                                    <td><a href="{% url 'base:organization-detail' pk=object.organization.pk %}" class="tertiary-link">{{object.organization.legal_name}}</a></td>
-                                </tr>
-                                <tr>
-                                    <th>Address</th>
-                                    <td>{{object.organization.business_address}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Website</th>
-                                    <td>
-                                        <a>{{object.organization.website}}</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            </div>
+            <br>
+            {% if object.organization %}
+            <div class="card shadow accent-md">
+                <div class="card-body">
+                    <h4 class="card-title">Organization </h4>
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr>
+                                <th>Legal Name</th>
+                                <td><a href="{% url 'base:organization-detail' pk=object.organization.pk %}" class="tertiary-link">{{object.organization.legal_name}}</a></td>
+                            </tr>
+                            <tr>
+                                <th>Address</th>
+                                <td>{{object.organization.business_address}}</td>
+                            </tr>
+                            <tr>
+                                <th>Website</th>
+                                <td>
+                                    <a>{{object.organization.website}}</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                {% endif %}
-                <div class="card shadow">
-                    <div class="card-body">
-                        <h4 class="card-title">Activities</h4>
-                        <table class="table table-sm">
-                            <thead>
-                                <tr class="bg-primary">
-                                    <td>Date</td>
-                                    <td>Activity</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colspan="3">No Recent Activities yet</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h4 class="card-title">Interactions</h4>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr class="bg-primary">
+                                <td>Date</td>
+                                <td>Activity</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for intr in object.interaction_set.all %}
+                            <tr>
+                                <td >{{intr.timestamp.date}}</td>
+                                <td ><a href=" {% url 'invoicing:interaction-detail' pk=intr.pk %} ">{{intr.description|truncatechars:80}}</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

@@ -17,7 +17,7 @@ from common_data.forms import BootstrapMixin, PeriodReportForm
 from common_data.models import Organization, Individual
 from . import models
 from django.forms import ValidationError
-from django_select2.forms import Select2Widget
+from django_select2.forms import Select2Widget, Select2MultipleWidget
 
 class SalesConfigForm(forms.ModelForm, BootstrapMixin):
     class Meta:
@@ -389,3 +389,109 @@ class ImportInvoiceForm(BootstrapMixin,forms.Form):
             ),
         )
         self.helper.add_input(Submit('submit', 'Submit'))
+
+
+class LeadForm(BootstrapMixin, forms.ModelForm):
+    reminder = forms.DateField(required=False, 
+        widget=forms.DateInput(attrs={'class': 'ui-date-picker'}))
+    class Meta:
+        exclude = 'created',
+        model = models.Lead
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+            'organization': Select2Widget,
+            'contacts': Select2MultipleWidget,
+            
+        }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('title', 'description', css_class='col-6'),
+                Column('owner', 'team', 'source',css_class='col-6'),
+            ),
+            HTML('<h4>Contact</h4>'),
+            Row(
+                Column('organization','contacts', css_class='col-6'),
+                Column('opportunity', 'probability_of_sale',css_class='col-6'),
+            ),
+            'status',
+            'projected_closing',
+            'reminder'
+        )
+        self.helper.add_input(Submit('submit', 'Submit'))
+
+
+class TaskForm(forms.ModelForm):
+    class Meta:
+        exclude = 'created', 'event'
+        model = models.Task
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+            'lead': Select2Widget,
+            'due': forms.DateInput(attrs={'class':'ui-date-picker'})
+        }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('title', 'description', css_class='col-6'),
+                Column('due', 'status', 'lead', css_class='col-6'),
+            ),
+            'assigned'
+        )
+        self.helper.add_input(Submit('submit', 'Submit'))
+
+class InteractionForm(forms.ModelForm):
+    class Meta:
+        exclude = 'timestamp', 'notes'
+        model = models.Interaction
+        widgets = {
+            'lead': forms.HiddenInput,
+            'contact': Select2Widget
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('contact', 'sales_representative',
+                        'type', css_class='col-6'),
+                Column('description',css_class='col-6'),
+            ),
+            'lead',
+        )
+        self.helper.add_input(Submit('submit', 'Submit'))
+
+
+class SubmitMixin():
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Submit'))
+
+
+class LeadSourceForm(BootstrapMixin,  SubmitMixin, forms.ModelForm):
+    class Meta:
+        fields = '__all__'
+        model = models.LeadSource
+
+    
+
+class SalesTeamForm(BootstrapMixin, SubmitMixin, forms.ModelForm):
+    class Meta:
+        fields = '__all__'
+        model = models.SalesTeam
+        widgets = {
+            'members': Select2MultipleWidget
+        }
+
+class InteractionTypeForm(BootstrapMixin, SubmitMixin, forms.ModelForm):
+    class Meta:
+        fields = '__all__'
+        model = models.InteractionType

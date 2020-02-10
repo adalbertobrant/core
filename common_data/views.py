@@ -96,6 +96,7 @@ class PaginationMixin(object):
         return context
 
 CREATE_TEMPLATE = os.path.join('common_data', 'create_template.html')
+CRISPY_TEMPLATE = os.path.join('common_data', 'crispy_create_template.html')
 
 #########################################################
 #                  Organization Views                   #
@@ -142,7 +143,7 @@ class OrganizationListView(ContextMixin,
 #########################################################
 
 class IndividualCreateView(ContextMixin,  LoginRequiredMixin, CreateView):
-    template_name = CREATE_TEMPLATE
+    template_name = CRISPY_TEMPLATE
     form_class = forms.IndividualForm
     extra_context = {
         'title': 'Add Individual',
@@ -154,7 +155,7 @@ class IndividualCreateView(ContextMixin,  LoginRequiredMixin, CreateView):
     }
 
 class IndividualUpdateView(ContextMixin,  LoginRequiredMixin, UpdateView):
-    template_name = CREATE_TEMPLATE
+    template_name = CRISPY_TEMPLATE
     form_class = forms.IndividualForm
     model = models.Individual
     extra_context = {

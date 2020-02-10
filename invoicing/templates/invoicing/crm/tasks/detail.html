@@ -1,0 +1,30 @@
+{% extends 'window.html' %}
+
+{% block heading %}
+Task Details
+{% endblock heading %}
+
+{% block actions %}
+<a href="" class="dropdown-item">View Event</a>
+<a href="" class="dropdown-item">View Lead</a>
+{% endblock actions %}
+
+{% block content %}
+
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow accent-left-lg">
+                <div class="card-body">
+                    <h4>{{object.title}}</h4>
+                    {{object.created}}
+                    <p class="card-text"><i class="fas fa-clock" aria-hidden="true"></i> {{object.due}}</p>
+                    <p class="card-text"><i class="fas fa-user" aria-hidden="true"></i> {{object.assigned}}</p>
+                    <a href=" {% url 'planner:event-detail' pk=object.event.pk %} " class="btn btn-sm btn-primary">View Event</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

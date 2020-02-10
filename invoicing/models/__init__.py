@@ -7,6 +7,7 @@ from .payment import Payment
 from .sales_rep import SalesRepresentative
 from .credit_note import CreditNote, CreditNoteLine
 from .pos import POSSession, POSSale
+from .crm import *
 
 
 class SalesConfig(SingletonModel):

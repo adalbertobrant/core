@@ -27,7 +27,6 @@
         "model": "accounting.AccountingSettings",
         "pk": "1",
         "fields": {
-            "start_of_financial_year": "2019-01-01",
             "active_currency": 1
         }
     },

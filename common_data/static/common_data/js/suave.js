@@ -41,17 +41,6 @@ function updateNotifications() {
     })
 }
 
-setInterval(function () {
-    if (scrolling) {
-        scrolling = false;
-        if ($(document).scrollTop() > 0 && isScrollable()) {
-            $(".jumbotron").addClass("shrink");
-        }
-        if ($(document).scrollTop() === 0 && !inIframe()) {
-            $(".jumbotron").removeClass("shrink");
-        }
-    }
-}, 100)
 
 function linkClickHandler(link){
    $('#popup-frame').attr('src', link);
@@ -62,6 +51,10 @@ function linkClickHandler(link){
 
 // for employees deduction page
 $(document).ready(function () {
+
+    if(inIframe()){
+        $('body').addClass('framed');
+    }
 
     window.scrollTo(0, 0);
 

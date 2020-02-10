@@ -8,6 +8,17 @@
 body {
     overflow-y:hidden;
 }
+
+body.framed {
+    overflow-y:auto;
+}
+
+body.framed::-webkit-scrollbar{
+    width: 5px;
+    background-color: var(--tertiary);
+    opacity: 0;
+ }
+
 .white {
     background-color: white;
 }
@@ -167,6 +178,14 @@ input:required, textarea:required, select:required {
 
 .accent-lg {
     border-top: 9px solid var(--primary);
+}
+
+.accent-left-md {
+    border-left: 6px solid var(--primary);
+}
+
+.accent-left-lg {
+    border-left: 9px solid var(--primary);
 }
 
 .tertiary-link {

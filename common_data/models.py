@@ -10,6 +10,7 @@ from latrom import settings
 import subprocess
 from common_data.utilities.mixins import ContactsMixin
 from django.shortcuts import reverse
+import invoicing
 class PhoneNumber(models.Model):
     number = models.CharField(max_length=16)
 
@@ -102,6 +103,17 @@ class Organization(ContactsMixin, models.Model):
     def get_absolute_url(self):
         return reverse("base:organization-detail", kwargs={"pk": self.pk})
     
+
+    @property 
+    def interactions(self):
+        intrs = []
+        try:
+            for m in self.members:
+                for intr in m.interaction_set.all():
+                    intrs.append(intr)
+        except:
+            pass
+        return intrs
 
 class SingletonModel(models.Model):
     class Meta:

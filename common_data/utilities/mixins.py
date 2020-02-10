@@ -152,10 +152,6 @@ class AutomatedServiceMixin(object):#not really a mixin
         self.reset_config()
         print(f'attempting to run service {self.service_name}')
         config = models.GlobalConfig.objects.first()
-        print(config.last_automated_service_run)
-        print((datetime.datetime.now() - \
-                    config.last_automated_service_run).total_seconds() )
-        print(self.config[self.service_name])
         if not config.last_automated_service_run or (
                 (datetime.datetime.now() - \
                     config.last_automated_service_run).total_seconds() > 86400 \

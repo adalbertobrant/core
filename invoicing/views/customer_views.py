@@ -16,7 +16,7 @@ from common_data.utilities import ContextMixin
 from common_data.views import PaginationMixin
 from common_data.forms import IndividualForm
 from invoicing import filters, forms, serializers
-from invoicing.models import Customer, Invoice, CreditNote
+from invoicing.models import Customer, Invoice, CreditNote, Lead
 from common_data.models import Individual, Organization
 import openpyxl
 import csv
@@ -265,7 +265,8 @@ class CustomerDetailView(DetailView):
                 status='quotation'),
             'credit_notes': CreditNote.objects.filter(
                 invoice__customer=self.object
-            )
+            ),
+            'leads': Lead.objects.filter(organization=self.object.organization)
         })
 
         return context 

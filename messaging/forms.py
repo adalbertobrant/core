@@ -94,15 +94,18 @@ class UserProfileForm(forms.ModelForm):
         self.helper.layout = Layout(
             TabHolder(
                 Tab('Basic',
-                    Row(
-                        Column('user', 'avatar', 'email_address',
-                            'email_password', css_class='form-group col-6'),
-                        Column(HTML("""
-                            {% load render_bundle from webpack_loader %}
-                            {% render_bundle 'widgets' %}
-                            <div id="avatar-preview"></div>
-                        """), css_class='form-group col-6'),
-                    )
+                    'user', 
+                    # 'avatar', 
+                    'email_address',
+                    'email_password',
+                    # Row(
+                    #     Column( css_class='form-group col-6'),
+                    #     Column(HTML("""
+                    #         {% load render_bundle from webpack_loader %}
+                    #         {% render_bundle 'widgets' %}
+                    #         <div id="avatar-preview"></div>
+                    #     """), css_class='form-group col-6'),
+                    # )
                 ),
                 Tab('Advanced',
                     'outgoing_server',

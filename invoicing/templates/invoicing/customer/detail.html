@@ -77,12 +77,34 @@ Customer
                 <div class="card-body">
                     <h4 class="card-title">Interactions</h4>
                     <ul class="nav nav-tabs">
-                        <li class="nav-item"><a href="#invoices" class="nav-link active" data-toggle="tab">Invoices</a></li>
+                        <li class="nav-item"><a href="#leads" class="nav-link active" data-toggle="tab">Leads</a></li>
                         <li class="nav-item"><a href="#quotations" class="nav-link" data-toggle="tab">Quotations</a></li>
+                        <li class="nav-item"><a href="#invoices" class="nav-link" data-toggle="tab">Invoices</a></li>
                         <li class="nav-item"><a href="#credit-notes" class="nav-link" data-toggle="tab">Credit Notes</a></li>
                     </ul>
                     <div class="tab-content">
-                        <div id="invoices" class="tab-pane active">
+                        <div id="leads" class="tab-pane active">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Opportunity</th>
+                                        <th>Owner</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for lead in leads %}
+                                    <tr>
+                                        <td><a class='btn btn-primary btn-sm' href="{% url 'invoicing:lead-detail' pk=lead.pk %}">{{lead.pk}}</a></td>
+                                        <td>{{lead.opportunity}}</td>
+                                        <td>{{lead.owner}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            
+                            </table>
+                        </div>
+                        <div id="invoices" class="tab-pane">
                             <table class="table table-sm">
                                 <thead>
                                     <tr>

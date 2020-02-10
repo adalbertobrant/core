@@ -685,7 +685,6 @@ class ItemModelTests(TestCase):
             order_price=1
         )
 
-        self.assertEqual(self.consumable.consumable_value, 10)
         self.assertEqual(self.consumable.consumable_unit_value, 1)
 
         self.order.status = 'draft'

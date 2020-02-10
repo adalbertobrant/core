@@ -1,5 +1,13 @@
 {% extends "window.html" %}
 {% load render_bundle from webpack_loader %}
+{% block heading %}
+<i class="fas fa-envelope"></i> Email
+{% endblock heading %}
+
+{% block actions %}
+<a class='dropdown-item' href="{% url 'messaging:config' %}">Configure inbox</a>
+{% endblock actions %}
+
 {% block content %}
 
 <style>
@@ -12,12 +20,7 @@
     }
 </style>
 
-<div class="jumbotron jumbo-gradient">
-    <h1 class="display-3"><i class="fas fa-envelope" style="color: #07f; font-size:128px;"></i> Email Client</h1>
-    <p class="lead">Welcome {{request.user.username}}!</p>
-    <p class="lead">Suave Business tools provides a focused inbox that integrates with other aspects of the application.</p>
-    
-</div>
+
 
 <style>
     .block-link {

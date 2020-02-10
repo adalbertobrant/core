@@ -1,0 +1,109 @@
+{% extends 'window.html' %}
+{% load accounting %}
+{% block heading %}
+Lead Details
+{% endblock heading %}
+
+{% block actions %}
+<a class="dropdown-item" href=" {% url 'invoicing:update-lead' pk=object.pk %} "> <i class="fas fa-edit "></i> Update</a>
+<a class="dropdown-item" href=" {% url 'invoicing:create-lead-task' pk=object.pk %} "> <i class="fas fa-plus    "></i> Add Task</a>
+<a class="dropdown-item" href=" {% url 'invoicing:create-interaction' pk=object.pk %} "> <i class="fas fa-plus    "></i>Record Interaction</a>
+<a class="dropdown-item" href=" {% url 'invoicing:create-contact' lead=object.pk %} "> <i class="fas fa-address-book    "></i>Add Contact</a>
+{% endblock actions %}
+
+{% block content %}
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card-deck">
+                <div class="card shadow accent-md">
+                    <div class="card-body">
+                        <h4>Status</h4>
+                        <h2>{{object.status}}</h2>
+                    </div>
+                </div>
+                <div class="card shadow accent-md">
+                    <div class="card-body">
+                        <h4>Opportunity</h4>
+                        <h2>{{object.opportunity|active_currency}}</h2>
+                    </div>
+                </div>
+                <div class="card shadow accent-md">
+                    <div class="card-body">
+                        <h4>Closing Probability</h4>
+                        <h2>{{object.probability_of_sale}}%</h2>
+                        <p><i class="fas fa-door-closed    "></i> {{object.projected_closing}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-4 col-sm-12">
+            <div class="card shadow accent-lg">
+                <h2>{{object.title}}</h2>
+                <br>
+                <p class="card-text">{{object.created}}</p>
+                <p class="card-text"><i class="fas fa-user    "></i> {{object.owner}}</p>
+                <p class="card-text"><i class="fas fa-users    "></i> {{object.team}}</p>
+                <br>
+                <h4>Contacts</h4>
+                <ul>
+                    {% for contact in object.contacts.all %}
+                        <li style='list-style-type:none;'>
+                            <a href=" {% url 'base:individual-detail' pk=object.pk %} "><i class="fas fa-address-book" aria-hidden="true"></i> {{contact}}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                
+
+
+            </div>
+        </div>
+        <div class="col-md-8 col-sm-12">
+            <h3 class="primary text-white">Tasks</h3>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Due</th>
+                        <th>Assigned</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in object.task_set.all %}
+                        <tr>
+                            <td><a href=" {% url 'invoicing:task-detail' pk=task.pk %} " class="btn btn-sm btn-primary">{{task|truncatechars:30}}</a></td>
+                            <td>{{task.due}}</td>
+                            <td>{{task.assigned}}</td>
+                            <td>{{task.status}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h3 class="primary text-white">Interactions</h3>
+            <table class="table sm">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Contact</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for intr in object.interaction_set.all %}
+                        <tr>
+                            <td>{{intr.timestamp}}</td>
+                            <td>{{intr.contact}}</td>
+                            <td>{{intr.type}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}

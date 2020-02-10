@@ -14,7 +14,6 @@ class FolderList extends React.Component{
         if(!this.props.folderID){
             return;
         }else if(this.props.folderID != prevProps.folderID){
-            console.log('folder selected')
             axios.get('/messaging/api/folder/' +this.props.folderID).then(res =>{
                 this.setState({
                     messages: res.data,
@@ -55,13 +54,13 @@ class FolderList extends React.Component{
     render(){
         return(
             <ul className="list-group">
-                {this.state.messages.length === 0 ?
+                {/*this.state.messages.length === 0 ?
                     <li className='list-group-item'>
                         {this.state.status === 'loaded' ? 'No Messages in this folder'
                             : <img src="/static/common_data/images/spinner.gif" width={50} height={50} />}
                     </li> 
                     : null
-                }
+                */}
 
                 {this.state.messages.map((msg, i) =>(
                     <ListItem 
@@ -70,12 +69,8 @@ class FolderList extends React.Component{
                         setCurrent={this.setCurrent}
                         listIndex={i} />
                 ))}
-                <li className="list-group-item">
-                    <button 
-                        className="btn btn-primary"
-                        onClick={this.loadMoreMessages}>
-                        Load More Emails
-                    </button>
+                <li onClick={this.loadMoreMessages} className="list-group-item">
+                    Load More Emails
                 </li>
 
             </ul>
