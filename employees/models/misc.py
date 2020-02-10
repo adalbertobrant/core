@@ -1,7 +1,6 @@
 from django.db import models
 from common_data.models import SingletonModel, SoftDeletionModel
 from employees.schedules import run_payroll_service
-from background_task.models import Task
 from django.shortcuts import reverse
 
 class PayrollOfficer(SoftDeletionModel):

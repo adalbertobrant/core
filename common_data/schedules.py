@@ -10,8 +10,4 @@ from common_data.utilities.db_util import DBBackupService
 def backup_db():
     DBBackupService().run()
 
-try:
-    backup_db(repeat=Task.DAILY)
-except:
-    # TODO handle exceptions better
-    pass
+

@@ -9,76 +9,44 @@ Organization Details
 {% endblock actions %}
 
 {% block content %}
-
+<br>
 <div class="container">
     <div class="row">
-        <div class="col-sm-12">
-            <div class="card-deck">
-                <div class="card shadow">
+        <div class="col-sm-12 col-md-4">
+                <div class="card shadow accent-lg">
                     <div class="card-body">
-                        <h4 class="card-title">Details</h4>
-                        <table class="table table-sm">
-                            <tbody>
-                                <tr>
-                                    <td colspan="2">
-                                        <h5>Logo:</h5>
-                                        <center>
-                                            {% if object.logo %}
-                                            <img src="{{object.logo.url}}" class="img-thumbnail" width="128" height="128" alt="Photo thumbnail">
-                                        {% else %}
-                                            <i class="fas fa-building fa-3x" ></i>
-                                        </center>
-
-                                            
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Legal Name</th>
-                                    <td>{{object.legal_name}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Address</th>
-                                    <td>{{object.business_address}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Website</th>
-                                    <td>
-                                        <a>{{object.website}}</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Email</th>
-                                    <td>
-                                        <a href="{% url 'messaging:create-message' %}">{{object.email}}</a>
-                                    </td>
-                                </tr>
-
-                            </tbody>
-                        </table>
+                        <h4 class="card-title">{{object}}</h4>
+                        <center>
+                            {% if object.logo %}
+                            <img src="{{object.logo.url}}" class="img-thumbnail" width="128" height="128" alt="Photo thumbnail">
+                        {% else %}
+                            <i class="fas fa-building fa-3x" ></i>
+                        </center>
+                        {% endif %}
+                        <p class="card-text">
+                            {{object.business_address|linebreaks}}
+                        </p>
+                        <p class="card-text">
+                             <a href='http://{{object.website}}'>{{object.website}}</a>
+                        </p>
+                        <p class="card-text"><a href="{% url 'messaging:create-message' %}">{{object.email}}</a></p>
+                                        
+                                    
                     </div>
-                </div>
+                </div> 
+                <br>
                 <div class="card shadow">
                     <div class="card-body">
                         <h4 class="card-title">Members</h4>
-                        <table class="table table-sm">
-                            <thead>
-                                <tr class="bg-primary">
-                                    <td>Name</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for m in object.members %}
-                                <tr>
-                                    <td><a href="{% url 'base:individual-detail' pk=m.pk %}" class="tertiary-link">{{m}}</a></td>
-                                    
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                        <ul>
+                            {% for m in object.members %}
+                                <li><a href="{% url 'base:individual-detail' pk=m.pk %}" class="tertiary-link">{{m}}</a></li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
-
+            </div>
+            <div class="col-sm-12 col-md-8">
                 <div class="card shadow">
                     <div class="card-body">
                         <h4 class="card-title">Interactions</h4>
@@ -87,13 +55,17 @@ Organization Details
                                 <tr class="bg-primary">
                                     <td>Date</td>
                                     <td>Interaction</td>
-                                    <td>Participants</td>
+                                    <td>Participant</td>
                                 </tr>
                             </thead>
                             <tbody>
+                            {% for intr in object.interactions %}
                                 <tr>
-                                    <td colspan="3">No interactions yet</td>
+                                    <td>{{intr.timestamp.date}}</td>
+                                    <td><a href=" {% url 'invoicing:interaction-detail' pk=intr.pk %} ">{{intr.description}}</a></td>
+                                    <td>{{intr.contact}}</td>
                                 </tr>
+                            {% endfor %}
                             </tbody>
                         </table>
                     </div>

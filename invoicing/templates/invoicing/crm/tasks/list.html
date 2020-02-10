@@ -1,0 +1,39 @@
+{% extends 'common_data/list_template.html' %}
+
+{% block list_headings %}
+<tr>
+    <th>ID</th>
+    <th>Title</th>
+    <th>Due</th>
+    <th>Status</th>
+    <th>Actions</th>
+</tr>
+{% endblock  %}
+
+
+
+{% block list_content %}
+    {% for task in object_list %}
+        <tr>
+            <td>{{task.pk}}</td>
+            <td>{{task}}</td>
+            <td>{{task.due}}</td>
+            <td>{{task.status}}</td>
+            <td><div class="dropdown">
+                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                            Actions
+                        </button>
+                <div class="dropdown-menu" aria-labelledby="triggerId">
+                    <a class="dropdown-item" href="{% url 'invoicing:task-detail' pk=task.pk %}"> <i class="fas fa-file" aria-hidden="true"></i> View</a>
+                    <a class="dropdown-item" href=" {% url 'invoicing:update-task' pk=task.pk %} "> <i class="fas fa-edit    "></i> Update</a>
+                    {% if task.event %}
+                        <a href="{% url 'planner:event-detail' pk=task.event.pk %}" class="dropdown-item"> <i class="fas fa-calendar    "></i> View Event</a>
+
+                    {% endif %}
+                </div>
+            </div></td>
+        </tr>
+    {% endfor %}
+
+{% endblock list_content %}

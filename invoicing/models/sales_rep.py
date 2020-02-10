@@ -17,7 +17,7 @@ class SalesRepresentative(SoftDeletionModel):
     '''
     employee = models.OneToOneField('employees.Employee', 
         on_delete=models.CASCADE,
-        limit_choices_to=Q(active=True),
+        limit_choices_to=Q(Q(active=True), Q(user__isnull=False)),
         null=True,)
     number = models.AutoField(primary_key=True)
     can_reverse_invoices = models.BooleanField(default=True)

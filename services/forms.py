@@ -153,7 +153,7 @@ class ServiceWorkOrderCompleteForm(forms.ModelForm, BootstrapMixin):
     progress = forms.CharField(widget=forms.HiddenInput, required=False)
     service_time = forms.CharField(widget=forms.HiddenInput, required=False)
     class Meta:
-        fields = ["progress"]
+        fields = ["progress", 'manual_progress']
         model = models.ServiceWorkOrder
         
 

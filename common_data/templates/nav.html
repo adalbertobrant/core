@@ -35,12 +35,11 @@ $(document).ready(function(){
                 </a>
             </li>
             {% endif %}
-            {% comment %}
-            {% if request.user %}
+            {% comment %} {% if request.user %}
             <li class="nav-item" id="inbox">
-                <a href="{% url 'messaging:dashboard' %}" class="nav-link">
+                <a href="{% url 'messaging:inbox' %}" class="nav-link">
                     <i class="fas fa-envelope" style="font-size:24;"></i> 
-                    Messaging 
+                    Email
                     <sub>
                         <span class="badge badge-danger" >beta!</span>
                     </sub>

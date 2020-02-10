@@ -665,7 +665,8 @@ class ItemModelTests(TestCase):
         quantity = self.product.quantity_on_date(datetime.date.today())
         self.assertEqual(quantity, D(10))
 
-
+        self.order.status = 'draft'
+        self.order.save()
 
 class WarehouseModelTests(TestCase):
     fixtures = ['common.json', 'employees.json','inventory.json','accounts.json', 'journals.json',]

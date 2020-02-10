@@ -13,7 +13,6 @@ from accounting.models import Account, Journal, JournalEntry
 from common_data.models import SingletonModel, SoftDeletionModel
 from inventory.models.item import InventoryItem
 from inventory.schedules import run_inventory_service
-from background_task.models import Task
 from django.shortcuts import reverse
 
 

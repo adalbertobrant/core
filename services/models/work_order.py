@@ -97,7 +97,8 @@ class ServiceWorkOrder(models.Model):
         limit_choices_to=Q(user__isnull=False))#filter queryset
     notes = models.ManyToManyField('common_data.note')
     progress = models.CharField(max_length=512, blank=True, default="")
-
+    manual_progress = models.FloatField(default=0.0)
+    
     def __str__(self):
         return "WO{}".format(self.pk) #TODO string padding
 

@@ -8,8 +8,3 @@ def run_accounting_service():
     service = AccountingTaskService()
     service.run()
 
-try:
-    run_accounting_service(repeat=Task.DAILY)
-except:
-    # TODO handle exceptions better
-    pass

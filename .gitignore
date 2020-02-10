@@ -32,3 +32,4 @@ build_counter.json
 /database/config.json
 database/gui/
 *.dump
+service_config.json

@@ -22,7 +22,6 @@ from .employee_portal import *
 from employees.views.dash_plotters import employee_roles_chart
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
-from background_task import background
 
 #constants
 CREATE_TEMPLATE = os.path.join('common_data', 'create_template.html')

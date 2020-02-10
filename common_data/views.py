@@ -34,12 +34,17 @@ from django.contrib.auth.models import User
 from django.apps import apps
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from background_task.models_completed import CompletedTask
 import services
 from messaging.email_api.email import EmailSMTP
 from messaging.forms import EmailForm, PrePopulatedEmailForm
 import json 
 from employees.models import Employee
+from common_data.schedules import backup_db
+from background_task.models import Task
+
+
+backup_db(repeat=Task.DAILY)
+
 
 def user_check():
     #this function ensures that the first user on the system is linked to an employee
@@ -91,6 +96,7 @@ class PaginationMixin(object):
         return context
 
 CREATE_TEMPLATE = os.path.join('common_data', 'create_template.html')
+CRISPY_TEMPLATE = os.path.join('common_data', 'crispy_create_template.html')
 
 #########################################################
 #                  Organization Views                   #
@@ -137,7 +143,7 @@ class OrganizationListView(ContextMixin,
 #########################################################
 
 class IndividualCreateView(ContextMixin,  LoginRequiredMixin, CreateView):
-    template_name = CREATE_TEMPLATE
+    template_name = CRISPY_TEMPLATE
     form_class = forms.IndividualForm
     extra_context = {
         'title': 'Add Individual',
@@ -149,7 +155,7 @@ class IndividualCreateView(ContextMixin,  LoginRequiredMixin, CreateView):
     }
 
 class IndividualUpdateView(ContextMixin,  LoginRequiredMixin, UpdateView):
-    template_name = CREATE_TEMPLATE
+    template_name = CRISPY_TEMPLATE
     form_class = forms.IndividualForm
     model = models.Individual
     extra_context = {

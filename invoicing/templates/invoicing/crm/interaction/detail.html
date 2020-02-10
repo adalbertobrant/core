@@ -1,0 +1,25 @@
+{% extends 'window.html' %}
+{% block heading %}
+Interaction Details
+{% endblock heading %}
+
+{% block content %}
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow accent-left-lg">
+                    <div class="card-body">
+                        <h4>{{object.type}}</h4>
+                        <p class="card-text"> <i class="fa fa-clock-o" aria-hidden="true"></i> <i>{{object.timestamp}}</i></p>
+                        <p class="card-text"> <i class="fa fa-address-book" aria-hidden="true"></i> {{object.contact}}</p>
+                        <p class="card-text">{{object.description}}</p>
+                        
+                        <p class="card-text" style='text-align:right'> <i class="fas fa-user    "></i> - <b>{{object.sales_representative}}</b> </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

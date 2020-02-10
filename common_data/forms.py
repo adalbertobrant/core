@@ -62,26 +62,32 @@ class IndividualForm(forms.ModelForm, BootstrapMixin):
         exclude = 'active',
         model = models.Individual
         widgets ={
-            'address': forms.Textarea(attrs={'rows': 4}),
+            'address': forms.Textarea(attrs={'rows': 5}),
             'other_details': forms.Textarea(attrs={'rows': 8})
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.layout = Layout(
+        self.helper.layout = Layout(TabHolder(Tab(
+            'Main',
             Row(
                 Column('first_name', css_class='col-6'),
                 Column('last_name', css_class='col-6'),
             ),
-            'address',
             Row(
-                Column('email', 'phone', 'phone_two', css_class='col-6'),
-                Column('other_details', css_class='col-6'),
+                Column('email', 'phone',  css_class='col-6'),
+                Column('address',  css_class='col-6'),
             ),
-            'photo',
             'organization',
+        ), Tab(
+            'Other',
+            'phone_two',
+            'photo',
+            'other_details',
+        ))
         )
+            
         self.helper.add_input(Submit('submit', 'Submit'))
 
 class GlobalConfigForm(forms.ModelForm, BootstrapMixin):

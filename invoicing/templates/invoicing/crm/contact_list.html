@@ -1,0 +1,38 @@
+{% extends 'common_data/list_template.html' %}
+
+{% block list_headings %}
+<tr>
+    <th>Full Name</th>
+    <th>Organization</th>
+    <th>Email</th>
+    <th>Phone</th>
+    <th>Actions</th>
+</tr>
+{% endblock  %}
+
+
+
+{% block list_content %}
+    {% for contact in object_list %}
+        <tr>
+            <td>{{contact}}</td>
+            <td>{{contact.organization}}</td>
+            <td>{{contact.email}}</td>
+            <td>{{contact.phone}}</td>
+            <td><div class="dropdown">
+                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                            Actions
+                        </button>
+                <div class="dropdown-menu" aria-labelledby="triggerId">
+                    <a class="dropdown-item" href="{% url 'base:individual-detail' pk=contact.pk %}"> <i class="fas fa-file" aria-hidden="true"></i> View</a>
+                    <a class="dropdown-item" href=" {% url 'base:individual-update' pk=contact.pk %} "> <i class="fas fa-edit    "></i> Update</a>
+                    {% if contact.organization %}
+                    <a href="{% url 'base:organization-detail' pk=contact.organization.pk %}" class="dropdown-item"> <i class="fas fa-building" aria-hidden="true"></i> View Organization</a>
+                    {% endif %}
+                </div>
+            </div></td>
+        </tr>
+    {% endfor %}
+
+{% endblock list_content %}

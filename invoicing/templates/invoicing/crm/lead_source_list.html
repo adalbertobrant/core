@@ -1,0 +1,33 @@
+{% extends 'common_data/list_template.html' %}
+
+{% block list_headings %}
+<tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Actions</th>
+</tr>
+{% endblock  %}
+
+
+
+{% block list_content %}
+    {% for lead_src in object_list %}
+        <tr>
+            <td>{{lead_src}}</td>
+            <td>{{lead_src.organization}}</td>
+            <td>{{lead_src.email}}</td>
+            <td>{{lead_src.phone}}</td>
+            <td><div class="dropdown">
+                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                            Actions
+                        </button>
+                <div class="dropdown-menu" aria-labelledby="triggerId">
+                    
+                    <a class="dropdown-item" href=" {% url 'invoicing:update-lead-source' pk=lead_src.pk %} "> <i class="fas fa-edit    "></i> Update</a>
+                </div>
+            </div></td>
+        </tr>
+    {% endfor %}
+
+{% endblock list_content %}

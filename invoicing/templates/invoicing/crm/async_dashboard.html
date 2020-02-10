@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block window %}
+<br>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card-deck">
+                <div class="card shadow accent-lg">
+                    <div class="card-body">
+                        <h4>Active Leads</h4>
+                        <h2>{{active_leads}}</h2>
+                    </div>
+                </div>
+                <div class="card shadow accent-lg">
+                    <div class="card-body">
+                        <h4>Sales MVP</h4>
+                        <h2>{{sales_mvp}}</h2>
+                    </div>
+                </div>
+                <div class="card shadow accent-lg">
+                    <div class="card-body">
+                        <h4>Active Tasks</h4>
+                        <h2>{{active_tasks}}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% comment %} <br>
+    <div class="row">
+        <div class="col-12">
+            <div class="card-deck">
+                <div class="card shadow accent-lg">
+                    <div class="card-body">
+                        <h4>Cold Leads</h4>
+                        <h2>17</h2>
+                    </div>
+                </div>
+                <div class="card shadow accent-lg">
+                    <div class="card-body">
+                        <h4>Sales MVP</h4>
+                        <h2>Caleb Kandoro</h2>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> {% endcomment %}
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <h2 class="primary text-white">Sales Funnel</h2>
+            {% autoescape off %}
+            {{funnel_chart}}
+            {% endautoescape %}
+            <h2 class="primary text-white">Sales Forecast</h2>
+            {% autoescape off %}
+            {{forecast_chart}}
+            {% endautoescape %}
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

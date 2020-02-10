@@ -6,8 +6,5 @@ from background_task.models import Task
 def run_inventory_service():
     InventoryService().run()
 
-try:
-    run_inventory_service(repeat=Task.DAILY)
-except:
-    # TODO handle exceptions better
-    pass
+run_inventory_service(repeat=Task.DAILY)
+

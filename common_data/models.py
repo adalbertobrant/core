@@ -8,11 +8,14 @@ from django.db import models
 
 from latrom import settings
 import subprocess
-from background_task.models import Task
 from common_data.utilities.mixins import ContactsMixin
 from django.shortcuts import reverse
+import invoicing
 class PhoneNumber(models.Model):
     number = models.CharField(max_length=16)
+
+    def __str__(self):
+        return str(self.number)
 
 class Person(models.Model):
     first_name = models.CharField(max_length =32)
@@ -101,6 +104,17 @@ class Organization(ContactsMixin, models.Model):
         return reverse("base:organization-detail", kwargs={"pk": self.pk})
     
 
+    @property 
+    def interactions(self):
+        intrs = []
+        try:
+            for m in self.members:
+                for intr in m.interaction_set.all():
+                    intrs.append(intr)
+        except:
+            pass
+        return intrs
+
 class SingletonModel(models.Model):
     class Meta:
         abstract = True
@@ -177,7 +191,8 @@ class GlobalConfig(SingletonModel):
         choices=LOGO_CHOICES)
     pos_supervisor_password = models.CharField(max_length=16, default='1234')
     
-    def generate_hardware_id(self):
+    @staticmethod
+    def generate_hardware_id():
         result = subprocess.run('wmic csproduct get uuid', 
             stdout=subprocess.PIPE, shell=True)
         _id = result.stdout.decode('utf-8')
@@ -202,7 +217,7 @@ class GlobalConfig(SingletonModel):
 
         #setup hardware id
         if self.hardware_id == "":
-            self.hardware_id = self.generate_hardware_id()
+            self.hardware_id = GlobalConfig.generate_hardware_id()
             super().save(*args, **kwargs)
 
 
