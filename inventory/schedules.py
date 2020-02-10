@@ -6,5 +6,7 @@ from background_task.models import Task
 def run_inventory_service():
     InventoryService().run()
 
-run_inventory_service(repeat=Task.DAILY)
-
+try:
+    run_inventory_service(repeat=Task.DAILY)
+except:
+    pass

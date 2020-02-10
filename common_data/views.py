@@ -40,11 +40,10 @@ from messaging.forms import EmailForm, PrePopulatedEmailForm
 import json 
 from employees.models import Employee
 from common_data.schedules import backup_db
-from background_task.models import Task
 
-
-backup_db(repeat=Task.DAILY)
-
+try:
+    backup_db(repeat=Task.DAILY)
+except: pass
 
 def user_check():
     #this function ensures that the first user on the system is linked to an employee

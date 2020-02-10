@@ -4,9 +4,12 @@ import datetime
 from common_data.models import Individual
 from django.shortcuts import reverse
 
-default_rep = SalesRepresentative.objects.first().pk \
-    if SalesRepresentative.objects.first() else 1
-
+try:
+    default_rep = SalesRepresentative.objects.first().pk \
+        if SalesRepresentative.objects.first() else 1
+except:
+    default_rep = 1
+    
 class LeadSource(models.Model):
     name = models.CharField(max_length=64)
     description = models.TextField()

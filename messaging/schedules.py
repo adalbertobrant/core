@@ -26,9 +26,3 @@ class MessagingSyncService(AutomatedServiceMixin):
 @background
 def sync_service():
     MessagingSyncService().run()
-
-# try:
-#     sync_service(repeat=Task.DAILY)
-# except:
-#     # TODO handle exceptions better
-#     pass
