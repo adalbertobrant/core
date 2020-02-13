@@ -92,8 +92,8 @@ class CustomerForm(BootstrapMixin, forms.Form):
                             'phone_1',
                             'email',
                         
-                        css_class='form-group col-6'),
-                        Column('customer_type', 'address', css_class='form-group col-6'),
+                        css_class='form-group col-md-6 col-sm-12'),
+                        Column('customer_type', 'address', css_class='form-group col-md-6 col-sm-12'),
                         
                     ),
                                         
@@ -104,8 +104,8 @@ class CustomerForm(BootstrapMixin, forms.Form):
                     'image',
                     'organization',
                     Row(
-                        Column('banking_details', css_class='form-group col-6'),
-                        Column('billing_address', css_class='form group col-6')
+                        Column('banking_details', css_class='form-group col-md-6 col-sm-12'),
+                        Column('billing_address', css_class='form group col-md-6 col-sm-12')
                     ),
                     'other_details',
 
@@ -282,8 +282,8 @@ class ImportCustomersForm(forms.Form):
         self.helper.layout = Layout(
             HTML('<h4>File</h4>'),
             Row(
-                Column('file', css_class='col-6'),
-                Column('sheet_name', css_class='col-6'),
+                Column('file', css_class='col-md-6 col-sm-12'),
+                Column('sheet_name', css_class='col-md-6 col-sm-12'),
             ),
             HTML("""
             <h4>Columns</h4>
@@ -309,8 +309,8 @@ class ImportCustomersForm(forms.Form):
             <h4>Rows:</h4>
             <p>State the rows the list starts and ends in, both are inclusive.</p>"""),
             Row(
-                Column('start_row', css_class='col-6'),
-                Column('end_row', css_class='col-6'),
+                Column('start_row', css_class='col-md-6 col-sm-12'),
+                Column('end_row', css_class='col-md-6 col-sm-12'),
             ),
         )
         self.helper.add_input(Submit('submit', 'Submit'))
@@ -353,13 +353,13 @@ class ImportInvoiceForm(BootstrapMixin,forms.Form):
         self.helper.layout = Layout(
             HTML('<h4>File</h4>'),
             Row(
-                Column('file', css_class='col-6'),
-                Column('sheet_name', css_class='col-6'),
+                Column('file', css_class='col-md-6 col-sm-12'),
+                Column('sheet_name', css_class='col-md-6 col-sm-12'),
             ),
             HTML('<h4>Invoice</h4>'),
             Row(
-                Column('date', 'due', 'invoice_number',css_class='col-6'),
-                Column('customer', 'salesperson', 'sales_tax',css_class='col-6'),
+                Column('date', 'due', 'invoice_number',css_class='col-md-6 col-sm-12'),
+                Column('customer', 'salesperson', 'sales_tax',css_class='col-md-6 col-sm-12'),
             ),
             
             HTML("""
@@ -374,7 +374,7 @@ class ImportInvoiceForm(BootstrapMixin,forms.Form):
                 
             </ul>"""),
             Row(
-                Column('description', css_class='col-4'),
+                Column('description', css_class='col-md-4 col-sm-12'),
                 Column('unit', css_class='col-2'),
                 Column('quantity', css_class='col-2'),
                 Column('unit_price', css_class='col-2'),
@@ -384,8 +384,8 @@ class ImportInvoiceForm(BootstrapMixin,forms.Form):
             <h4>Rows:</h4>
             <p>State the rows the list starts and ends in, both are inclusive.</p>"""),
             Row(
-                Column('start_row', css_class='col-6'),
-                Column('end_row', css_class='col-6'),
+                Column('start_row', css_class='col-md-6 col-sm-12'),
+                Column('end_row', css_class='col-md-6 col-sm-12'),
             ),
         )
         self.helper.add_input(Submit('submit', 'Submit'))
@@ -409,13 +409,13 @@ class LeadForm(BootstrapMixin, forms.ModelForm):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-                Column('title', 'description', css_class='col-6'),
-                Column('owner', 'team', 'source',css_class='col-6'),
+                Column('title', 'description', css_class='col-md-6 col-sm-12'),
+                Column('owner', 'team', 'source',css_class='col-md-6 col-sm-12'),
             ),
             HTML('<h4>Contact</h4>'),
             Row(
-                Column('organization','contacts', css_class='col-6'),
-                Column('opportunity', 'probability_of_sale',css_class='col-6'),
+                Column('organization','contacts', css_class='col-md-6 col-sm-12'),
+                Column('opportunity', 'probability_of_sale',css_class='col-md-6 col-sm-12'),
             ),
             'status',
             'projected_closing',
@@ -439,8 +439,8 @@ class TaskForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-                Column('title', 'description', css_class='col-6'),
-                Column('due', 'status', 'lead', css_class='col-6'),
+                Column('title', 'description', css_class='col-md-6 col-sm-12'),
+                Column('due', 'status', 'lead', css_class='col-md-6 col-sm-12'),
             ),
             'assigned'
         )
@@ -461,8 +461,8 @@ class InteractionForm(forms.ModelForm):
         self.helper.layout = Layout(
             Row(
                 Column('contact', 'sales_representative',
-                        'type', css_class='col-6'),
-                Column('description',css_class='col-6'),
+                        'type', css_class='col-md-6 col-sm-12'),
+                Column('description',css_class='col-md-6 col-sm-12'),
             ),
             'lead',
         )

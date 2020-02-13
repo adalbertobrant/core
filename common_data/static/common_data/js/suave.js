@@ -49,8 +49,19 @@ function linkClickHandler(link){
     $('#refresher-button').css('display', 'block');
 }
 
+function toggleMobileNav(){
+    $('#nav').toggle()
+}
+
+
+
 // for employees deduction page
 $(document).ready(function () {
+    if($('#title').length){
+        if(!$('#mobile-nav').length){
+            $('#title').prepend("<button class='btn btn-primary' onclick='toggleMobileNav()' > <i class='fas fa-bars'></i> </button>")
+        }
+    }
 
     if(inIframe()){
         $('body').addClass('framed');

@@ -7,10 +7,10 @@ Update Category
 
 <div class="container">
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-md-3 col-sm-12">
             {% block other %}{% endblock %}
         </div>
-        <div class="col-sm-6">
+        <div class="col-md-6 col-sm-12">
             <div class="card ">
                 <div class="card-body">
                     <form method="POST" action="" enctype="multipart/form-data">
@@ -24,7 +24,7 @@ Update Category
 
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-md-3 col-sm-12">
                 <h5>Current Parent Category: <u>{{object.parent}}</u></h5>
                 <button class="btn primary" onclick="displayParentChangeView()">Change</button>
                 <script>

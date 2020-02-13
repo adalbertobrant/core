@@ -120,6 +120,12 @@ input:required, textarea:required, select:required {
     font-weight: 200
 }
 
+.report-nav {
+    max-width: 250px;
+    height: 100vh;
+    background-color: var(--primary);
+}
+
 .white-on-blue {
     background-color:var(--quarternary);
     border: 1px solid var(--secondary);
@@ -368,7 +374,7 @@ main {
 #nav {
     flex: 1;
     padding: 5px;
-    height: 100vh !important;
+    height: 100vh;
     background-color: var(--primary);
 }
 
@@ -650,4 +656,71 @@ span.less {
 .focus-text {
     font-size: 1.5rem;
     font-weight: 700;
+}
+
+#mobile-nav {
+    display: none;
+}
+
+@media(max-width: 575px){
+    .hero {
+        width: 250px;
+    }
+
+    main {
+        display:block;
+    }
+
+    section#title {
+        position: sticky;
+    }
+
+    #mobile-nav {
+        display:block;
+    }
+
+    #nav {
+        display: none;
+        position: absolute;
+        z-index: 10000;
+        height: fit-content;
+        width: 100%;
+        left: 0px;
+        top:60px;
+    }
+    #title-text {
+        font-size: 1.5rem;
+    }
+
+    .dashbox {
+        flex-direction: row;
+        width: 100% !important;
+        padding: 2px;
+        height: auto!important;
+        min-height: fit-content;
+    }
+
+    .dashbox h4 {
+        margin-right: 2rem;
+        margin-left: 0.75rem;
+    }
+
+    .dashbox i {
+        display: none;
+    }
+
+    .notification-window {
+        width: 80%;
+    }
+
+    .report-frame {
+        height: 100vh;
+        width: 100vw;
+    }
+
+    .report-nav {
+        max-width: 100% !important;
+        height: fit-content
+
+    }
 }

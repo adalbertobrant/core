@@ -37,16 +37,16 @@ class ServiceForm(forms.ModelForm,BootstrapMixin):
                             'Basic', 
                             'name',
                             Row(
-                                Column('flat_fee', css_class='form-group col-6'),
-                                Column('hourly_rate', css_class='form-group col-6'),
+                                Column('flat_fee', css_class='form-group col-md-6 col-sm-12'),
+                                Column('hourly_rate', css_class='form-group col-md-6 col-sm-12'),
                             ),
                         ),
                         Tab('Other',
                             'description',
                             Row(
-                                Column('category', css_class='form-group col-4'),
-                                Column('procedure', css_class='form-group col-4'),
-                                Column('frequency', css_class='form-group col-4'),
+                                Column('category', css_class='form-group col-md-4 col-sm-12'),
+                                Column('procedure', css_class='form-group col-md-4 col-sm-12'),
+                                Column('frequency', css_class='form-group col-md-4 col-sm-12'),
                             ),
                             'is_listed',
                         )
@@ -94,14 +94,14 @@ class ServiceTeamForm(forms.ModelForm, BootstrapMixin):
                         'name',
                         'description',
                         'manager',
-                        css_class="col-6"),
+                        css_class="col-md-6 col-sm-12"),
                     Column(
                         HTML(
                             """
                             <p>Select Service People:</p>
                             <div><div id="personnel-list"></div>
                             """
-                            ), css_class="col-6")
+                            ), css_class="col-md-6 col-sm-12")
                 )
             )
         self.helper.add_input(Submit('submit', 'Submit')) 
@@ -126,8 +126,8 @@ class ServiceWorkOrderForm(forms.ModelForm, BootstrapMixin):
             TabHolder(
                 Tab('Form',
                     Row(
-                        Column('date', css_class="form group col-6"),
-                        Column('time', css_class="form group col-6"),
+                        Column('date', css_class="form group col-md-6 col-sm-12"),
+                        Column('time', css_class="form group col-md-6 col-sm-12"),
                     ),
                     'works_request',
                     'description',

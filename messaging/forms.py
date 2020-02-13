@@ -99,12 +99,12 @@ class UserProfileForm(forms.ModelForm):
                     'email_address',
                     'email_password',
                     # Row(
-                    #     Column( css_class='form-group col-6'),
+                    #     Column( css_class='form-group col-md-6 col-sm-12'),
                     #     Column(HTML("""
                     #         {% load render_bundle from webpack_loader %}
                     #         {% render_bundle 'widgets' %}
                     #         <div id="avatar-preview"></div>
-                    #     """), css_class='form-group col-6'),
+                    #     """), css_class='form-group col-md-6 col-sm-12'),
                     # )
                 ),
                 Tab('Advanced',

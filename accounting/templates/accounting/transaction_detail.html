@@ -5,7 +5,7 @@ Journal Entry
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-md-6 col-sm-12">
             <div class="card shadow">
                 <div class="card-body">
                     <p><b>Status:</b> {% if object.draft %} Draft <a class="btn btn-success" href="{% url 'accounting:verify-entry' pk=object.pk %}">Verify</a> {% else %} Verified {% endif %}</p>
@@ -18,7 +18,7 @@ Journal Entry
                 </div>
             </div>
         </div>
-        <div class="col-sm-6">
+        <div class="col-md-6 col-sm-12">
                     <table class="table table-sm">
                         <thead>
                             <tr class="bg-primary">
@@ -46,7 +46,7 @@ Journal Entry
                     </table>
             
         </div>
-        <div class="col-sm-3"></div>
+        <div class="col-md-3 col-sm-12"></div>
 
     </div>
 </div>

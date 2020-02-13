@@ -72,12 +72,12 @@ class IndividualForm(forms.ModelForm, BootstrapMixin):
         self.helper.layout = Layout(TabHolder(Tab(
             'Main',
             Row(
-                Column('first_name', css_class='col-6'),
-                Column('last_name', css_class='col-6'),
+                Column('first_name', css_class='col-md-6 col-sm-12'),
+                Column('last_name', css_class='col-md-6 col-sm-12'),
             ),
             Row(
-                Column('email', 'phone',  css_class='col-6'),
-                Column('address',  css_class='col-6'),
+                Column('email', 'phone',  css_class='col-md-6 col-sm-12'),
+                Column('address',  css_class='col-md-6 col-sm-12'),
             ),
             'organization',
         ), Tab(
@@ -132,15 +132,15 @@ class GlobalConfigForm(forms.ModelForm, BootstrapMixin):
                     Row(
                         Column('organization_logo',
                                 'logo_aspect_ratio',
-                            css_class='form-group col-6'),
+                            css_class='form-group col-md-6 col-sm-12'),
                         Column(
                             HTML("""
                         <img id="id-logo-preview" width="300" height="200" class="img" src="" alt="logo image" />"""),
-                            css_class='form-group col-6')
+                            css_class='form-group col-md-6 col-sm-12')
                     ),
                     Row(
                     
-                        Column('payment_details', css_class='form-group col-6'),
+                        Column('payment_details', css_class='form-group col-md-6 col-sm-12'),
                         Column(
                             Row(Column('organization_email', 
                                 css_class='form-group col-12')),
@@ -148,7 +148,7 @@ class GlobalConfigForm(forms.ModelForm, BootstrapMixin):
                                 css_class='form-group col-12')),
                             Row(Column('organization_website', 
                                 css_class='form-group col-12')),
-                            css_class='form-group col-6'
+                            css_class='form-group col-md-6 col-sm-12'
                         )
                     )
                     ),

@@ -105,8 +105,8 @@ class SupplierForm(BootstrapMixin, forms.Form):
                     ),
                     'email',
                     Row(
-                        Column('address', css_class='form-group col-6'),
-                        Column('banking_details', css_class='form-group col-6'),
+                        Column('address', css_class='form-group col-md-6 col-sm-12'),
+                        Column('banking_details', css_class='form-group col-md-6 col-sm-12'),
                     ),
                 ),
                     
@@ -230,22 +230,22 @@ class ProductForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                     'description',
                     'unit',
                     Row(
-                        Column(Div('initial_quantity'), css_class='form-group col-4'),
-                        Column('minimum_order_level', css_class="form-group col-4"),
-                        Column('maximum_stock_level', css_class="form-group col-4"),
+                        Column(Div('initial_quantity'), css_class='form-group col-md-4 col-sm-12'),
+                        Column('minimum_order_level', css_class="form-group col-md-4 col-sm-12"),
+                        Column('maximum_stock_level', css_class="form-group col-md-4 col-sm-12"),
                     ),
                     Row(
-                        Column('length', css_class="form group col-4"),
-                        Column('width', css_class="form group col-4"),
-                        Column('height', css_class="form group col-4"),
+                        Column('length', css_class="form group col-md-4 col-sm-12"),
+                        Column('width', css_class="form group col-md-4 col-sm-12"),
+                        Column('height', css_class="form group col-md-4 col-sm-12"),
                     ),
                     Row(
-                        Column('supplier', css_class="form group col-6"),
-                        Column('warehouse', css_class="form group col-6"),
+                        Column('supplier', css_class="form group col-md-6 col-sm-12"),
+                        Column('warehouse', css_class="form group col-md-6 col-sm-12"),
                     ),
                     Row(
-                        Column('category', css_class="form group col-6"),
-                        Column('image', css_class="form group col-6"),
+                        Column('category', css_class="form group col-md-6 col-sm-12"),
+                        Column('image', css_class="form group col-md-6 col-sm-12"),
                     ),
                     ),
                 ),
@@ -314,37 +314,37 @@ class EquipmentForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                         Column('name',
                     'unit_purchase_price',
                     'type',
-                    'initial_quantity', css_class='col-6 form-group'),
+                    'initial_quantity', css_class='col-md-6 col-sm-12 form-group'),
                     Column('unit',
-                    'description', css_class='col-6 form-group')
+                    'description', css_class='col-md-6 col-sm-12 form-group')
                     )
                 ),
                 Tab('Details',
                     
                     Row(
-                        Column('length', css_class='form group col-4'),
-                        Column('width', css_class='form group col-4'),
-                        Column('height', css_class='form group col-4'),
+                        Column('length', css_class='form group col-md-4 col-sm-12'),
+                        Column('width', css_class='form group col-md-4 col-sm-12'),
+                        Column('height', css_class='form group col-md-4 col-sm-12'),
                     ),
                     Row(
-                        Column('supplier', css_class='form group col-6'),
-                        Column('warehouse', css_class='form group col-6'),
+                        Column('supplier', css_class='form group col-md-6 col-sm-12'),
+                        Column('warehouse', css_class='form group col-md-6 col-sm-12'),
                     ),
                     Row(
-                        Column('category', css_class='form group col-6'),
-                        Column('image', css_class='form group col-6'),
+                        Column('category', css_class='form group col-md-6 col-sm-12'),
+                        Column('image', css_class='form group col-md-6 col-sm-12'),
                     ), 
                 ),
                 Tab('Asset',
                     'record_as_asset',
                     'asset_category',
                     Row(
-                        Column('initial_value', css_class="col-6"),
-                        Column('salvage_value', css_class="col-6"),
+                        Column('initial_value', css_class="col-md-6 col-sm-12"),
+                        Column('salvage_value', css_class="col-md-6 col-sm-12"),
                     ),
                     Row(
-                        Column('date_purchased', css_class="col-6"),
-                        Column('depreciation_period', css_class="col-6"),
+                        Column('date_purchased', css_class="col-md-6 col-sm-12"),
+                        Column('depreciation_period', css_class="col-md-6 col-sm-12"),
                     ),
                 )
             ),
@@ -446,9 +446,9 @@ class ConsumableForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                     Row(
                         Column('name',
                     'unit_purchase_price',
-                    'initial_quantity',css_class='col-6 form-group'),
+                    'initial_quantity',css_class='col-md-6 col-sm-12 form-group'),
                     Column('unit',
-                    'description', css_class='col-6 form-group')
+                    'description', css_class='col-md-6 col-sm-12 form-group')
                     )
             ),
                 Tab('Details',
@@ -505,8 +505,8 @@ class OrderForm(forms.ModelForm, BootstrapMixin):
             TabHolder(
                 Tab('Basic',
                 Row(
-                    Column('date', 'expected_receipt_date', 'due', css_class='form group col-6'),
-                    Column('supplier','ship_to', 'issuing_inventory_controller',css_class='form group col-6'),
+                    Column('date', 'expected_receipt_date', 'due', css_class='form group col-md-6 col-sm-12'),
+                    Column('supplier','ship_to', 'issuing_inventory_controller',css_class='form group col-md-6 col-sm-12'),
                 ),
                 'tax',
                     ),
@@ -517,8 +517,8 @@ class OrderForm(forms.ModelForm, BootstrapMixin):
                             'bill_to', 
                             'tracking_number',
                             'make_payment',
-                            css_class='col-6'),
-                        Column('notes', css_class='col-6'),
+                            css_class='col-md-6 col-sm-12'),
+                        Column('notes', css_class='col-md-6 col-sm-12'),
                     )),
             ),
             HTML(
@@ -635,9 +635,9 @@ class WareHouseForm(forms.ModelForm, BootstrapMixin):
             'description',
             'inventory_controller',
             Row(
-                Column('length', css_class='form group col-4'),
-                Column('width', css_class='form group col-4'),
-                Column('height', css_class='form group col-4'),
+                Column('length', css_class='form group col-md-4 col-sm-12'),
+                Column('width', css_class='form group col-md-4 col-sm-12'),
+                Column('height', css_class='form group col-md-4 col-sm-12'),
             ),
         )
         self.helper.add_input(Submit('submit', 'Submit'))
@@ -793,9 +793,9 @@ class StorageMediaForm(forms.ModelForm, BootstrapMixin):
                 Tab('Basic',
                     'name',
                     Row(
-                        Column('length', css_class="form group col-4"),
-                        Column('width', css_class="form group col-4"),
-                        Column('height', css_class="form group col-4"),
+                        Column('length', css_class="form group col-md-4 col-sm-12"),
+                        Column('width', css_class="form group col-md-4 col-sm-12"),
+                        Column('height', css_class="form group col-md-4 col-sm-12"),
                     ),
                     'capacity',
                 ),
@@ -859,8 +859,8 @@ class ImportItemsForm(forms.Form):
         self.helper.layout = Layout(
             HTML('<h4>File</h4>'),
             Row(
-                Column('file', css_class='col-6'),
-                Column('sheet_name', css_class='col-6'),
+                Column('file', css_class='col-md-6 col-sm-12'),
+                Column('sheet_name', css_class='col-md-6 col-sm-12'),
             ),
             'warehouse',
             HTML("""
@@ -887,8 +887,8 @@ class ImportItemsForm(forms.Form):
             <h4>Rows:</h4>
             <p>State the rows the list starts and ends in, both are inclusive.</p>"""),
             Row(
-                Column('start_row', css_class='col-6'),
-                Column('end_row', css_class='col-6'),
+                Column('start_row', css_class='col-md-6 col-sm-12'),
+                Column('end_row', css_class='col-md-6 col-sm-12'),
             ),
         )
         self.helper.add_input(Submit('submit', 'Submit'))
@@ -940,8 +940,8 @@ class ImportSuppliersForm(forms.Form):
         self.helper.layout = Layout(
             HTML('<h4>File</h4>'),
             Row(
-                Column('file', css_class='col-6'),
-                Column('sheet_name', css_class='col-6'),
+                Column('file', css_class='col-md-6 col-sm-12'),
+                Column('sheet_name', css_class='col-md-6 col-sm-12'),
             ),
             HTML("""
             <h4>Columns</h4>
@@ -959,14 +959,14 @@ class ImportSuppliersForm(forms.Form):
                 Column('address', css_class='col-2'),
                 Column('email', css_class='col-2'),
                 Column('phone', css_class='col-2'),
-                Column('account_balance', css_class='col-4'),
+                Column('account_balance', css_class='col-md-4 col-sm-12'),
             ),
             HTML("""
             <h4>Rows:</h4>
             <p>State the rows the list starts and ends in, both are inclusive.</p>"""),
             Row(
-                Column('start_row', css_class='col-6'),
-                Column('end_row', css_class='col-6'),
+                Column('start_row', css_class='col-md-6 col-sm-12'),
+                Column('end_row', css_class='col-md-6 col-sm-12'),
             ),
         )
         self.helper.add_input(Submit('submit', 'Submit'))
@@ -991,11 +991,11 @@ class EquipmentandConsumablesPurchaseForm(forms.ModelForm, BootstrapMixin):
             Row(
                 Column(
                     Row(
-                        Column('date', css_class='col-6'),
-                        Column('due', css_class='col-6'),
-                    ),  'vendor',  'warehouse', 'paid_in_full',css_class='col-6'),
+                        Column('date', css_class='col-md-6 col-sm-12'),
+                        Column('due', css_class='col-md-6 col-sm-12'),
+                    ),  'vendor',  'warehouse', 'paid_in_full',css_class='col-md-6 col-sm-12'),
                 Column('reference', 'memo',
-                    css_class='col-6')
+                    css_class='col-md-6 col-sm-12')
                 ),
                 
                 'data',

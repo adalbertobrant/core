@@ -45,16 +45,16 @@ class AssetForm(forms.ModelForm, BootstrapMixin):
             TabHolder(
                 Tab('basic',
                     Row(
-                        Column('name', css_class='form-group col-6'),
-                        Column('created_by', css_class='form-group col-6'),
+                        Column('name', css_class='form-group col-md-6 col-sm-12'),
+                        Column('created_by', css_class='form-group col-md-6 col-sm-12'),
                     ),
                     Row(
-                        Column('initial_value', css_class='form-group col-6'),
-                        Column('salvage_value', css_class='form-group col-6'),
+                        Column('initial_value', css_class='form-group col-md-6 col-sm-12'),
+                        Column('salvage_value', css_class='form-group col-md-6 col-sm-12'),
                     ),
                     Row(
-                        Column('depreciation_period', css_class='form-group col-6'),
-                        Column('depreciation_method', css_class='form-group col-6'),                        
+                        Column('depreciation_period', css_class='form-group col-md-6 col-sm-12'),
+                        Column('depreciation_method', css_class='form-group col-md-6 col-sm-12'),                        
                     ),
                     'init_date',
                     'category',
@@ -86,14 +86,14 @@ class ExpenseForm(forms.ModelForm, BootstrapMixin):
                 Tab('Basic',
                     
                     Row(
-                        Column('amount', css_class='form-group col-6'),
-                        Column('date', css_class='form-group col-6'),                        
+                        Column('amount', css_class='form-group col-md-6 col-sm-12'),
+                        Column('date', css_class='form-group col-md-6 col-sm-12'),                        
                     ),
                     'description',
                     'category',
                     Row(
-                        Column('recorded_by', css_class='form-group col-6'),                        
-                        Column('reference', css_class='form-group col-6'),                        
+                        Column('recorded_by', css_class='form-group col-md-6 col-sm-12'),                        
+                        Column('reference', css_class='form-group col-md-6 col-sm-12'),                        
                     )
                 ),
                 Tab('Billing',
@@ -121,17 +121,17 @@ class RecurringExpenseForm(forms.ModelForm, BootstrapMixin):
             TabHolder(
                 Tab('basic',
                     Row(
-                        Column('start_date', css_class='form-group col-6'),
-                        Column('expiration_date', css_class='form-group col-6'),
+                        Column('start_date', css_class='form-group col-md-6 col-sm-12'),
+                        Column('expiration_date', css_class='form-group col-md-6 col-sm-12'),
                     ),
                     Row(
-                        Column('amount', css_class='form-group col-6'),
-                        Column('cycle', css_class='form-group col-6'),
+                        Column('amount', css_class='form-group col-md-6 col-sm-12'),
+                        Column('cycle', css_class='form-group col-md-6 col-sm-12'),
                     ),
                     'description',
                     Row(
-                        Column('category', css_class='form-group col-6'),
-                        Column('recorded_by', css_class='form-group col-6'),
+                        Column('category', css_class='form-group col-md-6 col-sm-12'),
+                        Column('recorded_by', css_class='form-group col-md-6 col-sm-12'),
                     ),
                     'reference'
                 ),
@@ -161,12 +161,12 @@ class DirectPaymentForm(BootstrapMixin, forms.Form):
                 Tab('basic',
                     'date',
                     Row(
-                        Column('paid_to', css_class='form-group col-6'),
-                        Column('account_paid_from', css_class='form-group col-6'),
+                        Column('paid_to', css_class='form-group col-md-6 col-sm-12'),
+                        Column('account_paid_from', css_class='form-group col-md-6 col-sm-12'),
                         ),
                     Row(
-                        Column('method', css_class='form-group col-6'),
-                        Column('amount', css_class='form-group col-6'),                
+                        Column('method', css_class='form-group col-md-6 col-sm-12'),
+                        Column('amount', css_class='form-group col-md-6 col-sm-12'),                
                         ),
                         'reference',
                         'notes'
@@ -216,12 +216,12 @@ class SimpleJournalEntryForm(forms.ModelForm, BootstrapMixin):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-                Column('date', css_class="col-6"),
-                Column('created_by', css_class="col-6"),
+                Column('date', css_class="col-md-6 col-sm-12"),
+                Column('created_by', css_class="col-md-6 col-sm-12"),
             ),
             Row(
-                Column('credit', css_class="col-6"),
-                Column('debit', css_class="col-6"),
+                Column('credit', css_class="col-md-6 col-sm-12"),
+                Column('debit', css_class="col-md-6 col-sm-12"),
             ),
             'memo',
             'journal',
@@ -244,8 +244,8 @@ class ComplexEntryForm(forms.ModelForm, BootstrapMixin):
         self.helper.layout = Layout(
             Row(
                 Column('date','journal', 'created_by',
-                    css_class='form group col-6'),
-                Column('draft','memo', css_class='form group col-6'),
+                    css_class='form group col-md-6 col-sm-12'),
+                Column('draft','memo', css_class='form group col-md-6 col-sm-12'),
             ),            
             HTML(
                 """
@@ -277,8 +277,8 @@ class AccountForm(forms.ModelForm, BootstrapMixin):
                     'balance',
                     
                     Row(
-                        Column('balance_sheet_category', css_class='form-group col-6'),
-                        Column('type', css_class='form-group col-6'),
+                        Column('balance_sheet_category', css_class='form-group col-md-6 col-sm-12'),
+                        Column('type', css_class='form-group col-md-6 col-sm-12'),
                     ),
                     'description',
                 ),
@@ -288,8 +288,8 @@ class AccountForm(forms.ModelForm, BootstrapMixin):
                     'parent_account',
                     'pk',
                     Row(
-                        Column('control_account', css_class='form-group col-6'),
-                        Column('bank_account', css_class='form-group col-6'),
+                        Column('control_account', css_class='form-group col-md-6 col-sm-12'),
+                        Column('bank_account', css_class='form-group col-md-6 col-sm-12'),
                     ),
                 ),
             )
@@ -363,8 +363,8 @@ class BillForm(BootstrapMixin, forms.ModelForm):
         self.helper.layout = Layout(
             'data',
             Row(
-                Column('date', 'due', css_class='col-6'),
-                Column('vendor', 'reference', css_class='col-6'),
+                Column('date', 'due', css_class='col-md-6 col-sm-12'),
+                Column('vendor', 'reference', css_class='col-md-6 col-sm-12'),
             ),
             'memo',
             HTML("<div id='bill-table'></div>")
@@ -387,8 +387,8 @@ class BillPaymentForm(BootstrapMixin, forms.ModelForm):
         self.helper.layout = Layout(
             'bill',
             Row(
-                Column('date', 'account', 'amount', css_class='col-6'),
-                Column('memo', css_class='col-6'),
+                Column('date', 'account', 'amount', css_class='col-md-6 col-sm-12'),
+                Column('memo', css_class='col-md-6 col-sm-12'),
             ),
             HTML("<div id='bill-table'></div>")
         )
@@ -413,8 +413,8 @@ class AccountImportForm(forms.Form):
         self.helper.layout = Layout(
             HTML('<h4>File</h4>'),
             Row(
-                Column('file', css_class='col-6'),
-                Column('sheet_name', css_class='col-6'),
+                Column('file', css_class='col-md-6 col-sm-12'),
+                Column('sheet_name', css_class='col-md-6 col-sm-12'),
             ),
             HTML("""
             <h4>Columns</h4>
@@ -438,8 +438,8 @@ class AccountImportForm(forms.Form):
             <h4>Rows:</h4>
             <p>State the rows the list starts and ends in, both are inclusive.</p>"""),
             Row(
-                Column('start_row', css_class='col-6'),
-                Column('end_row', css_class='col-6'),
+                Column('start_row', css_class='col-md-6 col-sm-12'),
+                Column('end_row', css_class='col-md-6 col-sm-12'),
             ),
         )
         self.helper.add_input(Submit('submit', 'Submit'))
@@ -474,8 +474,8 @@ class ImportJournalEntryForm(BootstrapMixin, forms.Form):
         self.helper.layout = Layout(
             HTML('<h4>File</h4>'),
             Row(
-                Column('file', css_class='col-6'),
-                Column('sheet_name', css_class='col-6'),
+                Column('file', css_class='col-md-6 col-sm-12'),
+                Column('sheet_name', css_class='col-md-6 col-sm-12'),
             ),
             HTML("""
             <h4>Columns</h4>
@@ -500,8 +500,8 @@ class ImportJournalEntryForm(BootstrapMixin, forms.Form):
             <h4>Rows:</h4>
             <p>State the rows the list starts and ends in, both are inclusive.</p>"""),
             Row(
-                Column('start_row', css_class='col-6'),
-                Column('end_row', css_class='col-6'),
+                Column('start_row', css_class='col-md-6 col-sm-12'),
+                Column('end_row', css_class='col-md-6 col-sm-12'),
             ),
             )
         self.helper.add_input(Submit('submit', 'Submit'))
@@ -538,8 +538,8 @@ class ImportExpensesForm(BootstrapMixin, forms.Form):
         self.helper.layout = Layout(
             HTML('<h4>File</h4>'),
             Row(
-                Column('file', css_class='col-6'),
-                Column('sheet_name', css_class='col-6'),
+                Column('file', css_class='col-md-6 col-sm-12'),
+                Column('sheet_name', css_class='col-md-6 col-sm-12'),
             ),
             'account_paid_from',
             HTML("""
@@ -561,8 +561,8 @@ class ImportExpensesForm(BootstrapMixin, forms.Form):
             <h4>Rows:</h4>
             <p>State the rows the list starts and ends in, both are inclusive.</p>"""),
             Row(
-                Column('start_row', css_class='col-6'),
-                Column('end_row', css_class='col-6'),
+                Column('start_row', css_class='col-md-6 col-sm-12'),
+                Column('end_row', css_class='col-md-6 col-sm-12'),
             ),
             )
         self.helper.add_input(Submit('submit', 'Submit'))
