@@ -8,10 +8,10 @@
                 <div class="col-12">{% block pre_page %}{% endblock %}</div>
             </div>
             <div class="row no-gutters">
-                <div class="col-lg-3 col-sm-12" style='max-width:250px;' id='nav'>
+                <div class="col-md-3 col-sm-12 report-nav" id='nav'>
                     {% include "nav.html" %}
                 </div>
-                <div class="col-lg-9 col-sm-12" id='scroll-frame'>
+                <div class="col-md-9 col-sm-12" id='scroll-frame'>
     {% endif %}
         <div class="{% if pdf_link %}page-container{% else %}print-page-container{% endif %}"> 
             <div class="custom-page">
@@ -40,6 +40,6 @@
         }
     })
 </script>
- 
+ <script src="{% static 'common_data/js/suave.js' %}"></script>
 </body>
 </html>

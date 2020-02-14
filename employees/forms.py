@@ -129,21 +129,21 @@ class PayGradeForm(forms.ModelForm, BootstrapMixin):
                 Tab('basic',
                     'name',
                     Row(
-                        Column('monthly_leave_days', css_class='form-group col-6'),
-                        Column('maximum_leave_days', css_class='form-group col-6')
+                        Column('monthly_leave_days', css_class='form-group col-md-6 col-sm-12'),
+                        Column('maximum_leave_days', css_class='form-group col-md-6 col-sm-12')
                     ),                    
                     Row(
-                        Column('salary', css_class='form-group col-6'),
-                        Column('pay_frequency', css_class='form-group col-6'),
+                        Column('salary', css_class='form-group col-md-6 col-sm-12'),
+                        Column('pay_frequency', css_class='form-group col-md-6 col-sm-12'),
                     ),
                     Row(
-                        Column('hourly_rate', css_class='form-group col-4'),
-                        Column('overtime_rate', css_class='form-group col-4'),
-                        Column('overtime_two_rate', css_class='form-group col-4'),                        
+                        Column('hourly_rate', css_class='form-group col-md-4 col-sm-12'),
+                        Column('overtime_rate', css_class='form-group col-md-4 col-sm-12'),
+                        Column('overtime_two_rate', css_class='form-group col-md-4 col-sm-12'),                        
                     ),
                     Row(
-                        Column('commission', css_class='form-group col-6'),
-                        Column('lunch_duration', css_class='form-group col-6'),
+                        Column('commission', css_class='form-group col-md-6 col-sm-12'),
+                        Column('lunch_duration', css_class='form-group col-md-6 col-sm-12'),
                     ),
                     'subtract_lunch_time_from_working_hours',
                 ),
@@ -255,12 +255,12 @@ class EmployeeForm(forms.ModelForm, BootstrapMixin):
                 Tab('Basic', 
                     HTML(f'<br/><p>{user_string}</p>'),
                     Row(
-                        Column('first_name', css_class='form-group col-6'),
-                        Column('last_name', css_class='form-group col-6'),
+                        Column('first_name', css_class='form-group col-md-6 col-sm-12'),
+                        Column('last_name', css_class='form-group col-md-6 col-sm-12'),
                     ), 
                     Row(
-                        Column('email','phone', css_class='form-group col-6'),
-                        Column('address', css_class='form-group col-6'),
+                        Column('email','phone', css_class='form-group col-md-6 col-sm-12'),
+                        Column('address', css_class='form-group col-md-6 col-sm-12'),
                     ),
                     ),
                     Tab('Personal',
@@ -459,8 +459,8 @@ class LeaveRequestForm(forms.ModelForm, BootstrapMixin):
             TabHolder(
                 Tab('basic',
                     Row(
-                        Column('start_date', css_class='form-group col-6'),
-                        Column('end_date', css_class='form-group col-6'),
+                        Column('start_date', css_class='form-group col-md-6 col-sm-12'),
+                        Column('end_date', css_class='form-group col-md-6 col-sm-12'),
                     ),
                     'employee',
                     'category',
@@ -616,17 +616,17 @@ class ContractForm(forms.ModelForm, BootstrapMixin):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-                Column('start_date', css_class='col-4'),
-                Column('end_of_probation', css_class='col-4'),
-                Column('termination_date', css_class='col-4'),
+                Column('start_date', css_class='col-md-4 col-sm-12'),
+                Column('end_of_probation', css_class='col-md-4 col-sm-12'),
+                Column('termination_date', css_class='col-md-4 col-sm-12'),
             ),
             Row(
-                Column('employee', css_class='col-6'),
-                Column('job_position', css_class='col-6'),
+                Column('employee', css_class='col-md-6 col-sm-12'),
+                Column('job_position', css_class='col-md-6 col-sm-12'),
             ),
             Row(
-                Column('employee_category', css_class='col-6'),
-                Column('nature_of_employment', css_class='col-6'),
+                Column('employee_category', css_class='col-md-6 col-sm-12'),
+                Column('nature_of_employment', css_class='col-md-6 col-sm-12'),
             )
         )
         self.helper.add_input(Submit('Submit', 'submit'))
@@ -683,8 +683,8 @@ class ImportEmployeesForm(forms.Form):
         self.helper.layout = Layout(
             HTML('<h4>File</h4>'),
             Row(
-                Column('file', css_class='col-6'),
-                Column('sheet_name', css_class='col-6'),
+                Column('file', css_class='col-md-6 col-sm-12'),
+                Column('sheet_name', css_class='col-md-6 col-sm-12'),
             ),
             HTML("""
             <h4>Columns</h4>
@@ -709,8 +709,8 @@ class ImportEmployeesForm(forms.Form):
             <h4>Rows:</h4>
             <p>State the rows the list starts and ends in, both are inclusive.</p>"""),
             Row(
-                Column('start_row', css_class='col-6'),
-                Column('end_row', css_class='col-6'),
+                Column('start_row', css_class='col-md-6 col-sm-12'),
+                Column('end_row', css_class='col-md-6 col-sm-12'),
             ),
         )
         self.helper.add_input(Submit('submit', 'Submit'))
@@ -727,8 +727,8 @@ class OutstandingPayslipsForm(forms.Form):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-                Column('payroll_officer', css_class='col-6'),
-                Column('password', css_class='col-6'),
+                Column('payroll_officer', css_class='col-md-6 col-sm-12'),
+                Column('password', css_class='col-md-6 col-sm-12'),
             ),
             Submit('submit', 'Submit'),
             HTML("""

@@ -33,24 +33,24 @@ class EventForm(forms.ModelForm, BootstrapMixin):
         self.helper = FormHelper()
         self.helper.layout = Layout(
                     Row(
-                        Column('date', css_class='form-group col-6'),
+                        Column('date', css_class='form-group col-md-6 col-sm-12'),
                         Column(
                             Row(
-                        Column('start_time', css_class='form-group col-6'),
-                        Column('end_time', css_class='form-group col-6'),
-                    ), css_class='form-group col-6'),
+                        Column('start_time', css_class='form-group col-md-6 col-sm-12'),
+                        Column('end_time', css_class='form-group col-md-6 col-sm-12'),
+                    ), css_class='form-group col-md-6 col-sm-12'),
                     ),
                     Row(
                         Column(
                             Row(
-                        Column('label', 'reminder', css_class='form-group col-6'),
-                        Column('icon', 'priority', css_class='form-group col-6'),
-                    ),css_class='col-6'),
-                    Column('description' ,css_class='col-6')
+                        Column('label', 'reminder', css_class='form-group col-md-6 col-sm-12'),
+                        Column('icon', 'priority', css_class='form-group col-md-6 col-sm-12'),
+                    ),css_class='col-md-6 col-sm-12'),
+                    Column('description' ,css_class='col-md-6 col-sm-12')
                     ),
                     Row(
                         Column( 'repeat','repeat_active',
-                            css_class='form-group col-6'),
+                            css_class='form-group col-md-6 col-sm-12'),
                         Column(
                             HTML(
                                 """
@@ -58,7 +58,7 @@ class EventForm(forms.ModelForm, BootstrapMixin):
                                 <div id="participant-select">
                                 </div>
                                 """
-                            ), css_class="form-group col-6")
+                            ), css_class="form-group col-md-6 col-sm-12")
                     ),
                     
                     

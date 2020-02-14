@@ -41,7 +41,7 @@ def process_data(items, inv):
 
 class InvoiceListView( ContextMixin, PaginationMixin, FilterView):
     extra_context = {
-        "title": "Quotation + Invoice List",
+        "title": "Quotations + Invoices",
         "new_link": reverse_lazy("invoicing:create-invoice"),
         "action_list": [
             {
