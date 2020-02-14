@@ -12,102 +12,87 @@ Create Quotation
 
 {% block content %}
 <style>
-        tr, td, th {
-            border: 0px !important;
-        }
-    </style>
+    tr,
+    td,
+    th {
+        border: 0px !important;
+    }
+</style>
 <div class="container">
     <div class="row">
         <div class="col-sm-12 shadow white">
             <form action="" method="POST">
                 {{form.errors}}
-                <table class="table table-sm">
-
-
-                    <tbody>
-                        <tr>
-                            <td valign="top">
-                                <table class=" table-sm">
-                                    <tbody>
-                                        <tr>
-                                            <th>Customer</th>
-                                            <td>{{form.customer}}<input type="hidden" id="box-array"
-                                                    value="{{box_array}}"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Quoted By</th>
-                                            <td>{{form.salesperson}}{% csrf_token %}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                            <td>
-                                <table class="table table-sm">
-                                    <tbody>
-                                        <tr>
-                                            <th>Quotation Date</th>
-                                            <td>{{form.quotation_date}}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Quotation Valid Until</th>
-                                            <td>{{form.quotation_valid}}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                                <input type="hidden" name="status" value="quotation">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <ul class="nav nav-tabs">
-                                    <li class="nav-item"><a class="nav-link active" href="#lines"
-                                            data-toggle="tab">Quotation Lines</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="#comments-terms"
-                                            data-toggle="tab">T's & C's</a></li>
-                                </ul>
-                                <div class="tab-content panel-body">
-                                    <div id="lines" class="tab-pane active">
-                                        <div id="div_id_recipient" class="form-group"> <label for="id_recipient"
-                                                class="col-form-label  requiredField">
-                                                Quotation Lines</label>
-                                            <div id="invoice-table"></div>
-                                        </div>
-                                    </div>
-                                    <div id="comments-terms" class="tab-pane">
-                                        <div id="div_id_recipient" class="form-group"> <label for="id_recipient"
-                                                class="col-form-label  requiredField">
-                                                Terms and Comments</label>
-                                            <div class="{{style}}-footer-cell">
-                                                <div class="{{style}}-footer-cell-heading">
-                                                    Terms:
-                                                </div>
-                                                <div class="{{style}}-footer-cell-contents">
-                                                    {{form.terms}}
-                                                </div>
-                                            </div>
-                                            <div class="{{style}}-footer-cell">
-                                                <div class="{{style}}-footer-cell-heading">
-                                                    Comments:
-                                                </div>
-                                                <div class="{{style}}-footer-cell-contents">
-                                                    {{form.comments}}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        <table class=" table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Customer</th>
+                                    <td>{{form.customer}}<input type="hidden" id="box-array" value="{{box_array}}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Quoted By</th>
+                                    <td>{{form.salesperson}}{% csrf_token %}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Quotation Date</th>
+                                    <td>{{form.quotation_date}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Quotation Valid Until</th>
+                                    <td>{{form.quotation_valid}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <input type="hidden" name="status" value="quotation">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item"><a class="nav-link active" href="#lines" data-toggle="tab">Quotation Lines</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#comments-terms" data-toggle="tab">T's & C's</a></li>
+                </ul>
+                <div class="tab-content panel-body">
+                    <div id="lines" class="tab-pane active">
+                        <div id="div_id_recipient" class="form-group"> <label for="id_recipient"
+                                class="col-form-label  requiredField">
+                                Quotation Lines</label>
+                            <div id="invoice-table"></div>
+                        </div>
+                    </div>
+                    <div id="comments-terms" class="tab-pane">
+                        <div id="div_id_recipient" class="form-group"> <label for="id_recipient"
+                                class="col-form-label  requiredField">
+                                Terms and Comments</label>
+                            <div class="{{style}}-footer-cell">
+                                <div class="{{style}}-footer-cell-heading">
+                                    Terms:
                                 </div>
-                                <button class="btn btn-info " type="submit">
-                                    Submit
-                                </button>
-
-                            </td>
-                        </tr>
-                        <tr>
-                        </tr>
-                    </tbody>
-
-                </table>
+                                <div class="{{style}}-footer-cell-contents">
+                                    {{form.terms}}
+                                </div>
+                            </div>
+                            <div class="{{style}}-footer-cell">
+                                <div class="{{style}}-footer-cell-heading">
+                                    Comments:
+                                </div>
+                                <div class="{{style}}-footer-cell-contents">
+                                    {{form.comments}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-info " type="submit">
+                    Submit
+                </button>
             </form>
             {% render_bundle 'invoicing' %}
         </div>

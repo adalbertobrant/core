@@ -698,12 +698,12 @@ class ImportEmployeesForm(forms.Form):
                 
             </ul>"""),
             Row(
-                Column('first_name', css_class='col-2'),
-                Column('last_name', css_class='col-2'),
-                Column('address', css_class='col-2'),
-                Column('email', css_class='col-2'),
-                Column('phone', css_class='col-2'),
-                Column('date_of_birth', css_class='col-2'),
+                Column('first_name', css_class='col-md-2 col-sm-12'),
+                Column('last_name', css_class='col-md-2 col-sm-12'),
+                Column('address', css_class='col-md-2 col-sm-12'),
+                Column('email', css_class='col-md-2 col-sm-12'),
+                Column('phone', css_class='col-md-2 col-sm-12'),
+                Column('date_of_birth', css_class='col-md-2 col-sm-12'),
             ),
             HTML("""
             <h4>Rows:</h4>

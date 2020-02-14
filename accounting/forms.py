@@ -427,12 +427,12 @@ class AccountImportForm(forms.Form):
                 <li>Balance sheet category - each cell must be populated with one of current_assets, long-term-assets, current-liabilities, long_term-liabilities, equity or not_included </li>
             </ul>"""),
             Row(
-                Column('name', css_class='col-2'),
-                Column('description', css_class='col-2'),
-                Column('balance', css_class='col-2'),
-                Column('code', css_class='col-2'),
-                Column('type', css_class='col-2'),
-                Column('balance_sheet_category', css_class='col-2'),
+                Column('name', css_class='col-md-2 col-sm-12'),
+                Column('description', css_class='col-md-2 col-sm-12'),
+                Column('balance', css_class='col-md-2 col-sm-12'),
+                Column('code', css_class='col-md-2 col-sm-12'),
+                Column('type', css_class='col-md-2 col-sm-12'),
+                Column('balance_sheet_category', css_class='col-md-2 col-sm-12'),
             ),
             HTML("""
             <h4>Rows:</h4>
@@ -489,12 +489,12 @@ class ImportJournalEntryForm(BootstrapMixin, forms.Form):
                 <li>Account - the code of the account affected</li>
             </ul>"""),
              Row(
-                Column('date', css_class='col-2'),
-                Column('entry_id', css_class='col-2'),
-                Column('memo', css_class='col-2'),
-                Column('credit', css_class='col-2'),
-                Column('debit', css_class='col-2'),
-                Column('account', css_class='col-2'),
+                Column('date', css_class='col-md-2 col-sm-12'),
+                Column('entry_id', css_class='col-md-2 col-sm-12'),
+                Column('memo', css_class='col-md-2 col-sm-12'),
+                Column('credit', css_class='col-md-2 col-sm-12'),
+                Column('debit', css_class='col-md-2 col-sm-12'),
+                Column('account', css_class='col-md-2 col-sm-12'),
             ),
             HTML("""
             <h4>Rows:</h4>

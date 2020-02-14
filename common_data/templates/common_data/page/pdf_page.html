@@ -11,14 +11,15 @@
                 <div class="col-md-3 col-sm-12 report-nav" id='nav'>
                     {% include "nav.html" %}
                 </div>
-                <div class="col-md-9 col-sm-12" id='scroll-frame'>
-    {% endif %}
-        <div class="{% if pdf_link %}page-container{% else %}print-page-container{% endif %}"> 
-            <div class="custom-page">
-                {% block page_contents %}{% endblock %}
-            </div>
-        </div>
-
+                <div class="col-md-9 col-sm-12" >
+                <div id='scroll-frame'>
+                {% endif %}
+                    <div class="{% if pdf_link %}page-container{% else %}print-page-container{% endif %}"> 
+                        <div class="custom-page">
+                            {% block page_contents %}{% endblock %}
+                        </div>
+                    </div>
+                </div>
     {% if pdf_link %}
                 </div>
             </div>

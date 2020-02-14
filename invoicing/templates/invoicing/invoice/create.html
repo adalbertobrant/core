@@ -9,126 +9,108 @@ Create Invoice
 
 {% endblock actions %}
 {% block content %}
-    <style>
-        tr, td, th {
-            border: 0px !important;
-        }
-    </style>
+<style>
+    tr,
+    td,
+    th {
+        border: 0px !important;
+    }
+</style>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-12 shadow bg-white">
-                {{form.errors}}
-    <table class="table table-sm">
+<div class="container">
+    <div class="row">
+        <div class="col-12 shadow bg-white">
+            {{form.errors}}
             <form action="" method="POST">
                 {% csrf_token %}
-        <tbody>
-            <tr>
-                <td colspan="2">
-            <input type="hidden" id="box-array" value="{{box_array}}">
-                {% comment %} <div class="jumbotron">
-                    <h1 style="display:inline;padding:40px;">Create Invoice</h1>
-                    <div class="btn-group" >
-                        
-                        
+                <input type="hidden" id="box-array" value="{{box_array}}">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        <table class=" table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Customer</th>
+                                    <td>{{form.customer}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Customer PO Number</th>
+                                    <td>{{form.purchase_order_number}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Source Warehouse:</th>
+                                    <td>{{form.ship_from}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Invoice Number</th>
+                                    <td>{{form.invoice_number}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                </div> {% endcomment %}</td>
-            </tr>
-            <tr>
-                <td valign="top">
-                    <table class=" table-sm">
-                        <tbody>
-                            <tr>
-                                <th>Customer</th>
-                                <td>{{form.customer}}</td>
-                            </tr>
-                            <tr>
-                                <th>Customer PO Number</th>
-                                <td>{{form.purchase_order_number}}</td>
-                            </tr>
-                            <tr>
-                                <th>Source Warehouse:</th>
-                                <td>{{form.ship_from}}</td>
-                            </tr>
-                            <tr>
-                                <th>Invoice Number</th>
-                                <td>{{form.invoice_number}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-                <td>
-                    <table class=" table-sm">
-                        <tbody>
-                            <tr>
-                                <th>Date</th>
-                                <td>{{form.date}}</td>
-                            </tr>
-                            <tr>
-                                <th>Due</th>
-                                <td>{{form.due}}</td>
-                            </tr>
-                            <tr>
-                                <th>Sales Representative</th>
-                                <td>{{form.salesperson}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    
-                    {{form.status}}
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item"><a class="nav-link active" href="#lines" data-toggle="tab">Invoice Lines</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#comments-terms" data-toggle="tab">T's & C's</a></li>
-                    </ul>
-                    <div class="tab-content panel-body">
-                        <div id="lines" class="tab-pane active">
-                            <div id="div_id_recipient" class="form-group"> <label for="id_recipient" class="col-form-label  requiredField">
-                                    Invoice Lines</label>
-                                <div id="invoice-table"></div>
-                            </div>
-                        </div>
-                        <div id="comments-terms" class="tab-pane">
-                            <div id="div_id_recipient" class="form-group"> <label for="id_recipient" class="col-form-label  requiredField">
-                                    Terms and Comments</label>
-                                <div class="{{style}}-footer-cell">
-                                    <div class="{{style}}-footer-cell-heading">
-                                            Terms:
-                                    </div>
-                                    <div class="{{style}}-footer-cell-contents">
-                                            {{form.terms}}
-                                    </div>
-                                </div>
-                                <div class="{{style}}-footer-cell">
-                                    <div class="{{style}}-footer-cell-heading">
-                                            Comments:
-                                    </div>
-                                    <div class="{{style}}-footer-cell-contents">
-                                            {{form.comments}}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col-sm-12 col-md-6">
+                        <table class=" table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Date</th>
+                                    <td>{{form.date}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Due</th>
+                                    <td>{{form.due}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Sales Representative</th>
+                                    <td>{{form.salesperson}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                        <button class="btn btn-info " type="submit">
-                            Submit
-                        </button>
-                        
-                </td>
-            </tr>
-            <tr>
-            </tr>
-        </tbody>
-        </form>
-    </table>
+                </div>
+                {{form.status}}
 
-{% render_bundle 'invoicing' %}
-            </div>
+                <ul class="nav nav-tabs">
+                    <li class="nav-item"><a class="nav-link active" href="#lines" data-toggle="tab">Invoice Lines</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#comments-terms" data-toggle="tab">T's & C's</a></li>
+                </ul>
+                <div class="tab-content panel-body">
+                    <div id="lines" class="tab-pane active">
+                        <div id="div_id_recipient" class="form-group"> <label for="id_recipient"
+                                class="col-form-label  requiredField">
+                                Invoice Lines</label>
+                            <div id="invoice-table"></div>
+                        </div>
+                    </div>
+                    <div id="comments-terms" class="tab-pane">
+                        <div id="div_id_recipient" class="form-group"> <label for="id_recipient"
+                                class="col-form-label  requiredField">
+                                Terms and Comments</label>
+                            <div class="{{style}}-footer-cell">
+                                <div class="{{style}}-footer-cell-heading">
+                                    Terms:
+                                </div>
+                                <div class="{{style}}-footer-cell-contents">
+                                    {{form.terms}}
+                                </div>
+                            </div>
+                            <div class="{{style}}-footer-cell">
+                                <div class="{{style}}-footer-cell-heading">
+                                    Comments:
+                                </div>
+                                <div class="{{style}}-footer-cell-contents">
+                                    {{form.comments}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-info " type="submit">
+                    Submit
+                </button>
+            </form>
+            {% render_bundle 'invoicing' %}
         </div>
     </div>
+</div>
 
 {% endblock  %}
-    

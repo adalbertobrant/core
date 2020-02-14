@@ -673,6 +673,7 @@ span.less {
 
     section#title {
         position: sticky;
+        height: fit-content!important;
     }
 
     #mobile-nav {
@@ -723,4 +724,11 @@ span.less {
         height: fit-content
 
     }
-}
+    .page-container {
+        margin: 16px!important;
+        transform: scale(.4);
+    }
+
+    #scroll-frame {
+        width: 100vw;
+    }

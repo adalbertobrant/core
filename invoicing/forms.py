@@ -298,12 +298,12 @@ class ImportCustomersForm(forms.Form):
                 
             </ul>"""),
             Row(
-                Column('name', css_class='col-2'),
-                Column('address', css_class='col-2'),
-                Column('type', css_class='col-2'),
-                Column('email', css_class='col-2'),
-                Column('phone', css_class='col-2'),
-                Column('account_balance', css_class='col-2'),
+                Column('name', css_class='col-md-2 col-sm-12'),
+                Column('address', css_class='col-md-2 col-sm-12'),
+                Column('type', css_class='col-md-2 col-sm-12'),
+                Column('email', css_class='col-md-2 col-sm-12'),
+                Column('phone', css_class='col-md-2 col-sm-12'),
+                Column('account_balance', css_class='col-md-2 col-sm-12'),
             ),
             HTML("""
             <h4>Rows:</h4>
@@ -375,10 +375,10 @@ class ImportInvoiceForm(BootstrapMixin,forms.Form):
             </ul>"""),
             Row(
                 Column('description', css_class='col-md-4 col-sm-12'),
-                Column('unit', css_class='col-2'),
-                Column('quantity', css_class='col-2'),
-                Column('unit_price', css_class='col-2'),
-                Column('subtotal', css_class='col-2'),
+                Column('unit', css_class='col-md-2 col-sm-12'),
+                Column('quantity', css_class='col-md-2 col-sm-12'),
+                Column('unit_price', css_class='col-md-2 col-sm-12'),
+                Column('subtotal', css_class='col-md-2 col-sm-12'),
             ),
             HTML("""
             <h4>Rows:</h4>

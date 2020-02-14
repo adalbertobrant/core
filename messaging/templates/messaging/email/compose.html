@@ -1,5 +1,5 @@
-{% extends "window.html" %}
-{% block content %}
+{% extends "base.html" %}
+{% block window %}
 {% load render_bundle from webpack_loader %}
 <style>
     div.public-DraftEditor-content{
@@ -11,10 +11,6 @@
     }
 </style>
 
-
-<div class="jumbotron">
-    <h3 class="display-3">New Email</h3>
-</div>
 
 <div class="container">
     <div class="row">
@@ -86,4 +82,4 @@
 {% render_bundle "messaging" %}
 
 
-{% endblock content %}
+{% endblock %}

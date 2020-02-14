@@ -108,7 +108,8 @@ class InboxView extends Component{
                 </div>
                 <ReactModal 
                   isOpen={this.state.modalOpen}>
-                    <Compose />
+                    {/* <Compose /> */}
+                    <iframe src='/messaging/create-message' style={{width:'100%', height:'100%'}} />
                 </ReactModal>
             </Aux>
         )
