@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import Invoice from './invoices/invoice';
-import MobileInvoice from './invoices/imvoice_mobile';
+import MobileInvoice from './invoices/invoice_mobile';
 import MutableTable from './src/mutable_table/container/root';
 import SelectWidget from './src/components/select';
 import GenericTable from './src/generic_list/containers/root';

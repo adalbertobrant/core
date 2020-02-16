@@ -98,7 +98,7 @@ export default class InvoiceTable extends Component{
                     <tr style={{
                         padding: '2mm',
                         color: 'white',
-                        backgroundColor: '#07f',
+                        backgroundColor: '#23374d',
                         width: '100%'
                     }}>
                         <th style={{width:"10%"}}></th>

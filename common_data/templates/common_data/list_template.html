@@ -30,19 +30,35 @@
             {% if is_paginated %}
             
             {% endif %}
+            <button onclick="toggleFilters()" class='btn btn-primary filter-button'> <i class="fas fa-filter    "></i> Filters</button>
+            <script>
+                function toggleFilters(){
+                    $('#filter-card').css('display', 'flex')
+                }
 
-            <div class="card shadow ">
-                <div class="card-heading">
-                    <h3 class="cart-title"><i class="fas fa-filter"></i> Filters</h3>
+                function closeFilters(){
+                    $('#filter-card').css('display', 'none')
+
+                }
+            </script>
+            <div class="filter-overlay" id='filter-card'>
+                <div class="filter-overlay-controls">
+                    <button onclick="closeFilters()" class='btn btn-danger'> <i class="fas fa-times    "></i></button>
                 </div>
-                <div class="card-body">
-                    <form action="" method="get">
-                            {{filter.form.as_p}}
-                            
-                        <button class="btn btn-default pull-right" type="submit">Filter</button>
-                    </form>
+                <div class="card shadow ">
+                    <div class="card-heading">
+                        <h3 class="cart-title"><i class="fas fa-filter"></i> Filters</h3>
+                    </div>
+                    <div class="card-body">
+                        <form action="" method="get">
+                                {{filter.form.as_p}}
+                                
+                            <button class="btn btn-default pull-right" type="submit">Filter</button>
+                        </form>
+                    </div>
                 </div>
             </div>
+            
         </div>
 
         <div class="col-md-9 col-sm-12 col-md-9">

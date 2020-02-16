@@ -2,7 +2,7 @@
 
 {% block list_headings %}
 <tr>
-    <th>ID</th>
+    <th class='mobile'>ID</th>
     <th>Title</th>
     <th>Due</th>
     <th>Status</th>
@@ -15,8 +15,8 @@
 {% block list_content %}
     {% for task in object_list %}
         <tr>
-            <td>{{task.pk}}</td>
-            <td>{{task}}</td>
+            <td class='mobile'>{{task.pk}}</td>
+            <td>{{task |truncatechars:30}}</td>
             <td>{{task.due}}</td>
             <td>{{task.status}}</td>
             <td><div class="dropdown">

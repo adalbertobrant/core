@@ -73,10 +73,8 @@ export default class MobileInvoiceTable extends Component{
              });
         }
     }
-    
-    insertHandler = (data) =>{
-        let newItems = [...this.state.items];
-        newItems.push(data);
+
+    updateTotals =(newItems) =>{
         const subtotals = newItems.map((item) => {
             if(item.type == 'product'){
                 return(item.unitPrice * parseFloat(item.quantity))
@@ -102,19 +100,28 @@ export default class MobileInvoiceTable extends Component{
         const newDiscount = discounts.reduce((total, item) => (total + item), 0)
         
         const newTotal = newSubtotal + newTax - newDiscount
-        this.setState({
-            items: newItems,
+        return {
             discount: newDiscount,
             tax: newTax,
             subtotal: newSubtotal,
             total: newTotal
+        };
+    }
+    
+    insertHandler = (data) =>{
+        let newItems = [...this.state.items];
+        newItems.push(data);
+        const totals = this.updateTotals(newItems)
+        this.setState({ ...totals,
+            items: newItems,
         }, this.updateForm);
     }
 
     deleteHandler = (index) =>{
         let newItems = [...this.state.items];
         newItems.splice(index, 1);
-        this.setState({items: newItems}, this.updateForm);
+        const totals = this.updateTotals(newItems)
+        this.setState({...totals, items: newItems}, this.updateForm);
         
     }
 
@@ -132,12 +139,12 @@ export default class MobileInvoiceTable extends Component{
                 <tr style={{
                     padding: '2mm',
                     color: 'white',
-                    backgroundColor: '#07f',
+                    backgroundColor: '#23374d',
                     width: '100%'
                 }}>
                     <th style={{width:"10%"}}></th>
                     <th style={{width:"65%"}}>Description</th>
-                    <th style={{width:"25%"}}>Line Total</th>
+                    <th style={{width:"25%"}}>SubTotal</th>
                 </tr>
             </thead>
             <tbody>
@@ -168,7 +175,7 @@ export default class MobileInvoiceTable extends Component{
 
             <tr>
                 <td colSpan={2} >
-                    <button className="btn btn-primary"
+                    <button type='button' className="btn btn-primary"
                         onClick={() => this.setState({
                             entryWidgetVisible: true})}>Add Item</button>
                 </td>
@@ -179,19 +186,19 @@ export default class MobileInvoiceTable extends Component{
             <tfoot>
                 <tr>
                     <th colSpan={2}>Subtotal</th>
-                    <td>{this.state.subtotal}</td>
+                    <td>{this.state.subtotal.toFixed(2)}</td>
                 </tr>
                 <tr>
                     <th colSpan={2}>Discount</th>
-                    <td>{this.state.discount}</td>
+                    <td>{this.state.discount.toFixed(2)}</td>
                 </tr>
                 <tr>
                     <th colSpan={2}>Tax</th>
-                    <td>{this.state.tax}</td>
+                    <td>{this.state.tax.toFixed(2)}</td>
                 </tr>
                 <tr>
                     <th colSpan={2}>Total</th>
-                    <td>{this.state.total}</td>
+                    <td>{this.state.total.toFixed(2)}</td>
                 </tr>
             </tfoot>
         </table>

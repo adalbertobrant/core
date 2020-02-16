@@ -2,9 +2,9 @@
 
 {% block list_headings %}
 <tr>
-    <th>ID</th>
+    <th class='mobile'>ID</th>
     <th>Title</th>
-    <th>Created</th>
+    <th class='mobile'>Created</th>
     <th>Status</th>
     <th>Actions</th>
 </tr>
@@ -15,9 +15,9 @@
 {% block list_content %}
     {% for lead in object_list %}
         <tr>
-            <td>{{lead.pk}}</td>
+            <td class='mobile'>{{lead.pk}}</td>
             <td>{{lead}}</td>
-            <td>{{lead.created}}</td>
+            <td class='mobile'>{{lead.created}}</td>
             <td>{{lead.status}}</td>
             <td><div class="dropdown">
                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"

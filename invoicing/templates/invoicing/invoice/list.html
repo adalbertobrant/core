@@ -1,21 +1,21 @@
 {% extends "common_data/list_template.html" %} {% block list_headings %}
 <tr class="info">
-    <td>Date</td>
+    <td class='mobile'>Date</td>
     <td>Invoice #</td>
-    <td>Customer</td>
-    <td>Total</td>
-    <td>Draft?</td>
-    <td>Status</td>
+    <td >Customer</td>
+    <td class='mobile'>Total</td>
+    <td class='mobile'>Draft?</td>
+    <td class='mobile'>Status</td>
 </tr>
 {% endblock %} {% block list_content %} 
 {% for inv in object_list %}
 <tr>
-    <td>{{inv.date}}</td>
+    <td class='mobile'>{{inv.date}}</td>
     <td>{{inv.invoice_number|stringformat:"06d"}}</td>
-    <td>{{inv.customer}}</td>
-    <td>{{inv.total | floatformat:2}}</td>
-    <td>{% if inv.draft %} Yes {% else %} No {% endif %}</td>
-    <td>{{inv.status}}</td>
+    <td >{{inv.customer}}</td>
+    <td class='mobile'>{{inv.total | floatformat:2}}</td>
+    <td class='mobile'>{% if inv.draft %} Yes {% else %} No {% endif %}</td>
+    <td class='mobile'>{{inv.status}}</td>
     <td>
         <div class="dropdown">
             <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"

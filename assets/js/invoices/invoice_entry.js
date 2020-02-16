@@ -68,7 +68,7 @@ class EntryWidget extends Component{
             borderRadius: '5px 5px 0px 0px',
             padding: '5px',
             borderStyle: 'solid',
-            borderColor: 'white'
+            borderColor: '#23374d'
 
         }
 
@@ -79,8 +79,6 @@ class EntryWidget extends Component{
         }
         return(
             <div style={{
-                color: 'white',
-                backgroundColor: '#23374d',
                 padding: '5px'
             }}>
                 <ul style={{listStylePosition: 'inside', paddingLeft: '0px'}}>
