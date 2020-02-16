@@ -168,16 +168,17 @@ const SaleLine = (props) =>{
                     props.selected.split('-')[1]
                 } @ ${parseFloat(props.unitPrice).toFixed(2)} each.
             </td>
-            <td>{props.discount}</td>
-            <td>{props.tax}%</td>
+            {window.screen.width > 575 ? <React.Fragment>
+                <td>{props.discount}</td>
+                <td>{props.tax}%</td>
+                </React.Fragment>: null}
+            
             <td>{total.toFixed(2)}</td>
         </tr>
     )
 }
 
 const ServiceLine = (props) =>{
-    console.log('tax')
-    console.log(props.tax)
     const subtotal = (parseFloat(props.hours) * parseFloat(props.rate)) +
          parseFloat(props.fee);
     const discount =  subtotal * (props.discount / 100.0)

@@ -87,7 +87,7 @@ class ExpenseEntry extends Component{
                 </div>
             )
         }else{
-            return(
+            return(window.screen.width > 575 ? 
                 <table style={{width:"100%"}}>
                     <thead>
                         <tr>
@@ -140,6 +140,43 @@ class ExpenseEntry extends Component{
                         </tr>
                     </tbody>
                 </table>
+                :
+                <div>
+                <label htmlFor="">Expense:</label>
+                <SearchableWidget 
+                    widgetID="expense-widget"
+                    dataURL={`/accounting/api/expense/customer/${document.getElementById('id_customer').value}`}
+                    onSelect={this.handleBillable}
+                    //newLink="/accounting/expense/create"
+                    model="expense"
+                    app="accounting"
+                    onClear={this.clearHandler}
+                    idField="id"
+                    displayField="description" />
+            <label htmlFor="">Discount</label>
+                <input 
+                    className='form-control'
+                    type="number"
+                    name="discount"
+                    value={this.state.discount}
+                    onChange={this.handler}/>
+            <label htmlFor="">Tax: </label>
+            <AsyncSelect 
+            dataURL="/accounting/api/tax"
+            name="tax"
+            resProcessor={(res) =>{
+                return res.data.map((tax) =>({
+                    name: tax.name,
+                    value: tax.id
+                }))
+            }}
+            handler={this.taxHandler}/>
+            
+            <button 
+                onClick={this.props.insertHandler} 
+                type='button'
+                className="invoice-btn" >Insert</button>
+                </div>
             )
         }
     }   

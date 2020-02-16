@@ -2,6 +2,7 @@ import React, {Component, useState, useEffect} from 'react';
 import axios from 'axios';
 import {DeleteButton} from '../src/common';
 import styles from './styles.css'
+import EntryWidget from './invoice_entry'
 
 export default class MobileInvoiceTable extends Component{
     state = {
@@ -9,6 +10,7 @@ export default class MobileInvoiceTable extends Component{
         tax: 0.0,
         subtotal: 0.0,
         total: 0.0,
+        discount: 0.0,
         items: [],
         entryWidgetVisible: false
     }
@@ -75,7 +77,38 @@ export default class MobileInvoiceTable extends Component{
     insertHandler = (data) =>{
         let newItems = [...this.state.items];
         newItems.push(data);
-        this.setState({items: newItems}, this.updateForm);
+        const subtotals = newItems.map((item) => {
+            if(item.type == 'product'){
+                return(item.unitPrice * parseFloat(item.quantity))
+            }else if(item.type=='service'){
+                return((parseFloat(item.hours) * parseFloat(item.rate)) +
+                parseFloat(item.fee))
+            }else{
+                return(item.amount)
+            }
+        })
+        const newSubtotal = subtotals.reduce((total, item) => (total + item), 0)
+        
+        const discounts = newItems.map((item, i) =>{
+            return(subtotals[i] * (item.discount / 100.0))
+        })
+        
+        const taxes = newItems.map((item, i) =>{
+            let taxRate = parseFloat(item.tax.split('@')[1])
+            return((subtotals[i] - discounts[i]) * taxRate/100.0 )
+        })
+        const newTax = taxes.reduce((total, item) => (total + item), 0)
+
+        const newDiscount = discounts.reduce((total, item) => (total + item), 0)
+        
+        const newTotal = newSubtotal + newTax - newDiscount
+        this.setState({
+            items: newItems,
+            discount: newDiscount,
+            tax: newTax,
+            subtotal: newSubtotal,
+            total: newTotal
+        }, this.updateForm);
     }
 
     deleteHandler = (index) =>{
@@ -108,9 +141,30 @@ export default class MobileInvoiceTable extends Component{
                 </tr>
             </thead>
             <tbody>
-                {this.state.items.map((item, i) =>{
-                    return(null)}
-                )}
+            {this.state.items.map((item, i) =>{
+                let line;
+                if(item.type === "product"){
+                    line = <SaleLine 
+                                {...item}
+                                key={i}
+                                index={i}
+                                handler={this.deleteHandler}/>
+                }else if(item.type === "service"){
+                    line = <ServiceLine  
+                                {...item}
+                                key={i}
+                                index={i}
+                                handler={this.deleteHandler}/>
+                }else{
+                    line = <BillableLine  
+                                {...item}
+                                key={i}
+                                index={i}
+                                handler={this.deleteHandler}/>
+                }
+                return(line);
+            }
+            )}
 
             <tr>
                 <td colSpan={2} >
@@ -125,23 +179,25 @@ export default class MobileInvoiceTable extends Component{
             <tfoot>
                 <tr>
                     <th colSpan={2}>Subtotal</th>
-                    <td></td>
+                    <td>{this.state.subtotal}</td>
                 </tr>
                 <tr>
                     <th colSpan={2}>Discount</th>
-                    <td></td>
+                    <td>{this.state.discount}</td>
                 </tr>
                 <tr>
                     <th colSpan={2}>Tax</th>
-                    <td></td>
+                    <td>{this.state.tax}</td>
                 </tr>
                 <tr>
                     <th colSpan={2}>Total</th>
-                    <td></td>
+                    <td>{this.state.total}</td>
                 </tr>
             </tfoot>
         </table>
-        <EntryWidget 
+        <EntryContainer 
+            itemList={this.state.items}
+            insertHandler={this.insertHandler}
             active={this.state.entryWidgetVisible}
             dismiss={() =>this.setState({entryWidgetVisible: false})} />
             </React.Fragment>
@@ -151,48 +207,86 @@ export default class MobileInvoiceTable extends Component{
 }
 
 
-const EntryWidget = (props) =>{
-    const [focused, setFocused] = useState('product')
-    const tabStyle = {
-        listStyleType: 'none',
-        display: 'inline-block',
-        borderRadius: '5px 5px 0px 0px',
-        padding: '5px',
-        borderStyle: 'solid',
-        borderColor: 'white'
-    }
-
-    return (<div className={styles.overlay} style={{display: props.active ? 'block': 'none'}}>
+const EntryContainer = (props) =>{
+    return (<div className={styles.overlay} style={{display: props.active ? 'flex': 'none'}}>
         <div className={styles.content}>
             <div className={styles.contentHeader}>
                 <h4>Add Item</h4>
                 <button class='btn btn-danger ' onClick={props.dismiss}><i class="fas fa-times" aria-hidden="true"></i></button>
             </div>
             <div>
-            <ul style={{listStylePosition: 'inside', paddingLeft: '0px'}}>
-            <li 
-                id="product" 
-                style={{...tabStyle,
-                    borderWidth: focused ==="product"
-                    ? '1px 1px 0px 1px '
-                    : '0px 0px 1px 0px ',}}
-                onClick={()=> setFocused('product')}>Product</li>
-            <li 
-                id="service" 
-                style={{...tabStyle,
-                    borderWidth: focused ==="service"
-                    ? '1px 1px 0px 1px '
-                    : '0px 0px 1px 0px ',}}
-                onClick={()=> setFocused('service')}>Service</li>
-            <li 
-                id="expense" 
-                style={{...tabStyle,
-                    borderWidth: focused ==="expense"
-                    ? '1px 1px 0px 1px '
-                    : '0px 0px 1px 0px ',}}
-                onClick={()=> setFocused('expense')}>Expense</li>
-        </ul>
+                <EntryWidget
+                    modalDismiss={props.dismiss}
+                    itemList={props.itemList}
+                    insertHandler={props.insertHandler} />
             </div>
         </div>
     </div>)
+}
+
+const SaleLine = (props) =>{
+    const subtotal = props.unitPrice * parseFloat(props.quantity);
+    const discount =  subtotal * (props.discount / 100.0)
+    const taxRate = parseFloat(props.tax.split('@')[1])
+    const tax = (subtotal - discount) * (taxRate /100.0) 
+    const total = subtotal - discount + tax
+    return(
+        <tr>
+            <td>
+                <DeleteButton 
+                    index={props.index}
+                    handler={props.handler}/>
+            </td>
+            <td>
+                {props.quantity} x {
+                    props.selected.split('-')[1]
+                } @ ${parseFloat(props.unitPrice).toFixed(2)} each.
+            </td>
+            <td>{total.toFixed(2)}</td>
+        </tr>
+    )
+}
+
+const ServiceLine = (props) =>{
+    const subtotal = (parseFloat(props.hours) * parseFloat(props.rate)) +
+         parseFloat(props.fee);
+    const discount =  subtotal * (props.discount / 100.0)
+    const taxRate = parseFloat(props.tax.split('@')[1])
+    const tax = (subtotal - discount) * (taxRate /100.0) 
+    const total = subtotal - discount + tax
+
+    return(
+        <tr>
+            <td>
+                <DeleteButton
+                    index={props.index}
+                    handler={props.handler}/>
+            </td>
+            <td>{
+                props.selected.split('-')[1]
+            } - Flat Fee: ${props.fee} + {props.hours}Hrs x @ ${props.rate} /Hr</td>
+            
+            <td>{total.toFixed(2)}</td>
+        </tr>
+    )
+}
+
+const BillableLine = (props) =>{
+    const subtotal  =parseFloat(props.amount);
+    const discount =  subtotal * (props.discount / 100.0)
+    const taxRate = parseFloat(props.tax.split('@')[1])
+    const tax = (subtotal - discount) * (taxRate /100.0) 
+    const total = subtotal - discount + tax
+    return(
+        <tr>
+            <td>
+                <DeleteButton 
+                    index={props.index}
+                    handler={props.handler}/>
+            </td>
+            <td>{props.description} @ ${props.amount}</td>
+            
+            <td>{total.toFixed(2)}</td>
+        </tr>
+    )
 }

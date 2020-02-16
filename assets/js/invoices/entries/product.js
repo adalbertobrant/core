@@ -88,7 +88,7 @@ class ProductEntry extends Component{
     }
     
     render(){
-        return(
+        return(window.screen.width > 575 ? 
             <div>
                 <table style={{width:"100%"}}>
                     <thead>
@@ -169,7 +169,63 @@ class ProductEntry extends Component{
                     </tbody>
                 </table>
             </div>
-            )   
+            
+            : 
+            <div>
+                <label htmlFor="">Product:</label>
+                <SearchableWidget
+                    widgetID="product-widget"
+                    list={this.props.itemList}
+                    dataURL="/inventory/api/product/"
+                    displayField="name"
+                    idField="id"
+                    model="inventoryitem"
+                    app="inventory"
+                    canCreateNewItem={true}
+                    newLink='/inventory/product-create/'
+                    onSelect={this.handleProductSelect}
+                    onClear={this.handleProductClear} />
+               <label htmlFor="">Unit Price:</label> 
+                <input 
+                    type="number"
+                    className='form-control'
+                    name="unitPrice"
+                    onChange={this.handler}
+                    value={this.state.unitPrice}
+                        />
+                <label htmlFor="">Quantity:</label>
+                <input 
+                    type="number"
+                    className='form-control'
+                    name="quantity"
+                    value={this.state.quantity}
+                    onChange={this.handler}/>
+                <label htmlFor="">Discount:</label>
+                <input 
+                    type="number"
+                    className='form-control'
+                    name="discount"
+                    value={this.state.discount}
+                    
+                    onChange={this.handler}/>
+                <label htmlFor="">Tax:</label>
+                <AsyncSelect
+                    ID='product-tax'
+                    dataURL="/accounting/api/tax"
+                    name="tax"
+                    resProcessor={(res) =>{
+                        return res.data.map((tax) =>({
+                            name: tax.name,
+                            value: tax.id
+                        }))
+                    }}
+                    handler={this.taxHandler}/>
+                <button 
+                    onClick={this.props.insertHandler} 
+                    type='button'
+                    className="invoice-btn" >Insert</button>
+            </div>
+        )
     }
 }
 
