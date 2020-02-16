@@ -1,16 +1,18 @@
-import React, {Component} from 'react';
+import React, {Component, useState, useEffect} from 'react';
 import axios from 'axios';
 import {DeleteButton} from '../src/common';
-import EntryWidget from './invoice_entry';
-import Totals from './invoice_totals';
+import styles from './styles.css'
+import EntryWidget from './invoice_entry'
 
-export default class InvoiceTable extends Component{
+export default class MobileInvoiceTable extends Component{
     state = {
         taxObj: null,
         tax: 0.0,
         subtotal: 0.0,
         total: 0.0,
-        items: []
+        discount: 0.0,
+        items: [],
+        entryWidgetVisible: false
     }
 
     componentDidMount(){
@@ -75,7 +77,38 @@ export default class InvoiceTable extends Component{
     insertHandler = (data) =>{
         let newItems = [...this.state.items];
         newItems.push(data);
-        this.setState({items: newItems}, this.updateForm);
+        const subtotals = newItems.map((item) => {
+            if(item.type == 'product'){
+                return(item.unitPrice * parseFloat(item.quantity))
+            }else if(item.type=='service'){
+                return((parseFloat(item.hours) * parseFloat(item.rate)) +
+                parseFloat(item.fee))
+            }else{
+                return(item.amount)
+            }
+        })
+        const newSubtotal = subtotals.reduce((total, item) => (total + item), 0)
+        
+        const discounts = newItems.map((item, i) =>{
+            return(subtotals[i] * (item.discount / 100.0))
+        })
+        
+        const taxes = newItems.map((item, i) =>{
+            let taxRate = parseFloat(item.tax.split('@')[1])
+            return((subtotals[i] - discounts[i]) * taxRate/100.0 )
+        })
+        const newTax = taxes.reduce((total, item) => (total + item), 0)
+
+        const newDiscount = discounts.reduce((total, item) => (total + item), 0)
+        
+        const newTotal = newSubtotal + newTax - newDiscount
+        this.setState({
+            items: newItems,
+            discount: newDiscount,
+            tax: newTax,
+            subtotal: newSubtotal,
+            total: newTotal
+        }, this.updateForm);
     }
 
     deleteHandler = (index) =>{
@@ -93,61 +126,102 @@ export default class InvoiceTable extends Component{
 
     render(){
         return(
+            <React.Fragment>
             <table className="table tight">
-                <thead>
-                    <tr style={{
-                        padding: '2mm',
-                        color: 'white',
-                        backgroundColor: '#07f',
-                        width: '100%'
-                    }}>
-                        <th style={{width:"10%"}}></th>
-                        <th style={{width:"45%"}}>Description</th>
-                        <th style={{width:"15%"}}>Discount</th>
-                        <th style={{width:"15%"}}>Tax</th>
-                        <th style={{width:"15%"}}>Line Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {this.state.items.map((item, i) =>{
-                        let line;
-                        if(item.type === "product"){
-                            line = <SaleLine 
-                                        {...item}
-                                        key={i}
-                                        index={i}
-                                        handler={this.deleteHandler}/>
-                        }else if(item.type === "service"){
-                            line = <ServiceLine  
-                                        {...item}
-                                        key={i}
-                                        index={i}
-                                        handler={this.deleteHandler}/>
-                        }else{
-                            line = <BillableLine  
-                                        {...item}
-                                        key={i}
-                                        index={i}
-                                        handler={this.deleteHandler}/>
-                        }
-                        return(line);
-                    }
-                    )}
-                <tr>
-                    <td colSpan={5} style={{padding: '0px'}}>
-                        <EntryWidget
-                            itemList={this.state.items}
-                            insertHandler={this.insertHandler}/>
-                    </td>
+            <thead>
+                <tr style={{
+                    padding: '2mm',
+                    color: 'white',
+                    backgroundColor: '#07f',
+                    width: '100%'
+                }}>
+                    <th style={{width:"10%"}}></th>
+                    <th style={{width:"65%"}}>Description</th>
+                    <th style={{width:"25%"}}>Line Total</th>
                 </tr>
-                
-                </tbody>
-                <Totals list={this.state.items}/>
-            
-                </table>
+            </thead>
+            <tbody>
+            {this.state.items.map((item, i) =>{
+                let line;
+                if(item.type === "product"){
+                    line = <SaleLine 
+                                {...item}
+                                key={i}
+                                index={i}
+                                handler={this.deleteHandler}/>
+                }else if(item.type === "service"){
+                    line = <ServiceLine  
+                                {...item}
+                                key={i}
+                                index={i}
+                                handler={this.deleteHandler}/>
+                }else{
+                    line = <BillableLine  
+                                {...item}
+                                key={i}
+                                index={i}
+                                handler={this.deleteHandler}/>
+                }
+                return(line);
+            }
+            )}
 
+            <tr>
+                <td colSpan={2} >
+                    <button className="btn btn-primary"
+                        onClick={() => this.setState({
+                            entryWidgetVisible: true})}>Add Item</button>
+                </td>
+                <td></td>
+            </tr>
+            
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colSpan={2}>Subtotal</th>
+                    <td>{this.state.subtotal}</td>
+                </tr>
+                <tr>
+                    <th colSpan={2}>Discount</th>
+                    <td>{this.state.discount}</td>
+                </tr>
+                <tr>
+                    <th colSpan={2}>Tax</th>
+                    <td>{this.state.tax}</td>
+                </tr>
+                <tr>
+                    <th colSpan={2}>Total</th>
+                    <td>{this.state.total}</td>
+                </tr>
+            </tfoot>
+        </table>
+        <EntryContainer 
+            itemList={this.state.items}
+            insertHandler={this.insertHandler}
+            active={this.state.entryWidgetVisible}
+            dismiss={() =>this.setState({entryWidgetVisible: false})} />
+            </React.Fragment>
+            
         );
     }
+}
+
+
+const EntryContainer = (props) =>{
+    return (<div className={styles.overlay} style={{display: props.active ? 'flex': 'none'}}>
+        <div className={styles.content}>
+            <div className={styles.contentHeader}>
+                <h4>Add Item</h4>
+                <button class='btn btn-danger ' onClick={props.dismiss}><i class="fas fa-times" aria-hidden="true"></i></button>
+            </div>
+            <div>
+                <EntryWidget
+                    modalDismiss={props.dismiss}
+                    itemList={props.itemList}
+                    insertHandler={props.insertHandler} />
+            </div>
+        </div>
+    </div>)
 }
 
 const SaleLine = (props) =>{
@@ -168,11 +242,6 @@ const SaleLine = (props) =>{
                     props.selected.split('-')[1]
                 } @ ${parseFloat(props.unitPrice).toFixed(2)} each.
             </td>
-            {window.screen.width > 575 ? <React.Fragment>
-                <td>{props.discount}</td>
-                <td>{props.tax}%</td>
-                </React.Fragment>: null}
-            
             <td>{total.toFixed(2)}</td>
         </tr>
     )
@@ -196,8 +265,7 @@ const ServiceLine = (props) =>{
             <td>{
                 props.selected.split('-')[1]
             } - Flat Fee: ${props.fee} + {props.hours}Hrs x @ ${props.rate} /Hr</td>
-            <td>{props.discount}</td>
-            <td>{props.tax}%</td>
+            
             <td>{total.toFixed(2)}</td>
         </tr>
     )
@@ -217,8 +285,7 @@ const BillableLine = (props) =>{
                     handler={props.handler}/>
             </td>
             <td>{props.description} @ ${props.amount}</td>
-            <td>{props.discount}</td>
-            <td>{props.tax}%</td>
+            
             <td>{total.toFixed(2)}</td>
         </tr>
     )

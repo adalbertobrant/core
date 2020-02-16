@@ -89,7 +89,7 @@ class ServiceEntry extends Component{
             padding: '10px',
             backgroundColor: '#0099ff'
         }
-        return(
+        return( window.screen.width > 575 ?
             <div>
                 <table style={{width:"100%"}}>
                     <thead>
@@ -174,6 +174,67 @@ class ServiceEntry extends Component{
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            :
+            <div>
+                <label htmlFor="">Service: </label>
+                <SearchableWidget
+                    widgetID="service-widget"
+                    list={this.props.itemList}
+                    dataURL="/services/api/service/"
+                    displayField="name"
+                    idField="id"
+                    canCreateNewItem={true}
+                    newLink='/services/create-service'
+                    model="service"
+                    app="services"
+                    onSelect={this.selectHandler}
+                    onClear={this.clearHandler} />
+            <label htmlFor="">Flat Fee:</label>
+                <input 
+                    className='form-control'
+                    type="number"
+                    name="fee"
+                    value={this.state.fee}
+                    onChange={this.handler}/>
+            <label htmlFor="">Rate:</label>
+                <input 
+                    className='form-control'
+                    type="number"
+                    name="rate"
+                    value={this.state.rate}
+                    onChange={this.handler}/>
+            <label htmlFor="">Hours:</label>
+                <input 
+                    className='form-control'
+                    type="number"
+                    name="hours"
+                    value={this.state.hours}
+                    onChange={this.handler}/>
+            <label htmlFor="">Discount:</label>
+                <input 
+                    className='form-control'
+                    type="number"
+                    name="discount"
+                    value={this.state.discount}
+                    onChange={this.handler}/>
+            <label htmlFor="">Tax:</label>
+                {/*Use a tax choice field */}
+                <AsyncSelect 
+                    ID='service-tax'
+                    dataURL="/accounting/api/tax"
+                    name="tax"
+                    resProcessor={(res) =>{
+                        return res.data.map((tax) =>({
+                            name: tax.name,
+                            value: tax.id
+                        }))
+                    }}
+                    handler={this.taxHandler}/>
+                <button 
+                    onClick={this.insertHandler} 
+                    type='button'
+                    className="invoice-btn" >Insert</button>
             </div>
         )
     };

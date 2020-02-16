@@ -56,7 +56,9 @@ class EntryWidget extends Component{
             this.props.insertHandler(data)
             this.setState({inputs: {}})
         }
-        
+        if(this.props.modalDismiss){
+            this.props.modalDismiss()
+        }
     }
 
     render(){

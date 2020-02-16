@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import Invoice from './invoices/invoice';
+import MobileInvoice from './invoices/imvoice_mobile';
 import MutableTable from './src/mutable_table/container/root';
 import SelectWidget from './src/components/select';
 import GenericTable from './src/generic_list/containers/root';
@@ -15,7 +16,11 @@ const  decomposed = URL.split('/');
 const tail = decomposed[decomposed.length - 1];
     
 if(sales){
-    ReactDOM.render(<Invoice />, sales);
+    if(window.screen.width < 575){
+        ReactDOM.render(<MobileInvoice />, sales);
+    }else{
+        ReactDOM.render(<Invoice />, sales);
+    }
 }else if(creditNote){
     let decomposedURL = window.location.href.split('/');
     let pk = decomposedURL[decomposedURL.length - 1];
