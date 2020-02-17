@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {AsyncSelect } from '../../common';
 import SearchableWidget from "../../components/searchable_widget";
+import styles from './styles.css'
 
 /* fieldOrder - array of strings 
    insertHandler - function
@@ -164,6 +165,7 @@ class inputLine extends Component{
     }
     render(){
         return(
+                window.screen.width > 575 ? 
                 <tbody>
                     <tr className="bg-primary text-white tight"
                     style={{
@@ -188,6 +190,28 @@ class inputLine extends Component{
                     </td>
                 </tr>
                 </tbody>
+                :
+                <div  className={styles.overlay} style={{display: this.props.active ? 'flex': 'none'}}>
+                    <div className={styles.content}>
+                    <div className={styles.contentHeader}>
+                        <h4>Add Item</h4>
+                        <button class='btn btn-danger ' onClick={this.props.dismiss}><i class="fas fa-times" aria-hidden="true"></i></button>
+                    </div>
+                {this.props.fieldOrder.map((fieldName, i) =>(
+                    <React.Fragment>
+                        <label htmlFor="">{fieldName}</label>
+                        {this.fieldSelector(i)}
+                    </React.Fragment>
+                ))}
+                
+                    <button 
+                        style={{ margin: '5px'}}
+                        className="btn btn-sm"
+                        type="button"
+                        onClick={this.insertHandler}>Insert</button>
+                </div>
+                </div>
+
         );
     }
 }

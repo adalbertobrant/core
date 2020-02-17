@@ -79,7 +79,8 @@ class EntryWidget extends Component{
         }
         return(
             <div style={{
-                padding: '5px'
+                padding: '5px',
+                textAlign: 'left'
             }}>
                 <ul style={{listStylePosition: 'inside', paddingLeft: '0px'}}>
                     <li 

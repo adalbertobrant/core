@@ -15,20 +15,25 @@ const dataRow = (props) =>{
     }
     
     return(
+        
         <tr>
-            {props.fieldOrder.map((fieldName, i) =>(
-                <td style={cellStyle} key={i}>{props.data[fieldName]}</td>
-            ))}
-            {props.hasLineTotal ?
-            <td style={cellStyle}>
-                {props.data.lineTotal}
-            </td>
-            : null}
             <td style={cellStyle}>
                 <DeleteButton 
                     index={props.index}
                     handler={props.deleteHandler}/>
             </td>
+            {window.screen.width > 575 && props.concise ?
+                props.fieldOrder.map((fieldName, i) =>(
+                    <td style={cellStyle} key={i}>{props.data[fieldName]}</td>
+                ))
+                : <td>{props.concise(props.data)}</td>
+            }
+            {props.hasLineTotal ?
+            <td style={cellStyle}>
+                {props.data.lineTotal}
+            </td>
+            : null}
+            
         </tr>
     )
 }

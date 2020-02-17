@@ -37,7 +37,8 @@ import axios from 'axios';
 
 class GenericTable extends Component{
     state = {
-        lines: []
+        lines: [],
+        showEntryWidget: false
     }
 
     componentDidMount = () => {
@@ -79,7 +80,10 @@ class GenericTable extends Component{
         }
         let newLines = [...this.state.lines];
         newLines.push(data);
-        this.setState({lines: newLines}, this.updateForm);
+        this.setState({
+            lines: newLines,
+            showEntryWidget: false
+        }, this.updateForm);
     }
 
     updateForm = () =>{
@@ -107,9 +111,13 @@ class GenericTable extends Component{
                             data={this.state.lines[i]}
                             fieldOrder={this.props.fieldOrder}
                             index={i}
+                            concise={this.props.concise}
                             hasLineTotal={this.props.hasLineTotal}
                             deleteHandler={this.dataRowDeleteHandler}/>
                     ))}
+                {window.screen.width > 575 ? null : <button onClick={() =>{
+                    this.setState({showEntryWidget: true})
+                }} className='btn btn-primary' type='button'>Add Item</button>}
                 </tbody>
                 <InputLine 
                     hasLineTotal={this.props.hasLineTotal}
@@ -117,10 +125,12 @@ class GenericTable extends Component{
                     insertHandler={this.insertHandler}
                     fields={this.props.fields}
                     calculateTotal={this.props.calculateTotal}
-                    lines={this.state.lines}/>
+                    lines={this.state.lines}
+                    active={this.state.showEntryWidget}
+                    dismiss={() => {this.setState({showEntryWidget: false})}}/>
                 {this.props.hasTotal 
                 ?   <Totals 
-                        span={this.props.fields.length + 2}
+                        span={window.screen.width > 575 ? this.props.fields.length + 2 : 3}
                         list={this.state.lines}
                         taxFormField={this.props.taxFormField}
                         subtotalReducer={function(x, y){

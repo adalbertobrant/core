@@ -80,6 +80,11 @@ if(inventoryCheck){
         fieldDescriptions={['Item', 'Unit', 'Order Price', 'Quantity']}
         formInputID='id_items'
         calculateTotal={calculateTotalFunc}
+        concise={(data) =>{
+            const item = data.item.split('-')[1]
+            const unit = data.unit.split('-')[1]
+            return(data.quantity + ' x ' + item + ' @' + data.order_price + unit)
+        }}
         fields={
             [
                 {

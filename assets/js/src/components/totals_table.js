@@ -72,7 +72,7 @@ class Totals extends Component{
         if(this.props.taxFormField == null){
             contents = (
                 <tfoot>
-                    <tr className="bg-primary text-white">
+                    <tr >
                         <th style={cellStyle} colSpan={this.props.span - 1}>Total</th>
                         <td style={cellStyle}>{this.state.total.toFixed(2)}</td>
                     </tr>
@@ -81,12 +81,12 @@ class Totals extends Component{
         }else{
             contents = (
                 <tfoot>    
-                    <tr className="bg-primary text-white">
+                    <tr >
                         <th style={cellStyle} colSpan={this.props.span - 1}>Subtotal</th>
                         <td style={cellStyle}>{this.state.subtotal.toFixed(2)}</td>
                     </tr>
                     
-                    <tr className="bg-primary text-white">
+                    <tr >
                         <th style={cellStyle} colSpan={this.props.span - 2}>Tax</th>
                         <td>
                             <AsyncSelect
@@ -103,7 +103,7 @@ class Totals extends Component{
                         </td>
                         <td style={cellStyle}>{this.state.tax.toFixed(2)}</td>
                     </tr>
-                    <tr className="bg-primary text-white">
+                    <tr >
                         <th style={cellStyle} colSpan={this.props.span - 1}>Total</th>
                         <td style={cellStyle}>{this.state.total.toFixed(2)}</td>
                     </tr>
