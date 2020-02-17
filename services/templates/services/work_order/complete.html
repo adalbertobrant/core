@@ -134,11 +134,8 @@ Complete Work Order
                                                     id='progress-percentage'>{{object.progress_percentage}}<span>%</strong>
                                         </div>
                                     </div>
-<<<<<<< HEAD
-=======
 
 
->>>>>>> c75fb7ad24a8e968b9a386b0cdab48f7554bc0a3
                                     <ol>
                                         {% for step in object.works_request.service.procedure.steps %}
                                         <li> {% if forloop.counter in object.progress_list %} <input checked

@@ -17,11 +17,12 @@
         }
     </style>
     <ul>
-        <li class="{% if wizard.steps.step1 == 1 %}li-focused{% endif%}">Create a Payroll Date</li>
+        <li class="{% if wizard.steps.step1 == 1 %}li-focused{% endif%}">Create An Employee</li>
+
+        {% comment %} <li class="{% if wizard.steps.step1 == 1 %}li-focused{% endif%}">Create a Payroll Date</li>
         <li class="{% if wizard.steps.step1 == 2 %}li-focused{% endif%}">Create a PayGrade</li>
-        <li class="{% if wizard.steps.step1 == 3 %}li-focused{% endif%}">Create An Employee</li>
         <li class="{% if wizard.steps.step1 == 4 %}li-focused{% endif%}" >Create a Payroll Officer</li>
-        <li class="{% if wizard.steps.step1 == 5 %}li-focused{% endif%}" >Configure Your Employee Settings</li>
+        <li class="{% if wizard.steps.step1 == 5 %}li-focused{% endif%}" >Configure Your Employee Settings</li> {% endcomment %}
 
     </ul>
 </div>

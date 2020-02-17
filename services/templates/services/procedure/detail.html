@@ -15,73 +15,74 @@ Procedure Detail
 <br>
 <div class="container">
     <div class="row">
-        <div class="col-sm-12">            
-            <div class="row">
-                <div class="col-4">
-                    <div class="card shadow accent-lg">
-                        <div class="card-body">
-                            <h4 class="card-title">{{object.name}}</h4>
-                            <hr class="my-2">
-                            <p class="card-text"{{object.description}}</p>
-
-                            <sub>Reference: {{object.reference}}</sub>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-8">
-                    <div class='card'>
-                            <div class="card-body">
-                            <h4>Stages</h4>
-                            <ol>
-                                {% if object.tasl_set.all.count == 0%}
-                                <li colspan-"3"><b>No Data To Display</b></li>
-                                {% else %}
-                                {% for step in object.task_set.all %}
-                                <li>{{step}}</li>
-                                {% endfor %}
-                                {% endif %}
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <hr class="my-4">
-            <h2>Materials and Equipment</h2>
-            <div class="row">
-                <div class="col-6">
-                    <div class="card accent-md">
-                        <div class="card-body">
-                            <h5>Equipment:</h5>
-                            <ul>
-                                {% if object.required_equipment.all.count == 0 %}
-                                <li><b>No Data To Display</b></li>
-                                {% else %}
-                                {% for item in object.required_equipment.all %}
-                                <li>{{item}}</li>
-                                {% endfor %}
-                                {% endif %}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="card accent-md">
-                        <div class="card-body">
-                        <h5>Consumables:</h5>
-                        <ul>
-                            {% if object.required_equipment.all.count == 0 %}
-                            <li><b>No Data To Display</b></li>
-                            {% else %}
-                            {% for item in object.required_consumables.all %}
-                            <li>{{item}}</li>
-                            {% endfor %}
-                            {% endif %}
-                        </ul>
-                    </div>
-                    </div>
+        <div class="col-sm-12 col-md-4">        
+            <div class="card shadow accent-lg">
+                <div class="card-body">
+                    <h4 class="card-title">{{object.name}}</h4>
+                    <sub>Reference: {{object.reference}}</sub>
+                    <hr class="my-2">
+                    <p class="card-text">{{object.description}}</p>
                     
                 </div>
             </div>
         </div>
+        <div class="col-sm-12 col-md-8">
+            <div class='card'>
+                <div class="card-body">
+                    <h4>Stages</h4>
+                    <ol>
+                        {% if object.tasl_set.all.count == 0%}
+                        <li colspan-"3"><b>No Data To Display</b></li>
+                        {% else %}
+                        {% for step in object.task_set.all %}
+                        <li>{{step}}</li>
+                        {% endfor %}
+                        {% endif %}
+                    </ol>
+                </div>
+            </div>
+        </div>
     </div>
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <h2>Materials and Equipment</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <div class="card accent-md">
+                <div class="card-body">
+                    <h5>Equipment:</h5>
+                    <ul>
+                        {% if object.required_equipment.all.count == 0 %}
+                        <li><b>No Data To Display</b></li>
+                        {% else %}
+                        {% for item in object.required_equipment.all %}
+                        <li>{{item}}</li>
+                        {% endfor %}
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="card accent-md">
+                <div class="card-body">
+                <h5>Consumables:</h5>
+                <ul>
+                    {% if object.required_equipment.all.count == 0 %}
+                    <li><b>No Data To Display</b></li>
+                    {% else %}
+                    {% for item in object.required_consumables.all %}
+                    <li>{{item}}</li>
+                    {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
     {% endblock content %}

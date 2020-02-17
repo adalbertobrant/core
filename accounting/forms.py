@@ -230,6 +230,7 @@ class SimpleJournalEntryForm(forms.ModelForm, BootstrapMixin):
         self.helper.add_input(Submit('submit', 'Submit'))
 
 class ComplexEntryForm(forms.ModelForm, BootstrapMixin):
+    data = forms.CharField(required=True, widget=forms.HiddenInput)
     class Meta:
         exclude="posted_to_ledger", "adjusted"
         model = models.JournalEntry
@@ -246,7 +247,8 @@ class ComplexEntryForm(forms.ModelForm, BootstrapMixin):
                 Column('date','journal', 'created_by',
                     css_class='form group col-md-6 col-sm-12'),
                 Column('draft','memo', css_class='form group col-md-6 col-sm-12'),
-            ),            
+            ),
+            'data',         
             HTML(
                 """
                 <div id="transaction-table">

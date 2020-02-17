@@ -270,7 +270,7 @@ class EmployeeForm(forms.ModelForm, BootstrapMixin):
                         'gender',
                     ),
                     Tab('Conditions of service',
-                        'pay_grade',
+                        # 'pay_grade',
                         'leave_days',
                         'pin',
                         'uses_timesheet'

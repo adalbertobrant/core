@@ -67,6 +67,9 @@ if (consumableTable){
         fieldDescriptions={['Item', 'Unit', 'Quantity']}
         fieldOrder={['item', 'unit', 'quantity']}
         formInputID='id_consumables'
+        concise={data =>{
+            return (data.quantity + data.unit.split('-')[1] + ' x ' + data.item.split('-')[1])
+        }}
         fields={[
             {
                 name: 'item',
@@ -96,6 +99,9 @@ if (equipmentTable){
         fieldDescriptions={['Item', 'Condition', 'Quantity']}
         fieldOrder={['item', 'condition', 'quantity']}
         formInputID='id_equipment'
+        concise={data =>{
+            return (data.quantity + ' x ' + data.item.split('-')[1] + '(' + data.condition + ')')
+        }}
         fields={[
             {
                 name: 'item',
@@ -152,6 +158,9 @@ if(serviceTime){
     ReactDOM.render(<GenericTable
         formInputID="id_service_time"
         fieldOrder={['date','employee', 'normal_time', 'overtime']}
+        concise={(data) =>{
+            return('(' + data.date + ')' + data.employee.split('-')[1] + ' ' + data.normal_time + ' + ' + data.overtime + ' OT' )
+        }}
         fields={[
             {
                 'name': 'date',

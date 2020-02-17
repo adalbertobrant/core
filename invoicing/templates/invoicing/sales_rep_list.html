@@ -3,8 +3,6 @@
 {% block list_headings %}
     <tr>
         <td class="info">Full Name</td>
-        <td class="info">Title</td>
-        <td class="info">Phone #</td>
         <td class="info">Actions</td>
     </tr>
 {% endblock %}
@@ -13,8 +11,6 @@
     {% for rep in object_list %}
     <tr>
         <td>{{rep.employee.first_name}} {{rep.employee.last_name}}</td>
-        <td>{{rep.employee.title}}</td>
-        <td>{{rep.employee.phone}}</td>
         <td>
             <div class="dropdown">
                 <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"

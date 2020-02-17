@@ -3,12 +3,12 @@
 {% block list_headings %}
 
     <tr class="bg-primary text-white">
-        <td>Description</td>
+        <td class='mobile'>Description</td>
         <td>Created By</td>
         <td>Invoice</td>
         <td>Status</td>
 
-        <td># of WorkOrders</td>
+        <td class='mobile'># of WorkOrders</td>
         <td>Actions</td>
     </tr>
 
@@ -18,11 +18,11 @@
 
     {% for wr in object_list %}
     <tr>
-        <td>{{wr.description | truncatechars:50}}</td>
+        <td class='mobile'>{{wr.description | truncatechars:50}}</td>
         <td>{{wr.created_by}}</td>
         <td> {% if wr.invoice %} {{wr.invoice.invoice_number|stringformat:"06d"}} {% else %} None {% endif %} </td>
         <td>{{wr.status}}</td>
-        <td>{{wr.work_orders.count}}</td>
+        <td class='mobile'>{{wr.work_orders.count}}</td>
         <td>
             <div class="dropdown">
                 <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"

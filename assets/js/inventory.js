@@ -186,6 +186,10 @@ if(inventoryCheck){
         fieldDescriptions={['Item', 'Quantity']}
         fieldOrder={['item', 'quantity']}
         formInputID='id_items'
+        concise={(data)=>{
+            console.log(data)
+            return data
+        }}
         fields={[
             {
                 name: 'item',
@@ -209,6 +213,9 @@ if(inventoryCheck){
         fieldDescriptions={['Item', 'Quantity', 'Note']}
         fieldOrder={['item', 'quantity', 'note']}
         formInputID='id_items'
+        concise={(data)=>{
+            return(data.quantity + ' x ' + data.item.split('-')[1])
+        }}
         fields={[
             {
                 name: 'item',
@@ -432,6 +439,9 @@ if(inventoryCheck){
         fieldDescriptions={['Item', 'Unit', 'Unit Price', 'Quantity']}
         formInputID='id_data'
         calculateTotal={calculateTotalFunc}
+        concise={data=>{
+            return(data.quantity + ' x ' + data.item.split('-')[1] + '@' + data.unit_price)
+        }}
         fields={
             [
                 {

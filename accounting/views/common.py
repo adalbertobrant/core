@@ -122,6 +122,23 @@ class ComplexEntryView( ContextMixin, CreateView):
     template_name = os.path.join('accounting', 'compound_transaction.html')
     form_class= forms.ComplexEntryForm
 
+    def form_valid(self, form):
+        resp = super().form_valid(form)
+
+        data = json.loads(urllib.parse.unquote(
+            form.cleaned_data['data']))
+        
+        
+        for line in data:
+            account = models.Account.objects.get(pk=line['account'].split('-')[0])
+            amount = decimal.Decimal(line['amount'])
+            if line['debit'] == 'Debit':
+                self.object.debit(amount, account)
+            else:
+                self.object.credit(amount, account)
+            
+        return resp
+
     def post(self, request, *args, **kwargs):
         resp = super().post(request, *args, **kwargs)
         if not self.object:
@@ -421,7 +438,7 @@ class AssetUpdateView(ContextMixin,  UpdateView):
 
 class AssetListView(ContextMixin,  PaginationMixin, 
         FilterView):
-    template_name = os.path.join('accounting', 'asset_list.html')
+    template_name = os.path.join('accounting', 'assets', 'list.html')
     model = models.Asset
     filterset_class = filters.AssetFilter
     extra_context = {
@@ -431,7 +448,7 @@ class AssetListView(ContextMixin,  PaginationMixin,
 
 
 class AssetDetailView( DetailView):
-    template_name = os.path.join('accounting', 'asset_detail.html')
+    template_name = os.path.join('accounting', 'assets', 'detail.html')
     model = models.Asset
 
     def get_context_data(self, *args, **kwargs):

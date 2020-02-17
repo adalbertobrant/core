@@ -32,16 +32,17 @@ Bill Payments
                                 <td>{{object.due}}</td>
                             </tr>
                             
-                            
-                            <tr>
-                                <th>Reference</th>
-                                <td>{{object.reference}}</td>
-
-                            </tr>
-                            
+                            {% if object.reference %}
+                                <tr>
+                                    <th>Reference</th>
+                                    <td>{{object.reference}}</td>
+                                </tr>
+                            {% endif %}
                         </tbody>
                     </table>
-                    <p><b>Memo:</b> {{object.memo}}</p>
+                    {% if object.memo %}
+                        <p><b>Memo:</b> {{object.memo}}</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -67,16 +68,16 @@ Bill Payments
                             {% endfor %}
                         </tbody>
                         <tfoot>
-                            <tr class="bg-primary text-white">
-                                <td>Total Paid</td>
+                            <tr >
+                                <th>Total Paid</th>
                                 <td style='text-align:right'>{{object.total_payments}}</td>
                             </tr>
-                            <tr class="bg-primary text-white">
-                                <td>Billed Amount</td>
+                            <tr >
+                                <th>Billed Amount</th>
                                 <td style='text-align:right'>{{object.total}}</td>
                             </tr>
-                            <tr class="bg-primary text-white">
-                                <td>Due</td>
+                            <tr >
+                                <th>Due</th>
                                 <td style='text-align:right'>{{object.total_due}}</td>
                             </tr>
                         </tfoot>

@@ -22,9 +22,17 @@ Journal Details
             </div>
             <div class="col-sm-8">
                     <h4>Entries</h4>
-                    <iframe frameborder="0" width="700" height="500"  id="journal-frame" src="/accounting/journal/{{object.pk}}/entry-list">
+                    
+                    <iframe frameborder="0" width="574" height="500"  id="journal-frame" src="/accounting/journal/{{object.pk}}/entry-list">
 
                     </iframe>
+                    <script>
+                        if(window.screen.width > 575){
+                            $('#journal-frame').width('700')
+                        }else{
+                            $('#journal-frame').width('574')
+                        }
+                    </script>
                 
             </div>
         </div>    

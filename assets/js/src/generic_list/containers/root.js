@@ -54,6 +54,12 @@ class GenericTable extends Component{
         }
     }
 
+    componentDidUpdate = (prevProps, prevState) =>{
+        if(this.props.updateHook){
+            this.props.updateHook(this, prevProps, prevState)
+        }
+    }
+
     taxChangeHandler = (id) =>{
         document.getElementById('id_tax').value = id;
     }
@@ -98,7 +104,11 @@ class GenericTable extends Component{
     }
     render(){
         return(
-            <table className=" table-sm">
+            <React.Fragment>
+                <div>
+                    {this.props.preTable ? this.props.preTable(this) : null}
+                </div>
+                <table className=" table-sm table" >
                 
                 <TitleBar 
                     fieldOrder={this.props.fieldDescriptions}
@@ -115,9 +125,9 @@ class GenericTable extends Component{
                             hasLineTotal={this.props.hasLineTotal}
                             deleteHandler={this.dataRowDeleteHandler}/>
                     ))}
-                {window.screen.width > 575 ? null : <button onClick={() =>{
+                {window.screen.width > 575 ? null : <button style={{margin: "4px"}} onClick={() =>{
                     this.setState({showEntryWidget: true})
-                }} className='btn btn-primary' type='button'>Add Item</button>}
+                }} className='btn btn-sm btn-primary' type='button'>Add Item</button>}
                 </tbody>
                 <InputLine 
                     hasLineTotal={this.props.hasLineTotal}
@@ -139,6 +149,10 @@ class GenericTable extends Component{
                 :   null}
                 
             </table>
+            <div>
+                {this.props.postTable ? this.props.postTable(this) : null}
+            </div>
+            </React.Fragment>
         )
     }
 }

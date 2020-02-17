@@ -12,7 +12,7 @@ Direct Payments
                     <th>Date</th>
                     <th>Paid To</th>
                     <th>Paid From</th>
-                    <th>Comments</th>
+                    <th class='mobile'>Comments</th>
                     <th></th>
                 </tr>
                 {% endblock %}
@@ -22,7 +22,7 @@ Direct Payments
                         <td>{{t.entry.date}}</td>
                         <td>{{t.entry.primary_debit}}</td>
                         <td>{{t.entry.primary_credit}}</td>
-                        <td>{{t.entry.memo}}</td>
+                        <td class='mobile'>{{t.entry.memo}}</td>
                         <td>
                             <a href="{% url 'accounting:entry-detail' pk=t.entry.pk %}"><i class="fas fa-file-alt fa-2x   "></i></a>
                         </td>

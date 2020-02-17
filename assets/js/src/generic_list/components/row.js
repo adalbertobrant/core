@@ -17,7 +17,7 @@ const dataRow = (props) =>{
     return(
         
         <tr>
-            <td style={cellStyle}>
+            <td style={{display: window.screen.width > 575 ? 'inherit': 'none'}}>
                 <DeleteButton 
                     index={props.index}
                     handler={props.deleteHandler}/>
@@ -26,7 +26,10 @@ const dataRow = (props) =>{
                 props.fieldOrder.map((fieldName, i) =>(
                     <td style={cellStyle} key={i}>{props.data[fieldName]}</td>
                 ))
-                : <td>{props.concise(props.data)}</td>
+                : <td colSpan={2}>
+                    <DeleteButton 
+                        index={props.index}
+                        handler={props.deleteHandler}/> {props.concise(props.data)}</td>
             }
             {props.hasLineTotal ?
             <td style={cellStyle}>

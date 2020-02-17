@@ -13,7 +13,7 @@
 {% for s in object_list %}
 <tr>
     <td>{{s.name}}</td>
-    <td>{{s.description}}</td>
+    <td>{{s.description |truncatechars:40}}</td>
     <td>
         <div class="dropdown">
             <button class="btn-sm btn-primary btn-sm dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"

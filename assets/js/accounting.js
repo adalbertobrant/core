@@ -13,7 +13,96 @@ const expenses = document.getElementById('expenses-list');
 const bills = document.getElementById('bill-table');
 
 if(transactionTable){
-    ReactDOM.render(<TransactionTable />, transactionTable);
+    ReactDOM.render(<GenericTable 
+        concise={data =>{
+            const transactionString = data.debit == '1' ? 'Debit' : 'Credit'
+            return (transactionString + ': ' + data.amount + ' - ' + data.account.split('-')[1])
+        }}
+        fieldOrder={['account', 'amount', 'debit']}
+        fieldDescriptions={['Account', 'Amount', 'Credit/Debit']}
+        formInputID='id_data'
+        updateHook={(comp, prevProps, prevState) =>{
+            if(prevState.lines != comp.state.lines){
+                let credit = 0;
+                let debit = 0;
+                let line;
+                for(line of comp.state.lines){
+                    if(line.debit == 'Debit'){
+                        debit = debit + parseFloat(line.amount)
+                    }else{
+                        credit = credit + parseFloat(line.amount)
+                    }
+                }
+                
+                comp.setState({balanced: credit > 0 && credit == debit})
+            }
+        }}
+        postTable={comp =>{
+            return(<div style={{
+                width: '100%',
+                height: '72px',
+                border: `6px solid ${comp.state.balanced ? 'green' : 'red'}`,
+                borderRadius: '5px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '8px'
+
+            }}>
+                <h4>{comp.state.balanced ? 'BALANCED' : 'UNBALANCED'}</h4>
+            </div>)
+        }}
+        fields={[
+            {
+                'name': 'account',
+                'type': 'search',
+                'width': '40',
+                'required': true,
+                'model': 'account',
+                'app': 'accounting',
+                'newLink': '/accounting/create-account',
+                url: '/accounting/api/account/', 
+                idField: 'id',
+                displayField: 'name'
+            },
+            {
+                'name': 'amount',
+                'type': 'number',
+                'width': '30',
+                'required': true
+            },
+            {
+                name: 'debit',
+                type: 'widget',
+                width: '30',
+                required: true,
+                'widgetCreator': (comp) =>{
+                    const handler = (value) =>{
+                        let newData = {...comp.state.data}
+                        newData['debit'] = value
+                        comp.setState({'data': newData})
+                    }
+                    return(
+                        <SelectWidget
+                            resetFlag={comp.state.isReset}
+                            handler={handler}
+                            options={[
+                                
+                                {
+                                    'label': 'Debit',
+                                    'value': 'Debit'
+                                },
+                                {
+                                    'label': 'Credit',
+                                    'value': 'Credit'
+                                }
+                            ]} />
+                    )
+                }
+            }
+            
+        ]}
+        />, transactionTable);
 }else if(currency){
     ReactDOM.render(<CurrencyConverter />, currency);
 }else if(accounts){
@@ -235,6 +324,9 @@ if(transactionTable){
             fieldOrder={['category', 'description', 'amount']}
             fieldDescriptions={['Expense Category', 'Memo', 'Amount']}
             formInputID='id_data'
+            concise={(data)=>{
+                return(data.description + ': ' + data.amount)
+            }}
             fields={[
                 {
                     'name': 'category',

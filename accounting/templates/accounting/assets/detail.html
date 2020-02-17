@@ -1,0 +1,52 @@
+{% extends "window.html" %}
+{% block heading %}
+Asset Details
+{% endblock heading %}
+{% block actions %}
+<a class="dropdown-item" href="{% url 'accounting:asset-create' %}"><i class="fas fa-plus"></i>Register New Asset</a>
+                    <a class="dropdown-item" href="{% url 'accounting:asset-update' pk=object.pk %}"><i class="fas fa-edit"></i>Update</a>
+{% endblock actions %}
+{% block content %}
+
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow accent-left-lg">
+                <div class="card-body ">
+                    <h3 class="card-title">{{object.name}}</h3>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                            <p class="card-text">
+                            <i class="fas fa-calendar    "></i> {{object.init_date}}</p>
+                            <p class="card-text">
+                            Category: {{object.category_string}}</p>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <p class="card-text">
+                                Initial Value: {{object.initial_value}}</p>
+                            <p class="card-text">
+                                Current Value: {{object.current_value}}</p>
+                            <p class="card-text">
+                                Total depreciation: {{object.total_depreciation}}
+                            </p>
+                            <p class="card-text">
+                                Disposal Value: {{object.salvage_value}}</p>
+                            <p class="card-text">
+                                Disposal Date: {{object.salvage_date}}</p>
+                        </div>
+                    </div>
+                    <hr class="my-2">
+                    <p class="card-text">
+                        {{object.description}}</p>
+
+                </div>
+            </div>
+            {% autoescape off %}
+            {{graph}}
+            {% endautoescape %}
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

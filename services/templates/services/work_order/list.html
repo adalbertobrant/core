@@ -1,18 +1,18 @@
 {% extends "common_data/list_template.html" %} {% block list_headings %}
 <tr class="info">
-    <td style="width:15%">Work Order ID</td>
+    <td style="width:15%">ID</td>
     <td style="width:20%">Date</td>
     <td style="width:10%">Status</td>
-    <td style="width:40%">Description</td>
+    <td class='mobile'  style="width:40%">Description</td>
     <td style="width:15%">Actions</td>
 </tr>
 {% endblock %} {% block list_content %} 
 {% for wo in object_list %}
 <tr>
-    <td>{{wo.id}}</td>
+    <td>{{wo.id|stringformat:"06d"}}</td>
     <td>{{wo.date}}</td>
     <td>{{wo.status | truncatechars:60}}</td>
-    <td>{{wo.description | truncatechars:60}}</td>
+    <td class='mobile'>{{wo.description | truncatechars:60}}</td>
     <td>
         <div class="dropdown">
             <button class="btn-sm btn-primary btn-sm dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"

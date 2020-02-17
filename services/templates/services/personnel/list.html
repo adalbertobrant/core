@@ -1,14 +1,14 @@
 {% extends "common_data/list_template.html" %} {% block list_headings %}
 <tr class="info">
-    <td style="width:15%">Employee Number</td>
-    <td style="width:20%">Name</td>
-    <td style="width:50%">Role</td>
-    <td style="width:15%">Actions</td>
+    <td class='mobile' >Employee Number</td>
+    <td >Name</td>
+    <td >Role</td>
+    <td >Actions</td>
 </tr>
 {% endblock %} {% block list_content %} 
 {% for pro in object_list %}
 <tr>
-    <td>{{pro.employee.employee_number}}</td>
+    <td class='mobile'>{{pro.employee.employee_number|stringformat:'06d'}}</td>
     <td>{{pro.employee}}</td>
     <td>{% if pro.is_manager %} Manager {% else %} Service Technician{% endif %}</td>
     <td>

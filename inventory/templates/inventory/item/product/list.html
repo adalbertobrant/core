@@ -22,17 +22,17 @@ $(document).ready(function(){
 <tr>
     <td class="info">Code</td>
     <td class="info">Item Name</td>
-    <td class="info">Supplier</td>
-    <td class="info">Category</td>
-    <td class="info">Unit Sales Price</td>
+    <td class="info mobile">Supplier</td>
+    <td class="info mobile">Category</td>
+    <td class="info ">Unit Sales Price</td>
     <td class="info">Actions</td>
 </tr>
 {% endblock %} {% block list_content %} {% for item in object_list %}
 <tr>
-    <td>{{item.pk}}</td>
+    <td>{{item.pk|stringformat:"06d"}}</td>
     <td>{{item.name}}</td>
-    <td>{{item.supplier}}</td>
-    <td>{{item.category}}</td>
+    <td class='mobile'>{{item.supplier}}</td>
+    <td  class='mobile'>{{item.category}}</td>
     <td>{{item.unit_sales_price | floatformat:2 }}</td>
     <td>
         <div class="dropdown">

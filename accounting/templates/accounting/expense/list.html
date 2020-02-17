@@ -3,9 +3,9 @@
 {% block  list_headings %}
 <tr class="bg-primary">
     <td>Date</td>
-    <td>Category</td>
+    <td >Category</td>
     <td>Amount</td>
-    <td>Affected Account</td>
+    <td class='mobile'>Affected Account</td>
     <td>Actions</td>
 </tr>
 {% endblock %}
@@ -16,9 +16,9 @@
         <td>{{item.category_string}}</td>
         <td>{{item.amount}}</td>
         {% if item.billable %}
-        <td>{{item.customer.account}}</td>
+        <td class='mobile'>{{item.customer.account}}</td>
         {% else %}
-        <td>{{item.debit_account}}</td>
+        <td class='mobile'>{{item.debit_account}}</td>
         {% endif %}
         <td>
             <div class="dropdown">

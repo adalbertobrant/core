@@ -8,21 +8,21 @@
 {% block list_headings %}
 <tr>
     <td class="info">Order #</td>
-    <td class="info">Issue Date</td>
-    <td class="info">Status</td>
+    <td class="info mobile">Issue Date</td>
+    <td class="info mobile">Status</td>
     <td class="info">Supplier</td>
-    <td class="info"># of Items</td>
-    <td class="info">Total Cost</td>
+    <td class="info mobile"># of Items</td>
+    <td class="info mobile">Total Cost</td>
     <td class="info">Actions</td>
 </tr>
 {% endblock %} {% block list_content %} {% for order in object_list %}
 <tr>
-    <td>{{order.pk}}</td>
-    <td>{{order.date}}</td>
-    <td>{{order.status}}</td>
+    <td>{{order.pk|stringformat:"06d"}}</td>
+    <td class='mobile'>{{order.date}}</td>
+    <td class='mobile'>{{order.status}}</td>
     <td>{{order.supplier}}</td>
-    <td>{{order.orderitem_set.all.count}}</td>
-    <td>{{order.total|floatformat:2}}</td>
+    <td class='mobile'>{{order.orderitem_set.all.count}}</td>
+    <td class='mobile'>{{order.total|floatformat:2}}</td>
     <td>
         <div class="dropdown">
             <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"

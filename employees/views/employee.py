@@ -236,22 +236,22 @@ class DepartmentAPIView(viewsets.ModelViewSet):
 class ConfigWizard(ConfigWizardBase):
     template_name = os.path.join('employees', 'wizard.html')
     form_list = [
-        forms.PayrollDateForm, 
-        forms.PayGradeForm, 
+        # forms.PayrollDateForm, 
+        # forms.PayGradeForm, 
         forms.EmployeeForm, 
-        forms.PayrollOfficerForm, 
-        forms.EmployeesSettingsForm
+        # forms.PayrollOfficerForm, 
+        # forms.EmployeesSettingsForm
     ]
     success_url = reverse_lazy('employees:dashboard')
     config_class = models.EmployeesSettings
 
 
-    def get_form_initial(self, step):
-        initial = super().get_form_initial(step)
-        if step == '0':
-            initial.update({'schedule': 1})
+    # def get_form_initial(self, step):
+    #     initial = super().get_form_initial(step)
+    #     if step == '0':
+    #         initial.update({'schedule': 1})
 
-        return initial
+    #     return initial
 
 
 class ContractCreateView(ContextMixin,CreateView):

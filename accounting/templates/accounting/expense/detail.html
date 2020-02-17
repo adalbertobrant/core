@@ -11,30 +11,33 @@ Expense Details
 
 <div class="container">
     <div class="row">
-            <div class="col-md-5 col-sm-12">
-                <div class="card shadow" >
+            <div class="col-12">
+                <div class="card shadow accent-left-lg" >
                 <div class="card-body ">
                     <h3 class="card-title">{{object.amount|active_currency}}</h3>
-                    <p class="card-text">{{object.date}}</p>
-                    <p class="card-text"> <i class="fas fa-user    "></i> {{object.recorded_by.employee}}</p>
-                    {% if object.debit_account %}
-                    <p class="card-text">Account: <a href=" {% url 'accounting:account-detail' pk=object.debit_account.pk %} ">{{object.debit_account}}</a></p> 
-                    {% endif %}
-                    <p class="card-text">Category: {{object.category_string}}</p>
-                </div>
-            </div>
-            </div>
-            <div class="col-md-7 col-sm-12">
-                <div class="card accent-md">
-                    <div class="card-body">
-                        <h4 class="card-title">Description</h4>
-                        <p class="card-text">{{object.description}}</p>
-                        {% if object.billable %}
-                        <h4 class="card-title">Billing</h4>
-                        <p class="card-text">Customer:  {{object.customer}}</p>
-                        {% endif %}
+
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <p class="card-text">{{object.date}}</p>
+                            <p class="card-text"> <i class="fas fa-user    "></i> {{object.recorded_by.employee}}</p>
+                            {% if object.debit_account %}
+                            <p class="card-text">Account: <a href=" {% url 'accounting:account-detail' pk=object.debit_account.pk %} ">{{object.debit_account}}</a></p> 
+                            {% endif %}
+                            <p class="card-text">Category: {{object.category_string}}</p>    
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            {% if object.billable %}
+                            <h5 class="card-title">Billing</h5>
+                            <p class="card-text">Customer:  {{object.customer}}</p>
+                            {% endif %}
+                        </div>
                     </div>
+                    
+                    <hr class="my-2">
+                    <p class="card-text">{{object.description}}</p>
+
                 </div>
+            </div>
             </div>
     </div>
 </div>

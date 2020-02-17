@@ -19,6 +19,16 @@ body.framed::-webkit-scrollbar{
     opacity: 0;
  }
 
+.table-sm td >a {
+    display: block;
+    background-color: var(--primary);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+
+
 .white {
     background-color: white;
 }
@@ -680,7 +690,7 @@ span.less {
 }
 
 .mobile {
-    display: initial;
+    display: table-cell;
 }
 
 @media(max-width: 575px){
@@ -786,5 +796,9 @@ span.less {
 
     .mobile {
         display: none;
+    }
+
+    .card {
+        margin-top: 4px;
     }
 }

@@ -12,13 +12,10 @@ const titleBar = (props) =>{
             <tr 
                 className="bg-primary text-white"
                 >
-                {/* For Delete buttons */}
-                <th style={{
-                    width: `10%`
-                }}></th>
+                
                 {window.screen.width > 575 ? 
                     props.fieldOrder.map((fieldName, i)=>(
-                        <th key={i}
+                        <th colSpan={i == 0 ? 2:1}  key={i}
                             style={{
                                 padding: "5px",
                                 borderRight: "1px solid white",
@@ -27,7 +24,7 @@ const titleBar = (props) =>{
                             {fieldName}
                         </th>
                 )) : 
-                        <th style={{width: '70%'}}>Description</th>
+                        <th colSpan={2} style={{width: '80%'}}>Description</th>
                 }
                 {props.hasLineTotal ?
                 <th style={{

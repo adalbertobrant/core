@@ -1,9 +1,9 @@
 {% extends "common_data/iframe_list_template.html" %}
 {% block list_headings %}
         <tr class='text-white bg-primary'>
-            <th>Date</th>
-            <th>REF</th>
-            <th>Draft</th>
+            <th class='mobile'>Date</th>
+            <th >REF</th>
+            <th class='mobile'>Draft</th>
             <th>Memo</th>
             <th>Debit </th>
             <th>Credit</th>
@@ -12,9 +12,9 @@
 {% block list_content %}
         {% for t in object_list %}
         <tr>
-            <td scope="row">{{t.date}}</td>
-            <td><a target="_top" href="{% url 'accounting:entry-detail' pk=t.pk %}">{{t.pk}}</a></td>
-            <td>{{t.draft}}</td>
+            <td class='mobile' scope="row">{{t.date}}</td>
+            <td><a target="_top" href="{% url 'accounting:entry-detail' pk=t.pk %}">{{t.pk |stringformat:"06d"}}</a></td>
+            <td class='mobile'>{{t.draft}}</td>
             <td>{{t.memo |truncatechars:30}}</td>
             <td>{{t.total_debits}}</td>
             <td>{{t.total_credits}}</td>

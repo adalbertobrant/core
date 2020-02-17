@@ -172,7 +172,7 @@ class inputLine extends Component{
                         borderTop: '2px solid white',
                     }}>
                     {this.props.fieldOrder.map((fieldName, i) =>(
-                        <td key={i}>
+                        <td colSpan={i==0 ? 2:1} key={i}>
                             {this.fieldSelector(i)}
                         </td>
                     ))}
@@ -206,7 +206,7 @@ class inputLine extends Component{
                 
                     <button 
                         style={{ margin: '5px'}}
-                        className="btn btn-sm"
+                        className="btn btn-sm btn-block"
                         type="button"
                         onClick={this.insertHandler}>Insert</button>
                 </div>

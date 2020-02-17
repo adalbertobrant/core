@@ -7,7 +7,7 @@
 {% block list_headings %}
 <tr>
     <td class="info">Date</td>
-    <td class="info">Supervisor</td>
+    <td class="info mobile">Supervisor</td>
     <td class="info"># of Adjustments</td>
     
 </tr>
@@ -15,7 +15,7 @@
 {% for check in object_list %}
 <tr>
     <td>{{check.date}}</td>
-    <td>{{check.adjusted_by}}</td>
+    <td  class='mobile'>{{check.adjusted_by}}</td>
     <td>{{check.adjustments.count}}</td>
     <td>
         <a  href="{% url 'inventory:inventory-check-summary' pk=check.pk %}">

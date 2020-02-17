@@ -1,6 +1,6 @@
 {% extends "common_data/list_template.html" %} {% block list_headings %}
 <tr class="info">
-    <td style="width:15%">Reference</td>
+    <td  class='mobile' style="width:15%">Reference</td>
     <td style="width:20%">Date</td>
     <td  style="width:10%">Requested By</td>
     <td style="width:15%">Actions</td>
@@ -8,7 +8,7 @@
 {% endblock %} {% block list_content %} 
 {% for req in object_list %}
 <tr>
-    <td>{{req.reference}}</td>
+    <td  class='mobile'>{{req.reference}}</td>
     <td>{{req.date}}</td>
     <td>{{req.requested_by}}</td>
     <td>

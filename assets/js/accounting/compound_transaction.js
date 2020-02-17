@@ -10,8 +10,6 @@ export default class TransactionTable extends Component{
             balanced: 0,
         }
 
-  
-    
     balance =() =>{
         let i = 0;
         const transactions = this.state.contents;
@@ -94,7 +92,7 @@ class Content extends Component{
                         </button>
                     </td>
                     <td>{item.account}</td>
-                    <td>{item.amount}</td>
+                    <td>{parseFloat(item.amount).toFixed(2)}</td>
                     <td>{item.debit === "1" ? 'Debit' : 'Credit'}</td>
                 </tr>
             ))}
@@ -184,7 +182,7 @@ class EntryRow extends Component {
                         "bg-success" :
                         "bg-danger"} >
                    <td colSpan={3} style={{
-                       fontSize: "24",
+                       fontSize: "2rem",
                        textAlign: 'center',
                        color: 'white'
                    }} >{this.props.balanced === 1 ? 

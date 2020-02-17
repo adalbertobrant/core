@@ -20,85 +20,77 @@ Account Details
     }
 </style>
 
-
+<br>
 <div class="container">
     <div class="row">
-        <div class="col-sm-12">
-            <div class="card-deck" >
-                <div class="card shadow" style="max-width:33%;">
-                    <div class="card-header">
-                        <h4 class="card-title">{{object.name}}</h4>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-sm">
-                            <tbody>
-                                <tr>
-                                    <th>ID:</th>
-                                    <td>{{object.pk}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Balance:</th>
-                                    <td>{{object.balance | accounting}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Type:</th>
-                                    <td>{{object.type}}</td>
-                                </tr>
-                                <tr>
-                                    <td colspan=2>
-                                        Account Features:
-                                        <ul>
-                                            {% if object.bank_account %} <li>Bank Account</li>
-                                            {% endif %}
-                                            {% if object.control_account %}
-                                            <li>Control Account</li>
-                                            {% endif %}
-                                        </ul>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Parent:</th>
-                                    <td>{{object.parent_account}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Children:</th>
-                                    <td>
+        <div class="col-12">
+            <div class="card shadow accent-left-lg">
+                <div class="card-body">
+                <h4 class="card-title">{{object.name}}</h4>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr>
+                                        <th>ID:</th>
+                                        <td>{{object.pk}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Balance:</th>
+                                        <td>{{object.balance | accounting}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Type:</th>
+                                        <td>{{object.type}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <h5>Account Features:</h5>
+                            <ul>
+                                {% if object.bank_account %} <li>Bank Account</li>
+                                {% endif %}
+                                {% if object.control_account %}
+                                <li>Control Account</li>
+                                {% endif %}
+                                {% if object.parent_account %}
+                                    <li>Parent Account: {{object.parent_account}}</li>
+                                {% endif %}
+                                {% if object.children %}
+                                    <li>Child Account(s):
                                         <ul>
                                         {% for c in object.children %}
                                             <li>{{c}}</li>
                                         {% endfor %}
                                         </ul>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">Description</h4>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">{{object.description}}</p>
-                    </div>
+                    <hr class="my-2">
+                    <p class="card-text">{{object.description}}</p>
                 </div>
             </div>
         </div>
+        
     </div>
-    
-    <div class="row">
-        <div class="col-sm-12">
-                <div style="display:inline-block;width:48%;border-right:2px solid black;border-top: 2px solid black;margin-top:20px;">
-                    <h4 style="text-align:center;">Credits</h4>
-                    <iframe class='sub-frame'  id="journal-frame"  frameborder="0" src="/accounting/account/{{object.pk}}/entry-list/credit">
-                    </iframe>
-                </div>
-                <div style="display:inline-block;width:48%;border-top: 2px solid black;margin-top:20px;">
-                    <h4 style="text-align:center;">Debits</h4>
-                    <iframe class='sub-frame' frameborder="0"  id="journal-frame" src="/accounting/account/{{object.pk}}/entry-list/debit">
-                    </iframe>
-                </div>
+    <br>
+    <div class="row no-gutters">
+        <div class="col-sm-12 col-md-6">
+            <div style="border-right:2px solid black;border-top: 2px solid black;">
+                <h4 style="text-align:center;">Credits</h4>
+                <iframe class='sub-frame'  id="journal-frame"  frameborder="0" src="/accounting/account/{{object.pk}}/entry-list/credit">
+                </iframe>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div style="border-top: 2px solid black">
+                <h4 style="text-align:center;">Debits</h4>
+                <iframe class='sub-frame' frameborder="0"  id="journal-frame" src="/accounting/account/{{object.pk}}/entry-list/debit">
+                </iframe>
+            </div>
         </div>
     </div>
 </div>

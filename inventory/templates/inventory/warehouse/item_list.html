@@ -3,8 +3,8 @@
         <tr class="bg-primary">
             <th>Item</th>
             <th>Quantity</th>
-            <th>Min Quantity</th>
-            <th>Max Quantity </th>
+            <th  class='mobile'>Min Quantity</th>
+            <th  class='mobile'>Max Quantity </th>
             <th>Last Verified </th>
         </tr>
 {% endblock %}
@@ -14,8 +14,8 @@
             <td scope="row"><a target="_parent" href="{{i.item.url}}" style='text-decoration: none;'>{{i}}</a></td>
             <td style='color:white;background-color:{{i.quantity_color}};'>
                 {{i.quantity}}</td>
-            <td>{{i.item.minimum_order_level}}</td>
-            <td>{{i.item.maximum_stock_level}}</td>
+            <td  class='mobile'>{{i.item.minimum_order_level}}</td>
+            <td  class='mobile'>{{i.item.maximum_stock_level}}</td>
             <td style='color:white;background-color:{{i.check_color}};'>{{i.last_check_date}}</td>
         </tr>
         {% endfor %}
