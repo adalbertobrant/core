@@ -4,7 +4,7 @@ fieldOrder an array of field names
  */
 
 const titleBar = (props) =>{
-    
+    const wide = window.screen.width > 575
     return(
         
         <thead>
@@ -13,7 +13,7 @@ const titleBar = (props) =>{
                 className="bg-primary text-white"
                 >
                 
-                {window.screen.width > 575 ? 
+                {wide ? 
                     props.fieldOrder.map((fieldName, i)=>(
                         <th colSpan={i == 0 ? 2:1}  key={i}
                             style={{
@@ -34,7 +34,7 @@ const titleBar = (props) =>{
                     {/** if line total then the sum of widths must be 70% */}
                     SubTotal
                 </th>
-                : null
+                : wide ? <th></th> : null
             }
                 
             </tr>

@@ -1,5 +1,6 @@
 .container {
     width: 30%;
+    min-width: 320px;
     padding: 5px;
     border: 1px solid #aaa;
 }
@@ -35,9 +36,6 @@ thead th:last-child, tfoot td:last-child{
     background-color: #1089ff;
 }
 
-.cardIcon {
-
-}
 
 .cardText {
     border-left: 1px solid #aaa;
@@ -61,4 +59,35 @@ thead th:last-child, tfoot td:last-child{
 .activeListing, .listing:hover {
     color: white;
     background-color: #1089ff
+}
+
+.bottomControls {
+    display: flex;
+    flex-direction: column
+}
+
+.keypadState, .productInput {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.productInput button {
+    width: 60px;
+    flex: 0
+}
+.productInput input {
+    flex: auto;
+    font-size: 1.5rem;
+    width: 100%;
+}
+
+.keypadState {
+    justify-content: space-evenly;
+}
+
+.keypadState span{
+    font-size: 2rem;
+    flex: 1;
+    text-align: center;
 }

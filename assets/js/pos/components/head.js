@@ -1,6 +1,7 @@
 import React, {useEffect, useState, useRef} from 'react';
 import styles from './css/head.css';
 import Context from '../container/provider'
+import {ActionButton} from './actions'
 
 function useInterval(callback, delay) {
     const savedCallback = useRef();
@@ -24,6 +25,20 @@ function useInterval(callback, delay) {
 
 
 const head =(props) =>{
+    const wide = window.screen.width > 600 
+    return(
+         wide ? 
+            <div className={styles.head_container}>
+                <div className={styles.logo}>
+                    <a className='text-white' href="/invoicing/"><h4 className='logo' style={{textAlign:'left'}}>Bentsch</h4></a>
+                </div>
+            <HeadStats {...props}/>
+        </div>
+        : <MobileHeader {...props}/>
+        )
+}
+
+const HeadStats = (props) =>{
     const [time, setTime] = useState(new Date())
     
     const [duration, setDuration] = useState(
@@ -44,28 +59,30 @@ const head =(props) =>{
     return(
         <Context.Consumer>
             {(context) =>{
-                return (<div className={styles.head_container}>
-            <div className={styles.logo}><a className='text-white' href="/invoicing/"><h4 className='logo' style={{textAlign:'left'}}>Bentsch</h4></a></div>
+
+                return (
+        <React.Fragment>
             <div className={styles.status}>
-            Status
-            <table className="table-sm">
-                <tbody>
-                    <tr>
-                        <td>Current Customer: </td>
-                        <td>{context.state.currentCustomer}</td>
-                    </tr>
-                    <tr>
-                        <td>Current Mode: </td>
-                        <td>{context.state.isQuote ? "QUOTE": "SALE"} MODE</td>
-                    </tr>
-                    <tr>
-                        <td>Current Sales Person: </td>
-                        <td>{context.state.salesPerson}</td>
-                    </tr>
-                </tbody>
-            </table>
+                <h5>Status</h5>
+                <table className="table-sm">
+                    <tbody>
+                        <tr>
+                            <td>Current Customer: </td>
+                            <td>{context.state.currentCustomer}</td>
+                        </tr>
+                        <tr>
+                            <td>Current Mode: </td>
+                            <td>{context.state.isQuote ? "QUOTE": "SALE"} MODE</td>
+                        </tr>
+                        <tr>
+                            <td>Current Sales Person: </td>
+                            <td>{context.state.salesPerson}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div className={styles.time}>Time
+            <div className={styles.time}>
+                <h5>Time</h5>
                 <table className="table-sm">
                     <tbody>
                         <tr>
@@ -82,13 +99,118 @@ const head =(props) =>{
                             <td>{("0" + (duration.getHours() -2)).slice(-2)}:{("0" + (duration.getMinutes())).slice(-2)}:{("0" + (duration.getSeconds())).slice(-2)}</td>
                         </tr>
                     </tbody>
-                </table>            
+                </table>
             </div>
-        </div>)
-            }
-            }
-        </Context.Consumer>
+        </React.Fragment>
         )
+    }
+}
+</Context.Consumer>
+    )
+}
+
+const MobileHeader =(props) =>{
+    const [showStats, setShowStats] = useState(false)
+    const [showActions, setShowActions] = useState(false)
+    return (
+        <div className={styles.mobileHeader}>
+            <button 
+                className='btn btn-primary'
+                onClick={() => setShowStats(true)}> <i className="fas fa-bars    "></i> </button>
+            <div className={styles.logo}>
+                    <a className='text-white' href="/invoicing/"><h4 className='logo' style={{textAlign:'left'}}>Bentsch</h4></a>
+                </div>
+            <button 
+                className='btn btn-primary'
+                onClick={() => setShowActions(true)}> <i className="fa fa-ellipsis-v" aria-hidden="true"></i> </button>
+            <div className={styles.overlay} 
+                 style={{
+                    display: showStats || showActions ? 'block' : 'none'
+                }}
+                onClick={()=>{
+                    setShowActions(false);
+                    setShowStats(false)
+                }}>
+                <div 
+                    style={{display: showStats ? 'block': 'none'}}
+                    className={styles.statsDrawer} 
+                    onClick={evt => evt.stopPropagation()}>
+                    <h4>Session Stats</h4>
+                    <HeadStats {...props} />
+                </div>
+                <div>
+                    <ActionButtons />
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const ActionButtons =(props) =>{
+    return(
+        <div className={styles.actionDrawer}>
+            <h4>Actions</h4>
+            <ul className="list-group">
+                <li className="list-group-item">
+                    <ActionButton 
+                        sm
+                        clear
+                        action='price-check'
+                        text='PRICE CHECK'
+                        keyboardKey='F2' />
+                </li>
+                <li className="list-group-item">
+                    <ActionButton 
+                        sm
+                        clear
+                        action='void'
+                        text='VOID'
+                        keyboardKey='F4' />
+                </li>
+                <li className="list-group-item">
+                    <ActionButton 
+                        sm
+                        clear
+                        action='suspend'
+                        text='SUSPEND | Restore'
+                        keyboardKey='F6' />
+                </li>
+                <li className="list-group-item">
+                    <ActionButton 
+                        sm
+                        clear
+                        action='customers'
+                        text='CUSTOMERS'
+                        keyboardKey='F7' />
+                </li>
+                <li className="list-group-item">
+                    <ActionButton 
+                        sm
+                        clear
+                        action='checkout'
+                        text='PAYMENT'
+                        keyboardKey='PageUp' />
+                </li>
+                <li className="list-group-item">
+                    <ActionButton 
+                        sm
+                        clear
+                        action='quote'
+                        text='QUOTE | SALE'
+                        keyboardKey='PageDown' />
+                </li>
+                <li className="list-group-item">
+                    <ActionButton 
+                        sm
+                        clear
+                        action='endSession'
+                        text='LOGOUT'
+                        keyboardKey='Insert' />
+                    
+                </li>
+            </ul>
+        </div>
+    )
 }
 
 export default head;

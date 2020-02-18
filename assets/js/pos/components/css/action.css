@@ -15,7 +15,7 @@
 
 
 
-.button p:last-child {
+.button p:last-child, .button p>span {
     color: #777;
 }
 
@@ -46,4 +46,5 @@
     padding: 5px;
     border: 1px solid #ccc;
     width: 30%;
+    min-width: 320px;
 }

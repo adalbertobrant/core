@@ -4,18 +4,9 @@ import styles from './css/keypad.css';
 const Keypad = (props) =>{
     return(
         <div className={styles.keypad_container}>
-            <h2><KeypadState 
-                    active={props.mode =='barcode'}
-                    setKeypadMode={props.changeMode}
-                    mode='barcode'/>
-                <KeypadState 
-                    active={props.mode =='price'}
-                    setKeypadMode={props.changeMode}
-                    mode='price'/>
-                <KeypadState 
-                    active={props.mode =='quantity'}
-                    setKeypadMode={props.changeMode}
-                    mode='quantity'/>
+            <h2>
+            <KeypadStateIndicator {...props}/>
+            
             </h2>
             <input 
                 type="number" 
@@ -63,16 +54,42 @@ const KeyPadButton = (props) =>{
     )
 }
 
+
+const KeypadStateIndicator =(props) =>{
+    return(
+        <React.Fragment>
+            <KeypadState 
+                active={props.mode =='barcode'}
+                setKeypadMode={props.changeMode}
+                mode='barcode'>
+                <i className="fas fa-barcode    "></i>
+            </KeypadState>
+            <KeypadState 
+                active={props.mode =='price'}
+                setKeypadMode={props.changeMode}
+                mode='price'>
+                <i class="fas fa-dollar-sign    "></i>
+            </KeypadState>
+            <KeypadState 
+                active={props.mode =='quantity'}
+                setKeypadMode={props.changeMode}
+                mode='quantity'>
+                <i class="fas fa-sort-numeric-up    "></i>
+            </KeypadState>
+        </React.Fragment>
+    )
+}
+
 const KeypadState = (props) =>{
+    const wide = window.screen.width > 600
     return(<span style={{textTransform: 'capitalize'}} 
                 className={ props.active ? styles.activeMode : null}
                 onClick={() => props.setKeypadMode(props.mode)}>
-            {props.mode}
+            {wide ? props.mode : props.children}
         </span>)
 }
 
 const KeypadKeys = (props) =>{
-    console.log(props.text)
     return(
         <React.Fragment>
         <div className={styles.keypad_row}>
@@ -145,8 +162,16 @@ const CheckoutKeypad = (props) =>{
                 <button 
                     className={styles.button}
                     onClick={() =>{
-                        props.setText(props.text.slice(0,
-                            props.text.length-1))
+                        const num = props.text
+                        const asString = num.toString()
+                        if(asString.length == 1){
+                            props.setText(0)
+                        }else{
+                            const newString = asString.slice(0, 
+                                asString.length-1)
+                            props.setText(parseFloat(newString))
+                        }
+                        
                     }} 
                     type="button"> {'<'} </button>
             </div>
@@ -154,4 +179,4 @@ const CheckoutKeypad = (props) =>{
     )
 }
 
-export {Keypad, CheckoutKeypad};
+export {Keypad, CheckoutKeypad, KeypadStateIndicator};

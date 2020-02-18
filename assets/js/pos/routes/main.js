@@ -346,7 +346,7 @@ class MainPage extends Component{
             }
             document.addEventListener('keydown', handler, {once:true})
             history.push('/start-session')
-            this.setState({modalOpen: true})
+            this.setState({modalOpen: true}) 
         }
 
     updateKeypad =(value) =>{
@@ -359,9 +359,11 @@ class MainPage extends Component{
             backgroundColor: '#EEE',
             display: 'flex',
             flexDirection: 'row',
+            flexWrap: 'wrap',
             justifyContent: 'center',
             height: '75vh'
         }
+        const wide = window.screen.width > 600
 
         return(
             <Context.Provider value={{
@@ -371,17 +373,28 @@ class MainPage extends Component{
             }}>
                 <Head {...this.state}/>
                 <div style={styles}>
-                    <ProductList {...this.state}
+                    <ProductList 
+                        {...this.state}
+                        handleEnter={this.handleEnterButtonPress}
+                        mode={this.state.keypadState}
+                            changeMode={(mode) =>{
+                                this.setState({keypadState: mode})}}
                         setActive={(index) =>{
                             this.setState({active: index})
                         }}/>
-                    <Keypad text={this.state.keypadText}
+                    
+                    {wide ? 
+                        <React.Fragment>
+                            <Keypad text={this.state.keypadText}
                             setText={this.updateKeypad}
                             mode={this.state.keypadState}
                             changeMode={(mode) =>{
                                 this.setState({keypadState: mode})}}
                             handleEnter={this.handleEnterButtonPress}/>
-                    <ActionGrid />
+                        <ActionGrid />
+                        </React.Fragment>
+                        :null}
+                    
                     <Modal 
                         ariaHideApp={false}
                         isOpen={this.state.modalOpen} >
@@ -403,6 +416,9 @@ class MainPage extends Component{
                                     <CheckoutPage 
                                         currentCustomer={this.state.currentCustomer}
                                         products={this.state.products}
+                                        cancel={() =>{this.setState({
+                                            modalOpen: false
+                                        })}}
                                         checkoutAction={this.handleCheckoutAction}/>
                                 </Route>
                                 <Route path='/complete'>

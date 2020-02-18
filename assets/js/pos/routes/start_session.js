@@ -8,7 +8,7 @@ const StartSessionPage =(props) =>{
     const [pwd, setPwd] = useState('')
     const [usr, setUsr] = useState('')
     return (
-        <div className={styles.modalCard}>
+        <div className={styles.modalCard} style={{width: "300px"}}>
             <h1>Start New Session</h1>
             <hr className='my-4'/>
             <label htmlFor="">Cashier:</label>

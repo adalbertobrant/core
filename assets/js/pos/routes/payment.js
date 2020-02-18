@@ -50,10 +50,9 @@ class CheckoutPage extends Component{
         if(this.state.active === null){return}
         const val =parseFloat(amt)
         let newPayments = []
-        let canValidate = this.state.canValidate
+        let canValidate = false
         
         newPayments = [...this.state.payments]
-        console.log(newPayments)
         let activePayment = newPayments[this.state.active]
         activePayment.tendered = val
         if(val >= activePayment.due){
@@ -69,12 +68,15 @@ class CheckoutPage extends Component{
         
     }
     render(){
+        const wide = window.screen.width  > 600
         return(
             <div>
                 <h1>Checkout Page</h1>
                 <hr className="my-2"/>
                 <p>Process payment for the current sale.</p>
-                <div style={{display:'flex', flexDirection:'row'}}>
+                <h5>Current Customer:</h5>
+                <p>{this.props.currentCustomer}</p>
+                <div style={{display:'flex', flexDirection:'row', flexWrap: 'wrap'}}>
                     <div style={{flex: 1, marginRight: '5px'}}>
                     <h3>Payment Method</h3>
                     <button className="btn btn-lg btn-block hover-primary"
@@ -98,7 +100,17 @@ class CheckoutPage extends Component{
                       display:'flex', 
                       flexDirection:'column'}}>
                         <div>
-                            <div style={{display:'flex', flexDirection: 'row', justifyContent: 'flex-end', marginBottom: '5px'}}>
+                            <div style={{
+                                        display:'flex', 
+                                        flexDirection: 'row', 
+                                        justifyContent: wide ? 'flex-end' : 'flex-start', marginBottom: '5px', 
+                                        flexWrap: 'wrap'}}
+                                className='btn-group'>
+                                <button 
+                                    onClick={this.props.cancel}
+                                    className="btn btn-danger">
+                                    Cancel
+                                </button>
                                 <button 
                                     className='btn btn-lg primary'
                                     disabled={!this.state.canValidate}
@@ -131,16 +143,13 @@ class CheckoutPage extends Component{
                                 </tbody>
                             </table>
                         </div>
-                        <div style={{display: 'flex', flexDirection: 'row'}}>
+                        <div style={{display: 'flex', flexDirection: 'row', 
+                        flexWrap: 'wrap'}}>
                             <div>
                                 <CheckoutKeypad 
                                     text={this.state.amount}
                                     setText={this.handleKeypadText}
                                     keypadHandler={this.handleKeypadText}/>
-                            </div>
-                            <div>
-                                <h3>Current Customer:</h3>
-                                <p>{this.props.currentCustomer}</p>
                             </div>
                         </div>
                     </div>

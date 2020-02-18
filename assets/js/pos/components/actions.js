@@ -64,15 +64,24 @@ const ActionButton = (props)=>{
         color: 'white',
         border: '0px'
     }
+
+    
     return(
         <Context.Consumer>{context =>{
             context.updateMapping(props.keyboardKey, props.action)
             return(<button 
-                style={{height: props.sm ? '50px' : '100%'}}
+                style={{
+                    height: props.sm ? 
+                        '50px' : '100%',
+                    backgroundColor: props.clear ? "transparent" 
+                                                 : "#ccc",
+                    border: props.clear ? '0px'
+                                        : '1px solid #999' }}
                 onClick={() => context.actionHandler(props.action)}
                 className={styles.button}>
-            {props.sm ? 
-                <p>{props.text + '( ' + props.keyboardKey + ')'}</p>
+            {props.sm ?
+                props.clear ? <span>{props.text}</span> : 
+                <p>{props.text} <span>{'(' + props.keyboardKey + ')'}</span></p>
                 : 
                 <React.Fragment>
                     <p>{props.text}</p>
