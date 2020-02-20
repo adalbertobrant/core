@@ -1,22 +1,18 @@
 {% extends 'common_data/page/pdf_page.html' %}
 
 {% block pre_page %}
+<section id='title'>
+    <div id='title-text'>Leave Schedule Report</div>
+    <div id='action-icon dropdown'>
 
-{% if pdf_link %}
-<div class="jumbotron">
-    <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
-                aria-expanded="false">
-                    Actions
-                </button>
+        <button class="btn btn-block primary " id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
+
         <div class="dropdown-menu" aria-labelledby="triggerId">
             <a class="dropdown-item" href=" {% url 'employees:leave-report-pdf' %} "> <i class="fas fa-file-pdf"></i>Generate PDF </a>
-            
         </div>
     </div>
-</div>
-{% endif %}
-
+</section>
 {% endblock pre_page %}
 
 {% block page_contents %}

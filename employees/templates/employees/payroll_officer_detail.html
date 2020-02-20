@@ -1,29 +1,18 @@
 {% extends "window.html" %}
+{% block heading %}
+HR Officer Details
+{% endblock heading %}
+{% block actions %}
+<a class="dropdown-item" href="{% url 'employees:payroll-officer-update' pk=object.pk %}" role="button"> <i class="fas fa-edit    "></i> Edit</a>
+{% endblock actions %}
 {% block content %}
-
-<div class="jumbotron">
-    <h1 class="display-3">Payroll Officer Details</h1>
-    <p class="lead">View Employee Information and permissions</p>
-    <hr class="my-2">
-    <p>Action</p>
-    <p class="lead">
-        <a class="btn btn-primary" href="{% url 'employees:payroll-officer-update' pk=object.pk %}" role="button">Edit</a>
-    </p>
-</div>
+<br>
 <div class="container">
     <div class="row">
-        <div class="col-sm-4">
-            <div class="card bg-primary text-white">
+        <div class="col-12">
+            <div class="card shadow accent-left-lg">
                 <div class="card-body">
-                    <h4 class="card-title">Employee Details</h4>
-                    <p class="card-text">Full Name: {{object.employee.full_name}}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-8">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Officer Permissions</h4>
+                    <h4 class="card-title">{{object.employee}}</h4>
                     <table class="table table-sm">
                         <thead>
                             <tr>
@@ -48,7 +37,7 @@
                                        <i class="fas fa-times"></i>
                                     {% endif %}</td>
                             </tr>
-                            <tr>
+                            {% comment %} <tr>
                                 <td>Can create/update payroll elements?</td>
                                 <td>{%if object.can_create_payroll_elements %}
                                         <i class="fas fa-check"></i>
@@ -63,7 +52,7 @@
                                     {% else %}
                                        <i class="fas fa-times"></i>
                                     {% endif %}</td>
-                            </tr>
+                            </tr> {% endcomment %}
                         </tbody>
                     </table>
                 </div>

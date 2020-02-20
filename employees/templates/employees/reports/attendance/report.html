@@ -1,17 +1,18 @@
 {% extends 'common_data/page/pdf_page.html' %}
 
 {% block pre_page %}
-<p>NB: Report only includes employees who use timesheets.</p>
-<div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false">
-                Actions
-            </button>
-    <div class="dropdown-menu" aria-labelledby="triggerId">
-        <a class="dropdown-item" href="{% url 'employees:employee-attendance-pdf' %}"><i class="fas fa-file-pdf"></i> Generate PDF</a>
-        
+<section id='title'>
+    <div id='title-text'>Employee Attendance Report</div>
+    <div id='action-icon dropdown'>
+
+        <button class="btn btn-block primary " id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
+
+        <div class="dropdown-menu" aria-labelledby="triggerId">
+            <a class="dropdown-item" href="{% url 'employees:employee-attendance-pdf' %}"><i class="fas fa-file-pdf"></i> Generate PDF</a>
+        </div>
     </div>
-</div>
+</section>
 {% endblock pre_page %}
 
 {% block page_contents %}

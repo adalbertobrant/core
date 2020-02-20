@@ -12,9 +12,7 @@
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:list-pay-slips' %}"> Pay Slips</a>
                     </li>
-                    <li class="list-group-item">
-                        <a href="{% url 'employees:timesheet-list' %}"> Time Sheets</a>
-                    </li>
+                    
                     <li class="list-group-item hvr-grow"><a href="{% url 'employees:list-pay-grades' %}"> Pay Grades</a>
                     </li>
                     <li class="list-group-item hvr-grow"><a href="{% url 'employees:payroll-tax-list' %}"> Payroll
@@ -29,34 +27,43 @@
                             Employees
                         </a>
                     </li>
-                    {% comment %} <li class="list-group-item hvr-grow">
+                    <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:department-list' %}"> Departments</a>
 
                     </li>
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:contract-list' %}">Contracts</a>
                     </li>
-                    <li class="nav-item"><i class="fas fa-chart-bar"></i> Reports</li>
-                    <li class="list-group-item hvr-grow">
-                        <a href="{% url 'employees:employee-attendance' %}">Employee Attendance</a>
-                    </li>
+                    
+                    
+                    
 
-                    <li class="list-group-item hvr-grow">
-                        <a href="{% url 'employees:leave-report' %}">Leave Schedule Report</a>
-                    </li>
+                    {% comment %} 
+                    
                     <li class="list-group-item hvr-grow"><a href="{% url 'employees:payroll-report-form' %}">Payroll
                             Report</a></li>
                     <li class="list-group-item hvr-grow"><a href="{% url 'employees:zimra-p2-report-form' %}">Zimra P2
                             Report</a></li>
                     <li class="list-group-item hvr-grow"><a href="{% url 'employees:nssa-p4-report-form' %}">NSSA P4
                             Report</a></li>
-                    <li class="nav-item"><i class="fas fa-calendar"></i> Leave Days</li>
+                    {% endcomment %}
+                    <li class="nav-item"><i class="fas fa-calendar"></i> Time Management </li>
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:leave-list' %}">Leave Day Management</a>
                     </li>
+                    <li class="list-group-item">
+                        <a href="{% url 'employees:timesheet-list' %}"> Time Sheets</a>
+                    </li>
                     <li class="list-group-item hvr-grow">
                         <a href="{{calendar_url}}">Leave Calendar</a>
-                    </li> {% endcomment %}
+                    </li> 
+                    <li class="nav-item"><i class="fas fa-chart-bar"></i> Reports</li>
+                    <li class="list-group-item hvr-grow">
+                        <a href="{% url 'employees:leave-report' %}">Leave Schedule Report</a>
+                    </li>
+                    <li class="list-group-item hvr-grow">
+                        <a href="{% url 'employees:employee-attendance' %}">Employee Attendance</a>
+                    </li>
                     <li class="nav-item"><i class="fas fa-user-cog"></i> Employee Roles</li>
                     <li class="list-group-item hvr-grow">
                         <a class="card-link" href="{% url 'inventory:inventory-controller-list' %}">
@@ -70,9 +77,10 @@
                             Bookkeepers </a></li>
                     <li class="list-group-item hvr-grow"><a href="{% url 'services:service-person-list' %}">
                             Service Employees </a></li>
-                    {% comment %} 
+                    
                     <li class="list-group-item hvr-grow"><a href="{% url 'employees:payroll-officer-list' %}">
-                            Payroll Officers </a></li> 
+                            HR Officers </a></li> 
+                    {% comment %} 
                     <li class="nav-item"><i class="fas fa-sliders-h"></i> Configuration</li>
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:config' pk=1 %}">Settings</a>

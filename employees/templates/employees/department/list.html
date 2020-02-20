@@ -1,27 +1,23 @@
 {% extends "window.html" %}
 {% load render_bundle from webpack_loader %}
+{% block heading %}
+Manage Departments
+{% endblock heading %}
+
+{% block actions %}
+<a class="dropdown-item" href="{% url 'employees:department-create' %}" role="button">Create New</a>
+{% endblock actions %}
 {% block content %}
 
-<div class="jumbotron">
-    <h1 class="display-3">Manage Departments</h1>
-    <p class="lead">Divide employees into units of organization</p>
-    <hr class="my-2">
-    <p>Visualize Organizational structure </p>
-    <p class="lead">
-        <a class="btn btn-primary btn-lg" href="{% url 'employees:department-create' %}" role="button">Create New</a>
-    </p>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3 col-sm-12"></div>
-            <div class="col-md-6 col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Departments</h4>
-                        <div id="department-list"></div>
-                    </div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div id="department-list"></div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-12"></div>
         </div>
     </div>
 </div>

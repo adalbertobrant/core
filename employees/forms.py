@@ -359,7 +359,7 @@ class TimesheetForm(forms.ModelForm, BootstrapMixin):
 
 class PayrollOfficerForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        fields = "__all__"
+        exclude = "can_run_payroll", "can_create_payroll_elements", 'active'
         model = models.PayrollOfficer
 
     def __init__(self, *args, **kwargs):
@@ -369,7 +369,7 @@ class PayrollOfficerForm(forms.ModelForm, BootstrapMixin):
 
 class PayrollOfficerUpdateForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        exclude = "employee",
+        exclude = "employee", "can_run_payroll", "can_create_payroll_elements", 'active',
         model = models.PayrollOfficer
 
 

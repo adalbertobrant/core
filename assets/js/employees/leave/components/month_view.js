@@ -27,7 +27,7 @@ class MonthView extends Component{
                 <div 
                     style={{
                         padding: "20px",
-                        backgroundColor: "#07f",
+                        backgroundColor: "#23374d",
                         color: "white",
                         width: "100%"
                     }}>
