@@ -136,7 +136,6 @@ class ServiceWorkOrderForm(forms.ModelForm, BootstrapMixin):
                     'status',
                     'authorized_by',
                     'team',
-                    'progress',
                 ),
                 Tab('Service People',
                     HTML(
@@ -150,10 +149,9 @@ class ServiceWorkOrderForm(forms.ModelForm, BootstrapMixin):
         self.helper.add_input(Submit('submit', 'Submit'))
         
 class ServiceWorkOrderCompleteForm(forms.ModelForm, BootstrapMixin):
-    progress = forms.CharField(widget=forms.HiddenInput, required=False)
     service_time = forms.CharField(widget=forms.HiddenInput, required=False)
     class Meta:
-        fields = ["progress", 'manual_progress']
+        fields = 'date', 'service_time'
         model = models.ServiceWorkOrder
         
 

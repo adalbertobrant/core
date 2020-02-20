@@ -96,8 +96,7 @@ class ServiceWorkOrder(models.Model):
         blank=True,
         limit_choices_to=Q(user__isnull=False))#filter queryset
     notes = models.ManyToManyField('common_data.note')
-    progress = models.CharField(max_length=512, blank=True, default="")
-    manual_progress = models.FloatField(default=0.0)
+    
     
     def __str__(self):
         return "WO{}".format(self.pk) #TODO string padding
@@ -113,6 +112,20 @@ class ServiceWorkOrder(models.Model):
         super().save(*args, **kwargs)
         if self.works_request:
             self.works_request.update_status()
+
+            procedure = self.works_request.service.procedure
+            if procedure and self.workordertask_set.all().count() == 0:
+                due=datetime.date.today()
+                if self.works_request.invoice:
+                    due = self.works_request.invoice.due
+                
+                for step in procedure.steps:
+                    WorkOrderTask.objects.create(
+                        work_order = self,
+                        description=step.description,
+                        due=due
+                    )
+                
 
     @property
     def number_of_employees(self):
@@ -137,24 +150,6 @@ class ServiceWorkOrder(models.Model):
     def time_logs(self):
         # may decide to remove the .all() and use a filter of uses timesheet
         return self.timelog_set.all()
-
-    @property
-    def progress_list(self):
-        pl = self.progress.split(",") if self.progress != "" else []
-        return [ int(i) for i in  pl]
-
-    @property
-    def progress_percentage(self):
-        if not self.works_request.service.procedure or \
-                self.works_request.service.procedure.steps.count() ==0:
-            return 100 
-        
-
-        total_steps = self.works_request.service.procedure.steps.count()
-        progress = len(self.progress_list)
-
-        return int(float(progress) * 100.0/ float(total_steps))
-        
 
     @property
     def total_normal_time(self):
@@ -187,6 +182,8 @@ class ServiceWorkOrder(models.Model):
     def total_time(self):
         return self.total_overtime + self.total_normal_time
 
+    
+
 class TimeLog(models.Model):
     work_order = models.ForeignKey('services.serviceworkorder', null=True, 
         on_delete=models.SET_NULL)
@@ -217,10 +214,17 @@ class TimeLog(models.Model):
 
         super().save(*args, **kwargs)
 
-
-
 class WorkOrderExpense(models.Model):
     work_order = models.ForeignKey('services.ServiceWorkOrder', 
         on_delete=models.SET_NULL, null=True) 
     expense = models.ForeignKey('accounting.Expense', 
         on_delete=models.SET_NULL, null=True)
+
+
+class WorkOrderTask(models.Model):
+    work_order = models.ForeignKey('services.ServiceWorkOrder', on_delete=models.CASCADE) 
+    assigned = models.ForeignKey('employees.Employee', on_delete=models.SET_NULL, null=True)
+    description = models.TextField()
+    due = models.DateField(blank=True)
+    completed = models.BooleanField(default=False)
+    

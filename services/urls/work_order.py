@@ -6,6 +6,9 @@ from services import views
 worder_router = routers.DefaultRouter()
 worder_router.register('api/work-order', views.WorkOrderViewSet)
 
+wordertask_router = routers.DefaultRouter()
+wordertask_router.register('api/work-order-task', views.WorkOrderTaskViewSet)
+
 worder_urls = [
     re_path(r'^work-order-create/(?P<pk>\d+)/?$', views.WorkOrderCreateView.as_view(), 
         name='work-order-create'),
@@ -34,4 +37,4 @@ worder_urls = [
     re_path(r'^work-order/costing-pdf/(?P<pk>[\d]+)/?$', 
         views.WorkOrderCostingPDFView.as_view(), name='work-order-costing-pdf'),
 
-] + worder_router.urls
+] + worder_router.urls + wordertask_router.urls
