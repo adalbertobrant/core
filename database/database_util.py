@@ -158,6 +158,7 @@ def create_new_database():
     # install fixtures
     subprocess.run(['python', 'manage.py', 'loaddata', 'accounts.json', 'journals.json', 'settings.json','common.json', 'employees.json', 'inventory.json', 'invoicing.json', 'planner.json', 'data.json'])# obtained from the data dump
 
+    #python manage.py loaddata accounts.json journals.json settings.json common.json employees.json inventory.json invoicing.json planner.json
     print("Database created successfully.")
     if os.path.exists('data.json'):
         os.remove('data.json')
