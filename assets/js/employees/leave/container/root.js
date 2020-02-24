@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
 import MonthView from '../components/month_view';
 import YearView from '../components/year_view';
-
+import styles from '../styles.css'
 
 class LeaveCalendar extends Component{
     state = {
@@ -50,14 +50,8 @@ class LeaveCalendar extends Component{
     
         return(
             <Router >
-            <div className="container">
-                <div className="row">
-                    <div 
-                        className="col-sm-2" 
-                        style={{
-                        backgroundColor: "#07f",
-                        height: height + 'px',
-                    }}>
+                <div className="row no-gutters" style={{marginTop: '-3px'}}>
+                    <div className={"col-sm-2 "+ styles.sideBar}>
                         <div className="btn-group">            
                             <Link className="btn btn-primary" 
                                 to={`/employees/leave-calendar/month/${this.state.year}/${this.state.month}`}> Month</Link>
@@ -106,8 +100,6 @@ class LeaveCalendar extends Component{
                                 linkUpdater={this.setLinks} />}/>
                     </div>
                 </div>
-            
-            </div>
             </Router>
         )
     }

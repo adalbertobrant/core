@@ -1,4 +1,5 @@
-<table class="table-sm" style="max-width: 200px;">
+<div style=" margin:36px;padding:24px;background-color:#eee">
+<table class="table-sm" style="max-width: 250px;">
     <thead>
         <tr>
             <th colspan="2">Key</th>
@@ -23,6 +24,8 @@
         </tr>
     </tbody>
 </table>
+</div>
+
 
 {% for page in pages %}
 <table >
@@ -57,6 +60,9 @@
 {{page}}
 {% if page.has_next %}
     <p class="eop"></p>
+{% else %}
+<p>NB: Report only includes employees who use timesheets.</p>
 {% endif %}
+
 
 {% endfor %}

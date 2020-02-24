@@ -135,7 +135,7 @@ class PayrollOfficerListView( ContextMixin, PaginationMixin, FilterView):
     queryset = models.PayrollOfficer.objects.all()
     filterset_class = filters.PayrollOfficerFilter
     extra_context = {
-        'title': 'List of Payroll Officers',
+        'title': 'List of HR Officers',
         'new_link': reverse_lazy('employees:payroll-officer-create')
     }
 

@@ -163,7 +163,6 @@ input:required, textarea:required, select:required {
 }
 
 #product-widget-text-box, #service-widget-text-box, #expense-widget-text-box {
-    padding: 1px;
     background-color: var(--quarternary);
 }
 .entry-style select{
@@ -663,7 +662,7 @@ span.important {
 }
 
 span.less {
-    font-size: 0.5rem;
+    font-size: 0.8rem;
     color: #888;
 }
 

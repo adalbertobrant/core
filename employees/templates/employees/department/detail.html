@@ -1,56 +1,56 @@
 {% extends 'window.html' %}
+{% block actions %}
+<a class="dropdown-item" href="{% url 'employees:department-update' pk=object.pk %}" role="button">Update</a>
+{% endblock actions %}
+{% block heading %}
+Department Detail
+{% endblock heading %}
 {% block content %}
 
-<div class="jumbotron">
-    <h1 class="display-3">Department Details</h1>
-    <p class="lead">Lists all employees and other departmental features</p>
-    <hr class="my-2">
-    <p>Actions</p>
-    <p class="lead">
-        <a class="btn btn-primary " href="{% url 'employees:department-update' pk=object.pk %}" role="button">Update</a>
-    </p>
-</div>
-
+<br>
 <div class="container">
     <div class="row">
-        <div class="col-md-6 col-sm-12">
-            <div class="card shadow text-left">
-              <div class="card-body">
-                <h4 class="card-title">Department Info</h4>
-                <p class="card-text">Name: {{object.name}}</p>
-                <p class="card-text"># Employees: {{object.employees.all.count}}</p>
-                <p class="card-text">Manager: {{object.manager}}</p>
-                <p class="card-text">Parent Department: {{object.parent_department}}</p>
-                <p class="card-text"><b>Subdepartments:</b> </p>
-                {% if object.children.count == 0 %}
-                    <p class="card-text"><b>None</b></p>
-                {% endif %}
-                <ul>
-                    {% for i in object.children %}
-                    <li>{{i}}</li>
-                    {% endfor %}
+        <div class="col-12">
+            <div class="card shadow accent-left-lg">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <h4 class="card-title">{{object.name}}</h4>
+                            <p class="card-text"><span class="less"><i class="fas fa-hashtag    "></i> <i class="fas fa-users    "></i>
+                                </span><span class='focus-text'>{{object.employees.all.count}}</span></p>
+                            <p class="card-text"><span class="less">Manager:</span> <span class="focus-text">{{object.manager}}</span></p>
+                            {% if object.parent_department %}
+                            <p class="card-text"><span class="less">Parent Department:</span> <span class="focus-text">{{object.parent_department}}</span></p>
+                            {% endif %}
+                            {% if object.children.count > 0 %}
 
-                </ul>
-                <p class="card-text"><b>Description:</b></p>
-                <p class="card-text">{{object.description}}</p>
-              </div>
-            </div>
-        </div>
-        <div class="col-md-6 col-sm-12">
-            <div class="card text-left">
-              <div class="card-body">
-                <h4 class="card-title">Employees</h4>
-                <div class="card-text">
-                    <ul>
-                        {% for i in object.employees.all %}
-                        <li>{{i}}</li>
-                        {% endfor %}
-                    </ul>
+                            <p class="card-text"><b>Subdepartments:</b> </p>
+                            <ul>
+                                {% for i in object.children %}
+                                <li>{{i}}</li>
+                                {% endfor %}
 
+                            </ul>
+                            {% endif %}
+                        </div>
+                        <div class="col-6 accent-left-md" >
+                            <h5 class="card-title">Employees</h5>
+                            <div class="card-text">
+                                <ul>
+                                    {% for i in object.employees.all %}
+                                    <li>{{i}}</li>
+                                    {% endfor %}
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <p class="card-text">{{object.description}}</p>
                 </div>
-              </div>
             </div>
         </div>
+
     </div>
 </div>
 

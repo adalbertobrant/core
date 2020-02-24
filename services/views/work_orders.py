@@ -69,8 +69,8 @@ class WorkOrderUpdateView( WorkOrderCRUDMixin, UpdateView):
 
 class WorkOrderCompleteView(UpdateView):
     template_name = os.path.join('services', 'work_order', 'complete.html')
-    form_class = forms.ServiceWorkOrderCompleteForm
     model = models.ServiceWorkOrder
+    form_class = forms.ServiceWorkOrderCompleteForm
 
     def get(self, *args, **kwargs):
         if not hasattr(self, 'object'):
@@ -80,13 +80,12 @@ class WorkOrderCompleteView(UpdateView):
         
         return super().get(*args, **kwargs)
     
+    
     def post(self, request, *args, **kwargs):
-        resp = super().post(request, *args, **kwargs)
+        resp = super(WorkOrderCompleteView, self).post(request, *args, **kwargs)
 
         if not self.object:
             self.get_object()
-
-        
         
         log_data = json.loads(urllib.parse.unquote(request.POST['service_time'])) if request.POST['service_time'] != '' else []
 
@@ -112,15 +111,6 @@ class WorkOrderCompleteView(UpdateView):
                 normal_time=normal_time,
                 overtime=overtime,
             )
-
-        # get the progress
-        if request.POST.get('steps[]', None):
-            steps = request.POST.getlist('steps[]')
-            self.object.progress = ",".join(steps)
-            self.object.save()
-        else:
-            self.object.progress = ""
-            self.object.save()
 
         return resp 
 
@@ -149,6 +139,10 @@ class WorkOrderListView( ContextMixin, PaginationMixin, FilterView):
 class WorkOrderViewSet(ModelViewSet):
     serializer_class = serializers.WorkOrderSerializer
     queryset = models.ServiceWorkOrder.objects.all()
+
+class WorkOrderTaskViewSet(ModelViewSet):
+    serializer_class = serializers.WorkOrderTaskSerializer
+    queryset = models.WorkOrderTask.objects.all()
 
 
 def work_order_authorize(request, pk=None):

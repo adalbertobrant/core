@@ -4,8 +4,6 @@ import TreeSelectWidget from '../js/src/tree_select_widget';
 import axios from 'axios';
 import PricingWidget from "../js/inventory/pricing_widget";
 import {ImgPreview} from '../js/src/common';
-import FilePickerUI from '../js/src/components/custom_file_picker';
-import TimelineWidget from '../js/src/timeline/container/root';
 import StepsWidget from '../js/src/steps/container/root';
 
 const storageMedia = document.getElementById('storage-media-select-widget');

@@ -64,8 +64,6 @@ class YearView extends Component{
     render(){
         return(
             <div style={{
-                width: "100%",
-                overflowX: 'auto',
                 maxHeight: 'inherit'
             }}>
                 <table>
@@ -75,7 +73,7 @@ class YearView extends Component{
                                 minWidth: "200px",
                                 padding: "10px",
                                 color: "white",
-                                backgroundColor: "#07f"
+                                backgroundColor: "#23374d"
                             }}>
                                 <a 
                                     style={{

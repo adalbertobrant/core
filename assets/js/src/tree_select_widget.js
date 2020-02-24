@@ -11,7 +11,7 @@ const commonStyle = {
 
 const blurredStyle = {
     ...commonStyle,
-    backgroundColor: "#ddd",
+    backgroundColor: "#eee",
     fontWeight: "2"
      
 }
@@ -21,6 +21,17 @@ const focusedStyle = {
     backgroundColor: '#23374d',
     color: "white"
 }
+
+const actionStyle = {
+        "float": "right",
+        "minWidth": "100px",
+        "margin": "2px",
+        "zIndex": 1,
+        "padding": "10px",
+        "position": "absolute",
+        "left": "-90px",
+        "backgroundColor": "white" 
+    }
 
 export default class TreeSelectWidget extends Component{
     state = {
@@ -38,6 +49,22 @@ export default class TreeSelectWidget extends Component{
             method: 'GET'
         }).then( res =>{
             let nodes = res.data.map(this.props.dataMapper);
+            //makes sure child nodes are not rendered at root level
+            nodes = nodes.map(node =>{
+                let n
+                let hasParent = false;
+                for(n of nodes){
+                    if(n.nodes.length > 0){
+                        let c
+                        for(c of n.nodes){
+                            if(c.id == node.id){
+                                hasParent=true
+                            }
+                        }
+                    }
+                }
+                return {...node, hasParent: hasParent}
+            })
             this.setState({data: nodes});
         });
         let field = document.getElementById('id_' + this.props.externalFormFieldName);
@@ -61,15 +88,16 @@ export default class TreeSelectWidget extends Component{
         $('#id_' + this.props.externalFormFieldName).val(this.state.selected.id);
     }
     render(){
-        let rendered = [];
         return(
-            <div>
+            <div>{this.state.data.length == 0 ?
+                <h4>This list has no elements.</h4>
+            :null}
                 <ul style={{listStyleType: "none"}}>
                 {this.state.data.map((element, i) => {
-                    if(rendered.includes(element.id)){
+                    if(element.hasParent){
                         return null;
                     }else if(element.nodes.length === 0){
-                        rendered.push(element.id);
+                        
                         return <LeafNode
                                     focused={this.state.selected.id}
                                     isListView={this.props.isListView}
@@ -79,7 +107,6 @@ export default class TreeSelectWidget extends Component{
                                     key={i}
                                     selectHandler={this.selectHandler}/>
                     }else{
-                        rendered.push(element.id);
                         return <BranchNode 
                                     focused={this.state.selected.id}
                                     isListView={this.props.isListView}
@@ -142,21 +169,13 @@ class BranchNode extends Component{
                         'backgroundColor': this.state.highlight ? '#23374d' : '#eee',
                         'color': this.state.highlight ? 'white' : 'black',
                         'minWidth': '20px'}}>
-                    <i className="fas fa-ellipsis-v"></i>
+                    <i className="fas fa-ellipsis-h"></i>
                 </button>
-                <div style={{
-                    "display": this.state.showDropdown ? "block" : "none",
-                    "float": "right",
-                    "minWidth": "100px",
-                    "margin": "2px",
-                    "zIndex": 1,
-                    "padding": "10px",
-                    "position": "absolute",
-                    "backgroundColor": "white"
-
+                <div style={{...actionStyle,
+                    "display": this.state.showDropdown ? "block" : "none",                    
                 }}>
-                    <a href={this.props.detailUrlRoot + this.props.node.id.toString()}>Detail</a><br />
-                    <a href={this.props.updateUrlRoot + this.props.node.id.toString()}>Update</a>
+                    <a href={this.props.detailUrlRoot + this.props.node.id.toString()} className='dropdown-item'> <i className="fas fa-file    "></i> Detail</a><br />
+                    <a href={this.props.updateUrlRoot + this.props.node.id.toString()} className='dropdown-item'> <i className="fas fa-edit    "></i> Update</a>
                 </div>
             </div>
             )
@@ -166,14 +185,15 @@ class BranchNode extends Component{
                 <div 
                     style={this.state.highlight ? focusedStyle : blurredStyle}
                     onClick={this.clickHandler}>{this.props.node.label}
-                {actions}
+                
                 <span style={{
                     float:'right',
                     margin: "3px"}}>
                         <i className={this.state.showChildren
-                            ? "fas fa-arrow-left"
-                            : "fas fa-arrow-down"}></i>
+                            ? "fas fa-angle-down"
+                            : "fas fa-angle-left"}></i>
                 </span>
+                {actions}
                 </div>
                 <ul style={{
                     display: this.state.showChildren ? "block" : "none"
@@ -243,19 +263,14 @@ class  LeafNode extends Component{
                             'backgroundColor': this.state.highlight ? '#23374d' : '#eee',
                             'color': this.state.highlight ? 'white' : 'black',
                             'minWidth': '20px'}}>
-                        <i className="fas fa-ellipsis-v"></i>
+                        <i className="fas fa-ellipsis-h"></i>
                     </button>
                     <div style={{
-                        "display": this.state.showDropdown ? "block" : "none",
-                        "float": "right",
-                        "minWidth": "100px",
-                        "margin": "2px",
-                        "zIndex": 1,
-                        "padding": "10px",
-                        "position": "absolute",
-                        "backgroundColor": "white" }}>
-                        <a href={this.props.detailUrlRoot + this.props.node.id.toString()}>Detail</a><br />
-                        <a href={this.props.updateUrlRoot + this.props.node.id.toString()}>Update</a>
+                            ...actionStyle,
+                            "display": this.state.showDropdown ? "block" : "none",
+                         }}>
+                        <a href={this.props.detailUrlRoot + this.props.node.id.toString()} className='dropdown-item'> <i className="fas fa-file    "></i> Detail</a><br />
+                        <a href={this.props.updateUrlRoot + this.props.node.id.toString()} className='dropdown-item'> <i className="fas fa-edit    "></i>Update</a>
                     </div>
                 </div>
         )

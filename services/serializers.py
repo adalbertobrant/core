@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from inventory.serializers import InventoryItemSerializer
-
+from employees.serializers import EmployeeSerializer
 from . import models
 
 
@@ -37,9 +37,17 @@ class ProcedureSerializer(serializers.ModelSerializer):
         fields = ['required_equipment', 'required_consumables', 'steps']
         model = models.ServiceProcedure
 
+class WorkOrderTaskSerializer(serializers.ModelSerializer):
+    # assigned = EmployeeSerializer(many=False)
+    class Meta:
+        fields = "__all__"
+        model = models.WorkOrderTask
 
 class WorkOrderSerializer(serializers.ModelSerializer):
     service_people = ServicePersonSerializer(many=True)
+    workordertask_set = WorkOrderTaskSerializer(many=True)
     class Meta:
-        fields = ['service_people', 'id']
+        fields = ['service_people', 'id','workordertask_set']
         model = models.ServiceWorkOrder
+
+

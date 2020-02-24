@@ -6,6 +6,8 @@ import GenericTable from './src/generic_list/containers/root';
 import TimeField from './src/components/time_field';
 import NotesWidget from './src/notes_widget/root';
 import SelectWidget from './src/components/select';
+import TaskList from './services/tasks'
+import taskList from './services/tasks';
 
 const procedure = document.getElementById('procedure-widgets');
 const inventory = document.getElementById('inventory-widgets');
@@ -15,6 +17,10 @@ const equipmentTable = document.getElementById('equipment-requisition-table');
 const workOrderPersons = document.getElementById('work-order-persons');
 const serviceTime = document.getElementById('service-time');
 const notes = document.getElementById('notes-widget');
+const tasks = document.getElementById('task-list');
+
+const splitURL = window.location.href.split('/');
+const tail = splitURL[splitURL.length - 1];
 
 if(procedure){
     ReactDOM.render(<ProcedureViews />, procedure);
@@ -23,8 +29,6 @@ if(inventory){
     ReactDOM.render(<InventorySelectWidgets />, inventory)
 }
 if(personnel){
-    const splitURL = window.location.href.split('/');
-    const tail = splitURL[splitURL.length - 1];
     let populatedURL  = null;
     if(tail !== 'team-create'){
         populatedURL = '/services/api/team/'+ tail;
@@ -221,8 +225,7 @@ if(serviceTime){
 }
 
 if(notes){
-    const splitURL = window.location.href.split('/');
-    const tail = splitURL[splitURL.length - 1];
+    
     const target='work_order';
     const token= document.querySelector(
         'input[name="csrfmiddlewaretoken"]').value;
@@ -231,4 +234,9 @@ if(notes){
         token={token}
         target={target}
         targetID={tail} />, notes)
+}
+
+if(tasks){
+    
+    ReactDOM.render(<TaskList orderID={tail}/> , tasks)
 }

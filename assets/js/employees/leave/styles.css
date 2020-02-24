@@ -1,0 +1,8 @@
+.sideBar {
+    background-color: #23374d;
+    height: 100vh;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

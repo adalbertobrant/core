@@ -1,20 +1,17 @@
 {% extends "window.html" %}
+{% block heading %}
+Time Sheet Detail
+{% endblock heading %}
+{% block actions %}
+
+<a class="dropdown-item " href="{% url 'employees:timesheet-update' pk=object.pk %}" role="button"> <i class="fas fa-edit    "></i> Edit</a>
+{% endblock actions %}
 {% block content %}
-
-<div class="jumbotron">
-    <h1 class="display-3">Time Sheet Details</h1>
-    <p class="lead">View Recorded Time sheet data</p>
-    <hr class="my-2">
-    <p>Action</p>
-    <p class="lead">
-        <a class="btn btn-primary " href="{% url 'employees:timesheet-update' pk=object.pk %}" role="button">Edit</a>
-    </p>
-</div>
-
+<br>
 <div class="container">
     <div class="row">
-        <div class="col-sm-4">
-            <div class="card bg-primary text-white">
+        <div class="col-md-4 col-sm-12">
+            <div class="card shadow accent-lg">
                 <div class="card-body">
                     <h4 class="card-title">Time Sheet Info.</h4>
                     <p class="card-text">Employee: {{object.employee}}</p>
@@ -24,7 +21,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-12 col-md-8">
             <table class="table table-sm">
                 <thead>
                     <tr class="bg-primary text-white">

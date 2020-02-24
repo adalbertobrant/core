@@ -5,8 +5,7 @@ from django.shortcuts import reverse
 
 class PayrollOfficer(SoftDeletionModel):
     employee = models.OneToOneField('employees.Employee', 
-        on_delete=models.SET_NULL, 
-        null=True)
+        on_delete=models.CASCADE, default=1)
     can_log_timesheets = models.BooleanField(default=False, blank=True)
     can_run_payroll = models.BooleanField(default=False, blank=True)
     can_create_payroll_elements = models.BooleanField(default=False, blank=True)
