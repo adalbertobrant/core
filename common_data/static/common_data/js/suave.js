@@ -46,7 +46,7 @@ function linkClickHandler(link){
    $('#popup-frame').attr('src', link);
    var modal = document.getElementById('id-my-modal');
     modal.style.display = 'block';
-    $('#refresher-button').css('display', 'block');
+    
 }
 
 function toggleMobileNav(){
@@ -109,7 +109,4 @@ $(document).ready(function () {
 
     
     $(".jumbotron").addClass('shrink')
-    
-
-    
 })

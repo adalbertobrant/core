@@ -20,6 +20,7 @@ from accounting.forms import ExpenseForm
 from accounting.models import Expense
 from employees.models import Employee
 from decimal import Decimal as D
+from services.views.report_utils.plotters import plot_time_budget
 
 class WorkOrderCRUDMixin(object):
     def post(self, request, *args, **kwargs):
@@ -121,6 +122,9 @@ class WorkOrderDetailView( DetailView):
 
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
+        context['budget'] = False
+        if self.object.expected_duration:
+            context['budget'] = plot_time_budget(self.object)
         context['authorization_form'] = \
             forms.ServiceWorkOrderAuthorizationForm(initial={
                 'order': self.object.pk

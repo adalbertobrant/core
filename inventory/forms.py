@@ -247,6 +247,7 @@ class ProductForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                         Column('category', css_class="form group col-md-6 col-sm-12"),
                         Column('image', css_class="form group col-md-6 col-sm-12"),
                     ),
+                    'active'
                     ),
                 ),
             Submit('submit', 'Submit')

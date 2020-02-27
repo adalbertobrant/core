@@ -68,20 +68,20 @@ function trackSelectBox(box, index, array){
 function trackSelectBoxes(boxes){
     boxes.forEach(trackSelectBox);
 }
-if($("#box-array").length > 0 ){
-    var boxArray = JSON.parse(decodeURIComponent($("#box-array").val()))
-    if (boxArray.length === 0){
-        alert('No data provided');
-    }else{
-        /**
-         * [{
-        'id': 'id_supplier',
-        'model': 'supplier',
-        'app': 'inventory'
-    }]
-        */
-        trackSelectBoxes(boxArray);
+// if($("#box-array").length > 0 ){
+//     var boxArray = JSON.parse(decodeURIComponent($("#box-array").val()))
+//     if (boxArray.length === 0){
+//         alert('No data provided');
+//     }else{
+//         /**
+//          * [{
+//         'id': 'id_supplier',
+//         'model': 'supplier',
+//         'app': 'inventory'
+//     }]
+//         */
+//         trackSelectBoxes(boxArray);
 
-}
-}
+// }
+// }
 

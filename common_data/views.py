@@ -457,16 +457,45 @@ class PDFDetailView(PDFTemplateView):
         context.update(self.context)
         return context
 
-def get_model_latest(request, app=None, model_name=None):
-    try:
-        model = apps.get_model(app_label=app, model_name=model_name)
-        latest = model.objects.latest('pk')
-    except Exception as e:
-        print(e)
+def get_model_latest(request, model_name=None):
+    app_list = ['services', 'inventory', 'common_data', 'messaging', 'accounting', 'employees', 'planner', 'messaging', 'invoicing']
+    alias_mapping = {
+        'salesperson': 'salesrepresentative',
+        'ship_from': 'warehouse',
+        'ship_to': 'warehouse'
+
+    }
+
+    model_name = alias_mapping.get(model_name, model_name)
+    latest = None
+    for app in app_list:
+        try:
+            model = apps.get_model(app_label=app, model_name=model_name)
+            latest = model.objects.latest('pk')
+
+        except LookupError:
+            pass
+    
+    
+    if not latest:
         return JsonResponse({'data': -1})
 
-    
     return JsonResponse({'data': [latest.pk, str(latest)]})
+
+def get_create_link(request, name=None):
+    mapping = {
+        'organization': '/base/organization/create',
+        'ship_from': '/inventory/warehouse-create/',
+        'ship_to': '/inventory/warehouse-create/',
+        'customer': '/invoicing/create-customer/',
+        'salesperson': '/invoicing/create-sales-rep',
+        'supplier': '/inventory/supplier/create',
+        'salesteam': '/invoicing/create-sales-team',
+        'leadsource': '/invoicing/create-lead-source',
+        'journal': '/accounting/create-journal',
+    }
+
+    return JsonResponse({'link': mapping.get(name, '')})
 
 
 class ConfigWizard(ConfigWizardBase):

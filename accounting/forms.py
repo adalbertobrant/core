@@ -100,6 +100,36 @@ class ExpenseForm(forms.ModelForm, BootstrapMixin):
                     'billable',
                     'customer',
                 ),
+                Tab('Attachment',
+                    'attachment',
+                    HTML("""
+                        <div id='image-container' >
+                            <i class='fas fa-image fa-7x' id='image-placeholder'></i>
+                            <img id='attachment-preview' src='' alt='Attachment appears here.' />
+                        </div>
+                        
+                         <script>
+                            function upload_img(input) {
+                            if (input.files && input.files[0]) {
+                                var reader = new FileReader();
+                                reader.onload = function (e) {
+                                    $('#attachment-preview').attr('src', e.target.result);
+                                }
+                                $('#image-placeholder').hide()
+                                $('#attachment-preview').show()
+                                reader.readAsDataURL(input.files[0]);
+                            }
+                        }
+
+                            $(document).ready(function(){
+                                $('#id_attachment').attr({
+                                'onchange': 'upload_img(this)'
+                            });
+                            })
+                         
+                         </script>
+                    """)
+                ),
             )
         )
         self.helper.add_input(Submit('submit', 'Submit'))

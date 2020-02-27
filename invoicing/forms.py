@@ -399,10 +399,12 @@ class LeadForm(BootstrapMixin, forms.ModelForm):
         model = models.Lead
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
-            'organization': Select2Widget,
+            # 'organization': Select2Widget,
             'contacts': Select2MultipleWidget,
-            
+            'team': forms.Select(attrs={'id': 'salesteam'}),
+            'source': forms.Select(attrs={'id': 'leadsource'})
         }
+        
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -417,10 +419,14 @@ class LeadForm(BootstrapMixin, forms.ModelForm):
                 Column('organization','contacts', css_class='col-md-6 col-sm-12'),
                 Column('opportunity', 'probability_of_sale',css_class='col-md-6 col-sm-12'),
             ),
+            HTML('<h4>Time Frames</h4>'),
+
+            Row(
+                Column('reminder', css_class='col-md-6 col-sm-12'),
+                Column('projected_closing', css_class='col-md-6 col-sm-12'),
+            ),
             'status',
-            'projected_closing',
-            'reminder'
-        )
+                    )
         self.helper.add_input(Submit('submit', 'Submit'))
 
 

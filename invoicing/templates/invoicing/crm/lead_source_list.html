@@ -14,9 +14,7 @@
     {% for lead_src in object_list %}
         <tr>
             <td>{{lead_src}}</td>
-            <td>{{lead_src.organization}}</td>
-            <td>{{lead_src.email}}</td>
-            <td>{{lead_src.phone}}</td>
+            <td>{{lead_src.description}}</td>
             <td><div class="dropdown">
                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">

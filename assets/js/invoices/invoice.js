@@ -26,7 +26,7 @@ export default class InvoiceTable extends Component{
          let decomposed = URL.split('/');
          let tail = decomposed[decomposed.length - 1];
          
-         if(tail !== 'create-invoice'){
+         if(!['create-invoice', 'create-quotation'].includes(tail)){
              axios({
                  url: '/invoicing/api/invoice/' + tail,
                  method: 'GET',

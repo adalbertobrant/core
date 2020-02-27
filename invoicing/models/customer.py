@@ -1,4 +1,4 @@
-
+import datetime
 from decimal import Decimal as D
 
 from django.db import models
@@ -7,9 +7,15 @@ from django.db.models import Q
 import inventory
 from accounting.models import Account
 
-from invoicing.models.invoice import Invoice
+from invoicing.models.invoice import Invoice, InvoiceLine
 from invoicing.models.payment import Payment
 from common_data.models import  SoftDeletionModel
+
+class CustomerNote(models.Model):
+    customer = models.ForeignKey('invoicing.customer',on_delete=models.CASCADE)
+    note = models.TextField()
+    author = models.CharField(max_length=255)
+    timestamp = models.DateTimeField(auto_now=True)
 
 class Customer(SoftDeletionModel):
     '''The customer model represents business clients to whom products are 
@@ -135,3 +141,21 @@ class Customer(SoftDeletionModel):
     @property
     def total_accounts_receivable(self):
         return sum([inv.total_due for inv in self.credit_invoices])
+
+    @property
+    def total_overdue(self):
+        return sum([inv.total_due for inv in self.credit_invoices \
+                if inv.due < datetime.date.today()])
+
+    @property 
+    def total_service_time(self):
+        lines = InvoiceLine.objects.filter(service__isnull=False, 
+            invoice__customer=self, 
+            invoice__status__in=['invoice', 'paid', 'paid-partially'])
+        total_time = datetime.timedelta(seconds=0)
+        for line in lines:
+            for wor in line.invoice.workorderrequest_set.all():
+                for wo in wor.serviceworkorder_set.all():
+                    total_time += wo.total_time
+
+        return total_time.seconds / 3600.0

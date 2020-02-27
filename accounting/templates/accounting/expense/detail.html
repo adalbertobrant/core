@@ -40,6 +40,19 @@ Expense Details
             </div>
             </div>
     </div>
+    <br>
+    {% if object.attachment %}
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <img class='card-img-top' src="{{object.attachment.url}}" alt="expense attachment">
+                    <div class="card-body">
+                        <h4 style='text-align:center'>{{object.attachment}}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 </div>
 
 {% endblock content %}

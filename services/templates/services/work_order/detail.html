@@ -60,10 +60,19 @@ Work Order Detail
                     <h1>{{object.total_expenses|active_currency}}</h1>
                 </div>
             </div>
-            <div class="card shadow accent-md">
+            <div class="card {% if not budget %} shadow {% endif %}  accent-md">
                 <div class="card-body">
+                {% if budget %}
+                <h5>Hours Worked</h5>
+                    {% autoescape off %}
+                    {{budget}}
+                    {% endautoescape %}
+                
+                {% else %}
                     <h2> <i class="fas fa-clock "></i> Hours Worked:</h2>
                     <h1>{{object.total_time}}</h1>
+                {% endif %}
+                    
                 </div>
             </div>
             </div>

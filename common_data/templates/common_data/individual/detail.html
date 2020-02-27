@@ -46,7 +46,7 @@ Individual Details
                             <tr>
                                 <th>Website</th>
                                 <td>
-                                    <a>{{object.organization.website}}</a>
+                                    <a href='http://{{object.organization.website}}' >{{object.organization.website}}</a>
                                 </td>
                             </tr>
                         </tbody>
@@ -64,13 +64,15 @@ Individual Details
                             <tr class="bg-primary">
                                 <td>Date</td>
                                 <td>Activity</td>
+                                <td></td>
                             </tr>
                         </thead>
                         <tbody>
                             {% for intr in object.interaction_set.all %}
                             <tr>
                                 <td >{{intr.timestamp.date}}</td>
-                                <td ><a href=" {% url 'invoicing:interaction-detail' pk=intr.pk %} ">{{intr.description|truncatechars:80}}</a></td>
+                                <td >{{intr.description|truncatechars:80}}</td>
+                                <td style='text-align:center;' ><a href=" {% url 'invoicing:interaction-detail' pk=intr.pk %} "><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a></td>
                             </tr>
                             {% endfor %}
                         </tbody>

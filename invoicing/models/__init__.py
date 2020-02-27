@@ -2,7 +2,7 @@ from django.db import models
 from common_data.models import SingletonModel
 
 from .invoice import *
-from .customer import Customer
+from .customer import Customer, CustomerNote
 from .payment import Payment
 from .sales_rep import SalesRepresentative
 from .credit_note import CreditNote, CreditNoteLine

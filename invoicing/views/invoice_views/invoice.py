@@ -88,15 +88,7 @@ class InvoiceCreateView(ContextMixin, InvoiceCreateMixin, ConfigMixin, CreateVie
             
     template_name = os.path.join("invoicing","invoice", "create.html")
     form_class = forms.InvoiceForm
-    extra_context = {
-        'box_array': 
-            urllib.parse.quote(json.dumps([{
-                "model": "customer",
-                "app": "invoicing",
-                "id": "id_customer"
-            }]))
-        
-    }
+    
 
     def get_initial(self):
         initial = {}

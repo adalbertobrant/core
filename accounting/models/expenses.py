@@ -47,6 +47,7 @@ class AbstractExpense(models.Model):
         on_delete=models.SET_NULL, null=True, limit_choices_to=Q(type="asset"))
     recorded_by = models.ForeignKey('auth.user', default=1, 
         on_delete=models.SET_NULL, null=True)
+    attachment = models.ImageField(null=True, blank=True, upload_to='expenses')
     reference = models.CharField(max_length=32, blank=True, default="")
     entry= models.ForeignKey('accounting.journalentry', 
         on_delete=models.SET_NULL,

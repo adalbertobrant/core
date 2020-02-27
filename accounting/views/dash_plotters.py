@@ -26,9 +26,9 @@ def expense_plot():
     for key in mapping.keys():
         total += mapping[key]
 
-    chart = pygal.Pie(print_values=True, style=CustomStyle, height=300)
+    chart = pygal.Pie(print_values=True, style=CustomStyle, height=400, truncate_legend=-1)
     for key in mapping.keys():
-        chart.add(expense_choices[key], mapping[key])
+        chart.add(expense_choices[key] + f': {mapping[key]}', mapping[key])
 
 
     return chart
@@ -63,7 +63,7 @@ def revenue_vs_expense_plot():
         profit.append(revenue[i] - expenses[i])
     
 
-    chart = pygal.Bar(x_title="Week Ending", x_label_rotation=15, style=CustomStyle, height=300)
+    chart = pygal.Bar(x_title="Week Ending", x_label_rotation=15, style=CustomStyle, height=400)
     chart.x_labels = dates
     chart.add("Revenue", revenue)
     chart.add("Expenses", expenses)

@@ -11,12 +11,12 @@ from django.views.generic.edit import (CreateView,
                                         FormView)
 from django_filters.views import FilterView
 from rest_framework import viewsets
-
+from django.http import JsonResponse
 from common_data.utilities import ContextMixin
 from common_data.views import PaginationMixin
 from common_data.forms import IndividualForm
 from invoicing import filters, forms, serializers
-from invoicing.models import Customer, Invoice, CreditNote, Lead
+from invoicing.models import Customer, Invoice, CreditNote, Lead, CustomerNote
 from common_data.models import Individual, Organization
 import openpyxl
 import csv
@@ -412,3 +412,23 @@ class ImportCustomersView(ContextMixin, FormView):
                         cus.account.save()
                 
         return resp
+
+
+def create_customer_note(request, customer=None):
+    customer = Customer.objects.get(pk=customer)
+    author = str(request.user.employee) if hasattr(request.user, 'employee') \
+        else str(request.user)
+    obj = CustomerNote.objects.create(
+        customer=customer,
+        note = request.POST['note'],
+        author= author
+    )
+    
+    return JsonResponse({
+        'status': 'ok',
+        'data': {
+            'date': obj.timestamp.date(),
+            'note': obj.note,
+            'author': obj.author
+        }
+        })

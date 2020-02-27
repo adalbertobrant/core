@@ -1,15 +1,16 @@
 {% extends "window.html" %}
 
+{% block heading %}
+Employee Portal
+{% endblock heading %}
+{% block actions %}
+<a  onclick="linkClickHandler('/employees/time-logger/{{object.pk}}')" target="popup" class="dropdown-item">Login/Logout Timesheet</a>
+{% endblock actions %}
 {% block content %}
 
-<div class="jumbotron">
-    <h1 class="display-3">Employee Portal</h1>
+<br>
     <p class="lead">Welcome <b>{{object.full_name}}!</b></p>
-    <hr class="my-2">
-    <p>Use this page to manage your interactions with the company</p>
-    <a  onclick="linkClickHandler('/employees/time-logger/{{object.pk}}')" target="popup" class="text-white btn btn-primary">Login/Logout Timesheet</a>
-</div>
-
+    
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
@@ -46,7 +47,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="shadow card">
+                {% comment %} <div class="shadow card">
                     <div class="card-body">
                         <center>
                             <i class="fa fa-envelope-open-text" aria-hidden="true" style="font-size:168px;color:#007bff;margin:0px auto;"></i>
@@ -60,7 +61,7 @@
                             </li>
                         </ul>
                     </div>
-                </div>
+                </div> {% endcomment %}
             </div>
         </div>
     </div>

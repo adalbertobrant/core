@@ -5,6 +5,10 @@
     --quarternary: #eeeeee;
 }
 
+input[type='file'] {
+    border: 0px;
+}
+
 body {
     overflow-y:hidden;
 }
@@ -25,6 +29,7 @@ body.framed::-webkit-scrollbar{
     color: white;
     padding: 4px 8px;
     border-radius: 4px;
+    text-align: center;
 }
 
 
@@ -428,10 +433,10 @@ section#title button{
         height: 80vh !important;
     }
     section#title{
-        height: 10vh !important;
+        height: fit-content !important;
     }
     #footer{
-        height: 10vh !important;
+        height: fit-content !important;
     }
 }
 
@@ -441,7 +446,7 @@ section#title button{
     }
 
     section#title{
-        height: 7.5vh !important;
+        height: fit-content !important;
     }
     #footer{
         height: 5vh !important;
@@ -542,7 +547,7 @@ section#title button{
 
 
 .dash-visualization {
-    max-height: 300px;
+    height: fit-content;
 }
 
 .dash-visualization h4 {
@@ -800,4 +805,26 @@ span.less {
     .card {
         margin-top: 4px;
     }
+}
+
+#image-container {
+    border: 2px dashed #aaa;
+    border-radius: 12px; 
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    padding: 12px;
+    margin: 24px;
+}
+
+
+#image-container img {
+    display: none;
+}
+
+
+#image-container i {
+    color: #aaa
 }

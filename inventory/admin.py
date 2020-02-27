@@ -11,5 +11,8 @@ admin.site.register(Supplier)
 admin.site.register(Order)
 admin.site.register(OrderItem)
 admin.site.register(InventoryController)
+admin.site.register(InventoryItem)
+admin.site.register(ProductComponent)
+admin.site.register(WareHouseItem)
 
 # Register your models here.

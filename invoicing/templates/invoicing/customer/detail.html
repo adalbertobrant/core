@@ -26,61 +26,102 @@ Customer
 <br>
 <div class="container">
     <div class="row">
-        <div class="col-md-6 col-sm-12">
-            <div class="card shadow" >
+        <div class="col-12">
+            <div class="card shadow accent-left-lg" >
                 <div class="card-body">
-                    <h4 class="card-title">{{object.name}}</h4>
-                    <p class="card-text">Type: {% if object.is_organization %} Organization {% else %} Individual {% endif %}</p>
-                    <hr>
-                    <p class="card-text"><i class="fa fa-at" aria-hidden="true"></i> {{object.customer_email}}</p>
-                    <p class="card-text"><i class="fa fa-home" aria-hidden="true"></i> {{object.address}}</p>
-                    <h4>Account</h4>
-                     <p class="card-text"><a href="{% url 'accounting:account-detail' pk=object.account.pk %}" class="tertiary-link">{{object.account}}</a></p>
-                     <p class="card-text">{{object.account.balance | active_currency}}</p>
-                     
-
+                    <div class="row">
+                        <div class="col-md-6 div col-sm-12">
+                            <h4 class="card-title">{{object.name}}</h4>
+                            <p class="card-text"> <i class="fas fa-question-circle    "></i> {% if object.is_organization %} Organization {% else %} Individual {% endif %}</p>
+                            <hr>
+                            <p class="card-text"><i class="fa fa-at" aria-hidden="true"></i> {{object.customer_email}}</p>
+                            <p class="card-text"><i class="fa fa-home" aria-hidden="true"></i> {{object.address}}</p>
+                        </div>
+                        <div class="col-md-6 div col-sm-12">
+                            <div class='accent-left-md' style='padding-left:8px;'>
+                                <h4>Account</h4>
+                                <p class="card-text"><a href="{% url 'accounting:account-detail' pk=object.account.pk %}" class="tertiary-link">{{object.account}}</a></p>
+                                <p class="card-text">{{object.account.balance | active_currency}}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <div class="card-deck">
+                <div class="card accent-md" >
+                    <div class="card-body">
+                        <h3>Outstanding Revenue:</h3>
+                        <h1>{{object.total_overdue|active_currency}}</h1>
+                    </div>
+                </div>
+                
+                <div class="card accent-md">
+                    <div class="card-body">
+                        <h3>Amount Receivable:</h3>
+                        <h1>{{object.total_accounts_receivable |active_currency}}</h1>
+                    </div>
+                </div>
+                <div class="card accent-md">
+                    <div class="card-body">
+                        <h3>Total Service Time:</h3>
+                        <h1>{{object.total_service_time}}<span class="less">HRS</span> </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
             {% if object.organization %}
-            <div class="card">
+            <br>
+            <div class="card accent-left-md">
                 <div class="card-body">
-                    <h4 class="card-title">Members</h4>
-                    <button onclick="linkClickHandler('/invoicing/customer/add-member/{{object.organization.pk}}')" target='popup' class="btn btn-primary">Add Member</button>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Full Name</th>
-                                <th>Phone</th>
-                                <th>Email</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for m in object.organization.members %}
-                            <tr>
-                                <td>{{m.full_name}}</td>
-                                <td>{{m.phone}}</td>
-                                <td><a href="{% url 'messaging:create-message' %}">{{m.email}}</a></td>
-                                <td>
-                                    <a href="{% url 'base:individual-detail' pk=m.pk %}" class="btn btn-success btn-sm">View</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                    <h4 class="card-title"> <i class="fas fa-link    "></i> Contacts <button onclick="linkClickHandler('/invoicing/customer/add-member/{{object.organization.pk}}')" target='popup' class="btn btn-primary"><i class="fas fa-plus    "></i></button></h4>
+                    {% if object.organization.members %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Full Name</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for m in object.organization.members %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'base:individual-detail' pk=m.pk %}" class='btn btn-primary btn-sm' >{{m.full_name}}</a>
+                                    </td>
+                                    <td>{{m.phone}}</td>
+                                    <td><a href="{% url 'messaging:create-message' %}">{{m.email}}</a></td>
+                                    
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                    
                 </div>
             </div>
             {% endif %}
         </div>
-        <div class='col-md-6 col-sm-12'>
-            <div class="card">
+    </div>
+    <br>
+    <div class="row">
+        <div class='col-12'>
+            <div class="card" style='min-height:400px;'>
                 <div class="card-body">
-                    <h4 class="card-title">Interactions</h4>
                     <ul class="nav nav-tabs">
                         <li class="nav-item"><a href="#leads" class="nav-link active" data-toggle="tab">Leads</a></li>
                         <li class="nav-item"><a href="#quotations" class="nav-link" data-toggle="tab">Quotations</a></li>
                         <li class="nav-item"><a href="#invoices" class="nav-link" data-toggle="tab">Invoices</a></li>
-                        <li class="nav-item"><a href="#credit-notes" class="nav-link" data-toggle="tab">Credit Notes</a></li>
+                        <li class="nav-item"><a href="#credit-notes" class="nav-link" data-toggle="tab">Credit Memos</a></li>
+                        <li class="nav-item"><a href="#notes" class="nav-link" data-toggle="tab">Notes</a></li>
                     </ul>
                     <div class="tab-content">
                         <div id="leads" class="tab-pane active">
@@ -172,6 +213,49 @@ Customer
                                 </tbody>
                             
                             </table>
+                        </div>
+                        <div id="notes" class="tab-pane">
+                            
+                                {% for note in object.customernote_set.all  %}
+                                    <div class="card" style='margin-bottom:.75rem'>
+                                        <div class="card-body">
+                                            
+                                            <p ><span class="less">{{note.timestamp.date}}</span></p>
+                                            <p><b>{{note.author}}:</b> {{note.note}}</p>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                <div class="card" id='customer-note-form'>
+                                    <div class="card-body">
+                                        <label for="">Note:</label>
+                                        <textarea name="note" class='form-control' id="customer-note" cols="30" rows="4"></textarea>
+                                        <br>
+                                        <button class="btn btn-primary" onclick='createCustomerNote()'>Submit</button>
+                                        {% csrf_token %}
+                                        <script>
+                                            function createCustomerNote(){
+                                                var text = $('#customer-note').val()
+                                                if(text == ''){
+                                                    alert('You need to enter some text to submit a note')
+                                                    return
+                                                }
+                                                console.log(text)
+                                                console.log($('input[name="csrfmiddlewaretoken"]').val())
+                                                $.post('/invoicing/create-customer-note/{{object.pk}}/', {'note': text, 'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()}, function(data){
+                                                    if(data.status == 'ok'){
+                                                        alert('Note Created successfully!')
+                                                        $('#customer-note-form').before($("<div class='card' style='margin-bottom:.75rem'> \
+                                                         <div class='card-body'> \
+                                                            <p><span class='less'> " + data.data.date + " </span> </p> \
+                                                            <p><b>" + data.data.author + ": </b> "+ data.data.note +" </p> \
+                                                        </div> </div> "))
+                                                    }
+                                                })
+
+                                            }
+                                        </script>
+                                    </div>
+                                </div>
                         </div>
                     </div>
                 </div>

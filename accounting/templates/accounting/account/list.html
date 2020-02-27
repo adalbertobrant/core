@@ -10,9 +10,10 @@
 {% block list_content %}
 {% for item in object_list %}
 <tr>
-    <td><a  href="{% url 'accounting:account-detail' pk=item.pk %}" >{{item.pk}}-{{item.name}}</a></td>
+    <td>{{item.pk}}-{{item.name}}</td>
     <td>{{item.balance | accounting}}</td>
     <td>{{item.type}}</td>
+    <td><a  href="{% url 'accounting:account-detail' pk=item.pk %}" > <i class="fa fa-ellipsis-h" aria-hidden="true"></i> </a></td>
 </tr>
 {% endfor %}
 {% endblock %}
