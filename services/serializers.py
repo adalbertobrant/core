@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from inventory.serializers import InventoryItemSerializer
 from employees.serializers import EmployeeSerializer
+from employees.models import Employee
 from . import models
 
 
@@ -43,11 +44,21 @@ class WorkOrderTaskSerializer(serializers.ModelSerializer):
         fields = "__all__"
         model = models.WorkOrderTask
 
+class TimeLogSerializer(serializers.ModelSerializer):
+    employee = serializers.SerializerMethodField()
+    class Meta:
+        fields = "__all__"
+        model = models.TimeLog
+    
+    def get_employee(self, obj):
+        return str(obj.employee)
+    
 class WorkOrderSerializer(serializers.ModelSerializer):
     service_people = ServicePersonSerializer(many=True)
     workordertask_set = WorkOrderTaskSerializer(many=True)
+    timelog_set = TimeLogSerializer(many=True)
     class Meta:
-        fields = ['service_people', 'id','workordertask_set']
+        fields = ['service_people', 'id','workordertask_set', 'timelog_set']
         model = models.ServiceWorkOrder
 
 

@@ -34,9 +34,7 @@
                 
                 {% endif %}
                 {% if wo.status != 'authorized' %}
-                <a class="dropdown-item" href="{% url 'services:work-order-complete' pk=wo.pk %}">
-                    <i class="fas fa-check"></i> Update Progress
-                </a>
+               
                 <a class="dropdown-item" href="{% url 'services:work-order-equipment-requisition-create' pk=wo.pk %}">
                     <i class="fas fa-file-invoice"></i> Request Equipment
                 </a>

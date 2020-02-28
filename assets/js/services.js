@@ -15,7 +15,7 @@ const personnel = document.getElementById('personnel-list');
 const consumableTable = document.getElementById('consumable-requisition-table');
 const equipmentTable = document.getElementById('equipment-requisition-table');
 const workOrderPersons = document.getElementById('work-order-persons');
-const serviceTime = document.getElementById('service-time');
+const serviceTime = document.getElementById('service-time-logger');
 const notes = document.getElementById('notes-widget');
 const tasks = document.getElementById('task-list');
 
@@ -161,6 +161,14 @@ if (equipmentTable){
 if(serviceTime){
     ReactDOM.render(<GenericTable
         formInputID="id_service_time"
+        prepopulated
+        urlFetcher={() =>{
+            return '/services/api/work-order/' + tail
+        }}
+        resProcessor={(res) =>{
+            return res.data.timelog_set
+        }}
+
         fieldOrder={['date','employee', 'normal_time', 'overtime']}
         concise={(data) =>{
             return('(' + data.date + ')' + data.employee.split('-')[1] + ' ' + data.normal_time + ' + ' + data.overtime + ' OT' )
@@ -169,7 +177,7 @@ if(serviceTime){
             {
                 'name': 'date',
                 'type': 'date',
-                'width': 25,
+                'width': 15,
                 'required': true,
             },
             {
@@ -184,7 +192,7 @@ if(serviceTime){
         {
             'name': 'normal_time',
             'type': 'widget',
-            'width': 25,
+            'width': 20,
             'required': true,
             'widgetCreator': (comp) =>{
                 return <TimeField
@@ -203,7 +211,7 @@ if(serviceTime){
         {
             'name': 'overtime',
             'type': 'widget',
-            'width': 25,
+            'width': 20,
             'required': true,
             'widgetCreator': (comp) =>{
                 return <TimeField 

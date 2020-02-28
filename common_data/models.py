@@ -73,6 +73,7 @@ class Note(models.Model):
     author = models.ForeignKey('auth.User', on_delete=models.SET_NULL, 
         null=True)
     note = models.TextField()
+    
 
     def __str__(self):
         return "{}({}): {}".format(self.timestamp.strftime("%d %b %y, %H:%M "), self.author, self.note)

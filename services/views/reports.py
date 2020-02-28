@@ -265,3 +265,75 @@ class UnbilledCostsByJobPDFView(MultiPageDocument,
         })
         return context
     
+
+
+class TimeLogReportFormView(ContextMixin, FormView):
+    template_name = os.path.join('common_data', 'reports', 
+        'report_template.html')
+    form_class = PeriodReportForm
+    
+    extra_context = {
+        'action':reverse_lazy('services:reports-time-logs'),
+    }
+
+class TimeLogReportView(ContextMixin,
+                        ConfigMixin,
+                        TemplateView):
+    template_name = os.path.join('services', 'reports', 'time_log_report.html')
+    page_length = 10
+    extra_context = {
+        'pdf_link': True
+    }
+
+    @staticmethod
+    def common_context(context, start, end):
+        logs = TimeLog.objects.filter(date__gte=start, date__lte=end)
+        data = {}
+        for log in logs:
+            data.setdefault(str(log.employee), {
+                'name': str(log.employee),
+                'logs': [],
+                'total': datetime.timedelta(seconds=0)
+            })
+            data[str(log.employee)]['logs'].append(log)
+            data[str(log.employee)]['total'] = sum([i.total_time \
+                for i in data[str(log.employee)]['logs']], 
+                    datetime.timedelta(seconds=0))
+
+        context['employees'] = data.values()
+        context['total_time'] = sum([i['total'] for i in data.values()],
+            datetime.timedelta(seconds=0))
+        return context
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        start, end = extract_period(self.request.GET)
+        context.update({
+            'start': start,
+            'end': end,
+        })
+        return TimeLogReportView.common_context(context, start,end)
+    
+
+class TimeLogReportPDFView(MultiPageDocument, 
+                                ConfigMixin, 
+                                PDFTemplateView):
+    template_name = UnbilledCostsByJobReportView.template_name
+    page_length = UnbilledCostsByJobReportView.page_length
+
+    def get_multipage_queryset(self):
+        start, end = extract_encoded_period(self.kwargs)
+        return ServiceWorkOrder.objects.filter(date__gte=start, 
+            date__lte=end)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        start, end = extract_encoded_period(self.kwargs)
+        context.update({
+            'start': start,
+            'end': end,
+            'date': datetime.date.today()
+        })
+        return context
+    

@@ -21,7 +21,11 @@
 
 {% block page_contents %}
 {% load accounting %}
-
+<style>
+    td:last-child {
+        text-align: right!important
+    }
+</style>
 <table style="width:100%">
     <tbody>
         
@@ -32,107 +36,113 @@
         </tr>
         <tr>
             <td colspan="2">
-                <table class='table table-sm' id="report" style="width:100%;">
+                <table class='table-sm' id="report" style="width:100%;">
                     <tbody>
                         <tr>
+                            <td style='width:75%'></td>
+                            <td style='text-align:right;'></td>
+                        </tr>
+                        <tr style='border-bottom:1px solid #23374d'>
+                            <td ><h5>Assets - Liabilities</h5></td>
                             <td></td>
-                            <td>$</td>
-                            <td>$</td>
                         </tr>
                         <tr>
-                            <td>Non-current assets:</td>
-                            <td></td>
+                            <td><h6>Non-current assets:</h6></td>
                             <td></td>
                         </tr>
                         {% for a in long_term_assets %}
                         <tr>
                             <td>{{a.name}}</td>
-                            <td></td>
+                            
                             <td>{{a.control_balance | accounting}}</td>
                         </tr>
                         {% endfor %}
                         <tr>
-                            <td>Current assets:</td>
-                            <td></td>
+                            <td><h6>Current assets:</h6></td>
+                            
                             <td></td>
                         </tr>
                         <tr>
                             <td>Inventory</td>
                             <td>{{inventory | accounting}}</td>
-                            <td></td>
+                            
                         </tr>
                         {% for a in current_assets %}
                         <tr>
                             <td>{{a.name}}</td>
                             <td>{{a.control_balance | accounting}}</td>
-                            <td></td>
+                            
                         </tr>
                         {% endfor %}
                         <tr>
-                            <td></td>
-                            <td style="border-top:2px solid black;">{{current_assets_total | accounting}}</td>
-                            <td></td>
+                            <td><h5>Total Assets</h5></td>
+                            <td><h5>{{current_assets_total | accounting}}</h5></td>
+                            
                         </tr>
                         <tr>
-                            <td>Current liabilities:</td>
-                            <td></td>
+                            <td><h6>Current liabilities:</h6></td>
+                            
                             <td></td>
                         </tr>
                         {% for a in current_liabilities %}
                         <tr>
                             <td>{{a.name}}</td>
                             <td>{{a.control_balance | accounting}}</td>
-                            <td></td>
+                            
                         </tr>
                         {% endfor %}
                         <tr>
                             <td>Working Capital</td>
-                            <td></td>
+                            
                             <td>{{working_capital | accounting}}</td>
                         </tr>
                         <tr>
-                            <td>Less non-current liabilities:</td>
-                            <td></td>
+                            <td><h6>Less non-current liabilities:</h6></td>
+                            
                             <td></td>
                         </tr>
                         {% for a in long_term_liabilities %}
                         <tr>
                             <td>{{a.name}}</td>
                             <td>{{a.control_balance  | accounting}}</td>
-                            <td></td>
+                            
                         </tr>
                         {% endfor %}
-                        <tr>
-                            <td>Net Assets</td>
-                            <td></td>
-                            <td style="border-bottom:4px double black;">{{net_assets | accounting}}</td>
+                        <tr style="border-top:4px double #23374d;">
+                            <td><h4>Net Assets </h4></td>
+                            
+                            <td ><h4>{{net_assets | accounting}}</h4></td>
                         </tr>
                         <tr>
-                            <td>Equity:</td>
+                            <td style='height: 2rem;'></td>
                             <td></td>
+                        </tr>
+                        <tr  style='border-bottom:1px solid #23374d;'>
+                            <td><h5>Equity:</h5></td>
+                            
                             <td></td>
                         </tr>
                         {% for a in equity %}
                         <tr>
                             <td>{{a.name}}</td>
-                            <td></td>
+                            
                             <td>{{a.control_balance | accounting}}</td>
                         </tr>
                         {% endfor %}
                         <tr>
                             <td>Add Net profit</td>
-                            <td></td>
-                            <td style="border-top:2px solid black;">{{net_profit | accounting}}</td>
+                            
+                            <td >{{net_profit | accounting}}</td>
                         </tr>
                         <tr>
                             <td>Less Drawings</td>
-                            <td></td>
-                            <td style="border-bottom:2px solid black;">{{drawings | accounting}}</td>
+                            
+                            <td >{{drawings | accounting}}</td>
                         </tr>
-                        <tr>
-                            <td>Total Equity</td>
-                            <td></td>
-                            <td style="border-bottom:4px double black;">{{equity_total | accounting}}</td>
+                        <tr style="border-top:4px double black;">
+                            <td><h4>Total Equity</h4></td>
+                            
+                            <td ><h4>{{equity_total | accounting}}</h4></td>
                         </tr>
                     </tbody>
                 </table>

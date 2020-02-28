@@ -60,17 +60,20 @@ class TimeField extends Component{
 
     render(){
         return(
-            <div style={{position: 'relative', width:'100%'}}>
-            <input 
-                type="text"
-                value={this.state.value}
-                onChange={this.handler}
-                onClick={this.togglePicker}
-                className="form-control"
-                placeholder="HH:MM"
-                style={{
-                    border: `${this.state.valid ? '0' : '3' }px solid red`
-                }} />
+            <div className='timePicker' style={{position: 'relative', width:'100%'}}>
+                <div className={styles.pickerContainer}>
+                    <input 
+                        type="text"
+                        value={this.state.value}
+                        onChange={this.handler}
+                        style={{
+                            backgroundColor: this.state.valid ? 'white' : '#f7d7da'
+                        }}
+                        
+                        placeholder="HH:MM"
+                        />
+                    <button type='button' onClick={this.togglePicker} className={styles.pickerButton}> {this.state.showPicker ? <i className="fas fa-times    "></i> : <i className="fas fa-clock    "></i>} </button>
+                </div>
                 {this.state.showPicker ? <Picker 
                                             setTime={this.setTime}
                                             hidePicker={this.togglePicker}/>: null}

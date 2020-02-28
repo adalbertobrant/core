@@ -108,6 +108,10 @@ class ServiceWorkOrder(models.Model):
         
         return None
 
+    @property
+    def completed_tasks(self):
+        return self.workordertask_set.filter(completed=True)
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if self.works_request:
@@ -198,6 +202,18 @@ class TimeLog(models.Model):
     overtime_cost = models.DecimalField(max_digits=16, decimal_places=2,
         default=D(0.0))
 
+    @property
+    def total_time(self):
+        return self.overtime + self.normal_time
+
+    @property
+    def customer(self):
+        if self.work_order.works_request.invoice:
+            return \
+                self.work_order.works_request.invoice.customer
+        return 'Internal'
+
+
     def __str__(self):
         return f'{self.employee} {self.normal_time} + {self.overtime} O/T'
 
@@ -222,8 +238,10 @@ class WorkOrderExpense(models.Model):
 
 
 class WorkOrderTask(models.Model):
-    work_order = models.ForeignKey('services.ServiceWorkOrder', on_delete=models.CASCADE) 
-    assigned = models.ForeignKey('employees.Employee', on_delete=models.SET_NULL, null=True)
+    work_order = models.ForeignKey('services.ServiceWorkOrder', 
+        on_delete=models.CASCADE) 
+    assigned = models.ForeignKey('employees.Employee', 
+        on_delete=models.SET_NULL, null=True)
     description = models.TextField()
     due = models.DateField(blank=True)
     completed = models.BooleanField(default=False)

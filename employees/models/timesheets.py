@@ -32,12 +32,14 @@ class EmployeeTimeSheet(models.Model):
     YEAR_CHOICES = [
         (i, i) for i in range(2000, 2051)
     ] 
-    employee = models.ForeignKey('employees.employee', on_delete=models.SET_NULL, null=True, 
+    employee = models.ForeignKey('employees.employee', on_delete=models.
+        SET_NULL, null=True, 
         related_name='target')
-    month = models.PositiveSmallIntegerField(choices=enumerate(MONTH_CHOICES, start=1))
+    month = models.PositiveSmallIntegerField(choices=enumerate(MONTH_CHOICES, 
+        start=1))
     year = models.PositiveSmallIntegerField(choices=YEAR_CHOICES)
-    recorded_by = models.ForeignKey('employees.employee', on_delete=models.SET_NULL, 
-        related_name='recorder', null=True)
+    recorded_by = models.ForeignKey('employees.employee', on_delete=models.
+        SET_NULL, related_name='recorder', null=True)
     complete=models.BooleanField(default=False, blank=True)
 
     @property
@@ -99,6 +101,6 @@ class AttendanceLine(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if self.lunch_duration is None:
+        if self.lunch_duration is None and self.timesheet.employee.pay_grade:
             self.lunch_duration = self.timesheet.employee.pay_grade.lunch_duration
             self.save()

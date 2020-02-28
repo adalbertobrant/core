@@ -26,6 +26,8 @@ class Transaction(models.Model):
         decimal_places=2)
     entry = models.ForeignKey('accounting.JournalEntry', 
         on_delete=models.CASCADE)
+
+        
     class Meta:
         abstract =True
 

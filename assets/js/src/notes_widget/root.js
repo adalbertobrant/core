@@ -67,7 +67,6 @@ class NotesWidget extends Component{
             margin: "5px",
             padding: "10px",
             borderRadius: "5px",
-            backgroundColor: "#23374d",
             color: 'white'
         };
         const notesListStyle = {
@@ -85,26 +84,21 @@ class NotesWidget extends Component{
                 </ul>
             </div>
             <div className="form-group">
-              <label >Author:</label>
-              <AsyncSelect 
-                dataURL="/base/api/users"
-                handler={this.selectWidgetHandler}
-                name="author"
-                resProcessor={(res)=>{
-                    return res.data.map((item)=>({
-                        name: item.username,
-                        value: item.id
-                    }))
-                }}/>
-              <label >Note:</label>
               <textarea 
-                className="form-control" 
+                className="form-control notes-input" 
                 id="note-widget" rows="3"
                 onChange={this.inputHandler}
                 value={this.state.note}></textarea>
             </div>
-            {/* May eliminate this button, Make a prop? */}
-            <button onClick={this.submitHandler} type="button" className="btn">Submit</button>
+            <div style={{
+                display: 'flex',
+                justifyContent: 'flex-end'
+            }}>
+                <button onClick={this.submitHandler}
+                type="button" 
+                className="btn">
+            <i class="fas fa-paper-plane    "></i> </button>
+            </div>
         </div>)
     }
 }

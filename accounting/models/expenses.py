@@ -86,23 +86,11 @@ class AbstractExpense(models.Model):
         return accounting.models.accounts.Account.objects.get(
             pk=mapping[self.category])
 
+    
 
-'''class Payment(models.Model):
-    date = models.DateField()
-    amount = models.DecimalField(decimal_places=2, max_digits=16, default=0.0)
-    expense = models.ForeignKey('accounting.expense', null=True, 
-        on_delete=models.SET_NULL)
-    entry = models.ForeignKey('accounting.JournalEntry', null=True, 
-        models.SET_NULL)
-    memo = models.TextField(blank=True)
-    account = models.ForeignKey('accounting.Account', 
-        on_delete=models.SET_DEFAULT, 
-        limit_choices_to=Q(type='asset')
-        default=1000)
-'''
+
 class Expense(AbstractExpense):
     date = models.DateField()
-    #due = models.DateField(blank=True, null=True)
     billable = models.BooleanField(default=False)
     customer = models.ForeignKey('invoicing.Customer', 
         on_delete=models.SET_NULL, null=True,
@@ -111,9 +99,16 @@ class Expense(AbstractExpense):
     def __str__(self):
         return f"{self.date}: {self.reference}"
 
-    '''@property
-    def payments(self):
-        return self.payment_set.all()'''
+    @property 
+    def source(self):
+        #returns the person the expense was generated for
+        if self.billable:
+            return self.customer
+
+        if self.billline_set.all().count() == 1:
+            self.billline_set.first().bill.vendor
+
+        return self.recorded_by
 
     def create_entry(self):
         if self.entry:

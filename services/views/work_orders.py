@@ -4,7 +4,7 @@ import urllib
 import datetime 
 from functools import reduce
 
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, TemplateView
@@ -68,52 +68,37 @@ class WorkOrderUpdateView( WorkOrderCRUDMixin, UpdateView):
     model = models.ServiceWorkOrder
 
 
-class WorkOrderCompleteView(UpdateView):
-    template_name = os.path.join('services', 'work_order', 'complete.html')
-    model = models.ServiceWorkOrder
-    form_class = forms.ServiceWorkOrderCompleteForm
+def log_time_for_work_order(request, pk=None):
 
-    def get(self, *args, **kwargs):
-        if not hasattr(self, 'object'):
-            obj = self.get_object()
-        obj.status = 'progress'
-        obj.save()
+    wo = get_object_or_404(models.ServiceWorkOrder, pk=pk)
+
+    log_data = json.loads(urllib.parse.unquote(
+        request.POST['service_time'])) \
+             if request.POST['service_time'] != '' else []
+
+    for log in log_data:
+        pk = log['employee'].split('-')[0]
+        employee = Employee.objects.get(pk=pk)
+        date= datetime.datetime.strptime(
+            log['date'], "%Y-%m-%d")
+        normal_time = datetime.datetime.strptime(
+            log['normal_time'], "%H:%M")
+        normal_time = datetime.timedelta(
+            hours=normal_time.hour, minutes=normal_time.minute)
         
-        return super().get(*args, **kwargs)
-    
-    
-    def post(self, request, *args, **kwargs):
-        resp = super(WorkOrderCompleteView, self).post(request, *args, **kwargs)
+        overtime = datetime.datetime.strptime(log['overtime'], "%H:%M")
+        overtime = datetime.timedelta(
+            hours=overtime.hour, minutes=overtime.minute)
 
-        if not self.object:
-            self.get_object()
-        
-        log_data = json.loads(urllib.parse.unquote(request.POST['service_time'])) if request.POST['service_time'] != '' else []
+        models.TimeLog.objects.create(
+            work_order=wo,
+            date=date,
+            employee=employee,
+            normal_time=normal_time,
+            overtime=overtime,
+        )
 
-        for log in log_data:
-            pk = log['employee'].split('-')[0]
-            employee = Employee.objects.get(pk=pk)
-            date= datetime.datetime.strptime(
-                log['date'], "%Y-%m-%d")
-            normal_time = datetime.datetime.strptime(
-                log['normal_time'], "%H:%M")
-            normal_time = datetime.timedelta(
-                hours=normal_time.hour, minutes=normal_time.minute)
-            
-            overtime = datetime.datetime.strptime(log['overtime'], "%H:%M")
-            overtime = datetime.timedelta(
-                hours=overtime.hour, minutes=overtime.minute)
-            
-
-            models.TimeLog.objects.create(
-                work_order=self.object,
-                date=date,
-                employee=employee,
-                normal_time=normal_time,
-                overtime=overtime,
-            )
-
-        return resp 
+        return JsonResponse({'status': 'ok'})
 
 
 class WorkOrderDetailView( DetailView):

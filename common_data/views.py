@@ -434,9 +434,9 @@ def create_note(request):
     applied. Thus each note request must have an author, a message and 
     identification for the target namely its classname and the objects primary 
     key'''
-    author = User.objects.get(pk=request.POST['author'])
+    
     note = models.Note.objects.create(
-        author = author,
+        author = request.user,
         note = request.POST['note']
     )
 

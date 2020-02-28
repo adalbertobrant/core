@@ -1,0 +1,93 @@
+{% extends "common_data/page/framed_pdf_page.html" %}
+{% load accounting %}
+
+{% block pre_page %}
+<script>
+var url = "/services/reports/time-logs-report-pdf/{{start|urlencode}}/{{end|urlencode}}";
+var el = window.parent.document.getElementById('pdf-button');
+el.href = url;
+</script>
+{% endblock %}
+
+{% block page_contents %}
+{% load accounting %}
+<style>
+    td:last-child {
+        text-align: right!important
+    }
+    .table th {
+        border-top: 0px !important;
+    }
+
+</style>
+<table style="width:100%">
+    <tbody>
+        
+        <tr>
+            <td colspan="2">
+                {% include "services/reports/time_log_header.html" %}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table class='table-sm' id="report" style="width:100%;">
+                    <tbody>
+                        <tr>
+                            <td style='width:75%'></td>
+                            <td style='text-align:right;'></td>
+                        </tr>
+                        {% for employee in employees %}
+                        <tr style='border-bottom:2px solid #23374d'>
+                            <td><h6>{{employee.name}}</h6></td>
+                            <td></td>
+                        </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <table class='table' >
+                                        <thead>
+                                            <tr >
+                                                <th>Customer</th>
+                                                <th>Service</th>
+                                                <th>Date</th>
+                                                <th>Time</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for log in employee.logs %}
+                                                <tr>
+                                                    <td>{{log.customer}}</td>
+                                                    <td>{{log.work_order.works_request.service}}</td>
+                                                    <td>{{log.date}}</td>
+                                                    <td>{{log.total_time}}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        
+                        <tr>
+                            <td><h6>Total time for {{employee.name}}</h6></td>
+                            <td><h6>{{employee.total}}</h6></td>
+                        </tr>
+                        <tr>
+                            <td style='height:1.5rem;'></td>
+                            <td></td>
+                        </tr>
+                        {% endfor %}
+                    
+                        <tr>
+                            <td>
+                                <h5>Total Time Logged</h5>
+                            </td>
+                            <td>
+                                <h5>{{total_time}}</h5>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% endblock  %}

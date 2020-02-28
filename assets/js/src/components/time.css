@@ -21,13 +21,34 @@
 }
 
 .dataLists::-webkit-scrollbar {
-    width: 5px;
+    width: 8px;
     background-color: #ddd;
-    border-radius: 2.5px;
+    border-radius: 4px;
 }
+
 
 .dataLists::-webkit-scrollbar-thumb {
     background-color: #23374d;
-    border-radius: 2.5px;
+    border-radius: 4px;
 }
 
+
+.pickerButton {
+    background-color:white;
+    color: #23374d;
+    border: 0px;
+    flex: 0;
+    margin: 0px !important;
+    width: 2rem;
+}
+
+.pickerContainer {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid #999;
+}
+
+.pickerContainer input{
+    border: 0px;
+    flex: 1;
+}

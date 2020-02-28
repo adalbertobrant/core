@@ -45,7 +45,6 @@ Service Person Portal
                                         <th>Date</th>
                                         <th>WR ID</th>
                                         <th>Description</th>
-                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -55,9 +54,7 @@ Service Person Portal
                                             <td>{{i.date}}</td>
                                             <td>{{i.works_request.pk}}</td>
                                             <td>{{i.description |truncatechars:30}}</td>
-                                            <td>
-                                                <a href="{% url 'services:work-order-complete' pk=i.pk %}" class="btn btn-primary">Complete</a>
-                                            </td>
+                                           
                                         </tr>
                                     {% endfor %}
                                 </tbody>

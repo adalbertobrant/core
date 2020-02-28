@@ -661,6 +661,11 @@ table .form-control, table .search-widget {
     margin: 5px;
 }
 
+.timePicker {
+    margin: 5px 0px;
+    height: 100%;
+}
+
 span.important {
     font-size: 1.5rem;
     font-weight: 700;
@@ -827,4 +832,9 @@ span.less {
 
 #image-container i {
     color: #aaa
+}
+
+
+.guide.line {
+    stroke: #ccc!important;
 }

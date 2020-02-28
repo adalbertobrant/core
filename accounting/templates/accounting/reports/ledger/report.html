@@ -1,0 +1,105 @@
+{% extends "common_data/page/framed_pdf_page.html" %}
+{% load accounting %}
+
+{% block pre_page %}
+<script>
+var url = "/accounting/pdf/general-ledger/{{start|urlencode}}/{{end|urlencode}}";
+var el = window.parent.document.getElementById('pdf-button');
+el.href = url;
+</script>
+{% endblock %}
+
+{% block page_contents %}
+{% load accounting %}
+<style>
+    td:last-child {
+        text-align: right!important
+    }
+    .table th {
+        border-top: 0px !important;
+    }
+
+</style>
+<table style="width:100%">
+    <tbody>
+        
+        <tr>
+            <td colspan="2">
+                {% include "accounting/reports/ledger/header.html" %}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table class='table-sm' id="report" style="width:100%;">
+                    <tbody>
+                        <tr>
+                            <td style='width:75%'></td>
+                            <td style='text-align:right;'></td>
+                        </tr>
+                        {% for account in accounts %}
+                        <tr style='border-bottom:2px solid #23374d'>
+                            <td><h6>{{account.name}}</h6></td>
+                            <td></td>
+                        </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <table class='table' >
+                                        <thead>
+                                            <tr >
+                                                <th>Date</th>
+                                                <th>Transaction ID</th>
+                                                <th>Memo</th>
+                                                <th>Credit</th>
+                                                <th>Debit</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for transaction in account.transactions %}
+                                                <tr>
+                                                    <td>{{transaction.entry.date}}</td>
+                                                    <td>{{transaction.entry.pk}}</td>
+                                                    <td>{{transaction.entry.memo|truncatechars:60}}</td>
+                                                    {% if transaction.is_debit %}
+                                                    <td>-</td>
+                                                    <td>{{transaction.amount}}</td>
+                                                    {% else %}
+                                                    <td>{{transaction.amount}}</td>
+                                                    <td>-</td>
+                                                    {% endif %}
+                                                    
+                                                </tr>
+                                            {% endfor %}
+                                            <tr>
+                                                <td colspan='3'>
+                                                    <h6>Net Movement {{account.name}}</h6>
+                                                </td>
+                                                {% if account.net_movement.debit %}
+                                                <td></td>
+                                                <td><h6>{{account.net_movement.amount}}</h6></td>
+                                                {% else %}
+                                                <td><h6>{{account.net_movement.amount}}</h6></td>
+                                                <td></td>
+                                                {% endif %}
+                                                
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        
+                        
+                        <tr>
+                            <td style='height:1.5rem;'></td>
+                            <td></td>
+                        </tr>
+                        {% endfor %}
+                    
+                        
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% endblock  %}

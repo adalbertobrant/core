@@ -1,6 +1,7 @@
 {% extends "window.html" %}
 {% load static %}
 {% load accounting %}
+{% load render_bundle from webpack_loader %}
 {% block head %}
 <link rel="stylesheet" href="{% static 'common_data/css/document-styles.css' %}">
 {% endblock head %}
@@ -25,9 +26,7 @@ Work Order Detail
 
 {% endif %}
 {% if wo.status != 'authorized' %}
-<a class="dropdown-item" href="{% url 'services:work-order-complete' pk=object.pk %}">
-    <i class="fas fa-check"></i> Update Progress
-</a>
+
 <a class="dropdown-item" href="{% url 'services:work-order-equipment-requisition-create' pk=object.pk %}">
     <i class="fas fa-file-invoice"></i> Request Equipment
 </a>
@@ -43,6 +42,26 @@ Work Order Detail
 {% endif %}
 {% endblock actions %}
 {% block content %}
+<style>
+    .card {
+        margin-bottom: 8px;
+    }
+
+    #task-list .card:hover,
+    .active-card {
+        transition: transform 0.3s ease;
+        transform: scale(1.025);
+        box-shadow: 0px 5px 30px #ddd,
+            0px 2px 5px #bbb;
+        border-left: 6px solid #23374d
+    }
+
+    #service-time-logger {
+        overflow-x: auto;
+        min-height:500px;
+    }
+    
+</style>
 <br>
 <div class="container">
     <div class="row">
@@ -51,7 +70,8 @@ Work Order Detail
                 <div class="card shadow accent-md">
                 <div class="card-body">
                     <h3 >  Status:</h3>
-                    <h1 style='display:inline-block;padding:8px;border-radius:24px;font-size:32px;'>{{object.status}}</h1>
+                    <h1 style='display:inline-block;padding:1rem;border-radius:2rem;font-size:2rem;background-color: {% if object.status == "requested" %} orange {% elif object.status == "progress" %} #23374d  {% elif object.status == "completed" %} steelblue {% elif object.status == "approved" %} green {% elif object.status == "declined" %} crimson {% endif %}; color:white;'>{{object.status}}</h1>
+                    <h1>{{object.completed_tasks.all.count}}/{{object.workordertask_set.all.count}}<span class="less"> TASKS COMPLETED</span></h1>
                 </div>
             </div>
             <div class="card shadow accent-md">
@@ -64,6 +84,7 @@ Work Order Detail
                 <div class="card-body">
                 {% if budget %}
                 <h5>Hours Worked</h5>
+                    <p><span class='less'>BUDGET {{object.expected_duration}} </span></p>
                     {% autoescape off %}
                     {{budget}}
                     {% endautoescape %}
@@ -80,92 +101,152 @@ Work Order Detail
     </div>
     <br>
     <div class="row">
-        <div class="col-md-4 col-sm-12">
-            <div class="card shadow accent-lg">
+        <div class="col-12">
+            <div class="card shadow accent-left-lg">
                 <div class="card-body">
-                    <p class="card-text">{{object.date}}</p>
-                    <p class="card-text">{{object.time}}</p>
-                    <p class="card-text">Invoice: {{object.works_request.invoice.invoice_number | stringformat:"06d"}}</p>
-                    
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                            <p class="card-text">{{object.date}}</p>
+                            <p class="card-text">{{object.time}}</p>
+                            <p class="card-text">Invoice: {{object.works_request.invoice.invoice_number | stringformat:"06d"}}</p>
+                        
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <h4>Resolvers</h4>
+                            {% if object.team %}
+                            <div style='background-color:#eee;padding:10px;'>
+                                <h6 class="card-text"> Team {{object.team}}</h6>
+                                <ul>
+                                    {% for tm in object.team.members.all %}
+                                    <li>{{tm}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                            <h6>Individuals</h6>
+                            <ul>
+                                {% for sp in object.service_people.all %}
+                                <li>{{sp}}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                     
                     <hr>
                     <p class="card-text">{{object.description}}</p>
-                    <h4>Resolvers</h4>
                     
-                    <div style='background-color:#eee;padding:10px;'>
-                        <h6>Teams</h6>
-                        <p class="card-text">{{object.team}}</p>
-                        <ul>
-                            {% for tm in object.team.members.all %}
-                            <li>{{tm}}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
 
-                    <h6>Individuals</h6>
-                    <ul>
-                        {% for sp in object.service_people.all %}
-                        <li>{{sp}}</li>
-                        {% endfor %}
-                    </ul>
+                   
                 </div>
             </div>
         </div>
-        <div class="col-md-8 col-sm-12">
-            
-            <h4>Expenses</h4>
+    </div>
+    <div class='row'>
+        <div class="col-12">
+            <nav class="nav nav-tabs">
+                <a href="#progress" class="nav-link active" data-toggle="tab">Tasks</a>
+                <a href="#notes-tab" class="nav-link" data-toggle="tab">Notes</a>
+                <a href="#expenses" class="nav-link" data-toggle="tab">Expenses</a>
+                <a href="#work" class="nav-link" data-toggle="tab">Time Logs</a>
+            </nav>
+            <div class="tab-content panel-body">
+                <div class="tab-pane active" id="progress">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow">
+                                <div class="card-body">
+                                    <h4>Tasks</h4>
+                                    
+                                    <div id="task-list"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="notes-tab">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body" style="min-height:500px;">
+                                    <h4 class="card-title">Notes</h4>
+
+                                    <div id="notes-widget"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="expenses">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body" style="min-height:500px;">
+                                    <h4>Expenses</h4>
             
             <table class="table table-sm">
-                        <thead>
-                            <tr class="bg-primary">
-                                <th>Expense ID</th>
-                                <th>Category</th>
-                                <th>Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% if object.expenses.all.count == 0 %}
-                            <tr>
-                                <td colspan="3"><b>No data to display</b></td>
-                            </tr>
-                            {% else %}
-                            {% for exp in object.expenses %}
-                            <tr>
-                                <td><a class="btn btn-primary"
-                                        href="{% url 'accounting:expense-detail' pk=exp.expense.pk %}">{{exp.expense.pk}}</a>
-                                </td>
-                                <td>{{exp.expense.category_string}}</td>
-                                <td>{{exp.expense.amount}}</td>
-                            </tr>
-                            {% endfor %}
-                            {% endif %}
-                        </tbody>
-                    </table>
-            <hr class="my-4">
-            <h4>Time Logs</h4>
-            <table class="table table-sm">
-                        <thead>
-                            <tr class="bg-primary">
-                                <th>Employee</th>
-                                <th>Normal Time</th>
-                                <th>Overtime</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% if object.time_logs.all.count == 0 %}
-                            <tr>
-                                <td colspan="3"><b>No Data To Be Displayed</b></td>
-                            </tr>
-                            {% else %}
-                            {% for time in object.time_logs %}
-                            <tr>
-                                <td>{{time.employee}}</td>
-                                <td>{{time.normal_time}}</td>
-                                <td>{{time.overtime}}</td>
-                            </tr>
-                            {% endfor %}
-                            {% endif %}
-                        </tbody>
-                    </table>
+                <thead>
+                    <tr class="bg-primary">
+                        <th>Expense ID</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if object.expenses.all.count == 0 %}
+                    <tr>
+                        <td colspan="3"><b>No data to display</b></td>
+                    </tr>
+                    {% else %}
+                    {% for exp in object.expenses %}
+                    <tr>
+                        <td><a class="btn btn-primary"
+                                href="{% url 'accounting:expense-detail' pk=exp.expense.pk %}">{{exp.expense.pk}}</a>
+                        </td>
+                        <td>{{exp.expense.category_string}}</td>
+                        <td>{{exp.expense.amount}}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="work">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow">
+                                <div class="card-body">
+                                    {% csrf_token %}
+                                    <div id="service-time-logger">
+                                    </div>
+                                    <input type="hidden" name='service-time' id='id_service_time'>
+                                    <br>
+                                    <div>
+                                        <button onclick='addLog()' id='submit' class="btn-sm btn-primary">Submit</button>
+                                        <script>
+                                            function addLog(){
+                                                $.post('/services/work-order-log-time/{{object.pk}}/', {
+                                                    "service_time": $('#id_service_time').val(),
+                                                    "csrfmiddlewaretoken": $("input[name='csrfmiddlewaretoken']").val()
+                                                }, function(resp){
+                                                    if(resp.status != 'ok'){
+                                                        alert('Time log not successfully recorded.')
+                                                    }
+                                                })
+                                            }
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -174,7 +255,11 @@ Work Order Detail
         <h5>Authorization Form</h5>
         <form action="{% url 'services:work-order-authorize' pk=object.pk %}" method="POST">
             {% csrf_token %}
-            {{authorization_form}}
+            <table>
+                <tbody>
+                    {{authorization_form}}
+                </tbody>
+            </table>
             <button class="btn-sm btn-primary">Authorize</button>
         </form>
         <button class="btn btn-danger" onclick='toggleValidateForm()'>Cancel</button>
@@ -185,5 +270,6 @@ Work Order Detail
         $('.dom-modal').toggle();
     }
 </script>
+{% render_bundle "services" %}
 
 {% endblock %}
