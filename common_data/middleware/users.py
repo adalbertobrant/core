@@ -41,6 +41,10 @@ class UserTestMiddleware(object):
 
         ]
 
+        #check if the first user has been created
+        if User.objects.all().count() == 0:
+            return HttpResponseRedirect('/base/create-superuser/')
+
         # TODO add manufacturing
         if request.user.is_superuser or \
                 request.path.startswith("/login") or \

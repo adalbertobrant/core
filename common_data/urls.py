@@ -5,6 +5,8 @@ workflow = views.WorkFlowView.as_view()
 urlpatterns = [
     re_path(r'^workflow/?$', workflow, name="workflow"),
     re_path(r'^config-wizard', views.ConfigWizard.as_view(), name='config-wizard'),
+    re_path(r'^create-superuser/?$', views.CreateSuperUserView.as_view(), name='create-superuser'),
+    re_path(r'^license-check/?$', views.LicenseCheck.as_view(), name='license-check'),
     re_path(r'^react-test/?$', views.ReactTestView.as_view(), 
         name="react-test"),    
     re_path(r'^about/?$', views.AboutView.as_view(), name="about"),

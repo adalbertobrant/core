@@ -109,6 +109,32 @@ class UserTracker(object):
 TRACKER = UserTracker()
 HID = GlobalConfig.generate_hardware_id()
 
+def license_check():
+    license = None
+    try:
+        #installer requires license in top level directory
+        with open('license.json', 'r') as f:
+            license = json.load(f)
+    
+    except FileNotFoundError:
+        return 'license not found'
+
+    data_string = HID + json.dumps(license['license'])
+    byte_data = bytes(data_string, 'ascii')
+    hash = hashlib.sha3_512(byte_data).hexdigest()
+
+    if not hmac.compare_digest(hash, license['signature']):
+        return 'license signatures do not match'
+
+    if not license['license']['expiry_date'] == "*":
+        expiry = datetime.datetime.strptime(
+            license['license']['expiry_date'], '%d/%m/%Y')
+
+    if datetime.date.today() > expiry.date():
+        return f'The license expired on {expiry.date}'
+        
+    return 'ok'
+
 class LicenseMiddleware(object):
     def __init__(self, get_response):
         self.get_response = get_response
@@ -122,7 +148,7 @@ class LicenseMiddleware(object):
         """
 
         #condition is evaluated to ensure an infinite loop is avoided
-        if request.path.startswith('/base/license-error') or \
+        if request.path.startswith('/base/license-check') or \
                 'api' in request.path or \
                 request.path.startswith('/admin') or \
                 request.path.startswith('/base/reset-license-check'):
@@ -131,34 +157,11 @@ class LicenseMiddleware(object):
         try:
             TRACKER.track_user(request)
         except UserTrackerException:
-            return HttpResponseRedirect('/base/license-error/users')
+            return HttpResponseRedirect('/base/license-check')
         
-        
-
-        license = None
-        try:
-            #installer requires license in top level directory
-            with open('license.json', 'r') as f:
-                license = json.load(f)
-        
-        except FileNotFoundError:
-            logger.critical('The license file is not found')
-            return HttpResponseRedirect('/base/license-error-page')
-
-        data_string = HID + json.dumps(license['license'])
-        byte_data = bytes(data_string, 'ascii')
-        hash = hashlib.sha3_512(byte_data).hexdigest()
-
-        if not hmac.compare_digest(hash, license['signature']):
-            logger.critical('the license hash check has failed')
-            return HttpResponseRedirect('/base/license-error-page')
-        
-        if not license['license']['expiry_date'] == "*":
-            expiry = datetime.datetime.strptime(
-                license['license']['expiry_date'], '%d/%m/%Y')
-
-            if datetime.date.today() > expiry.date():
-                logger.critical(f'The license expired on {expiry.date}')
-                return HttpResponseRedirect('/base/license-error-page')
+        output = license_check()
+        if output != 'ok':
+            logger.critical(output)
+            return HttpResponseRedirect('/base/license-check')
 
         return self.get_response(request)

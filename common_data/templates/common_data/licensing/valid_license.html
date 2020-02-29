@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block window %}
+<style>
+.title {
+    padding: 12px 24px;
+}
+</style>
+<div class='title'>
+    <h1 class="display-3" style="color:#23374d;"><i class="fas fa-times"></i> Success!</h1>
+    <p class="lead">A valid licence has been found.</p>
+    <p class="lead">
+        <a class="btn btn-primary" href="/invoicing/" role="button">Continue</a>
+    </p>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 shadow">
+            <p>The application found a license with the following details.</p>
+            <table class='table table-sm'>
+                <tbody>
+                    <tr>
+                        <th>Customer</th>
+                        <td>{{license.customer}}</td>
+                    </tr>
+                    <tr>
+                        <th>License Valid until</th>
+                        <td>{{license.expiry_date}}</td>
+                    </tr>
+                    <tr>
+                        <th>Number of users</th>
+                        <td>{{license.number_users}}</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock window %}

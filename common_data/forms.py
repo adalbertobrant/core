@@ -191,6 +191,33 @@ class SendMailForm(BootstrapMixin, forms.Form):
     subject = forms.CharField()
     content = forms.CharField(widget=forms.Textarea)
 
+class CreateSuperuserForm(forms.Form):
+    username = forms.CharField()
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'username',
+            'email',
+            'password',
+            'confirm_password',
+        )
+            
+        self.helper.add_input(Submit('submit', 'Submit'))
+
+    def clean(self):
+        data = super().clean()
+        if len(data['password']) < 8:
+            raise forms.ValidationError('The password is too short')
+        if data['password'] != data['confirm_password']:
+            raise forms.ValidationError('The passwords supplied do not match')
+
+        return data
+
 class AuthenticateForm(BootstrapMixin, forms.Form):
     user = forms.ModelChoiceField(User.objects.all())
     password = forms.CharField(widget=forms.PasswordInput)

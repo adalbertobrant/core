@@ -40,6 +40,8 @@ from messaging.forms import EmailForm, PrePopulatedEmailForm
 import json 
 from employees.models import Employee
 from common_data.schedules import backup_db
+import hashlib
+from common_data.middleware.license import license_check
 
 try:
     backup_db(repeat=Task.DAILY)
@@ -57,7 +59,7 @@ def user_check():
         user=user
     )
     
-    
+
 
 class DocumentPaginationMixin():pass
 
@@ -421,6 +423,57 @@ class LicenseFeaturesErrorPage(TemplateView):
 
 class UsersErrorPage(TemplateView):
     template_name = os.path.join('common_data', 'users_error.html')
+
+class CreateSuperUserView(FormView):
+    form_class = forms.CreateSuperuserForm
+    template_name = os.path.join('common_data', 'user_create.html')
+    success_url = '/login'
+
+    def get(self, request, *args, **kwargs):
+        if User.objects.all().count() > 0:
+            return HttpResponseRedirect('/login/')
+
+        return super().get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        resp = super().form_valid(form)
+        User.objects.create_superuser(form.cleaned_data['username'],
+                                      form.cleaned_data['email'],
+                                      form.cleaned_data['password'],)
+        return resp
+
+class LicenseCheck(TemplateView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['dir'] = os.getcwd()
+        if os.path.exists('license.json'):
+            with open('license.json', 'r') as lic_f:
+                data = json.load(lic_f)
+                print(data)
+                context.update(data)
+        return context
+
+    def get(self, *args, **kwargs):
+        HID = models.GlobalConfig.generate_hardware_id()
+        with open('key.txt', 'w') as f:
+                f.write(HID)
+        if not os.path.exists('license.json'):
+            self.template_name = os.path.join('common_data', 'licensing', 'no_license.html')
+            # later implement a form where a person can send their hardware id
+        else:
+            output = license_check()
+            if output == 'ok':
+                self.template_name = os.path.join('common_data', 'licensing', 'valid_license.html')
+            else:
+                self.template_name = os.path.join('common_data', 'licensing', 'invalid_license.html')
+
+        return super().get(*args, **kwargs)
+    #check licence file
+        #if none generate hardware id
+        # give instructions on how to get a licence
+    #check license validity
+    #display license details
+
 
 NOTE_TARGET = {
     'work_order': services.models.ServiceWorkOrder
