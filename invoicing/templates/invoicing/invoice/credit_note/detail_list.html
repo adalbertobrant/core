@@ -47,7 +47,7 @@ Credit Notes
                                                 </button>
                                         <div class="dropdown-menu" aria-labelledby="triggerId">
                                             <a class="dropdown-item" href="{% url 'invoicing:credit-note-detail' pk=return.pk %}"><i class="fa fa-file-alt" aria-hidden="true"></i> View</a>
-                                            <a class="dropdown-item" href="{% url 'invoicing:credit-note-pdf' pk=return.pk %}"> <i class="fa fa-file-pdf" aria-hidden="true"></i> Generate PDF</a>  
+                                            {% comment %} <a class="dropdown-item" href="{% url 'invoicing:credit-note-pdf' pk=return.pk %}"> <i class="fa fa-file-pdf" aria-hidden="true"></i> Generate PDF</a>   {% endcomment %}
                                         </div>
                                     </div>
 

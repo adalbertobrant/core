@@ -9,7 +9,6 @@ from draftjs_exporter.dom import DOM
 from draftjs_exporter.html import HTML as exporterHTML
 import json
 import urllib
-from messaging.email_api.secrets import get_secret_key
 from cryptography.fernet import Fernet
 
 

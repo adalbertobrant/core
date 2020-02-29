@@ -6,7 +6,6 @@ from latrom.settings import MEDIA_ROOT
 from django.shortcuts import reverse 
 from django.contrib.auth.hashers import make_password
 import common_data
-from messaging.email_api.secrets import get_secret_key
 from cryptography.fernet import Fernet
 from django.core.files import File
 import imaplib

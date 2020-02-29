@@ -21,7 +21,6 @@ import urllib
 from messaging.email_api.email import EmailSMTP
 from draftjs_exporter.html import HTML as exporterHTML
 from cryptography.fernet import Fernet
-from messaging.email_api.secrets import get_secret_key
 import imaplib
 import smtplib
 from django.contrib import messages
