@@ -143,6 +143,7 @@ th.bordered, td.bordered {
 
 .eop {
     page-break-before: always;
+    break-before: always;
 }
 
 #page-layout {
@@ -184,4 +185,35 @@ th.bordered, td.bordered {
     padding: 30px;
     margin: 30px auto;
     background-color: white;
+}
+
+@media print{
+    #footer, section#title, #nav {
+        display: none;
+    }
+    .page-container {
+        box-shadow: none;
+        margin: 0;
+        padding: 0!important;
+        width: 90%;
+    }
+    #scroll-frame {
+        height: fit-content!important;
+        overflow: hidden;
+    }
+
+    .eop {
+        page-break-before: always;
+        break-before: always;
+    }
+    body {
+        font-family: sans-serif;
+    }
+    th {
+        text-align: left;
+    }
+    h6 {
+        font-size: 1rem;
+    }
+    
 }

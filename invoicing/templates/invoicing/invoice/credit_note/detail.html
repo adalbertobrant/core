@@ -9,6 +9,7 @@
 
         <div class="dropdown-menu" aria-labelledby="triggerId">
            <a href=" {% url 'invoicing:credit-note-pdf' pk=object.pk %} " class="dropdown-item"><i class="fas fa-file-pdf    "></i> Generate PDF</a>
+           <button onclick='window.print()' class="dropdown-item"><i class="fas fa-print    "></i> Print</button>
         </div>
     </div>
 </section>

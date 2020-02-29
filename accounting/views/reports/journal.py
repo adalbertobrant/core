@@ -44,7 +44,7 @@ class JournalReport(ConfigMixin,
                     TemplateView):
     template_name = os.path.join('accounting', 'reports', 
         'journal', 'report.html')
-    page_length=20
+    page_length=10
 
     def get_multipage_queryset(self):
         j_no = self.request.GET['journal']

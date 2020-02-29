@@ -6,6 +6,13 @@
 var url = "/accounting/pdf/general-ledger/{{start|urlencode}}/{{end|urlencode}}";
 var el = window.parent.document.getElementById('pdf-button');
 el.href = url;
+var actions = window.parent.document.getElementById('action-dropdown-items')
+var printBtn = window.parent.document.createElement('button')
+
+printBtn.onclick = function(){window.print()}
+printBtn.classList.add('dropdown-item')
+printBtn.innerHTML = '<i class="fas fa-print    "></i> Print'
+actions.appendChild(printBtn)
 </script>
 {% endblock %}
 

@@ -672,5 +672,16 @@
             "type": "expense",
             "balance_sheet_category": "not-included"
         }
+    },
+    {
+        "model": "accounting.account",
+        "pk": 2010,
+        "fields": {
+            "name": "Salaries and Wages Liability",
+            "balance": 0,
+            "description": "Tracks money owed to employees as salaries and wages",
+            "type": "liability",
+            "balance_sheet_category": "non-current-liabilities"
+        }
     }
 ]

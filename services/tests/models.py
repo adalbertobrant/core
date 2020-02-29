@@ -384,14 +384,8 @@ class WorkOrderModelTests(TestCase):
 
         self.employee.uses_timesheet = False
         self.employee.save()
-        
-    def test_work_order_progress_list(self):
-        self.assertEqual(self.wo.progress_list, [])
 
-    def test_work_order_progress_percentage(self):
-        self.assertEqual(self.wo.progress_percentage, 0)
-        
-
+  
     def test_work_order_normal_hours(self):
         self.assertEqual(self.wo.total_normal_time, datetime.timedelta(seconds=3600))
 

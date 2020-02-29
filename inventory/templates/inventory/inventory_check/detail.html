@@ -10,6 +10,7 @@
 
             <div class="dropdown-menu" aria-labelledby="triggerId">
                 <a href="{% url 'inventory:inventory-check-pdf' pk=object.pk %}" class="dropdown-item"> <i class="fas fa-file-pdf" aria-hidden="true"></i> Generate PDF</a>
+                <button onclick='window.print()' class="dropdown-item"><i class="fas fa-print    "></i> Print</button>
        </div>
     </div>
 </section>

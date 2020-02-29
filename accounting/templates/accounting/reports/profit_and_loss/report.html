@@ -11,6 +11,12 @@ node.href = "/accounting/csv/profit-and-loss/{{start|urlencode}}/{{end|urlencode
 node.classList.add('dropdown-item')
 node.innerHTML = '<i class="fas fa-file-csv    "></i>  Export as csv'
 actions.appendChild(node)
+var printBtn = window.parent.document.createElement('button')
+
+printBtn.onclick = function(){window.print()}
+printBtn.classList.add('dropdown-item')
+printBtn.innerHTML = '<i class="fas fa-print    "></i> Print'
+actions.appendChild(printBtn)
 </script>
 {% endblock  %}
 

@@ -1,27 +1,23 @@
-{% extends 'common_data/page/pdf_page.html' %}
-
+{% extends 'common_data/page/framed_pdf_page.html' %}
 {% block pre_page %}
-<div class="jumbotron">
-{% if pdf_link %}
-    <div class="btn-group">
-        <div class="dropdown">
-            <button class="btn btn-primary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
-                        Actions
-                    </button>
-            <div class="dropdown-menu" aria-labelledby="triggerId">
-                <a href="/accounting/csv/journal-report/{{journal.pk}}/{{start|urlencode}}/{{end|urlencode}}/" class="dropdown-item">Generate CSV</a>
-                 <a href="/accounting/pdf/journal-report/{{journal.pk}}/{{start|urlencode}}/{{end|urlencode}}/" class="dropdown-item"> <i class="fas fa-file-pdf"></i> Generate PDF</a>
-          </div>
-        </div>
-    </div>
-{% endif %}
+<script>
+var url = "/accounting/pdf/journal-report/{{account.pk}}/{{start|urlencode}}/{{end|urlencode}}/";
+var el = window.parent.document.getElementById('pdf-button');
+el.href = url;
+var actions =  window.parent.document.getElementById('action-dropdown-items')
+node = window.parent.document.createElement("a")
+node.href = "/accounting/csv/journal-report/{{account.pk}}/{{start|urlencode}}/{{end|urlencode}}/"
+node.classList.add('dropdown-item')
+node.innerHTML = '<i class="fas fa-file-csv    "></i>  Export as csv'
+actions.appendChild(node)
 
-</div>
-
-
-{% endblock pre_page %}
-
+var printBtn = window.parent.document.createElement('button')
+printBtn.onclick = function(){window.print()}
+printBtn.classList.add('dropdown-item')
+printBtn.innerHTML = '<i class="fas fa-print    "></i> Print'
+actions.appendChild(printBtn)
+</script>
+{% endblock %}
 {% block page_contents %}
 <style>
 h5, h3 {

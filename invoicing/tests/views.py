@@ -372,7 +372,8 @@ class SalesRepViewsTests(TestCase):
         cls.REP_DATA = {
             'employee': 1,
             'can_reverse_invoices': True,
-            'can_offer_discounts': True
+            'can_offer_discounts': True,
+            'number': 1
         }
 
     @classmethod

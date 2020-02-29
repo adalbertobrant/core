@@ -639,22 +639,7 @@ class WorkOrderViewTests(TestCase):
         resp = self.client.get('/services/work-order-list')
         self.assertEqual(resp.status_code, 200)
 
-    def test_get_work_order_complete_page(self):
-        resp = self.client.get('/services/work-order-complete/1')
-        self.assertEqual(resp.status_code, 200)
-
-    def test_post_work_order_complete_page(self):
-        resp = self.client.post('/services/work-order-complete/1', data={
-            "service_time": urllib.parse.quote(json.dumps([
-                {"employee": '1 -caleb',
-                "date": datetime.date.today().strftime("%Y-%m-%d"),
-                "normal_time": "05:00",
-                "overtime": "00:00"}
-            ])), 
-            "steps[]": ["1"] 
-            })
-
-        self.assertEqual(resp.status_code, 302)
+   
 
     def test_work_order_authorize(self):
         self.employee.user = self.user

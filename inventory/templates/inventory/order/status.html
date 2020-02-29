@@ -18,10 +18,7 @@ Order Status
                     <i class="fas fa-trash"></i> Delete
                 </a>
                 <div class="dropdown-divider"></div>
-                <a href="{% url 'inventory:order-pdf' pk=object.pk %}" class="dropdown-item">
-                        <i class="fas fa-file-pdf"></i> Generate PDF
-                        <!--Change this ! -->
-                    </a>
+                
                     {% comment %} <a href="{% url 'inventory:order-email' pk=object.pk %}" class="dropdown-item">
                             <i class="fas fa-at"></i> Send Email
                             <!--Change this ! -->
