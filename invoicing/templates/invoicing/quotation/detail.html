@@ -5,7 +5,7 @@
 
 <section id='title'>
     <div id='title-text'>Quotation</div>
-    <div id='action-icon dropdown'>
+    <div id='action-icon' class='dropdown'>
 
         <button class="btn btn-block primary " id="triggerId" data-toggle="dropdown" aria-haspopup="true"
             aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
@@ -17,7 +17,7 @@
                 <button class="dropdown-item">Validate</button>
             </form>            
                 {% endif %}
-                <a href="{% url 'invoicing:quotation-pdf' pk=object.pk %}" class="dropdown-item"> <i class="fas fa-file-pdf    "></i> Generate PDF</a>
+                {% comment %} <a href="{% url 'invoicing:quotation-pdf' pk=object.pk %}" class="dropdown-item"> <i class="fas fa-file-pdf    "></i> Generate PDF</a> {% endcomment %}
                 <button onclick='window.print()' class="dropdown-item"><i class="fas fa-print    "></i> Print</button>
                 
         </div>

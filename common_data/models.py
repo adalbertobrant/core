@@ -192,16 +192,7 @@ class GlobalConfig(SingletonModel):
         choices=LOGO_CHOICES)
     pos_supervisor_password = models.CharField(max_length=16, default='1234')
     
-    @staticmethod
-    def generate_hardware_id():
-        result = subprocess.run('wmic csproduct get uuid', 
-            stdout=subprocess.PIPE, shell=True)
-        _id = result.stdout.decode('utf-8')
-        _id = _id[_id.find('\n') + 1:]
-        id = _id[:_id.find(' ')]
-
-        return id    
-
+   
     @property
     def task_mapping(self):
         mapping = {
@@ -216,10 +207,7 @@ class GlobalConfig(SingletonModel):
         
         super().save(*args, **kwargs)
 
-        #setup hardware id
-        if self.hardware_id == "":
-            self.hardware_id = GlobalConfig.generate_hardware_id()
-            super().save(*args, **kwargs)
+       
 
 
         #serialize and store in json file so settings.py can access

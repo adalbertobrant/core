@@ -9,9 +9,12 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
-
+import environ
 import os
 import json
+
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(
@@ -21,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'yilhuf8!02%k(wqj%qmqxwk8xrv2vsvq026lp%n1b+sfyhk^=c'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
@@ -180,6 +183,6 @@ MAX_ATTEMPTS = 1
 
 EMAIL_HOST = 'in-v3.mailjet.com'
 EMAIL_HOST_USER = 'd840022d73db28a82b373af70ffaa330'
-EMAIL_HOST_PASSWORD = '9c134866d7a4f02e94e00bc1b16cb8fc'
+EMAIL_HOST_PASSWORD = env('EMAIL_KEY')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

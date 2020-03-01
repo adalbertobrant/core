@@ -4,7 +4,7 @@
 {% block pre_page %}
 <section id='title'>
     <div id='title-text'>Trial Balance</div>
-    <div id='action-icon dropdown'>
+    <div id='action-icon' class='dropdown'>
 
         <button class="btn btn-block primary " id="triggerId" data-toggle="dropdown" aria-haspopup="true"
             aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
@@ -12,8 +12,8 @@
         <div class="dropdown-menu" aria-labelledby="triggerId">
             <a href="{% url 'accounting:trial-balance-csv' %}" class="dropdown-item"><i
                     class="fas fa-file-excel"></i>Export as csv</a>
-            <a href="{% url 'accounting:trial-balance-pdf' %}" class="dropdown-item"><i
-                    class="fas fa-file-pdf"></i>Generate PDF</a>
+            {% comment %} <a href="{% url 'accounting:trial-balance-pdf' %}" class="dropdown-item"><i
+                    class="fas fa-file-pdf"></i>Generate PDF</a> {% endcomment %}
             <button onclick='window.print()' class="dropdown-item"><i class="fas fa-print    "></i> Print</button>
         </div>
     </div>

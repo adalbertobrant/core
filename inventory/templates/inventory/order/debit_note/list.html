@@ -45,7 +45,7 @@ Debit Notes
                                                 </button>
                                         <div class="dropdown-menu" aria-labelledby="triggerId">
                                             <a href="{% url 'inventory:debit-note-detail' pk=note.pk %}" class="dropdown-item"> <i class="fa fa-file" aria-hidden="true"></i> Detail </a>
-                                            <a href="{% url 'inventory:debit-note-pdf' pk=note.pk %}" class="dropdown-item"> <i class="fas fa-file-pdf    "></i> Generate PDF </a>
+                                            {% comment %} <a href="{% url 'inventory:debit-note-pdf' pk=note.pk %}" class="dropdown-item"> <i class="fas fa-file-pdf    "></i> Generate PDF </a> {% endcomment %}
                                         </div>
                                     </div>
                                 </td>

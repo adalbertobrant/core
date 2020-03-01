@@ -37,13 +37,13 @@ class UserTestMiddleware(object):
             '/employees/pay-slip-detail/',
             '/employees/pay-slip-pdf/',
             '/employees/time-logger/',
-            '/employees/time-logger-success/'
+            '/employees/time-logger-success/',
+            '/base/create-superuser/'
 
         ]
 
         #check if the first user has been created
-        if User.objects.all().count() == 0:
-            return HttpResponseRedirect('/base/create-superuser/')
+        
 
         # TODO add manufacturing
         if request.user.is_superuser or \
@@ -57,6 +57,9 @@ class UserTestMiddleware(object):
                 request.path in exempted_urls:
             return self.get_response(request)
         
+        elif User.objects.all().count() == 0:
+            return HttpResponseRedirect('/base/create-superuser/')
+
         elif hasattr(request.user, 'employee'):
             if request.path.startswith("/invoicing") and \
                     request.user.employee.is_sales_rep:
