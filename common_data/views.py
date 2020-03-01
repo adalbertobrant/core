@@ -445,18 +445,14 @@ class CreateSuperUserView(FormView):
 class LicenseCheck(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['dir'] = os.getcwd()
+        
         if os.path.exists('license.json'):
             with open('license.json', 'r') as lic_f:
                 data = json.load(lic_f)
-                print(data)
                 context.update(data)
         return context
 
     def get(self, *args, **kwargs):
-        HID = models.GlobalConfig.generate_hardware_id()
-        with open('key.txt', 'w') as f:
-                f.write(HID)
         if not os.path.exists('license.json'):
             self.template_name = os.path.join('common_data', 'licensing', 'no_license.html')
             # later implement a form where a person can send their hardware id
@@ -468,11 +464,6 @@ class LicenseCheck(TemplateView):
                 self.template_name = os.path.join('common_data', 'licensing', 'invalid_license.html')
 
         return super().get(*args, **kwargs)
-    #check licence file
-        #if none generate hardware id
-        # give instructions on how to get a licence
-    #check license validity
-    #display license details
 
 
 NOTE_TARGET = {
