@@ -16,7 +16,6 @@ build/build/
 build/dist/
 !build/app/server/
 global_config.json
-assets/webpack-stats.json
 license.json
 common_data/static/rest_framework/
 common_data/static/*.js
