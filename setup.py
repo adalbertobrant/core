@@ -40,6 +40,19 @@ subprocess.run('python manage.py makemigrations'.split(' '))
 subprocess.run('python manage.py migrate'.split(' '))
 subprocess.run('python manage.py collectstatic --no-input'.split(' '))
 
+subprocess.run(['python', 'manage.py', 'loaddata', 'accounts.json', 'journals.json', 'settings.json','common.json', 'employees.json', 'inventory.json', 'invoicing.json', 'planner.json'])
+
+print('the virtualenv is: ')
+subprocess.run('which python'.split(' '))
+print('''in wsgi.py set:
+    path= "<root>/core"
+    
+    in the web tab set:
+    1.  the working environment to core
+    2.  the virtualenv
+    3.  reload the application
+    ''')
+
 
 #manually configure .env file with the following code
 #SECRET_KEY=''
