@@ -180,7 +180,7 @@ class AgendaAPIView(ListAPIView):
             return None
 
         if user.employee:
-            filter = Q(Q(owner=user) | 
+            filter = Q(Q(owner=user.employee) | 
                 Q(eventparticipant__employee__in=[user.employee.pk]))
         else:
             filter = Q(owner=user)

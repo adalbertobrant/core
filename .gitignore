@@ -32,4 +32,4 @@ build_counter.json
 database/gui/
 *.dump
 service_config.json
-.env
+latrom.settings/.env

@@ -191,11 +191,28 @@ th.bordered, td.bordered {
     #footer, section#title, #nav {
         display: none;
     }
+
+    .simple-content {
+        width: 100%;
+    }
+
+    .eop {
+        page-break-before: always;
+    }
+
+    .bg-primary.text-white {
+        border-bottom: 2px solid black;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color:black!important
+    }
+
     .page-container {
         box-shadow: none;
         margin: 0;
         padding: 0!important;
         width: 90%;
+        height: fit-content!important;
     }
     #scroll-frame {
         height: fit-content!important;
