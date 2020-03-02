@@ -3,13 +3,13 @@ import subprocess
 import json
 import datetime
 
-#create .env first!
+#make virtual env first!
 with open('latrom/settings/.env', 'w') as f:
     secret_key = input('enter sercret key: ') 
     email_key = input('enter email key: ')
     email_user = input('enter email user: ')
-    f.write(f"SECRET_KEY='{secret_key}'")
-    f.write(f"EMAIL_KEY='{email_key}'")
+    f.write(f"SECRET_KEY='{secret_key}'\n")
+    f.write(f"EMAIL_KEY='{email_key}'\n")
     f.write(f"EMAIL_USER='{email_user}'")
 
 with open('database/config.json', 'w') as f:
