@@ -117,10 +117,9 @@ class JournalEntry(models.Model):
         null=True)
     posted_to_ledger = models.BooleanField(default=False)
     adjusted = models.BooleanField(default=False)
-    recorded_by = models.ForeignKey('employees.employee',default=1)
-    created_by = models.ForeignKey('auth.user', 
-        default=1, 
-        on_delete=models.SET_NULL, null=True)
+    recorded_by = models.ForeignKey('employees.employee',default=1, on_delete=models.SET_DEFAULT, 
+        limit_choices_to=Q(active=True))
+    
 
     def get_absolute_url(self):
         return reverse("accounting:entry-detail", kwargs={"pk": self.pk})

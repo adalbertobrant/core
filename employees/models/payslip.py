@@ -336,7 +336,7 @@ class Payslip(models.Model):
                 date=datetime.date.today(),
                 journal =accounting.models.Journal.objects.get(
                     pk=2),#Cash disbursements Journal
-                created_by = settings.payroll_officer.employee.user,
+                recorded_by = settings.payroll_officer.employee,
                 draft=False
         )
             

@@ -210,11 +210,15 @@ class TransactionByVendorReportView(ContextMixin, ConfigMixin, TemplateView):
             'transactions': sorted(list(Credit.objects.filter(
                 account=v.account, 
                 entry__date__gte=start,
-                entry__date__lte=end
+                entry__date__lte=end,
+                entry__draft=False
+
                 )
             ) + list(Debit.objects.filter(account=v.account, 
                 entry__date__gte=start,
-                entry__date__lte=end
+                entry__date__lte=end,
+                entry__draft=False
+
                     )
                 ),
             key=lambda x: x.entry.date),

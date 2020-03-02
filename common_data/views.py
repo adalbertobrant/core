@@ -47,18 +47,6 @@ try:
     backup_db(repeat=Task.DAILY)
 except: pass
 
-def user_check():
-    #this function ensures that the first user on the system is linked to an employee
-    if Employee.objects.all().count() > 0:
-        return
-    user  = User.objects.filter(is_superuser=True).first()
-    
-    Employee.objects.create(
-        first_name = user.username,
-        last_name=user.email,
-        user=user
-    )
-    
 
 
 class DocumentPaginationMixin():pass
@@ -480,7 +468,7 @@ def create_note(request):
     key'''
     
     note = models.Note.objects.create(
-        author = request.user,
+        author = request.employee,
         note = request.POST['note']
     )
 

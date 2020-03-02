@@ -73,7 +73,7 @@ class AccountingTaskService(AutomatedServiceMixin):
                         draft=False,
                         memo="Asset depreciation",
                         journal=models.Journal.objects.get(pk=5),
-                        created_by=created_by.employee.user
+                        created_by=created_by.employee
                     )
                 j.simple_entry(amount, asset.account, 
                     asset.depreciation_account)

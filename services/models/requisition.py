@@ -6,6 +6,7 @@ from django.db.models import Q
 from common_data.utilities import time_choices
 from django.shortcuts import reverse
 from decimal import Decimal as D
+from inventory.models import WareHouse, WareHouseItem
 
 
 class BaseRequisition(models.Model):
@@ -27,6 +28,10 @@ class BaseRequisition(models.Model):
     def __str__(self):
         return '%s: %s' % (self.date, self.reference)
 
+    def get_absolute_url(self):
+        return reverse("services:work-order-detail", kwargs={"pk": self.work_order.pk})
+    
+
 class EquipmentRequisition(BaseRequisition):
     requested_by = models.ForeignKey('employees.Employee', limit_choices_to=Q(active=True),
         on_delete=models.CASCADE, 
@@ -39,6 +44,17 @@ class EquipmentRequisition(BaseRequisition):
     received_by = models.ForeignKey('employees.Employee', 
         related_name='received_by', on_delete=models.CASCADE, null=True)
 
+
+    @property
+    def status(self):
+        if self.received_by:
+            return 'Returned'
+        elif self.released_by:
+            return 'Released'
+        elif self.authorized_by:
+            return 'Authorized'
+        else:
+            return 'Requested'
     
 class EquipmentRequisitionLine(models.Model):
     CONDITION_CHOICES = [
@@ -68,6 +84,32 @@ class ConsumablesRequisition(BaseRequisition):
         related_name='consumable_authorized_by', on_delete=models.SET_NULL,  null=True)#filter queryset
     released_by = models.ForeignKey('employees.Employee', 
         related_name='consumable_released_by',on_delete=models.SET_NULL, null=True)
+
+    @property
+    def status(self):
+        if self.released_by:
+            return 'Released'
+        elif self.authorized_by:
+            return 'Authorized'
+        else:
+            return 'Requested'
+
+    def release_inventory(self):
+        for line in self.consumablesrequisitionline_set.all():
+            wiqs = WareHouseItem.objects.filter(warehouse=self.warehouse, item=line.consumable)
+            if not wiqs.exists():
+                wi = WareHouseItem.objects.create(
+                    warehouse=self.warehouse,
+                    item=line.consumable,
+                    quantity=0,
+                )    
+            else:
+                wi = wiqs.first()
+                
+            wi.decrement(line.quantity)
+            
+
+    
 
 class ConsumablesRequisitionLine(models.Model):
     consumable = models.ForeignKey('inventory.InventoryItem', on_delete=models.SET_NULL, null=True)

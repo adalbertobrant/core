@@ -20,7 +20,7 @@ class SalesRepresentative(SoftDeletionModel):
         limit_choices_to=Q(Q(active=True), Q(user__isnull=False)),
         null=True,)
     number = models.AutoField(primary_key=True)
-    can_reverse_invoices = models.BooleanField(default=True)
+    can_validate_invoices = models.BooleanField(default=True)
     can_offer_discounts = models.BooleanField(default=True)
 
 

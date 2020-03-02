@@ -34,20 +34,16 @@ Authorize/Release Consumables Requisition
     <div class='dom-modal-content' id="validate-form">
         {% if not object.authorized_by %}
         <h5>Authorize</h5>
-            <form action="{% url 'services:consumable-requisition-authorize' pk=object.pk %}"
-                                method="POST">
-                                {% csrf_token %}
-                                {{authorize_form.as_p}}
-                                <button class="btn">Submit</button>
-                            </form>
+        <p>Authorizing Requisition as <b>{{request.user.employee}}</b>.</p>
+        <a href="/login">Use someone else</a><br>
+        <a class='btn btn-primary' href="{% url 'inventory:consumable-requisition-authorize' pk=object.pk %}" method="POST"> Submit</a>
+            
         {% else %}
         <h5>Release</h5>
-        <form action="{% url 'services:consumable-requisition-release' pk=object.pk %}"
-                                method="POST">
-                                {% csrf_token %}
-                                {{authorize_form.as_p}}
-                                <button class="btn btn-primary">Submit</button>
-                            </form>
+        <p>Releasing Requisition as <b>{{request.user.employee}}</b>.</p>
+        <a href="/login">Use someone else</a><br>
+        <a class='btn btn-primary' href="{% url 'inventory:consumable-requisition-release' pk=object.pk %}" method="POST"> Submit</a>
+        
         {% endif %}
         
         <button class="btn btn-danger" onclick='toggleValidateForm()'>Cancel</button>

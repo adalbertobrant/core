@@ -45,8 +45,8 @@ class AbstractExpense(models.Model):
     amount = models.DecimalField(max_digits=16, decimal_places=2)
     debit_account = models.ForeignKey('accounting.Account', 
         on_delete=models.SET_NULL, null=True, limit_choices_to=Q(type="asset"))
-    recorded_by = models.ForeignKey('auth.user', default=1, 
-        on_delete=models.SET_NULL, null=True)
+    recorded_by = models.ForeignKey('employees.employee', default=1, 
+        on_delete=models.SET_DEFAULT, limit_choices_to=Q(active=True))
     attachment = models.ImageField(null=True, blank=True, upload_to='expenses')
     reference = models.CharField(max_length=32, blank=True, default="")
     entry= models.ForeignKey('accounting.journalentry', 
@@ -117,7 +117,7 @@ class Expense(AbstractExpense):
             date = self.date,
             memo =  "Expense recorded. Category: %s." % self.category,
             journal = accounting.models.books.Journal.objects.get(pk=2),# cash disbursements
-            created_by=self.recorded_by,
+            recorded_by=self.recorded_by,
             draft= False
         )
         #credit cash and debit expense account
@@ -236,7 +236,7 @@ class Bill(models.Model):
             date = self.date,
             memo =  "Bill for %s" % self.vendor,
             journal = accounting.models.books.Journal.objects.get(pk=2),# cash disbursements
-            created_by=settings.default_bookkeeper.employee.user,
+            recorded_by=settings.default_bookkeeper.employee,
             draft= False
         )
         #credit vendor and debit expense account
@@ -278,7 +278,7 @@ class BillPayment(models.Model):
             date = self.date,
             memo =  "Bill payment for  Bill #%s" % self.bill.pk,
             journal = accounting.models.books.Journal.objects.get(pk=2),# cash disbursements
-            created_by=settings.default_bookkeeper.employee.user,
+            recorded_by=settings.default_bookkeeper.employee,
             draft= False
         )
 

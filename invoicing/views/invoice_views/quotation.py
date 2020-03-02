@@ -23,7 +23,6 @@ from invoicing.models import *
 from invoicing.views.invoice_views.util import InvoiceCreateMixin
 from common_data.views import CREATE_TEMPLATE
 from inventory.forms import ShippingAndHandlingForm
-from common_data.forms import AuthenticateForm
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 
@@ -96,7 +95,6 @@ class QuotaionDetailView(ContextMixin,
     page_length = 16
     extra_context = {
         'pdf_link': True,
-        'validate_form': AuthenticateForm()
     }
     
     def get_multipage_queryset(self):

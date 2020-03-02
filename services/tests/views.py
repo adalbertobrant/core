@@ -358,15 +358,15 @@ class RequisitionViewTests(TestCase):
         self.assertEqual(resp.status_code, 302)
 
     def test_get_equipment_requsition_list(self):
-        resp = self.client.get('/services/equipment-requisition-list')
+        resp = self.client.get('/inventory/equipment-requisition-list')
         self.assertEqual(resp.status_code, 200)
 
     def test_get_equipment_requisition_detail(self):
-        resp = self.client.get('/services/equipment-requisition-auth-view/1')
+        resp = self.client.get('/inventory/equipment-requisition-auth-view/1')
         self.assertEqual(resp.status_code, 200)
 
     def test_equipment_requisition_release(self):
-        resp = self.client.post('/services/equipment-requisition-release/1',
+        resp = self.client.post('/inventory/equipment-requisition-release/1',
             data={
                 'user': self.employee.user.pk,
                 'password': '123'
@@ -376,7 +376,7 @@ class RequisitionViewTests(TestCase):
             self.employee)
 
     def test_equipment_requisition_authorize(self):
-        resp = self.client.post('/services/equipment-requisition-authorize/1',
+        resp = self.client.post('/inventory/equipment-requisition-authorize/1',
             data={
                 'user': self.employee.user.pk,
                 'password': '123'
@@ -406,15 +406,15 @@ class RequisitionViewTests(TestCase):
         self.assertEqual(resp.status_code, 302)
 
     def test_get_consumable_requsition_list(self):
-        resp = self.client.get('/services/consumable-requisition-list')
+        resp = self.client.get('/inventory/consumable-requisition-list')
         self.assertEqual(resp.status_code, 200)
 
     def test_get_consumable_requisition_detail(self):
-        resp = self.client.get('/services/consumable-requisition-detail/1')
+        resp = self.client.get('/inventory/consumable-requisition-detail/1')
         self.assertEqual(resp.status_code, 200)
 
     def test_consumable_requisition_release(self):
-        resp = self.client.post('/services/consumable-requisition-release/1',
+        resp = self.client.post('/inventory/consumable-requisition-release/1',
             data={
                 'user': self.employee.user.pk,
                 'password': '123'
@@ -424,11 +424,11 @@ class RequisitionViewTests(TestCase):
             self.employee)
 
     def test_get_consumable_requisition_get_auth(self):
-        resp = self.client.get('/services/consumable-requisition-auth-view/1')
+        resp = self.client.get('/inventory/consumable-requisition-auth-view/1')
         self.assertEqual(resp.status_code, 200)
 
     def test_consumable_requisition_authorize(self):
-        resp = self.client.post('/services/consumable-requisition-authorize/1',
+        resp = self.client.post('/inventory/consumable-requisition-authorize/1',
             data={
                 'user': self.employee.user.pk,
                 'password': '123'
@@ -437,21 +437,20 @@ class RequisitionViewTests(TestCase):
         self.assertEqual(ConsumablesRequisition.objects.first().authorized_by, self.employee) 
 
     def test_get_equipment_return_page(self):
-        resp = self.client.get('/services/equipment-return/1')
+        resp = self.client.get('/inventory/equipment-return/1')
         self.assertEqual(resp.status_code, 200)
 
     def test_post_equipment_return_page(self):
-        resp = self.client.post('/services/equipment-return/1', data={
+        resp = self.client.post('/inventory/equipment-return/1', data={
             "received_by": self.employee.pk,
             "requisition": 1,
-            "password": "123",
             "return_date": TODAY,
             "work_order": 1
         })
         self.assertEqual(resp.status_code, 302)
 
     def test_get_equipment_detail_page(self):
-        resp = self.client.get('/services/equipment-requisition-detail/1')
+        resp = self.client.get('/inventory/equipment-requisition-detail/1')
         self.assertEqual(resp.status_code, 200)
 
 

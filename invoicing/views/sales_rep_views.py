@@ -23,7 +23,7 @@ from invoicing.models import SalesRepresentative
 
 class SalesRepCreateView( ContextMixin, CreateView):
     extra_context = {"title": "Add New Sales Rep."}
-    template_name = os.path.join("common_data", "create_template.html")
+    template_name = os.path.join("common_data", "crispy_create_template.html")
     model = SalesRepresentative
     success_url = reverse_lazy("invoicing:home")
     form_class = forms.SalesRepForm
@@ -31,7 +31,7 @@ class SalesRepCreateView( ContextMixin, CreateView):
 
 class SalesRepUpdateView(ContextMixin, UpdateView):
     extra_context = {"title": "Update Existing Sales Rep."}
-    template_name = os.path.join("common_data", "create_template.html")
+    template_name = os.path.join("common_data", "crispy_create_template.html")
     model = SalesRepresentative
     form_class = forms.SalesRepForm
     success_url = reverse_lazy("invoicing:home")

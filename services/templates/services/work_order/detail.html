@@ -148,6 +148,8 @@ Work Order Detail
                 <a href="#notes-tab" class="nav-link" data-toggle="tab">Notes</a>
                 <a href="#expenses" class="nav-link" data-toggle="tab">Expenses</a>
                 <a href="#work" class="nav-link" data-toggle="tab">Time Logs</a>
+                <a href="#equipment" class="nav-link" data-toggle="tab">Equipment</a>
+                <a href="#consumables" class="nav-link" data-toggle="tab">Consumables</a>
             </nav>
             <div class="tab-content panel-body">
                 <div class="tab-pane active" id="progress">
@@ -158,6 +160,74 @@ Work Order Detail
                                     <h4>Tasks</h4>
                                     
                                     <div id="task-list"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="equipment">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow">
+                                <div class="card-body">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Requisition ID</th>
+                                                <th>Item</th>
+                                                <th>Quantity</th>
+                                                <th>Requested By</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for req in object.equipmentrequisition_set.all %}
+                                                {% for line in req.equipmentrequisitionline_set.all %}
+                                                    <tr>
+                                                        <td>{{req.pk|stringformat:"06d"}}</td>
+                                                        <td>{{line.equipment}}</td>
+                                                        <td>{{line.quantity}}</td>
+                                                        <td>{{req.requested_by}}</td>
+                                                        <td>{{req.status}}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="consumables">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow">
+                                <div class="card-body">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Requisition ID</th>
+                                                <th>Item</th>
+                                                <th>Quantity</th>
+                                                <th>Requested By</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for req in object.consumablesrequisition_set.all %}
+                                                {% for line in req.consumablesrequisitionline_set.all %}
+                                                    <tr>
+                                                        <td>{{req.pk|stringformat:"06d"}}</td>
+                                                        <td>{{line.consumable}}</td>
+                                                        <td>{{line.quantity}}</td>
+                                                        <td>{{req.requested_by}}</td>
+                                                        <td>{{req.status}}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>

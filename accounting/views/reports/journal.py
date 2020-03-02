@@ -52,6 +52,7 @@ class JournalReport(ConfigMixin,
         start, end = extract_period(self.request.GET)
         return models.JournalEntry.objects.filter(
             journal=journal,
+            draft=False,
             date__gte=start,
             date__lte=end)
         

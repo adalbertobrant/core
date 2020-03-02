@@ -70,7 +70,7 @@ class CreditNote(models.Model):
             date=self.date,
             journal=Journal.objects.get(pk=3),
             draft=False,
-            created_by = self.invoice.salesperson.employee.user
+            recorded_by = self.invoice.salesperson.employee
         )
 
             

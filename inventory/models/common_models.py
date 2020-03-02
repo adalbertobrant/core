@@ -78,6 +78,7 @@ class InventoryController(SoftDeletionModel):
         ))
     can_authorize_equipment_requisitions = models.BooleanField(default=False)
     can_authorize_consumables_requisitions = models.BooleanField(default=False)
+    can_validate_orders = models.BooleanField(default=False)
     def __str__(self):
         return self.employee.full_name
 

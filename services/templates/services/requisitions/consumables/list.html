@@ -18,10 +18,10 @@
                 Actions
             </button>
             <div class="dropdown-menu" aria-labelledby="triggerId">
-                <a class="dropdown-item" href="{% url 'services:consumable-requisition-auth-view' pk=req.pk %}">
+                <a class="dropdown-item" href="{% url 'inventory:consumable-requisition-auth-view' pk=req.pk %}">
                         <i class="fas fa-file-signature"></i> Authorize/Release
                     </a>
-                <a class="dropdown-item" href="{% url 'services:consumable-requisition-detail' pk=req.pk %}">
+                <a class="dropdown-item" href="{% url 'inventory:consumable-requisition-detail' pk=req.pk %}">
                         <i class="fas fa-file-alt"></i> Detail
                     </a>
             </div>

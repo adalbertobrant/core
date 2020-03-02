@@ -17,7 +17,6 @@ from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import (CreateView, DeleteView, FormView,
                                        UpdateView)
 from django_filters.views import FilterView
-from common_data.forms import AuthenticateForm
 
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.viewsets import ModelViewSet
@@ -172,7 +171,6 @@ class OrderDetailView( ContextMixin,
     template_name = os.path.join('inventory', 'order', 'detail.html')
     extra_context = {
         'title': 'Purchase Order',
-        'form': AuthenticateForm()
     }
     page_length=20
     
@@ -370,10 +368,12 @@ class DebitNotePDFView(ConfigMixin, MultiPageDocument, PDFDetailView):
 
 def verify_order(request, pk=None):
     order = get_object_or_404(models.Order, pk=pk)
-    form = AuthenticateForm(request.POST)
-    if form.is_valid():
+    valid = request.user.is_superuser or \
+        (request.user.employee.is_inventory_controller and \
+            request.user.employee.inventorycontroller.can_validate_orders)
+    if valid:
         order.status = 'order'
-        order.validated_by = form.cleaned_data['user']
+        order.validated_by = request.user.employee
         order.save()
 
 

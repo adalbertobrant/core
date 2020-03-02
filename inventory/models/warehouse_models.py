@@ -142,7 +142,7 @@ class WareHouseItem(models.Model):
 
     @property
     def quantity_color(self):
-        if self.quantity == 0:
+        if self.quantity <= 0:
             return 'red'
 
         

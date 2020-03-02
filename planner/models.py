@@ -71,7 +71,7 @@ class Event(models.Model):
     repeat_active = models.BooleanField(default=False, blank=True)
     label = models.CharField(max_length=32, blank=True) 
     icon = models.CharField(max_length=32, blank=True, choices=ICON_CHOICES)
-    owner = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True)
+    owner = models.ForeignKey('employees.employee', on_delete=models.SET_NULL, null=True)
     reminder_notification = models.ForeignKey('messaging.notification', 
         blank=True, null=True, on_delete=models.SET_NULL)
 

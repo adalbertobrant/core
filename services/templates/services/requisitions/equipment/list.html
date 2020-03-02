@@ -20,16 +20,16 @@
                 Actions
             </button>
             <div class="dropdown-menu" aria-labelledby="triggerId">
-                <a class="dropdown-item" href="{% url 'services:equipment-requisition-auth-view' pk=req.pk %}">
+                <a class="dropdown-item" href="{% url 'inventory:equipment-requisition-auth-view' pk=req.pk %}">
                         <i class="fas fa-file-alt"></i> Authorize/Release
                     </a>
 
-                <a class="dropdown-item" href="{% url 'services:equipment-requisition-detail' pk=req.pk %}">
+                <a class="dropdown-item" href="{% url 'inventory:equipment-requisition-detail' pk=req.pk %}">
                         <i class="fas fa-file-alt"></i> Details
                     </a>
 
-                <a class="dropdown-item" href="{% url 'services:equipment-return' pk=req.pk %}">
-                        <i class="fas fa-reply"></i> Accept Returns
+                <a class="dropdown-item" href="{% url 'inventory:equipment-return' pk=req.pk %}">
+                        <i class="fas fa-reply"></i> Process Returns
                     </a>
             </div>
         </div>

@@ -38,7 +38,8 @@ class Asset(models.Model):
     init_date = models.DateField()
     depreciation_method = models.IntegerField(default=0, choices=DEPRECIATION_METHOD)
     salvage_value = models.DecimalField(max_digits=16, decimal_places=2)
-    initialized_by = models.ForeignKey('employees.employee', default=1, on_delete=models.SET_NULL, null=True)
+    initialized_by = models.ForeignKey('employees.employee', default=1, on_delete=models.SET_NULL, null=True, 
+        limit_choices_to=Q(active=True))
 
     def get_absolute_url(self):
         return reverse("accounting:asset-detail", kwargs={"pk": self.pk})

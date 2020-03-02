@@ -26,7 +26,7 @@
                 </a>
                 {% if object.status == 'draft' %}
                 <button onclick="toggleValidateForm()" class="dropdown-item">
-                    <i class="fas fa-file-alt"></i> Verify Order
+                    <i class="fas fa-check"></i> Verify Order
                 </button>
                 {% endif %}
                 <div class="dropdown-divider"></div>
@@ -94,13 +94,12 @@
 
 <div class="dom-modal">
     <div class='dom-modal-content' id="validate-form">
-        <form action="{% url 'inventory:verify-order' pk=object.pk %}" method="POST">
-        <h5>Validate Document</h5>
-        {% csrf_token %}
-        {{form.as_p}}
-        <button class="btn btn-primary">Submit</button>
-        </form>
+    <h5>Validate Document</h5>
+        <p>Validating Order as <b>{{request.user.employee}}</b>.</p>
+        <a href="/login">Use someone else</a><br>
+        <a class='btn btn-primary' href="{% url 'inventory:verify-order' pk=object.pk %}" method="POST"> Submit</a>
         <button class="btn btn-danger" onclick='toggleValidateForm()'>Cancel</button>
+        
     </div>
 </div>
 

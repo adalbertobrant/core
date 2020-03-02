@@ -337,19 +337,17 @@ class ServiceProcedureForm(forms.ModelForm, BootstrapMixin):
 
 class EquipmentReturnForm(BootstrapMixin, forms.Form):
     received_by = forms.ModelChoiceField(Employee.objects.filter(inventorycontroller__isnull=False))
-    password = forms.CharField(widget=forms.PasswordInput)
     return_date = forms.DateField()
     requisition = forms.ModelChoiceField(models.EquipmentRequisition.objects.all(), widget=forms.HiddenInput)
 
     def clean(self):
         cleaned_data = super().clean()
-        usr = authenticate(
-            username=cleaned_data['received_by'].user.username,
-            password=cleaned_data['password'])
+        receiver = cleaned_data['received_by']
+        if not receiver.user.is_superuser and \
+            not receiver.inventorycontroller.can_authorize_equipment_requisitions:
 
-        if not usr:
             raise forms.ValidationError(
-                'The Inventory Controller password is incorrect.')
+                f'{receiver} cannot receive the requested items')
             
         requisition = cleaned_data['requisition']
         requisition.received_by = cleaned_data['received_by']

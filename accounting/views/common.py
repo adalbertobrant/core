@@ -325,7 +325,7 @@ class DirectPaymentFormView( ContextMixin, FormView):
                 memo=notes_string + form.cleaned_data['notes'],
                 date=form.cleaned_data['date'],
                 journal = journal,
-                created_by=request.user
+                recorded_by=request.user.employee
             )
             j.simple_entry(
                 form.cleaned_data['amount'],
@@ -634,7 +634,7 @@ class BillCreateView(ContextMixin, CreateView):
             #invert keys
             category = {i[1]: i[0] \
                 for i in models.EXPENSE_CHOICES}.get(cat_string)
-
+            default_bookkeeper = models.AccountingSettings.objects.first().default_bookkeeper
             models.BillLine.objects.create(
                 bill=self.object,
                 expense=models.Expense.objects.create(
@@ -642,7 +642,8 @@ class BillCreateView(ContextMixin, CreateView):
                     date=self.object.date,
                     description=line['description'],
                     amount=line['amount'],
-                    category=category
+                    category=category,
+                    recorded_by=default_bookkeeper.employee
                 )
             )
         self.object.create_entry()

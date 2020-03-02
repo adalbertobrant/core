@@ -79,12 +79,10 @@
 
 <div class="dom-modal">
     <div class='dom-modal-content' id="validate-form">
-        <form action="{% url 'invoicing:invoice-verify' pk=object.pk %}" method="POST">
         <h5>Validate Document</h5>
-        {% csrf_token %}
-        {{validate_form.as_p}}
-        <button class="btn btn-primary">Submit</button>
-        </form>
+        <p>Validating Invoice as <b>{{request.user.employee}}</b>.</p>
+        <a href="/login">Use someone else</a><br>
+        <a class='btn btn-primary' href="{% url 'invoicing:invoice-verify' pk=object.pk %}" method="POST"> Submit</a>
         <button class="btn btn-danger" onclick='toggleValidateForm()'>Cancel</button>
     </div>
 </div>

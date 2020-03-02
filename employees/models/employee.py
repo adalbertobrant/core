@@ -174,7 +174,7 @@ class Employee(ContactsMixin, Person, SoftDeletionModel):
         #check participants as well
         filter = None
         if self.user:
-            filter = Q(Q(owner=self.user) | Q(eventparticipant__employee=self))
+            filter = Q(Q(owner=self) | Q(eventparticipant__employee=self))
         else:
             filter = Q(eventparticipant__employee=self)
         return planner.models.Event.objects.filter(
@@ -187,7 +187,7 @@ class Employee(ContactsMixin, Person, SoftDeletionModel):
         #check participants as well
         filter = None
         if self.user:
-            filter = Q(Q(owner=self.user) | Q(eventparticipant__employee=self))
+            filter = Q(Q(owner=self) | Q(eventparticipant__employee=self))
         else:
             filter = Q(eventparticipant__employee=self)
         return planner.models.Event.objects.filter(

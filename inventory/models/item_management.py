@@ -35,7 +35,7 @@ class OrderPayment(models.Model):
                     if comments == "" else comments,
                 date=self.date,
                 journal =Journal.objects.get(pk=4),
-                created_by = self.order.issuing_inventory_controller.employee.user,
+                recorded_by = self.order.issuing_inventory_controller.employee,
                 draft=False
             )
         

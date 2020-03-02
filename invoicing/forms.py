@@ -162,13 +162,18 @@ class CustomerForm(BootstrapMixin, forms.Form):
 
 class SalesRepForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        fields = 'employee',
+        fields = 'employee', 'can_validate_invoices'
         model = models.SalesRepresentative
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper = FormHelper()
+        self.helper.layout = Layout(
+            HTML('<p>Only employees associated with users can be Sales Reps</p>'),
+            'employee',
+            'can_validate_invoices'
+        )
         self.helper.add_input(Submit('submit', 'Submit'))
 
 class InvoiceCreateMixin(forms.Form):

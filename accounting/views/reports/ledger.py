@@ -50,10 +50,10 @@ class GeneralLedger(ConfigMixin,
             #total expenses
         })
         credits = models.Credit.objects.filter(entry__date__gte=start,
-            entry__date__lte=end)
+            entry__date__lte=end,entry__draft=False)
 
         debits = models.Debit.objects.filter(entry__date__gte=start,
-            entry__date__lte=end)
+            entry__date__lte=end,entry__draft=False)
         data = {}
 
         def iterate_transactions(transactions, data):
@@ -73,7 +73,7 @@ class GeneralLedger(ConfigMixin,
 
         iterate_transactions(credits, data)
         iterate_transactions(debits, data)
-        context['accounts'] = data.values()
+        context['accounts'] = sorted(data.values(), key=lambda x: x['name'])
         net_movement = {'debit': False, 'amount': D(0)}
         for account in context['accounts']:
             account['net_movement'] = {

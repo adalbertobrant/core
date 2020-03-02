@@ -14,7 +14,7 @@ class EventReminderMiddleware(object):
             return self.get_response(request)
 
         events = Event.objects.filter(
-            Q(owner=request.user) & 
+            Q(owner=request.user.employee) & 
             Q(date__gte=datetime.date.today()) &
             Q(completed=False) &
             Q(reminder_notification__isnull=True))

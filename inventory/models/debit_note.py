@@ -59,7 +59,7 @@ class DebitNote(models.Model):
             date=self.date,
             journal=Journal.objects.get(pk=3),
             draft=False,
-            created_by = self.order.issuing_inventory_controller.employee.user
+            recorded_by = self.order.issuing_inventory_controller.employee
         )
         
         j.debit(self.returned_total, self.order.supplier.account)

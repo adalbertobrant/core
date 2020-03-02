@@ -49,7 +49,7 @@ class Order(SoftDeletionModel):
         ('draft', 'Internal Draft'),
         ('order', 'Order')
     ]
-    validated_by = models.ForeignKey('auth.user', 
+    validated_by = models.ForeignKey('employees.Employee', 
                                     on_delete=models.SET_NULL, 
                                     null=True, 
                                     blank=True)
@@ -200,7 +200,7 @@ class Order(SoftDeletionModel):
                     date=self.date,
                     memo = self.notes,
                     journal = Journal.objects.get(pk=4),
-                    created_by = self.issuing_inventory_controller.employee.user,
+                    recorded_by = self.issuing_inventory_controller.employee,
                     draft=False
                 )
 

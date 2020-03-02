@@ -77,7 +77,7 @@ class Invoice(SoftDeletionModel):
     quotation_number = models.PositiveIntegerField(null=True)
     quotation_date = models.DateField(blank=True, null=True)
     quotation_valid= models.DateField(blank=True, null=True)
-    invoice_validated_by = models.ForeignKey('auth.user', 
+    invoice_validated_by = models.ForeignKey('employees.employee', 
         blank=True, 
         null=True, 
         on_delete=models.SET_NULL)
@@ -303,7 +303,7 @@ class Invoice(SoftDeletionModel):
                 memo= f'Journal entry for invoice #{self.invoice_number}.',
                 date=self.date,
                 journal =Journal.objects.get(pk=3),#Sales Journal
-                created_by = self.salesperson.employee.user,
+                recorded_by = self.salesperson.employee,
                 draft=False
             )
 

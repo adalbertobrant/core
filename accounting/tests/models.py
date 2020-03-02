@@ -276,6 +276,7 @@ class JournalEntryModelTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         create_account_models(cls)
+        create_test_employees_models(cls)
         cls.usr = User.objects.create(username = "test_user")
         
 
@@ -284,7 +285,7 @@ class JournalEntryModelTests(TestCase):
             memo='record of test entry',
             date=TODAY,
             journal =self.journal,
-            created_by = self.usr
+            recorded_by = self.employee
         )
 
         self.assertIsInstance(obj, JournalEntry)

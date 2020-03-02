@@ -19,7 +19,7 @@ class ServiceProcedure(models.Model):
     as_checklist = models.BooleanField(default=False, blank=True)
     name = models.CharField(max_length=255)
     reference = models.CharField(max_length=255)
-    author = models.ForeignKey('auth.user', null=True,  
+    author = models.ForeignKey('employees.employee', null=True,  
         on_delete=models.SET_NULL)
     description = models.TextField(blank=True)
     required_equipment = models.ManyToManyField('inventory.InventoryItem',

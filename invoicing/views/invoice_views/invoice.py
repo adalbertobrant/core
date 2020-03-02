@@ -23,7 +23,6 @@ from invoicing.models import *
 from invoicing.views.invoice_views.util import InvoiceCreateMixin
 from common_data.views import CREATE_TEMPLATE
 from inventory.forms import ShippingAndHandlingForm
-from common_data.forms import AuthenticateForm
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 import csv
@@ -72,7 +71,6 @@ class InvoiceDetailView(ContextMixin, ConfigMixin, MultiPageDocument, DetailView
     first_page_length=21
     extra_context = {
         'pdf_link': True,
-        'validate_form': AuthenticateForm()
     }
     
     def get_multipage_queryset(self):
@@ -246,16 +244,22 @@ def verify_invoice(request, pk=None):
         inv.save()
         return HttpResponseRedirect('/invoicing/quotation-detail/{}'.format(pk))
 
-    form = AuthenticateForm(request.POST)
+    #validate against superuser or service person privileges
+
     
-    if form.is_valid():
+    valid = request.user.is_superuser or \
+        (request.user.employee.is_sales_rep and \
+            request.user.employee.salesrepresentative.can_validate_invoices)
+    
+
+    if valid:
         inv.draft = False
         inv.save()
 
         if inv.status == "invoice":
             inv.create_entry()
             inv.update_inventory()
-            inv.invoice_validated_by = form.cleaned_data['user']
+            inv.invoice_validated_by = request.user.employee
             inv.save()
 
     return HttpResponseRedirect('/invoicing/invoice-detail/{}'.format(pk))

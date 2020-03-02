@@ -46,7 +46,7 @@ class AssetForm(forms.ModelForm, BootstrapMixin):
                 Tab('basic',
                     Row(
                         Column('name', css_class='form-group col-md-6 col-sm-12'),
-                        Column('created_by', css_class='form-group col-md-6 col-sm-12'),
+                        Column('initialized_by', css_class='form-group col-md-6 col-sm-12'),
                     ),
                     Row(
                         Column('initial_value', css_class='form-group col-md-6 col-sm-12'),
@@ -270,7 +270,7 @@ class ComplexEntryForm(forms.ModelForm, BootstrapMixin):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-                Column('date','journal', 'created_by',
+                Column('date','journal', 'recorded_by',
                     css_class='form group col-md-6 col-sm-12'),
                 Column('draft','memo', css_class='form group col-md-6 col-sm-12'),
             ),

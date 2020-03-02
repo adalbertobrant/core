@@ -260,7 +260,7 @@ class StockReceiptCreateView(CreateView):
             date = self.object.receive_date,
             memo = f"Order {self.object.order.pk} received ",
             journal = Journal.objects.get(pk=4),
-            created_by = self.object.order.issuing_inventory_controller.employee.user,
+            recorded_by = self.object.order.issuing_inventory_controller.employee,
             draft=False
         )
 

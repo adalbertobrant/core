@@ -74,7 +74,7 @@ class Interaction(models.Model):
         null=True)
     timestamp = models.DateTimeField(auto_now=True)
     description = models.TextField(blank=True)
-    notes = models.ManyToManyField('invoicing.Note')
+    notes = models.ManyToManyField('common_data.Note')
     contact = models.ForeignKey('common_data.Individual', 
         on_delete=models.SET_NULL, null=True)
     sales_representative = models.ForeignKey('invoicing.SalesRepresentative', 
@@ -117,14 +117,7 @@ class Task(models.Model):
     
     
 
-class Note(models.Model):
-    timestamp = models.DateTimeField(auto_now=True)
-    author = models.ForeignKey('employees.Employee', 
-        on_delete=models.SET_NULL, null=True)
-    text = models.TextField()
 
-    def __str__(self):
-        return str(self.author)
 
 
 class SalesTeam(models.Model):

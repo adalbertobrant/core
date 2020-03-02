@@ -55,10 +55,12 @@ class AccountReport(ConfigMixin,
         start, end = extract_period(self.request.GET)
         debits = models.Debit.objects.filter(account=account, 
                                         entry__date__gte=start, 
-                                        entry__date__lte=end)
+                                        entry__date__lte=end,
+                                        entry__draft=False)
         credits = models.Credit.objects.filter(account=account, 
                                         entry__date__gte=start, 
-                                        entry__date__lte=end)
+                                        entry__date__lte=end,
+                                        entry__draft=False)
         transactions = chain(debits, credits)
         return sorted(
             transactions, key=lambda transaction: transaction.entry.date)

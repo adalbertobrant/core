@@ -738,6 +738,7 @@ class InventoryControllerForm(forms.ModelForm, BootstrapMixin):
             'employee',
             'can_authorize_equipment_requisitions',
             'can_authorize_consumables_requisitions',
+            'can_validate_orders'
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 

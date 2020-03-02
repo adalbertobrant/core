@@ -69,11 +69,13 @@ class CustomerStatement(ConfigMixin,
         credits = Credit.objects.filter(
             Q(entry__date__gte=start) & 
             Q(entry__date__lte=end) &
+            Q(entry__draft=False) & 
             Q(account=customer.account)
         ).order_by('pk')
         debits = Debit.objects.filter(
             Q(entry__date__gte=start) & 
             Q(entry__date__lte=end) &
+            Q(entry__draft=False) & 
             Q(account=customer.account)
         ).order_by('pk')
 

@@ -70,7 +70,7 @@ class Individual(ContactsMixin, Person, SoftDeletionModel):
 
 class Note(models.Model):
     timestamp = models.DateTimeField(auto_now=True)
-    author = models.ForeignKey('auth.User', on_delete=models.SET_NULL, 
+    author = models.ForeignKey('employees.employee', on_delete=models.SET_NULL, 
         null=True)
     note = models.TextField()
     

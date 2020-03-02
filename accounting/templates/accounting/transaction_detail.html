@@ -9,9 +9,9 @@ Journal Entry
             <div class="card shadow">
                 <div class="card-body">
                     <p><b>Status:</b> {% if object.draft %} Draft <a class="btn btn-success" href="{% url 'accounting:verify-entry' pk=object.pk %}">Verify</a> {% else %} Verified {% endif %}</p>
-                    <p><b>Entry ID:</b> {{object.pk}}</p>
+                    <p><b>Entry ID:</b> {{object.pk|stringformat:"06d"}}</p>
                     <p><b>Date Recorded:</b> {{object.date}}</p>
-                    <p><b>Recorded By:</b> {{object.created_by}}</p>
+                    <p><b>Recorded By:</b> {{object.recorded_by}}</p>
                     <p><b>Entry Reference:</b> {{object.reference}}</p>
                     <hr />
                     <p><b>Memo:</b> {{object.memo}}</p>

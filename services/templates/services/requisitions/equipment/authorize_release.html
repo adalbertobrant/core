@@ -34,21 +34,16 @@ Authorize/Release Equipment Requisition
     <div class='dom-modal-content' id="validate-form">
         {% if not object.authorized_by %}
         <h5>Authorize</h5>
-            <form action="{% url 'services:equipment-requisition-authorize' pk=object.pk %}"
-                                method="POST">
-                                {% csrf_token %}
-                                {{authorize_form.as_p}}
-                                <button class="btn">Submit</button>
-                            </form>
+        <p>Authorizing Requisition as <b>{{request.user.employee}}</b>.</p>
+        <a href="/login">Use someone else</a><br>
+        <a class='btn btn-primary' href="{% url 'inventory:equipment-requisition-authorize' pk=object.pk %}" method="POST"> Submit</a>
+            
         {% else %}
         <h5>Release</h5>
-        <form action="{% url 'services:equipment-requisition-release' pk=object.pk %}"
-                                method="POST">
-                                {% csrf_token %}
-                                {{authorize_form.as_p}}
-                                <button class="btn btn-primary">Submit</button>
-                            </form>
-        {% endif %}
+        <p>Releasing Requisition as <b>{{request.user.employee}}</b>.</p>
+        <a href="/login">Use someone else</a><br>
+        <a class='btn btn-primary' href="{% url 'inventory:equipment-requisition-release' pk=object.pk %}" method="POST"> Submit</a>
+         {% endif %}
         
         <button class="btn btn-danger" onclick='toggleValidateForm()'>Cancel</button>
     </div>
@@ -75,46 +70,6 @@ Authorize/Release Equipment Requisition
                     </ul>
                 </div>
             </div>
-            {% comment %} <div class="card text-left">
-                <div class="card-body">
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#authorize">Authorize</a></li>
-                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#release">Release</a></li>
-                    </ul>
-                    <div class="tab-content panel-body">
-                        <div id="authorize" class="tab-pane active">
-                            {% if object.authorized_by is None %}
-                            <form action="{% url 'services:equipment-requisition-authorize' pk=object.pk %}"
-                                method="POST">
-                                {% csrf_token %}
-                                {{authorize_form.as_p}}
-                                <button type='submit' class="btn">Submit</button>
-                            </form>
-                            {% elif object.authorized_by is not None %}
-                            <h5>
-                                The Requisition has been authorized by {{object.authorized_by}}
-                            </h5>
-                            
-                            {% endif %}
-                        </div>
-                        <div class="tab-pane" id="release">
-                            {% if object.released_by is None %}
-                            <form action="{% url 'services:equipment-requisition-release' pk=object.pk %}"
-                                method="POST">
-                                {% csrf_token %}
-                                {{release_form.as_p}}
-                                <button type='submit' class="btn btn-primary">Submit</button>
-                            </form>
-                            {% elif object.released_by is not None %}
-                            <h5>
-                                The Requisition has been released by {{object.released_by}}
-                            </h5>
-                            
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div> {% endcomment %}
         </div>
         <div class="col-sm-8">
 
