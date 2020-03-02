@@ -203,13 +203,22 @@ class GlobalConfig(SingletonModel):
         }
         return mapping[self.backup_frequency]
 
+    @staticmethod
+    def generate_hardware_id():
+        result = subprocess.run('wmic csproduct get uuid', 
+            stdout=subprocess.PIPE, shell=True)
+        _id = result.stdout.decode('utf-8')
+        _id = _id[_id.find('\n') + 1:]
+        id = _id[:_id.find(' ')]
+
+        return id    
+
+    
     def save(self, *args, **kwargs):
         
         super().save(*args, **kwargs)
 
-       
-
-
+    
         #serialize and store in json file so settings.py can access
         json_config = os.path.join(settings.BASE_DIR, 'global_config.json')
         with open(json_config, 'w+') as fil:

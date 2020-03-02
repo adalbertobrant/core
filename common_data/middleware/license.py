@@ -107,6 +107,7 @@ class UserTracker(object):
 
 #the tracker is reset every time the server is restarted
 TRACKER = UserTracker()
+HID = GlobalConfig.generate_hardware_id()
 
 def license_check():
     license = None
@@ -117,6 +118,13 @@ def license_check():
     
     except FileNotFoundError:
         return 'license not found'
+
+    data_string = HID + json.dumps(license['license'])
+    byte_data = bytes(data_string, 'ascii')
+    hash = hashlib.sha3_512(byte_data).hexdigest()
+
+    if not hmac.compare_digest(hash, license['signature']):
+        return 'license signatures do not match'
 
     if not license['license']['expiry_date'] == "*":
         expiry = datetime.datetime.strptime(
