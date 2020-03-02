@@ -30,10 +30,10 @@
                 </button>
                 {% endif %}
                 <div class="dropdown-divider"></div>
-                {% comment %} <a href="{% url 'inventory:order-pdf' pk=object.pk %}" class="dropdown-item">
+                 <a href="{% url 'inventory:order-pdf' pk=object.pk %}" class="dropdown-item">
                     <i class="fas fa-file-pdf"></i> Generate PDF
                     <!--Change this ! -->
-                </a> {% endcomment %}
+                </a> 
                 <button onclick='window.print()' class="dropdown-item"><i class="fas fa-print    "></i> Print</button>
                 {% comment %} <a href="{% url 'inventory:order-email' pk=object.pk %}" class="dropdown-item">
                     <i class="fas fa-at"></i> Send Email

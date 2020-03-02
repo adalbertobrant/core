@@ -10,9 +10,9 @@
             aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
 
         <div class="dropdown-menu" aria-labelledby="triggerId">
-            {% comment %} <a href="{% url 'invoicing:invoice-aging-pdf' %}" class="dropdown-item"><i class="fas fa-file-pdf"></i>
+            <a href="{% url 'invoicing:invoice-aging-pdf' %}" class="dropdown-item"><i class="fas fa-file-pdf"></i>
                 Generate PDF
-            </a> {% endcomment %}
+            </a> 
             <button onclick='window.print()' class="dropdown-item"><i class="fas fa-print    "></i> Print</button>
         </div>
     </div>
