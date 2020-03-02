@@ -38,7 +38,7 @@ class Asset(models.Model):
     init_date = models.DateField()
     depreciation_method = models.IntegerField(default=0, choices=DEPRECIATION_METHOD)
     salvage_value = models.DecimalField(max_digits=16, decimal_places=2)
-    created_by = models.ForeignKey('auth.user', default=1, on_delete=models.SET_NULL, null=True)
+    initialized_by = models.ForeignKey('employees.employee', default=1, on_delete=models.SET_NULL, null=True)
 
     def get_absolute_url(self):
         return reverse("accounting:asset-detail", kwargs={"pk": self.pk})
@@ -52,7 +52,7 @@ class Asset(models.Model):
             memo =  "Asset added. Name: %s. Description: %s " % (
                 self.name, self.description
             ),
-            created_by = self.created_by,# not ideal general journal
+            recorded_by = self.initialized_by,# not ideal general journal
             journal = accounting.models.books.Journal.objects.get(pk=5),
             draft=False
         )

@@ -187,8 +187,6 @@ class DirectPaymentForm(BootstrapMixin, forms.Form):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('basic',
                     'date',
                     Row(
                         Column('paid_to', css_class='form-group col-md-6 col-sm-12'),
@@ -200,10 +198,8 @@ class DirectPaymentForm(BootstrapMixin, forms.Form):
                         ),
                         'reference',
                         'notes'
-                ),
-            )
-            
-        )
+                )
+        
         self.helper.add_input(Submit('submit', 'Submit'))
 
 class TaxForm(forms.ModelForm, BootstrapMixin):

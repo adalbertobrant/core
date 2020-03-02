@@ -161,7 +161,7 @@ class WorkOrderRequestListView(ContextMixin, PaginationMixin, FilterView):
     }
 
 class WorkOrderRequestCreateView(ContextMixin, CreateView):
-    template_name = os.path.join('common_data', 'create_template.html')
+    template_name = os.path.join('common_data', 'crispy_create_template.html')
     model = models.WorkOrderRequest
     form_class = forms.WorkOrderRequestForm
     extra_context = {

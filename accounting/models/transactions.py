@@ -117,6 +117,7 @@ class JournalEntry(models.Model):
         null=True)
     posted_to_ledger = models.BooleanField(default=False)
     adjusted = models.BooleanField(default=False)
+    recorded_by = models.ForeignKey('employees.employee',default=1)
     created_by = models.ForeignKey('auth.user', 
         default=1, 
         on_delete=models.SET_NULL, null=True)

@@ -38,7 +38,7 @@ Department Detail
                             <div class="card-text">
                                 <ul>
                                     {% for i in object.employees.all %}
-                                    <li>{{i}}</li>
+                                    <li><a href="{% url 'employees:employee-detail' pk=i.pk %}">{{i}}</a></li>
                                     {% endfor %}
                                 </ul>
 

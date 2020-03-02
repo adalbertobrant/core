@@ -506,7 +506,12 @@ def get_model_latest(request, model_name=None):
     alias_mapping = {
         'salesperson': 'salesrepresentative',
         'ship_from': 'warehouse',
-        'ship_to': 'warehouse'
+        'account_paid_from': 'account',
+        'ship_to': 'warehouse',
+        'paid_to': 'supplier',
+        'vendor': 'supplier',
+        'parent_account':'account',
+        'procedure': 'serviceprocedure'
 
     }
 
@@ -529,14 +534,21 @@ def get_model_latest(request, model_name=None):
 def get_create_link(request, name=None):
     mapping = {
         'organization': '/base/organization/create',
+        'parent_account': '/accounting/create-account',
+        'account_paid_from': '/accounting/create-account',
         'ship_from': '/inventory/warehouse-create/',
         'ship_to': '/inventory/warehouse-create/',
+        'warehouse': '/inventory/warehouse-create/',
         'customer': '/invoicing/create-customer/',
         'salesperson': '/invoicing/create-sales-rep',
         'supplier': '/inventory/supplier/create',
+        'paid_to': '/inventory/supplier/create',
+        'vendor': '/inventory/supplier/create',
         'salesteam': '/invoicing/create-sales-team',
         'leadsource': '/invoicing/create-lead-source',
         'journal': '/accounting/create-journal',
+        'procedure': '/services/create-procedure',
+        'service': '/services/create-service'
     }
 
     return JsonResponse({'link': mapping.get(name, '')})

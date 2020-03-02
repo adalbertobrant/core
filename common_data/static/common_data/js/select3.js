@@ -36,13 +36,26 @@ function createNew(btn){
 
 
 $(document).ready(function(){
+    if(inIframe()){
+        return
+    }
     
     $('select').each(function(i, el){
         //exclude certain inputs
+
+        if(['category', 'department'].indexOf($(el).attr('name')) >= 0){
+            return
+        }
+
         //exclude filters
         if($(el).closest('div.filter-overlay').length > 0){
             return
         }
+        //exclude report forms
+        if($(el).closest('form.report-form').length > 0){
+            return
+        }
+
         //exclude taxes
         if(el.id.indexOf('tax') > -1){
             return

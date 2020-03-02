@@ -838,3 +838,7 @@ span.less {
 .guide.line {
     stroke: #ccc!important;
 }
+
+.input-group select {
+    margin-top: 0px!important
+}
