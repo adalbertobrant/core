@@ -130,7 +130,7 @@ class ComplexEntryView( ContextMixin, CreateView):
         
         
         for line in data:
-            account = models.Account.objects.get(pk=line['account'].split('-')[0])
+            account = models.Account.objects.get(pk=int(line['account'].split('-')[0]))
             amount = decimal.Decimal(line['amount'])
             if line['debit'] == 'Debit':
                 self.object.debit(amount, account)

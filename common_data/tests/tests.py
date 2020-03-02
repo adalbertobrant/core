@@ -15,6 +15,7 @@ import responses
 import requests
 import services
 from services.tests.model_util import ServiceModelCreator
+from employees.models import Employee
 
 class ModelTests(TestCase):
     @classmethod 
@@ -57,7 +58,8 @@ class ModelTests(TestCase):
     def test_create_note(self):
         obj = Note.objects.create(
             note='Note',
-            author=self.user
+            author=Employee.objects.create(
+                first_name='caleb', last_name='last')
         )
         self.assertIsInstance(obj, Note)
 
@@ -102,6 +104,11 @@ class ViewTests(TestCase):
     def setUpTestData(cls):
         create_test_user(cls)    
         create_test_common_entities(cls)
+        cls.employee = Employee.objects.create(
+            user=cls.user,
+            first_name='frank',
+            last_name='sinatra'
+        )
 
     def setUp(self):
         self.client.login(username='Testuser', password='123')
@@ -250,8 +257,7 @@ class ViewTests(TestCase):
 
     def test_get_model_latest(self):
         resp = self.client.get(reverse('base:get-latest-model', kwargs={
-            'model_name': 'organization',
-            'app': 'common_data'
+            'model_name': 'organization'
         }))
         self.assertEqual(resp.status_code, 200)
         org = Organization.objects.latest('pk')

@@ -466,9 +466,12 @@ def create_note(request):
     applied. Thus each note request must have an author, a message and 
     identification for the target namely its classname and the objects primary 
     key'''
-    
+    if not hasattr(request.user, 'employee'):
+        messages.info(request, 'Only users linked to employees can write notes')
+        return JsonResponse({'status': 'error'})
+        
     note = models.Note.objects.create(
-        author = request.employee,
+        author = request.user.employee,
         note = request.POST['note']
     )
 

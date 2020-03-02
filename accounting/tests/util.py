@@ -40,7 +40,7 @@ class AccountingServiceTest(TestCase):
             description='desc',
             category=0,
             amount=10,
-            recorded_by=usr,
+            recorded_by=self.employee,
             reference="",
             debit_account=Account.objects.first()
         )
@@ -50,7 +50,7 @@ class AccountingServiceTest(TestCase):
             description='desc',
             category=0,
             amount=10,
-            recorded_by=usr,
+            recorded_by=self.employee,
             last_created_date=datetime.date.today() - \
                 datetime.timedelta(days=2),
             debit_account=Account.objects.first(),

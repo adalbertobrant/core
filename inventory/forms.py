@@ -829,7 +829,7 @@ class ShippingAndHandlingForm(BootstrapMixin, forms.Form):
     amount = forms.CharField(widget=forms.NumberInput)
     date = forms.DateField()
     description = forms.CharField(widget=forms.Textarea, required=False)
-    recorded_by = forms.ModelChoiceField(User.objects.all())
+    recorded_by = forms.ModelChoiceField(Employee.objects.filter(active=True))
     reference = forms.CharField(widget=forms.HiddenInput)
 
 

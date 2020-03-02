@@ -142,7 +142,7 @@ class Expense(AbstractExpense):
             date=self.date,
             memo=f"Reversing transaction for expense with id {self.pk}",
             journal=accounting.models.books.Journal.objects.get(pk=2),# cash disbursements
-            created_by=self.recorded_by,
+            recorded_by=self.recorded_by,
             draft= False
         )
 

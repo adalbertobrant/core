@@ -20,15 +20,17 @@ def get_filters(start, end, field="date"):
 def get_events(user, filters):
     if hasattr(user, 'employee'):
         events = Event.objects.filter(filters & Q(
-                Q(owner=user) | Q(eventparticipant__employee__in=[user.employee.pk])))
+                Q(owner=user.employee) | Q(eventparticipant__employee__in=[user.employee.pk])))
     else:
-        events = Event.objects.filter(filters & Q(owner=user))
+        events = Event.objects.filter(filters & Q(owner=user.employee))
 
     return events.distinct()
 
 def get_month_events(request, year=None, month=None):
     year = int(year)
     month=int(month) + 1
+    if not hasattr(request.user, 'employee'):
+        return JsonResponse([], safe=False)
     user = request.user
     first = datetime.date(year,month, 1)
     last = datetime.date(year, month, calendar.monthrange(year, month)[1])
@@ -46,6 +48,8 @@ def get_week_events(request, year=None, month=None, day=None):
     month= int(month) + 1
     day=int(day)
 
+    if not hasattr(request.user, 'employee'):
+        return JsonResponse([], safe=False)
 
     current_date = datetime.date(year, month, day)
     curr_weekday = current_date.weekday()
@@ -56,7 +60,6 @@ def get_week_events(request, year=None, month=None, day=None):
     user = request.user
 
     events = get_events(user, filters)
-    print(events)
 
         
     return JsonResponse([{
@@ -72,13 +75,16 @@ def get_day_events(request, year=None, month=None, day=None):
     month= int(month) + 1
     day=int(day)
 
+    if not hasattr(request.user, 'employee'):
+        return JsonResponse([], safe=False)
+
     current_date = datetime.date(year, month, day)
     user = request.user
     if hasattr(user, 'employee'):
         events = Event.objects.filter(Q(date=current_date) & Q(
-                Q(owner=user) | Q(eventparticipant__employee__in=[user.employee.pk])))
+                Q(owner=user.employee) | Q(eventparticipant__employee__in=[user.employee.pk])))
     else:
-        events = Event.objects.filter(Q(date=current_date) & Q(owner=user))
+        events = Event.objects.filter(Q(date=current_date) & Q(owner=user.employee))
         
     return JsonResponse([{
         'date': evt.date,

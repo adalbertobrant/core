@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from employees.models import Employee
 
 from common_data.forms import BootstrapMixin
 
@@ -15,7 +16,7 @@ class ConfigForm(forms.ModelForm, BootstrapMixin):
 
 class EventForm(forms.ModelForm, BootstrapMixin):
     owner = forms.ModelChoiceField(
-        User.objects.all(), 
+        Employee.objects.filter(active=True), 
         widget=forms.HiddenInput
         )
     json_participants = forms.CharField(

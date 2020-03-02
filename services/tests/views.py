@@ -4,6 +4,7 @@ from django.test.client import RequestFactory
 import inventory
 from employees.tests.models import create_test_employees_models
 from employees.models import Employee
+from inventory.models import InventoryController
 from services.models import *
 import urllib
 import json
@@ -286,6 +287,11 @@ class RequisitionViewTests(TestCase):
         create_test_common_entities(cls)
         create_test_employees_models(cls)
         inventory.tests.models.create_test_inventory_models(cls)
+        cls.controller.can_authorize_equipment_requisitions = True
+        cls.controller.can_authorize_consumables_requisitions = True
+        cls.controller.can_validate_orders = True
+        cls.controller.save()
+            
         cls.category = ServiceCategory.objects.create(
             name="category",
             description="the description"
@@ -331,11 +337,11 @@ class RequisitionViewTests(TestCase):
             reference="ref",
             requested_by=cls.employee
         )
-        cls.employee.user=User.objects.create_user(username="user2", password="123")
+        cls.employee.user=User.objects.create_superuser(username="user2", email='mail@test.com', password="123")
         cls.employee.save()
 
     def setUp(self):
-        self.client.login(username="Testuser", password="123")
+        self.client.login(username="user2", password="123")
 
     def test_get_equipment_requisition_page(self):
         resp = self.client.get('/services/equipment-requisition-create')
@@ -722,6 +728,7 @@ class ConfigWizardTests(TestCase):
             try:
                 resp = self.client.post(reverse('services:config-wizard'), 
                     data=data)
+                
 
                 if step == len(data_list):
                     self.assertEqual(resp.status_code, 302)

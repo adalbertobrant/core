@@ -74,7 +74,7 @@ def create_account_models(cls):
         memo='record of test entry',
             date=TODAY,
             journal =cls.journal,
-            created_by=cls.user,
+            recorded_by=cls.employee,
             draft=False
     )
     cls.entry.simple_entry(

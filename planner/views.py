@@ -84,9 +84,16 @@ class EventCreateView(LoginRequiredMixin, EventParticipantMixin, CreateView):
     template_name = os.path.join('planner', 'events','create.html')
     form_class = forms.EventForm
 
+    def get(self, request, *args, **kwargs):
+        if not hasattr(request.user, 'employee'):
+            messages.info(request, 'Only users linked to employees can create events in the calendar.')
+            return HttpResponseRedirect('/planner/')
+
+        return super().get(request, *args, **kwargs)
+
     def get_initial(self):
         return {
-            'owner': self.request.user 
+            'owner': self.request.user.employee 
         }
 
 class EventUpdateView(LoginRequiredMixin, EventParticipantMixin, UpdateView):
@@ -96,7 +103,9 @@ class EventUpdateView(LoginRequiredMixin, EventParticipantMixin, UpdateView):
 
     def get(self, *args, **kwargs):
         resp = super().get(*args, **kwargs)
-        if self.request.user != self.object.owner:
+            
+        if not hasattr(self.request.user, 'employee') or \
+                self.request.user.employee != self.object.owner:
             messages.info(self.request, f'{self.request.user} is not the owner of this event and does not have permission to change it.')
             return HttpResponseRedirect(reverse_lazy('planner:event-detail',
                 kwargs={

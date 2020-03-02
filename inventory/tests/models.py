@@ -551,7 +551,7 @@ class ItemManagementModelTests(TestCase):
         prev_quantity = self.warehouse_item.quantity
         self.scrap.scrap()
         self.assertEqual(models.WareHouseItem.objects.get(pk=self.warehouse_item.pk).quantity, 
-            prev_quantity - 1)
+            prev_quantity-2)
         self.warehouse_item.increment(1)
 
 

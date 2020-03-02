@@ -8,9 +8,9 @@ class EventReminderMiddleware(object):
         self.get_response = get_response
 
     def __call__(self, request):
-        #skip api calls
-
-        if 'api' in request.path or request.user.is_anonymous:
+        #skip api calls 
+        if 'api' in request.path or request.user.is_anonymous or \
+            not hasattr(request.user, 'employee'):
             return self.get_response(request)
 
         events = Event.objects.filter(

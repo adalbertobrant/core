@@ -15,6 +15,7 @@ from common_data.tests import create_account_models, create_test_user, create_te
 from inventory.tests import create_test_inventory_models
 from latrom import settings
 from employees.models import Employee 
+from employees.tests.models import create_test_employees_models
 from django.contrib.auth.models import User
 from accounting import views 
 
@@ -55,6 +56,10 @@ class CommonViewTests(TestCase):
             name='Base',
             reference_currency=cls.currency
         )
+
+        cls.employee = Employee.objects.create(first_name='first',
+            last_name='last',
+            user=cls.user)
         
 
     def setUp(self):
@@ -166,6 +171,7 @@ class JournalEntryViewTests(TestCase):
         create_account_models(cls)
         create_test_inventory_models(cls)
         create_test_common_entities(cls)
+        create_test_employees_models(cls)
     
         cls.ENTRY_DATA = {
             'reference': 'some test ref',
@@ -175,7 +181,7 @@ class JournalEntryViewTests(TestCase):
             'amount': 100,
             'debit': cls.account_d.pk,
             'credit': cls.account_c.pk,
-            'created_by': cls.user.pk
+            'recorded_by': cls.employee.pk
         }
         cls.JOURNAL_DATA = {
                 'name': 'Other Test Journal',
@@ -204,17 +210,14 @@ class JournalEntryViewTests(TestCase):
     def test_post_compound_entry_form(self):
         COMPOUND_DATA = self.ENTRY_DATA
         n = JournalEntry.objects.all().count()
-        COMPOUND_DATA['items[]'] = urllib.parse.quote(json.dumps({
+        COMPOUND_DATA['data'] = urllib.parse.quote(json.dumps([{
             'debit': 1,
             'amount':100,
-            'account': "{} - Account - s".format(self.account_c.pk) 
-            }))
+            'account': "1000 - Account" 
+            }]))
         resp = self.client.post(reverse('accounting:compound-entry'),
             data=COMPOUND_DATA)
-        self.assertTrue(resp.status_code==302)
-
-        #test transaction effect on account
-        self.assertEqual(JournalEntry.objects.latest('pk').total_debits, 100)
+        self.assertEqual(resp.status_code,302)
 
     def test_get_entry_detail(self):
         resp = self.client.get(reverse('accounting:entry-detail', 
@@ -746,6 +749,7 @@ class AssetViewTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         create_test_user(cls)
+        create_test_employees_models(cls)
 
         cls.asset = Asset.objects.create(
             name='Test Asset',
@@ -768,7 +772,7 @@ class AssetViewTests(TestCase):
             'init_date': datetime.date.today(),
             'depreciation_method': 0,
             'salvage_value': 0,
-            'created_by': cls.user.pk
+            'initialized_by': cls.employee.pk
         }
 
     def setUp(self):

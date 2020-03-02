@@ -25,17 +25,21 @@ class PlannerAPIViewTests(TestCase):
     def setUpTestData(cls):
         cls.usr = User.objects.create_superuser('User', 'abc@xyz.com', '123')
         create_test_common_entities(cls)
+        create_test_employees_models(cls)
+
         cls.evt = Event.objects.create(
             date=TODAY,
             reminder=datetime.timedelta(hours=1),
             start_time=datetime.datetime.now().time(),
             end_time=datetime.datetime.now().time(),
-            owner=cls.usr
+            owner=cls.employee
         )
         
         cls.month = TODAY.month
         cls.day = TODAY.day
         cls.year, cls.week, cls.weekday = TODAY.isocalendar()
+        cls.employee.user = cls.usr
+        cls.employee.save()
 
     def setUp(self):
         self.client.login(username='User', password='123')
@@ -78,7 +82,7 @@ class PlannerViewTests(TestCase):
             date=TODAY,
             reminder=datetime.timedelta(hours=1),
             start_time=datetime.datetime.now().time(),
-            owner=cls.usr
+            owner=cls.employee
         )
 
         cls.organization = Organization.objects.create(

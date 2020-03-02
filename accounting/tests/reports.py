@@ -48,6 +48,7 @@ class ReportTests(TestCase):
         create_test_employees_models(cls)
         #common
         cls.usr = User.objects.create_user(username="tstusr")
+        create_test_employees_models(cls)
 
         InventoryModelCreator(cls).create_all()
         InvoicingModelCreator(cls).create_all()
@@ -56,7 +57,7 @@ class ReportTests(TestCase):
 
         cls.asset = Asset.objects.create(
             name='Test Asset',
-            created_by=cls.usr,
+            initialized_by=cls.employee,
             description='Test description',
             category = 0,
             initial_value = 100,
@@ -164,7 +165,7 @@ class ReportTests(TestCase):
             amount=100,
             description='description',
             debit_account=Account.objects.get(pk=1000),
-            recorded_by=self.employee.user,
+            recorded_by=self.employee,
             date=TODAY
         )
 
@@ -184,7 +185,7 @@ class ReportTests(TestCase):
             date=TODAY, 
             memo='memo', 
             journal=Journal.objects.get(pk=2),#disbursements
-            created_by=self.employee.user,
+            recorded_by=self.employee,
             draft=False
         )
         # the unit cost changes but the journal entry for the cost 

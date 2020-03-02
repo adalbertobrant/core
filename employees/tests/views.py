@@ -939,46 +939,51 @@ class EmployeeWizardTests(TestCase):
         self.client.login(username='Testuser', password='123')
 
     def test_employees_wizard(self):
-        date_data = {
-            'config_wizard-current_step': 0,
-            '0-date': 5,
-            '0-schedule': 1
+        # date_data = {
+        #     'config_wizard-current_step': 0,
+        #     '0-date': 5,
+        #     '0-schedule': 1
 
-        }
+        # }
 
-        grade_data = {
-            '1-name': 'name',
-            '1-monthly_leave_days': 1.5,
-            '1-salary': 100,
-            '1-pay_frequency': 2,
-            '1-hourly_rate': 1.5,
-            '1-overtime_rate': 2,
-            '1-overtime_two_rate': 4,
-            '1-lunch_duration': '0:15:00',
-            'config_wizard-current_step': 1
-        }
+        # grade_data = {
+        #     '1-name': 'name',
+        #     '1-monthly_leave_days': 1.5,
+        #     '1-salary': 100,
+        #     '1-pay_frequency': 2,
+        #     '1-hourly_rate': 1.5,
+        #     '1-overtime_rate': 2,
+        #     '1-overtime_two_rate': 4,
+        #     '1-lunch_duration': '0:15:00',
+        #     'config_wizard-current_step': 1
+        # }
 
         employee_data = {
-            '2-first_name': 'name',
-            '2-last_name': 'last',
-            '2-leave_days': 1,
-            '2-pin': 2000,
-            'config_wizard-current_step': 2
+            '0-first_name': 'name',
+            '0-last_name': 'last',
+            '0-leave_days': 1,
+            '0-pin': 2000,
+            'config_wizard-current_step': 0
         }
 
-        payroll_officer_data = {
-            '3-employee': 1,
-            'config_wizard-current_step': 3
-        }
+        # payroll_officer_data = {
+        #     '3-employee': 1,
+        #     'config_wizard-current_step': 3
+        # }
 
-        settings_data = {
-            '4-payroll_account': 1000,
-            '4-payroll_counter': 10,
-            'config_wizard-current_step': 4
-        }
+        # settings_data = {
+        #     '4-payroll_account': 1000,
+        #     '4-payroll_counter': 10,
+        #     'config_wizard-current_step': 4
+        # }
 
-        data_list = [date_data, grade_data, employee_data, 
-            payroll_officer_data, settings_data]
+        data_list = [
+            # date_data, 
+            # grade_data, 
+            employee_data, 
+            # payroll_officer_data, 
+            # settings_data
+            ]
 
         for step, data in enumerate(data_list, 1):
             resp = self.client.post(reverse('employees:config-wizard'), 
@@ -986,8 +991,8 @@ class EmployeeWizardTests(TestCase):
 
             if step == len(data_list):
                 self.assertEqual(resp.status_code, 302)
+                
             else:
-
                 self.assertEqual(resp.status_code, 200)
 
 

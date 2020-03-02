@@ -54,9 +54,14 @@ class WareHouse(models.Model):
         '''Takes an item and decrements it from the appropriate warehouse item'''
         #safety checks handled elsewhere
         retrieved_item = self.get_item(item)
+        print("###")
+        print(self)
+        print(item)
+        print(WareHouseItem.objects.all())
+
         if retrieved_item:
             retrieved_item.decrement(quantity)
-
+        # else: raise Exception('The warehouse item is not found')
 
     def get_item(self, item):
         '''can accept product consumable or equipment as an arg'''

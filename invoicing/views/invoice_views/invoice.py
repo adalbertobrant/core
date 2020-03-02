@@ -245,8 +245,10 @@ def verify_invoice(request, pk=None):
         return HttpResponseRedirect('/invoicing/quotation-detail/{}'.format(pk))
 
     #validate against superuser or service person privileges
+    if not request.user.is_superuser and not hasattr(request.user, 'employee'):
+        messages.info(request, 'The current user is not linked to an employee and cannot validate this form.')
+        return HttpResponseRedirect('/invoicing/invoice-detail/{}'.format(pk))
 
-    
     valid = request.user.is_superuser or \
         (request.user.employee.is_sales_rep and \
             request.user.employee.salesrepresentative.can_validate_invoices)

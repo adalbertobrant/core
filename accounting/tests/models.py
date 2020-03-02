@@ -325,7 +325,7 @@ class JournalEntryModelTests(TestCase):
             memo='record of test entry',
             date=TODAY,
             journal =self.journal,
-            created_by = self.usr
+            recorded_by = self.employee
         )
 
         j.credit(10, self.account_c)
@@ -334,7 +334,7 @@ class JournalEntryModelTests(TestCase):
             memo='record of test entry',
             date=TODAY + datetime.timedelta(days=1),
             journal =self.journal,
-            created_by = self.usr
+            recorded_by = self.employee
         )
 
         j_2.credit(10, self.account_c)
@@ -351,7 +351,7 @@ class JournalEntryModelTests(TestCase):
             memo='record of test entry',
             date=TODAY,
             journal =self.journal,
-            created_by = self.usr
+            recorded_by = self.employee
         )
         self.assertTrue(j.primary_credit is None)
         
@@ -364,7 +364,7 @@ class JournalEntryModelTests(TestCase):
             memo='record of test entry',
             date=TODAY,
             journal =self.journal,
-            created_by = self.usr
+            recorded_by = self.employee
         )
         self.assertTrue(j.primary_debit is None)
         
@@ -386,7 +386,7 @@ class JournalEntryModelTests(TestCase):
             memo='record of test entry',
             date=NEXT_WEEK,
             journal =self.journal,
-            created_by = self.usr
+            recorded_by = self.employee
         )
         entries = self.journal.get_entries_over_period(
             NEXT_WEEK - datetime.timedelta(days=1),
@@ -399,7 +399,7 @@ class JournalEntryModelTests(TestCase):
             memo='record of test entry',
             date=TODAY,
             journal =self.journal,
-            created_by = self.usr
+            recorded_by = self.employee
         )
         pre_c_bal = Account.objects.get(pk=self.account_c.pk).balance
 

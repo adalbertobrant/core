@@ -25,7 +25,7 @@ from invoicing.views import (CustomerStatementPDFView,
 from common_data.tests import create_test_common_entities
 import copy
 from messaging.models import UserProfile
-
+from employees.models import Employee
 TODAY = datetime.datetime.today()
 
 
@@ -371,18 +371,26 @@ class SalesRepViewsTests(TestCase):
         cls.client=Client()
         cls.REP_DATA = {
             'employee': 1,
-            'can_reverse_invoices': True,
+            'can_validate_invoices': True,
             'can_offer_discounts': True,
             'number': 1
         }
 
     @classmethod
     def setUpTestData(cls):
-        Employee.objects.create(
+        create_test_user(cls)
+
+        cls.employee = Employee.objects.create(
             first_name="Test",
             last_name="Employee",
+            user=cls.user
         )
-        create_test_user(cls)
+
+        cls.employee2 = Employee.objects.create(
+            first_name="Test2",
+            last_name="Employee2",
+            user=User.objects.create_user(username='guy', password='234')
+        )
         create_test_common_entities(cls)
 
     def setUp(self):
@@ -395,7 +403,12 @@ class SalesRepViewsTests(TestCase):
 
     def test_post_create_sales_rep_page(self):
         resp = self.client.post(reverse('invoicing:create-sales-rep'),
-            data=self.REP_DATA)
+            data={
+                'employee': self.employee2.pk,
+                'can_validate_invoices': True,
+                'can_offer_discounts': True,
+                'number': 5
+            })
         self.assertEqual(resp.status_code, 302)
 
     def test_get_update_sales_rep_page(self):
@@ -404,6 +417,7 @@ class SalesRepViewsTests(TestCase):
 
     def test_post_update_sales_rep_page(self):
         resp = self.client.post(reverse('invoicing:update-sales-rep', kwargs={'pk':1}), data=self.REP_DATA)
+        
         self.assertEqual(resp.status_code, 302)
 
     def test_get_delete_sales_rep_page(self):
@@ -469,6 +483,9 @@ class InvoiceViewTests(TestCase):
         imc = InvoicingModelCreator(cls)
         imc.create_all()
         create_test_user(cls)
+        cls.employee = Employee.objects.create(first_name='first',
+            last_name='last',
+            user=cls.user)
         amc = accounting.tests.model_util.AccountingModelCreator(cls).create_tax()
         create_test_common_entities(cls)
         UserProfile.objects.create(
@@ -818,6 +835,7 @@ class ConfigWizardTests(TestCase):
                 else:
                     self.assertEqual(resp.status_code, 200)
                     if resp.context.get('form'):
+
                         if hasattr(resp.context['form'], 'errors'):
                             print(resp.context['form'].errors)
             except ValueError:

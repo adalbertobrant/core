@@ -62,4 +62,4 @@ class InventoryService(AutomatedServiceMixin):
                     f"by the system. Warehouse location " 
                     f"{warehouse.name} is scheduled to have"
                     f"its inventory checked.",
-                    owner=warehouse.inventory_controller.employee.user)
+                    owner=warehouse.inventory_controller.employee)

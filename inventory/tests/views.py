@@ -265,17 +265,15 @@ class InventoryManagementViewTests(TestCase):
     def test_post_inventory_scrapping_page(self):
         resp = self.client.post(reverse('inventory:scrap-inventory', 
             kwargs={'pk': 1}), data={
-                'warehouse': 1,
+                'warehouse': self.warehouse.pk,
                 'date': TODAY.strftime('%m/%d/%Y'),
                 'controller': 1,
                 'comments': 'Test',
                 'items': urllib.parse.quote(json.dumps([{
-                    'item': "1 - item",
+                    'item': f"{self.product.pk} - item",
                     'quantity': 1,
                     'note': 'Test'
                 }]))
-
-
             })
         
         self.assertEqual(resp.status_code, 302)
@@ -1106,7 +1104,7 @@ class TransferViewTests(TestCase):
 
 
 class ConfigWizardTests(TestCase):
-    fixtures = ['common.json', 'journals.json', 'settings.json', 'accounts.json']
+    fixtures = ['common.json', 'journals.json', 'settings.json', 'accounts.json', 'inventory.json']
 
     @classmethod
     def setUpClass(cls):
@@ -1135,8 +1133,6 @@ class ConfigWizardTests(TestCase):
         employee_data = {
             '1-first_name': 'first',
             '1-last_name': 'last',
-            '1-leave_days': 1,
-            '1-pin': 1000,
             'config_wizard-current_step': 1,
         }
 
@@ -1145,30 +1141,30 @@ class ConfigWizardTests(TestCase):
             '2-employee': 1
         }
 
-        warehouse_data = {
-            'config_wizard-current_step': 3,
-            '3-name': 'name',
-            '3-address': 'address',
-            '3-length': 0,
-            '3-width': 0,
-            '3-height': 0,
-        }
+        # warehouse_data = {
+        #     'config_wizard-current_step': 3,
+        #     '3-name': 'name',
+        #     '3-address': 'address',
+        #     '3-length': 0,
+        #     '3-width': 0,
+        #     '3-height': 0,
+        # }
 
         supplier_data = {
-            'config_wizard-current_step': 4,
-            '4-vendor_type': 'individual',
-            '4-name': 'caleb kandoro'
+            'config_wizard-current_step': 3,
+            '3-vendor_type': 'individual',
+            '3-name': 'caleb kandoro'
         }
 
         data_list = [config_data, employee_data, controller_data, 
-            warehouse_data, supplier_data]
+            #warehouse_data,
+             supplier_data]
 
         for step, data in enumerate(data_list, 1):
 
             try:
                 resp = self.client.post(reverse('inventory:config-wizard'), 
                     data=data)
-
                 if step == len(data_list):
                     self.assertEqual(resp.status_code, 302)
                 else:

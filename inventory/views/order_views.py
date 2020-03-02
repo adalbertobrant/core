@@ -277,7 +277,7 @@ class ShippingAndHandlingView(
             date=form.cleaned_data['date'], 
             memo=form.cleaned_data['description'], 
             journal=Journal.objects.get(pk=2),#disbursements
-            created_by=form.cleaned_data['recorded_by'],
+            recorded_by=form.cleaned_data['recorded_by'],
             draft=False
         )
         # the unit cost changes but the journal entry for the cost 

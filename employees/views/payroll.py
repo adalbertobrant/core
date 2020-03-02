@@ -569,7 +569,7 @@ class CreatePayrollDateView(ContextMixin, CreateView):
             repeat_active=True,
             label="Payroll Date",
             icon="calendar",
-            owner=models.EmployeesSettings.objects.first().payroll_officer.employee.user
+            owner=models.EmployeesSettings.objects.first().payroll_officer.employee
         )
         
         return resp

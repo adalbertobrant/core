@@ -29,7 +29,7 @@ class PlannerModelTests(TestCase):
             reminder=datetime.timedelta(hours=1),
             start_time=datetime.datetime.now().time(),
             end_time=datetime.datetime.now().time(),
-            owner=cls.usr,
+            owner=cls.employee,
             repeat_active=True
         )
 
@@ -54,7 +54,7 @@ class PlannerModelTests(TestCase):
             reminder=datetime.timedelta(hours=1),
             start_time=datetime.datetime.now().time(),
             end_time=datetime.datetime.now().time(),            
-            owner=self.usr
+            owner=self.employee
         )
 
         self.assertIsInstance(obj, Event)
