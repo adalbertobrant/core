@@ -5,6 +5,7 @@ import datetime
 import json
 import os
 import urllib
+from django.contrib import messages
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -87,7 +88,7 @@ class EventCreateView(LoginRequiredMixin, EventParticipantMixin, CreateView):
     def get(self, request, *args, **kwargs):
         if not hasattr(request.user, 'employee'):
             messages.info(request, 'Only users linked to employees can create events in the calendar.')
-            return HttpResponseRedirect('/planner/')
+            return HttpResponseRedirect('/planner/dashboard')
 
         return super().get(request, *args, **kwargs)
 
@@ -126,8 +127,12 @@ class EventListView(ContextMixin,
         'new_link': reverse_lazy('planner:event-create')
     }
     def get_queryset(self):
+        if not hasattr(self.request.user, 'employee'):
+            messages.info(self.request, 'Only users linked to employees can create events in the calendar.')
+            return HttpResponseRedirect('/planner/dashboard')
+
         return models.Event.objects.filter( 
-            Q(owner=self.request.user)
+            Q(owner=self.request.user.employee)
         ).order_by('date').reverse()
 
 class EventDetailView(LoginRequiredMixin, DetailView):
@@ -149,7 +154,7 @@ class AgendaView(LoginRequiredMixin, TemplateView):
     
     def get(self, *args, **kwargs):
         if not hasattr(self.request.user, "employee"):
-            from django.contrib import messages
+            
             messages.info(self.request, "The user logged in is not linked to any employee. Please login as another user to access the agenda.")
             return HttpResponseRedirect("/login")
 

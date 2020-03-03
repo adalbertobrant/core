@@ -39,7 +39,7 @@ class Lead(models.Model):
     owner = models.ForeignKey('invoicing.SalesRepresentative', 
         on_delete=models.SET_DEFAULT, 
         default=default_rep)
-    team = models.ForeignKey('invoicing.SalesTeam', null=True, 
+    team = models.ForeignKey('invoicing.SalesTeam', null=True, blank=True,
         on_delete=models.SET_NULL)
     created = models.DateTimeField(auto_now=True)
     projected_closing = models.DateField(blank=True, null=True)
