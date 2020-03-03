@@ -62,6 +62,11 @@ class UserTracker(object):
         self.users = []
         self.users_info = []
 
+        #assume 1 max user if no license is present
+        if not os.path.exists('license.json'):
+            self.MAX_USERS = 1
+            return 
+            
         with open('license.json', 'r') as f:
             license = json.load(f)
             self.MAX_USERS = int(license['license']['number_users'])
