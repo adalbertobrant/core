@@ -131,9 +131,12 @@ def license_check():
     if not hmac.compare_digest(hash, license['signature']):
         return 'license signatures do not match'
 
+    expiry = datetime.datetime.now() + datetime.timedelta(days=1)
+
     if not license['license']['expiry_date'] == "*":
         expiry = datetime.datetime.strptime(
             license['license']['expiry_date'], '%d/%m/%Y')
+
 
     if datetime.date.today() > expiry.date():
         return f'The license expired on {expiry.date}'
