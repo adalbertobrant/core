@@ -441,6 +441,9 @@ class LicenseCheck(TemplateView):
         return context
 
     def get(self, *args, **kwargs):
+        HID = models.GlobalConfig.generate_hardware_id()
+        with open('key.txt', 'w') as f:
+                f.write(HID)
         if not os.path.exists('license.json'):
             self.template_name = os.path.join('common_data', 'licensing', 'no_license.html')
             # later implement a form where a person can send their hardware id
