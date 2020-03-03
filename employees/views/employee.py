@@ -51,7 +51,9 @@ class EmployeeCreateView( ContextMixin, CreateView):
 
     def get(self, request, *args, **kwargs):
         num_employees = models.Employee.objects.filter(active=True).count()
-
+        if not os.path.exists('license.json'):
+            return HttpResponseRedirect('/base/license-check')
+        
         with open('license.json', 'r') as f:
             license = json.load(f)
             if num_employees >= int(license['license']['number_employees']) :
@@ -159,6 +161,8 @@ class EmployeeUserCreateView( FormView):
 
     def get(self, request, *args, **kwargs):
         num_users = User.objects.filter(is_superuser=False).count()
+        if not os.path.exists('license.json'):
+            return HttpResponseRedirect('/base/license-check')
         with open('license.json', 'r') as f:
             license = json.load(f)
             if num_users >= int(license['license']['number_users']):
