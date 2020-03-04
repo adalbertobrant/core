@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='lead',
             name='owner',
-            field=models.ForeignKey(default=2, on_delete=django.db.models.deletion.SET_DEFAULT, to='invoicing.SalesRepresentative'),
+            field=models.ForeignKey(
+                default=2, on_delete=django.db.models.deletion.SET_DEFAULT, to='invoicing.SalesRepresentative'),
         ),
     ]

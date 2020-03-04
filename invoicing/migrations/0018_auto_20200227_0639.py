@@ -14,16 +14,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CustomerNote',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('note', models.TextField()),
                 ('author', models.CharField(max_length=255)),
                 ('timestamp', models.DateTimeField(auto_now=True)),
-                ('customer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoicing.Customer')),
+                ('customer', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoicing.Customer')),
             ],
         ),
         migrations.AlterField(
             model_name='lead',
             name='owner',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.SET_DEFAULT, to='invoicing.SalesRepresentative'),
+            field=models.ForeignKey(
+                default=1, on_delete=django.db.models.deletion.SET_DEFAULT, to='invoicing.SalesRepresentative'),
         ),
     ]

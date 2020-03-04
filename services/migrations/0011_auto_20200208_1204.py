@@ -19,6 +19,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='equipmentrequisition',
             name='requested_by',
-            field=models.ForeignKey(limit_choices_to=models.Q(active=True), on_delete=django.db.models.deletion.CASCADE, related_name='requested_by', to='employees.Employee'),
+            field=models.ForeignKey(limit_choices_to=models.Q(
+                active=True), on_delete=django.db.models.deletion.CASCADE, related_name='requested_by', to='employees.Employee'),
         ),
     ]

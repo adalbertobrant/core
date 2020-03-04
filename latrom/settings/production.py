@@ -5,6 +5,8 @@ DEBUG = True
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 # set to the ip address of the server
+
+
 def get_host_names():
     """Only works on windows"""
     return socket.gethostbyname_ex(socket.gethostname())[2]
@@ -33,7 +35,7 @@ WKHTMLTOPDF_DEBUG = True
 
 DBBACKUP_STORAGE_OPTIONS = {
     'location': os.path.join(BASE_DIR, '..', 'database')
-    }
+}
 
 LOGGING = {
     'version': 1,

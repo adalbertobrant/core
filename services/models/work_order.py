@@ -1,49 +1,48 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import datetime 
+import datetime
 
 from django.db import models
 from django.db.models import Q
 from common_data.utilities import time_choices
 from functools import reduce
 from decimal import Decimal as D
-from django.shortcuts import reverse 
+from django.shortcuts import reverse
 import invoicing
 from services.models.requisition import ConsumablesRequisitionLine
 
+
 class WorkOrderRequest(models.Model):
     created = models.DateField(blank=True, null=True)
-    created_by = models.ForeignKey('employees.employee', 
-        null=True, 
-        on_delete=models.SET_NULL)
-    invoice = models.ForeignKey('invoicing.invoice', 
-        blank=True, 
-        null=True, 
-        on_delete=models.SET_NULL)
-    service = models.ForeignKey('services.service', null=True, 
-        on_delete=models.SET_NULL)
+    created_by = models.ForeignKey('employees.employee',
+                                   null=True,
+                                   on_delete=models.SET_NULL)
+    invoice = models.ForeignKey('invoicing.invoice',
+                                blank=True,
+                                null=True,
+                                on_delete=models.SET_NULL)
+    service = models.ForeignKey('services.service', null=True,
+                                on_delete=models.SET_NULL)
     status = models.CharField(max_length=16, choices=[
         ('request', 'Requested'),
         ('in-progress', 'In Progress'),
         ('completed', 'Completed'),
-        ])
+    ])
     description = models.TextField(blank=True, default="")
-
 
     def update_status(self):
         if self.work_orders.count() > 0:
             self.status = "in-progress"
 
-        completed=True 
+        completed = True
         for wo in self.work_orders:
             if not wo.status in ['completed', 'authorized']:
-                completed=False
+                completed = False
 
         if completed:
             self.status = 'completed'
-        
-        self.save()
 
+        self.save()
 
     @property
     def work_orders(self):
@@ -51,16 +50,16 @@ class WorkOrderRequest(models.Model):
 
     @property
     def invoice_line(self):
-        qs = invoicing.models.InvoiceLine.objects.filter(invoice=self.invoice, 
-                service__service=self.service)
-        
+        qs = invoicing.models.InvoiceLine.objects.filter(invoice=self.invoice,
+                                                         service__service=self.service)
+
         if qs.exists():
             return qs.first()
 
     def get_absolute_url(self):
-        return reverse("services:work-order-request-detail", 
-            kwargs={"pk": self.pk})
-    
+        return reverse("services:work-order-request-detail",
+                       kwargs={"pk": self.pk})
+
 
 class ServiceWorkOrder(models.Model):
     STATUS_CHOICES = [
@@ -69,43 +68,43 @@ class ServiceWorkOrder(models.Model):
         ('completed', 'Completed'),
         ('authorized', 'Authorized'),
         ('declined', 'Declined')
-        ]
+    ]
     date = models.DateField()
-    time = models.TimeField(choices = time_choices(
+    time = models.TimeField(choices=time_choices(
         '06:00:00', '18:30:00', '00:30:00'
-        ))
+    ))
     # for services done within the organization
     internal = models.BooleanField(default=False)
-    
-    works_request = models.ForeignKey('services.workorderrequest', 
-        blank=True, null=True, on_delete=models.SET_NULL)
+
+    works_request = models.ForeignKey('services.workorderrequest',
+                                      blank=True, null=True, on_delete=models.SET_NULL)
 
     description = models.TextField(blank=True, default="")
     completed = models.DateTimeField(null=True, blank=True)
-    expected_duration = models.DurationField(choices = time_choices(
+    expected_duration = models.DurationField(choices=time_choices(
         '00:00:00', '08:00:00', '00:30:00', delta=True
-        ), null=True, blank=True)
-    service_people = models.ManyToManyField('services.ServicePerson', 
-        limit_choices_to=Q(active=True),
-        blank=True)
-    team = models.ForeignKey('services.ServiceTeam', on_delete=models.SET_NULL, null=True, 
-        blank=True)
-    status = models.CharField(max_length=16, choices=STATUS_CHOICES, blank=True)
-    authorized_by = models.ForeignKey('employees.Employee', 
-        on_delete=models.CASCADE, null=True, 
-        blank=True,
-        limit_choices_to=Q(user__isnull=False))#filter queryset
+    ), null=True, blank=True)
+    service_people = models.ManyToManyField('services.ServicePerson',
+                                            limit_choices_to=Q(active=True),
+                                            blank=True)
+    team = models.ForeignKey('services.ServiceTeam', on_delete=models.SET_NULL, null=True,
+                             blank=True)
+    status = models.CharField(
+        max_length=16, choices=STATUS_CHOICES, blank=True)
+    authorized_by = models.ForeignKey('employees.Employee',
+                                      on_delete=models.CASCADE, null=True,
+                                      blank=True,
+                                      limit_choices_to=Q(user__isnull=False))  # filter queryset
     notes = models.ManyToManyField('common_data.note')
-    
-    
+
     def __str__(self):
-        return "WO{}".format(self.pk) #TODO string padding
+        return "WO{}".format(self.pk)  # TODO string padding
 
     @property
     def procedure_pk(self):
         if self.works_request.service.procedure:
             return self.works_request.service.procedure.pk
-        
+
         return None
 
     @property
@@ -119,17 +118,16 @@ class ServiceWorkOrder(models.Model):
 
             procedure = self.works_request.service.procedure
             if procedure and self.workordertask_set.all().count() == 0:
-                due=datetime.date.today()
+                due = datetime.date.today()
                 if self.works_request.invoice:
                     due = self.works_request.invoice.due
-                
+
                 for step in procedure.steps:
                     WorkOrderTask.objects.create(
-                        work_order = self,
+                        work_order=self,
                         description=step.description,
                         due=due
                     )
-                
 
     @property
     def number_of_employees(self):
@@ -137,7 +135,7 @@ class ServiceWorkOrder(models.Model):
         team = 0
         if self.team:
             team = self.team.members.all().count()
-    
+
         return direct + team
 
     @property
@@ -150,20 +148,20 @@ class ServiceWorkOrder(models.Model):
             expense__billable=False
         )
 
-    @property 
+    @property
     def time_logs(self):
         # may decide to remove the .all() and use a filter of uses timesheet
         return self.timelog_set.all()
 
     @property
     def total_normal_time(self):
-        return reduce(lambda x, y: x + y, [i.normal_time \
-                for i in self.time_logs], datetime.timedelta(seconds=0))
-    
+        return reduce(lambda x, y: x + y, [i.normal_time
+                                           for i in self.time_logs], datetime.timedelta(seconds=0))
+
     @property
     def total_overtime(self):
         return reduce(lambda x, y: x + y,
-            [i.overtime for i in self.time_logs], datetime.timedelta(seconds=0))
+                      [i.overtime for i in self.time_logs], datetime.timedelta(seconds=0))
 
     def get_absolute_url(self):
         return reverse("services:work-order-detail", kwargs={"pk": self.pk})
@@ -178,7 +176,7 @@ class ServiceWorkOrder(models.Model):
             requisition__work_order=self
         )
 
-    @property 
+    @property
     def total_expenses(self):
         return sum([i.expense.amount for i in self.expenses])
 
@@ -186,21 +184,20 @@ class ServiceWorkOrder(models.Model):
     def total_time(self):
         return self.total_overtime + self.total_normal_time
 
-    
 
 class TimeLog(models.Model):
-    work_order = models.ForeignKey('services.serviceworkorder', null=True, 
-        on_delete=models.SET_NULL)
-    employee = models.ForeignKey('employees.employee', null=True, 
-        on_delete=models.SET_NULL)
+    work_order = models.ForeignKey('services.serviceworkorder', null=True,
+                                   on_delete=models.SET_NULL)
+    employee = models.ForeignKey('employees.employee', null=True,
+                                 on_delete=models.SET_NULL)
     date = models.DateField(default=datetime.date.today)
     normal_time = models.DurationField()
     overtime = models.DurationField()
-    #using fields to perserve the cost in case the paygrade changes
-    normal_time_cost = models.DecimalField(max_digits=16, decimal_places=2, 
-        default=D(0.0))
+    # using fields to perserve the cost in case the paygrade changes
+    normal_time_cost = models.DecimalField(max_digits=16, decimal_places=2,
+                                           default=D(0.0))
     overtime_cost = models.DecimalField(max_digits=16, decimal_places=2,
-        default=D(0.0))
+                                        default=D(0.0))
 
     @property
     def total_time(self):
@@ -212,7 +209,6 @@ class TimeLog(models.Model):
             return \
                 self.work_order.works_request.invoice.customer
         return 'Internal'
-
 
     def __str__(self):
         return f'{self.employee} {self.normal_time} + {self.overtime} O/T'
@@ -230,19 +226,19 @@ class TimeLog(models.Model):
 
         super().save(*args, **kwargs)
 
+
 class WorkOrderExpense(models.Model):
-    work_order = models.ForeignKey('services.ServiceWorkOrder', 
-        on_delete=models.SET_NULL, null=True) 
-    expense = models.ForeignKey('accounting.Expense', 
-        on_delete=models.SET_NULL, null=True)
+    work_order = models.ForeignKey('services.ServiceWorkOrder',
+                                   on_delete=models.SET_NULL, null=True)
+    expense = models.ForeignKey('accounting.Expense',
+                                on_delete=models.SET_NULL, null=True)
 
 
 class WorkOrderTask(models.Model):
-    work_order = models.ForeignKey('services.ServiceWorkOrder', 
-        on_delete=models.CASCADE) 
-    assigned = models.ForeignKey('employees.Employee', 
-        on_delete=models.SET_NULL, null=True)
+    work_order = models.ForeignKey('services.ServiceWorkOrder',
+                                   on_delete=models.CASCADE)
+    assigned = models.ForeignKey('employees.Employee',
+                                 on_delete=models.SET_NULL, null=True)
     description = models.TextField()
     due = models.DateField(blank=True)
     completed = models.BooleanField(default=False)
-    

@@ -11,12 +11,15 @@ class EventParticipantSerializer(serializers.ModelSerializer):
     employee = EmployeeSerializer(many=False)
     supplier = SupplierSerializer(many=False)
     customer = CustomerSerializer(many=False)
+
     class Meta:
         model = models.EventParticipant
         fields = "__all__"
 
+
 class EventSerializer(serializers.ModelSerializer):
     participants = EventParticipantSerializer(many=True)
+
     class Meta:
         model = models.Event
         fields = "__all__"

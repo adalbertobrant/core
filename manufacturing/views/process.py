@@ -1,15 +1,14 @@
 import os
-import urllib 
+import urllib
 import json
 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic import ListView, DetailView
+from django.views.generic import DetailView
 from django_filters.views import FilterView
 
 from manufacturing.views.util import ManufacturingCheckMixin
 from manufacturing import models
-from manufacturing import forms 
-from common_data.utilities import ContextMixin
+from manufacturing import forms
 from manufacturing import serializers
 from manufacturing import filters
 from rest_framework.viewsets import ModelViewSet
@@ -18,17 +17,18 @@ from common_data.views import PaginationMixin
 
 CREATE_TEMPLATE = os.path.join('common_data', 'create_template.html')
 
+
 class ProcessCreateView(ManufacturingCheckMixin, CreateView):
     template_name = os.path.join('manufacturing', 'process', 'create.html')
     form_class = forms.ProcessForm
     success_url = '/manufacturing/'
-    
+
     def post(self, request, *args, **kwargs):
         resp = super().post(request, *args, **kwargs)
         if not self.object:
             return resp
 
-        material_data =json.loads(
+        material_data = json.loads(
             urllib.parse.unquote(
                 request.POST['materials'])) if request.POST['materials'] != "" else []
         equipment_data = json.loads(
@@ -38,7 +38,7 @@ class ProcessCreateView(ManufacturingCheckMixin, CreateView):
             urllib.parse.unquote(
                 request.POST['products'])) if request.POST['products'] != "" else []
 
-        #materials
+        # materials
         if len(material_data) > 0:
             bill = models.BillOfMaterials.objects.create(
                 name=str(self.object.id),
@@ -52,18 +52,19 @@ class ProcessCreateView(ManufacturingCheckMixin, CreateView):
                 models.BillOfMaterialsLine.objects.create(
                     bill=bill,
                     type=0,
-                    raw_material = material_obj,
-                    unit = unit,
-                    quantity =0.0
+                    raw_material=material_obj,
+                    unit=unit,
+                    quantity=0.0
                 )
             self.object.bill_of_materials = bill
             self.object.save()
 
-        #equipment
+        # equipment
         if len(equipment_data) > 0:
             mg = models.ProcessMachineGroup.objects.create(
                 name="MachineGroup_" + str(self.object.pk),
-                description="Machines required for process: " + str(self.object.pk),
+                description="Machines required for process: " +
+                str(self.object.pk),
             )
             for pe_id in process_equipment:
                 pe = models.ProcessMachine.objects.get(
@@ -75,12 +76,12 @@ class ProcessCreateView(ManufacturingCheckMixin, CreateView):
             self.object.process_equipment = mg
             self.object.save()
 
-            
-        #process products
+        # process products
         if len(products_data) > 0:
             pl = models.ProductList.objects.create(
                 name="Process Product List " + str(self.object.pk),
-                description="List of output products for process " + str(self.object.pk),
+                description="List of output products for process " +
+                str(self.object.pk),
             )
             for pp in products_data:
                 pp_obj = models.ProcessProduct.objects.get(
@@ -88,7 +89,7 @@ class ProcessCreateView(ManufacturingCheckMixin, CreateView):
                 )
                 pp_obj.product_list = pl
                 pp_obj.save()
-                
+
             self.object.product_list = pl
             self.object.save()
 
@@ -104,7 +105,6 @@ class ProcessCreateView(ManufacturingCheckMixin, CreateView):
             self.object.rate = pr
             self.object.save()
 
-
         return resp
 
 
@@ -119,16 +119,17 @@ class ProcessDetailView(DetailView):
     template_name = os.path.join('manufacturing', 'process', 'detail.html')
     model = models.Process
 
+
 class ProcessDeleteView(DeleteView):
     template_name = os.path.join('common_data', 'delete_template.html')
     model = models.Process
     success_url = "/manufacturing/"
 
+
 class ProcessListView(ManufacturingCheckMixin, PaginationMixin, FilterView):
     filterset_class = filters.ProcessFilter
     model = models.Process
     template_name = os.path.join('manufacturing', 'process', 'list.html')
-
 
 
 class ProcessProductCreateView(ManufacturingCheckMixin, CreateView):
@@ -139,18 +140,21 @@ class ProcessProductCreateView(ManufacturingCheckMixin, CreateView):
         'title': 'Create Process Product'
     }
 
+
 class ProcessProductListView(ManufacturingCheckMixin, PaginationMixin,
-        FilterView):
-    template_name = os.path.join('manufacturing', 'process', 'product', 
-        'list.html')
+                             FilterView):
+    template_name = os.path.join('manufacturing', 'process', 'product',
+                                 'list.html')
     queryset = models.ProcessProduct.objects.all()
     filterset_class = filters.ProcessProductFilter
     extra_context = {
         'title': 'Create Process Product'
     }
 
+
 class ProcessProductListCreateView(ManufacturingCheckMixin, CreateView):
-    template_name = os.path.join('manufacturing', 'process','product', 'list', 'create.html')
+    template_name = os.path.join(
+        'manufacturing', 'process', 'product', 'list', 'create.html')
     form_class = forms.ProcessProductListForm
     success_url = '/manufacturing/'
     extra_context = {
@@ -163,24 +167,23 @@ class ProcessProductListCreateView(ManufacturingCheckMixin, CreateView):
             return resp
 
         form = self.form_class(request.POST)
-       
+
         if form.is_valid():
             data_string = request.POST['products']
         else:
             return resp
 
-        
-
         if data_string != "":
             data = json.loads(urllib.parse.unquote(data_string))
-            
+
             for choice in data:
                 product = models.ProcessProduct.objects.get(
                     pk=choice['value'].split('-')[0])
                 product.product_list = self.object
                 product.save()
-                
+
         return resp
+
 
 class ProcessRateCreateView(ManufacturingCheckMixin, CreateView):
     template_name = CREATE_TEMPLATE
@@ -190,6 +193,7 @@ class ProcessRateCreateView(ManufacturingCheckMixin, CreateView):
         'title': 'Create Process Rate'
     }
 
+
 class ProductionOrderCreateView(ManufacturingCheckMixin, CreateView):
     template_name = CREATE_TEMPLATE
     form_class = forms.ProductionOrderForm
@@ -198,10 +202,11 @@ class ProductionOrderCreateView(ManufacturingCheckMixin, CreateView):
         'title': 'Create Production Order'
     }
 
-class ProductionOrderListView(ManufacturingCheckMixin, PaginationMixin, 
-        FilterView):
-    template_name = os.path.join('manufacturing', 'process', 'order', 
-        'list.html')
+
+class ProductionOrderListView(ManufacturingCheckMixin, PaginationMixin,
+                              FilterView):
+    template_name = os.path.join('manufacturing', 'process', 'order',
+                                 'list.html')
     queryset = models.ProductionOrder.objects.all()
     filterset_class = filters.ProductionOrderFilter
     extra_context = {
@@ -210,8 +215,8 @@ class ProductionOrderListView(ManufacturingCheckMixin, PaginationMixin,
 
 
 class BillOfMaterialsCreateView(ManufacturingCheckMixin, CreateView):
-    template_name = os.path.join('manufacturing', 
-        'process', 'materials', 'bill_create.html')
+    template_name = os.path.join('manufacturing',
+                                 'process', 'materials', 'bill_create.html')
     form_class = forms.BillOfMaterialsForm
     success_url = '/manufacturing/'
     extra_context = {
@@ -224,35 +229,33 @@ class BillOfMaterialsCreateView(ManufacturingCheckMixin, CreateView):
             return resp
 
         form = self.form_class(request.POST)
-       
+
         if form.is_valid():
             data_string = request.POST['products']
         else:
             return resp
 
-        
-
         if data_string != "":
             data = json.loads(urllib.parse.unquote(data_string))
-            
+
             for choice in data:
                 models.BillOfMaterialsLine.objects.create(
-                    bill =self.object,
-                    type = 1,
-                    product= models.ProcessProduct.objects.get(
+                    bill=self.object,
+                    type=1,
+                    product=models.ProcessProduct.objects.get(
                         pk=choice['product'].split('-')[0]),
-                    quantity = choice['quantity'],
+                    quantity=choice['quantity'],
                     unit=UnitOfMeasure.objects.get(
                         pk=choice['unit'].split('-')[0])
                 )
-                
-        return resp
 
+        return resp
 
 
 class ProcessProductAPIView(ModelViewSet):
     queryset = models.ProcessProduct.objects.all()
     serializer_class = serializers.ProcessProductSerializer
+
 
 class ProcessAPIView(ModelViewSet):
     queryset = models.Process.objects.all()

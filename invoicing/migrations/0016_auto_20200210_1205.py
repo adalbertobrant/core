@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='salesrepresentative',
             name='employee',
-            field=models.OneToOneField(limit_choices_to=models.Q(models.Q(active=True), models.Q(user__isnull=False)), null=True, on_delete=django.db.models.deletion.CASCADE, to='employees.Employee'),
+            field=models.OneToOneField(limit_choices_to=models.Q(models.Q(active=True), models.Q(
+                user__isnull=False)), null=True, on_delete=django.db.models.deletion.CASCADE, to='employees.Employee'),
         ),
     ]

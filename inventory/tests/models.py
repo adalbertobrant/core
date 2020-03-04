@@ -1,143 +1,136 @@
+from inventory.util import InventoryService
+from planner.models import Event
 import datetime
 from decimal import Decimal as D
-import json
-import urllib
 
-from django.test import Client, TestCase
-from django.urls import reverse
-from django.utils import timezone
+from django.test import TestCase
 
-from accounting.models import Account, JournalEntry, Tax
+from accounting.models import JournalEntry, Tax
 from common_data.models import Organization, Individual
 
-from common_data.tests import create_account_models, create_test_user
+from common_data.tests import create_account_models
 from inventory import models
-from invoicing.models import (InvoiceLine, 
-                              Invoice, 
-                              Customer, 
+from invoicing.models import (InvoiceLine,
+                              Invoice,
+                              Customer,
                               ProductLineComponent)
 from employees.models import Employee
 from django.contrib.auth.models import User
 from inventory.tests.model_util import InventoryModelCreator
 TODAY = datetime.date.today()
-from planner.models import Event
-from inventory.util import InventoryService
-
-
 
 
 def create_test_inventory_models(cls):
     create_account_models(cls)
-    if User.objects.all().count() ==0:
+    if User.objects.all().count() == 0:
         User.objects.create_user(username='some_user')
 
     if not hasattr(cls, 'organization'):
         cls.organization = Organization.objects.create(
-            legal_name = 'test business'
+            legal_name='test business'
         )
 
     cls.supplier = models.Supplier.objects.create(
-            organization=cls.organization,
-            account = cls.account_c
-            )
+        organization=cls.organization,
+        account=cls.account_c
+    )
 
     InventoryModelCreator(cls).create_inventory_controller()
     cls.unit = models.UnitOfMeasure.objects.create(
-            name='Test Unit',
-            description='Test description'
-        )
+        name='Test Unit',
+        description='Test description'
+    )
     cls.category = models.Category.objects.create(
-            name='Test Category',
-            description='Test description'
-        )
+        name='Test Category',
+        description='Test description'
+    )
 
     pc = models.ProductComponent.objects.create(
-        pricing_method=0, #KISS direct pricing
-            direct_price=10,
-            margin=0.5,
+        pricing_method=0,  # KISS direct pricing
+        direct_price=10,
+        margin=0.5,
     )
-    
+
     cls.product = models.InventoryItem.objects.create(
-            name='test name',
-            unit=cls.unit,
-            type=0,
-            unit_purchase_price=10,
-            description='Test Description',
-            supplier = cls.supplier,
-            minimum_order_level = 0,
-            maximum_stock_level = 20,
-            category = cls.category,
-            product_component = pc
-        )
+        name='test name',
+        unit=cls.unit,
+        type=0,
+        unit_purchase_price=10,
+        description='Test Description',
+        supplier=cls.supplier,
+        minimum_order_level=0,
+        maximum_stock_level=20,
+        category=cls.category,
+        product_component=pc
+    )
 
     ec = models.EquipmentComponent.objects.create(
-        condition = "excellent",
-        asset_data = cls.asset
-    )    
+        condition="excellent",
+        asset_data=cls.asset
+    )
 
     cls.equipment = models.InventoryItem.objects.create(
         name='test equipment',
-            unit=cls.unit,
-            type=1,
-            unit_purchase_price=10,
-            description='Test Description',
-            supplier = cls.supplier,
-            category = cls.category,
-            equipment_component=ec            
+        unit=cls.unit,
+        type=1,
+        unit_purchase_price=10,
+        description='Test Description',
+        supplier=cls.supplier,
+        category=cls.category,
+        equipment_component=ec
     )
-
 
     cls.consumable = models.InventoryItem.objects.create(
         name='test comsumable',
-            unit=cls.unit,
-            unit_purchase_price=10,
-            type=2,
-            description='Test Description',
-            supplier = cls.supplier,
-            minimum_order_level = 0,
-            maximum_stock_level = 20,
-            category = cls.category
+        unit=cls.unit,
+        unit_purchase_price=10,
+        type=2,
+        description='Test Description',
+        supplier=cls.supplier,
+        minimum_order_level=0,
+        maximum_stock_level=20,
+        category=cls.category
     )
-    
+
     cls.warehouse = models.WareHouse.objects.create(
         name='Test Location',
         address='Test Address'
     )
     cls.medium = models.StorageMedia.objects.create(
-            name="Test Medium",
-            warehouse=cls.warehouse,
-            description="shelves",
-        )
+        name="Test Medium",
+        warehouse=cls.warehouse,
+        description="shelves",
+    )
     cls.warehouse_item = models.WareHouseItem.objects.create(
-        item = cls.product,
-        quantity =10,
-        warehouse = cls.warehouse,
+        item=cls.product,
+        quantity=10,
+        warehouse=cls.warehouse,
         location=cls.medium
     )
     cls.order = models.Order.objects.create(
-            expected_receipt_date = TODAY,
-            date = TODAY,
-            tax = Tax.objects.first(), #10%
-            supplier=cls.supplier,
-            bill_to = 'Test Bill to',
-            ship_to = cls.warehouse,
-            tracking_number = '34234',
-            notes = 'Test Note',
-            status = 'draft',
-            issuing_inventory_controller=cls.controller
-        )
+        expected_receipt_date=TODAY,
+        date=TODAY,
+        tax=Tax.objects.first(),  # 10%
+        supplier=cls.supplier,
+        bill_to='Test Bill to',
+        ship_to=cls.warehouse,
+        tracking_number='34234',
+        notes='Test Note',
+        status='draft',
+        issuing_inventory_controller=cls.controller
+    )
     cls.order_item = models.OrderItem.objects.create(
-            order=cls.order,
-            item=cls.product,
-            quantity=1,
-            order_price=10,
-        )
+        order=cls.order,
+        item=cls.product,
+        quantity=1,
+        order_price=10,
+    )
     cls.stock_receipt = models.StockReceipt.objects.create(
-            order = cls.order,
-            receive_date = TODAY,
-            note = 'Test Note',
-            fully_received=True,
-        )
+        order=cls.order,
+        receive_date=TODAY,
+        note='Test Note',
+        fully_received=True,
+    )
 
     cls.check = models.InventoryCheck.objects.create(
         date=TODAY,
@@ -154,13 +147,13 @@ def create_test_inventory_models(cls):
     )
 
     cls.transfer = models.TransferOrder.objects.create(
-        date = TODAY,
-        expected_completion_date = TODAY,
-        issuing_inventory_controller = cls.controller,
-        receiving_inventory_controller = cls.controller,
-        actual_completion_date = TODAY,
-        source_warehouse = cls.warehouse,
-        receiving_warehouse = cls.warehouse,
+        date=TODAY,
+        expected_completion_date=TODAY,
+        issuing_inventory_controller=cls.controller,
+        receiving_inventory_controller=cls.controller,
+        actual_completion_date=TODAY,
+        source_warehouse=cls.warehouse,
+        receiving_warehouse=cls.warehouse,
     )
     cls.transfer_line = models.TransferOrderLine.objects.create(
         item=cls.product,
@@ -179,13 +172,15 @@ def create_test_inventory_models(cls):
     )
 
     cls.note = models.DebitNote.objects.create(
-            date=datetime.date.today(),
-            order=cls.order,
-            comments= "comment"
-        )
+        date=datetime.date.today(),
+        order=cls.order,
+        comments="comment"
+    )
+
 
 class CommonModelTests(TestCase):
-    fixtures = ['common.json', 'employees.json','inventory.json','accounts.json', 'journals.json']
+    fixtures = ['common.json', 'employees.json',
+                'inventory.json', 'accounts.json', 'journals.json']
 
     @classmethod
     def setUpTestData(cls):
@@ -193,12 +188,12 @@ class CommonModelTests(TestCase):
 
     def test_update_inventory_settings(self):
         obj = models.InventorySettings.objects.first()
-        obj.inventory_check_date=22
+        obj.inventory_check_date = 22
         obj.save()
-    
+
     def test_create_invetory_controller(self):
         self.assertIsInstance(self.controller, models.InventoryController)
-    
+
     def test_create_supplier(self):
         ind = Individual.objects.create(
             first_name="Test",
@@ -208,7 +203,6 @@ class CommonModelTests(TestCase):
             individual=ind
         )
         self.assertIsInstance(obj, models.Supplier)
-        
 
     def test_supplier_name(self):
         self.assertIsInstance(self.supplier.name, str)
@@ -218,7 +212,7 @@ class CommonModelTests(TestCase):
 
     def test_supplier_email(self):
         self.assertIsInstance(self.supplier.email, str)
-    
+
     def test_supplier_address(self):
         self.assertIsInstance(self.supplier.address, str)
 
@@ -241,7 +235,7 @@ class CommonModelTests(TestCase):
             name='Test unit',
             description="description",
             is_derived=True,
-            base_unit = base
+            base_unit=base
         )
 
         self.assertEqual(base.derived_units.count(), 1)
@@ -251,7 +245,7 @@ class CommonModelTests(TestCase):
     def test_create_category(self):
         obj = models.Category.objects.create(
             name="Test Category",
-            parent= None,
+            parent=None,
             description="Test Description"
         )
         self.assertIsInstance(obj, models.Category)
@@ -263,62 +257,61 @@ class CommonModelTests(TestCase):
     def test_category_relationships(self):
         parent_one = models.Category.objects.create(
             name="parent one ",
-            parent= None,
+            parent=None,
             description="Test Description"
         )
         parent_two = models.Category.objects.create(
             name="parent two",
-            parent= None,
+            parent=None,
             description="Test Description"
         )
         parent_one_child = models.Category.objects.create(
             name="parent one child",
-            parent= parent_one,
+            parent=parent_one,
             description="Test Description"
         )
         parent_two_child = models.Category.objects.create(
             name="parent two child",
-            parent= parent_two,
+            parent=parent_two,
             description="Test Description"
         )
         parent_two_child_two = models.Category.objects.create(
             name="parent two child two",
-            parent= parent_two,
+            parent=parent_two,
             description="Test Description"
         )
-        
+
         self.assertEqual(parent_one.children.count(), 1)
         self.assertEqual(parent_two.children.count(), 2)
         self.assertEqual(parent_one_child.children.count(), 0)
-        self.assertEqual(parent_one.siblings.count(), 
-            models.Category.objects.filter(parent__isnull=True).count() - 1)
+        self.assertEqual(parent_one.siblings.count(),
+                         models.Category.objects.filter(parent__isnull=True).count() - 1)
         self.assertEqual(parent_one_child.siblings.count(), 0)
         self.assertEqual(parent_two_child.siblings.count(), 1)
 
 
 class ItemManagementModelTests(TestCase):
-    fixtures = ['common.json', 'employees.json','inventory.json','accounts.json', 'journals.json']
+    fixtures = ['common.json', 'employees.json',
+                'inventory.json', 'accounts.json', 'journals.json']
 
     @classmethod
     def setUpTestData(cls):
         create_test_inventory_models(cls)
-        
 
     def tearDown(self):
         self.order_item.received = 0
         self.order_item.save()
-    
-    
+
     def test_create_order(self):
         obj = models.Order.objects.create(
-            expected_receipt_date = TODAY,
-            date = TODAY,
+            expected_receipt_date=TODAY,
+            date=TODAY,
             supplier=self.supplier,
-            bill_to = 'Test Bill to',
-            ship_to = self.warehouse,
-            tracking_number = '34234',
-            notes = 'Test Note',
-            status = 'order'    
+            bill_to='Test Bill to',
+            ship_to=self.warehouse,
+            tracking_number='34234',
+            notes='Test Note',
+            status='order'
         )
 
         self.assertIsInstance(obj, models.Order)
@@ -338,26 +331,26 @@ class ItemManagementModelTests(TestCase):
 
     def test_received_total(self):
         self.assertEqual(self.order.received_total, 0)
-        self.order_item.received=1
+        self.order_item.received = 1
         self.order_item.save()
         self.assertEqual(self.order.received_total, 10)
-        
+
     def test_fully_received(self):
         self.assertFalse(self.order.fully_received)
-        self.order_item.received=1
+        self.order_item.received = 1
         self.order_item.save()
         self.assertTrue(self.order.fully_received)
-        
+
     def test_percent_received(self):
         self.assertEqual(self.order.percent_received, 0.0)
-        self.order_item.received=1
+        self.order_item.received = 1
         self.order_item.save()
         self.assertEqual(self.order.percent_received, 100.0)
-        
+
     def test_receive_order(self):
         self.order.receive()
         self.assertTrue(self.order.fully_received)
-        
+
     def test_create_order_item(self):
         obj = models.OrderItem.objects.create(
             order=self.order,
@@ -376,7 +369,7 @@ class ItemManagementModelTests(TestCase):
         self.order_item.received = 1
         self.order_item.save()
         self.assertTrue(self.order_item.fully_received)
-        
+
     def test_order_item_receive(self):
         receipt = models.StockReceipt.objects.create(
             receive_date=datetime.date.today(),
@@ -396,7 +389,7 @@ class ItemManagementModelTests(TestCase):
         obj = models.DebitNote.objects.create(
             date=datetime.date.today(),
             order=models.Order.objects.first(),
-            comments= "comment"
+            comments="comment"
         )
         self.assertIsInstance(obj, models.DebitNote)
         obj.delete()
@@ -405,7 +398,7 @@ class ItemManagementModelTests(TestCase):
         dn = models.DebitNote.objects.create(
             date=datetime.date.today(),
             order=models.Order.objects.first(),
-            comments= "comment"
+            comments="comment"
         )
 
         obj = models.DebitNoteLine.objects.create(
@@ -417,7 +410,7 @@ class ItemManagementModelTests(TestCase):
         obj.delete()
         dn.delete()
 
-    #TODO fix
+    # TODO fix
     '''
     def test_debit_note_returned_items(self):
         pass
@@ -436,22 +429,21 @@ class ItemManagementModelTests(TestCase):
 
     def test_debit_note_create_entry(self):
         entries = JournalEntry.objects.all().count()
-        
+
         self.note.create_entry()
-        
+
         self.assertNotEqual(entries, JournalEntry.objects.all().count())
 
     def test_create_stock_receipt(self):
         obj = models.StockReceipt.objects.create(
             order=self.order,
             received_by=self.controller,
-            receive_date = TODAY,
-            note = "Some note",
+            receive_date=TODAY,
+            note="Some note",
         )
         self.assertIsInstance(obj, models.StockReceipt)
         obj.delete()
 
-    
     def test_create_inventory_check(self):
         obj = models.InventoryCheck.objects.create(
             date=TODAY,
@@ -478,7 +470,6 @@ class ItemManagementModelTests(TestCase):
         self.assertIsInstance(obj, models.StockAdjustment)
         obj.delete()
         self.warehouse_item.increment(1)
-        
 
     def adjustment_adjustment_value(self):
         self.assertEqual(self.adjustment.adjustment_value, 10)
@@ -493,16 +484,15 @@ class ItemManagementModelTests(TestCase):
         self.warehouse_item.quantity = prev_quantity
         self.warehouse_item.save()
 
-    
     def test_create_transfer_order(self):
         obj = models.TransferOrder.objects.create(
-            date = TODAY,
-            expected_completion_date = TODAY,
-            issuing_inventory_controller = self.controller,
-            receiving_inventory_controller = self.controller,
-            actual_completion_date = TODAY,
-            source_warehouse = self.warehouse,
-            receiving_warehouse = self.warehouse,
+            date=TODAY,
+            expected_completion_date=TODAY,
+            issuing_inventory_controller=self.controller,
+            receiving_inventory_controller=self.controller,
+            actual_completion_date=TODAY,
+            source_warehouse=self.warehouse,
+            receiving_warehouse=self.warehouse,
         )
         self.assertIsInstance(obj, models.TransferOrder)
         obj.delete()
@@ -539,24 +529,25 @@ class ItemManagementModelTests(TestCase):
             scrapping_record=self.scrap
         )
         self.assertIsInstance(obj, models.InventoryScrappingRecordLine)
-        obj.delete() 
+        obj.delete()
 
     def test_scrapped_items(self):
         self.assertEqual(self.scrap.scrapped_items.count(), 1)
 
     def test_scrapped_value(self):
         self.assertEqual(self.scrap.scrapping_value, 10)
-    
+
     def test_scrapping_record_scrap(self):
         prev_quantity = self.warehouse_item.quantity
         self.scrap.scrap()
-        self.assertEqual(models.WareHouseItem.objects.get(pk=self.warehouse_item.pk).quantity, 
-            prev_quantity-2)
+        self.assertEqual(models.WareHouseItem.objects.get(pk=self.warehouse_item.pk).quantity,
+                         prev_quantity-2)
         self.warehouse_item.increment(1)
 
 
 class ItemModelTests(TestCase):
-    fixtures = ['common.json', 'employees.json','inventory.json','accounts.json', 'journals.json', 'invoicing.json']
+    fixtures = ['common.json', 'employees.json', 'inventory.json',
+                'accounts.json', 'journals.json', 'invoicing.json']
 
     @classmethod
     def setUpTestData(cls):
@@ -564,7 +555,7 @@ class ItemModelTests(TestCase):
         cls.inv = Invoice.objects.create(
             status='sent',
             customer=Customer.objects.first(),
-            )
+        )
 
         plc = ProductLineComponent.objects.create(
             product=cls.product,
@@ -576,7 +567,7 @@ class ItemModelTests(TestCase):
             invoice=cls.inv,
             line_type=1
         )
-    
+
     def test_create_product(self):
         obj = models.InventoryItem.objects.create(
             name='other test name',
@@ -584,14 +575,14 @@ class ItemModelTests(TestCase):
             type=0,
             unit_purchase_price=8,
             description='Test Description',
-            supplier = self.supplier,
-            minimum_order_level = 0,
-            maximum_stock_level = 20,
-            category = self.category
-        ) 
+            supplier=self.supplier,
+            minimum_order_level=0,
+            maximum_stock_level=20,
+            category=self.category
+        )
         self.assertIsInstance(obj, models.InventoryItem)
         obj.delete()
-        #and associated functions
+        # and associated functions
 
     def test_product_quantity(self):
         self.assertEqual(self.product.quantity, 10)
@@ -606,10 +597,10 @@ class ItemModelTests(TestCase):
         product = models.ProductComponent.objects.get(
             pk=self.product.product_component.pk)
         self.assertAlmostEqual(product.unit_sales_price, D(14.29),
-            places=2)
+                               places=2)
 
         self.product.product_component.pricing_method = 0
-        self.product.product_component.save()        
+        self.product.product_component.save()
 
     def test_markup_sales_price(self):
         self.product.product_component.pricing_method = 2
@@ -618,9 +609,9 @@ class ItemModelTests(TestCase):
         product = models.ProductComponent.objects.get(
             pk=self.product.product_component.pk)
         self.assertAlmostEqual(product.unit_sales_price, D(10.00),
-            places=2)
+                               places=2)
         self.product.product_component.pricing_method = 0
-        self.product.product_component.save()        
+        self.product.product_component.save()
 
     def test_product_stock_value(self):
         self.order.status = 'order'
@@ -639,13 +630,12 @@ class ItemModelTests(TestCase):
             unit=self.unit,
             unit_purchase_price=10,
             description='Test Description',
-            supplier = self.supplier,
-            category = self.category,
+            supplier=self.supplier,
+            category=self.category,
         )
         self.assertIsInstance(obj, models.InventoryItem)
         obj.delete()
 
- 
     def test_create_consumable(self):
         obj = models.InventoryItem.objects.create(
             name='test comsumable',
@@ -653,10 +643,10 @@ class ItemModelTests(TestCase):
             type=2,
             unit_purchase_price=10,
             description='Test Description',
-            supplier = self.supplier,
-            minimum_order_level = 0,
-            maximum_stock_level = 20,
-            category = self.category
+            supplier=self.supplier,
+            minimum_order_level=0,
+            maximum_stock_level=20,
+            category=self.category
         )
         self.assertIsInstance(obj, models.InventoryItem)
         obj.delete()
@@ -668,17 +658,18 @@ class ItemModelTests(TestCase):
         self.order.status = 'draft'
         self.order.save()
 
+
 class WarehouseModelTests(TestCase):
-    fixtures = ['common.json', 'employees.json','inventory.json','accounts.json', 'journals.json',]
+    fixtures = ['common.json', 'employees.json',
+                'inventory.json', 'accounts.json', 'journals.json', ]
 
     @classmethod
     def setUpTestData(cls):
         create_test_inventory_models(cls)
-        
-    def tearDown(self):
-        self.warehouse_item.quantity = 10 
-        self.warehouse_item.save()
 
+    def tearDown(self):
+        self.warehouse_item.quantity = 10
+        self.warehouse_item.save()
 
     def test_create_warehouse(self):
         obj = models.WareHouse.objects.create(
@@ -701,18 +692,16 @@ class WarehouseModelTests(TestCase):
 
     def test_warehouse_get_item(self):
         self.assertIsInstance(self.warehouse.get_item(self.product),
-            models.WareHouseItem)
+                              models.WareHouseItem)
 
     def test_warehouse_decrement_item(self):
-        prev_quantity =  models.WareHouseItem.objects.get(
+        prev_quantity = models.WareHouseItem.objects.get(
             item=self.product).quantity
         self.warehouse.decrement_item(self.product, 1)
         self.assertEqual(models.WareHouseItem.objects.get(
             item=self.product).quantity,
             prev_quantity - 1)
-        
-        
-    
+
     def test_warehouse_has_item(self):
         self.assertFalse(self.warehouse.has_item(self.equipment))
         self.assertTrue(self.warehouse.has_item(self.product))
@@ -721,7 +710,7 @@ class WarehouseModelTests(TestCase):
         self.warehouse.add_item(self.equipment, 1)
         obj = models.WareHouseItem.objects.get(item=self.equipment)
         self.assertIsInstance(obj, models.WareHouseItem)
-        
+
         obj.delete()
 
     def test_warehouse_transfer(self):
@@ -730,11 +719,10 @@ class WarehouseModelTests(TestCase):
             address='elsewhere'
         )
         self.warehouse.transfer(dest, self.product, 1)
-        obj = models.WareHouseItem.objects.get(warehouse=dest, 
-            item=self.product)
+        obj = models.WareHouseItem.objects.get(warehouse=dest,
+                                               item=self.product)
         self.assertIsInstance(obj, models.WareHouseItem)
 
-        
         obj.delete()
 
     def test_create_warehouse_item(self):
@@ -753,15 +741,15 @@ class WarehouseModelTests(TestCase):
     def test_warehouse_item_increment(self):
         prev_quantity = self.warehouse_item.quantity
         self.warehouse_item.increment(1)
-        self.assertEqual(self.warehouse_item.quantity, 
-            prev_quantity + 1)
-    
+        self.assertEqual(self.warehouse_item.quantity,
+                         prev_quantity + 1)
+
     def test_warehouse_item_decrement(self):
         prev_quantity = self.warehouse_item.quantity
         self.warehouse_item.decrement(1)
-        self.assertEqual(self.warehouse_item.quantity, 
-            prev_quantity - 1)
-    
+        self.assertEqual(self.warehouse_item.quantity,
+                         prev_quantity - 1)
+
     def test_warehouse_item_item(self):
         self.assertIsInstance(self.warehouse_item.item, models.InventoryItem)
 
@@ -787,11 +775,11 @@ class WarehouseModelTests(TestCase):
 
 class InventoryServiceTests(TestCase):
     fixtures = ['inventory.json', 'common.json']
-    
+
     @classmethod
     def setUpTestData(cls):
         InventoryModelCreator(cls).create_all()
-        cls.usr = User.objects.create_user(username ='Testuser', password='123')
+        cls.usr = User.objects.create_user(username='Testuser', password='123')
         cls.employee = Employee.objects.create(
             first_name='name',
             last_name='name',
@@ -800,6 +788,7 @@ class InventoryServiceTests(TestCase):
         cls.controller = models.InventoryController.objects.create(
             employee=cls.employee
         )
+
     def test_inventory_service(self):
         self.warehouse.inventory_controller = self.controller
         self.warehouse.save()

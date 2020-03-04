@@ -13,11 +13,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='expense',
             name='attachment',
-            field=models.ImageField(blank=True, null=True, upload_to='expenses'),
+            field=models.ImageField(
+                blank=True, null=True, upload_to='expenses'),
         ),
         migrations.AddField(
             model_name='recurringexpense',
             name='attachment',
-            field=models.ImageField(blank=True, null=True, upload_to='expenses'),
+            field=models.ImageField(
+                blank=True, null=True, upload_to='expenses'),
         ),
     ]

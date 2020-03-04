@@ -6,25 +6,19 @@ import os
 import urllib
 from decimal import Decimal as D
 
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib import messages
 from django.db.models import Q
-from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic import DetailView, TemplateView
 from django.views.generic.edit import (CreateView, DeleteView, FormView,
                                        UpdateView)
 from django_filters.views import FilterView
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.viewsets import ModelViewSet
 
-from common_data.models import GlobalConfig
 from common_data.utilities import *
 from common_data.views import PaginationMixin, PDFDetailView
 from inventory import filters, forms, models, serializers
-from invoicing.models import SalesConfig
 from accounting.models import Account, Journal, JournalEntry
 
 
@@ -34,6 +28,7 @@ from accounting.models import Account, Journal, JournalEntry
 
 CREATE_TEMPLATE = os.path.join("common_data", "create_template.html")
 
+
 class InventoryCheckCreateView(CreateView):
     '''
     Also Known as stock take. Used to compare actual inventory versus recorded inventory. Each item in a warehouse is examined and verified. 
@@ -41,6 +36,7 @@ class InventoryCheckCreateView(CreateView):
     '''
     template_name = os.path.join('inventory', 'inventory_check', 'create.html')
     form_class = forms.InventoryCheckForm
+
     def get_initial(self):
         return {
             'warehouse': self.kwargs['pk']
@@ -51,7 +47,7 @@ class InventoryCheckCreateView(CreateView):
             request, *args, **kwargs)
         if not self.object:
             return resp
-        
+
         raw_data = request.POST['check-table']
         adjustments = json.loads(urllib.parse.unquote(raw_data))
         for adj in adjustments:
@@ -60,22 +56,23 @@ class InventoryCheckCreateView(CreateView):
             if delta != 0:
                 wh_item = models.WareHouseItem.objects.get(pk=pk)
                 adj = models.StockAdjustment.objects.create(
-                    warehouse_item = wh_item,
-                    inventory_check = self.object,
-                    note = "",# could add note widget
-                    adjustment = delta
+                    warehouse_item=wh_item,
+                    inventory_check=self.object,
+                    note="",  # could add note widget
+                    adjustment=delta
                 )
 
                 adj.adjust_inventory()
 
         return resp
 
-class InventoryCheckDetailView(ContextMixin, 
-                               ConfigMixin, 
-                               MultiPageDocument, 
+
+class InventoryCheckDetailView(ContextMixin,
+                               ConfigMixin,
+                               MultiPageDocument,
                                DetailView):
     model = models.InventoryCheck
-    extra_context ={
+    extra_context = {
         'pdf_link': True
     }
     template_name = os.path.join('inventory', 'inventory_check', 'detail.html')
@@ -83,10 +80,11 @@ class InventoryCheckDetailView(ContextMixin,
     def get_multipage_queryset(self):
         return self.object.adjustments
 
-class InventoryCheckPDFView(ContextMixin, 
-                               ConfigMixin, 
-                               MultiPageDocument, 
-                               PDFDetailView):
+
+class InventoryCheckPDFView(ContextMixin,
+                            ConfigMixin,
+                            MultiPageDocument,
+                            PDFDetailView):
     model = models.InventoryCheck
     template_name = os.path.join('inventory', 'inventory_check', 'detail.html')
 
@@ -95,16 +93,17 @@ class InventoryCheckPDFView(ContextMixin,
             pk=self.kwargs['pk']
         ).adjustments
 
-class InventoryCheckListView(ContextMixin ,PaginationMixin, FilterView):
+
+class InventoryCheckListView(ContextMixin, PaginationMixin, FilterView):
     paginate_by = 20
     filterset_class = filters.InventoryCheckFilter
     template_name = os.path.join("inventory", "inventory_check", 'list.html')
     extra_context = {"title": "List of Inventory Checks"}
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['warehouse'] = models.WareHouse.objects.get(pk=self.kwargs['pk'])
+        context['warehouse'] = models.WareHouse.objects.get(
+            pk=self.kwargs['pk'])
         return context
 
     def get_queryset(self):
@@ -141,22 +140,24 @@ class TransferOrderCreateView(CreateView):
         resp = super(TransferOrderCreateView, self).post(
             request, *args, **kwargs)
         if not self.object:
-            return resp 
-        
-        data = json.loads(urllib.parse.unquote(request.POST['items'])) 
+            return resp
+
+        data = json.loads(urllib.parse.unquote(request.POST['items']))
         for i in data:
             pk, _ = i['item'].split('-')[0]
             item = models.InventoryItem.objects.get(pk=pk)
             wh_item = self.object.source_warehouse.get_item(item)
             if wh_item and wh_item.quantity >= float(i['quantity']):
                 models.TransferOrderLine.objects.create(
-                    item = item,
-                    quantity = i['quantity'],
-                    transfer_order = self.object
+                    item=item,
+                    quantity=i['quantity'],
+                    transfer_order=self.object
                 )
             else:
-                messages.info(request, 'The selected source warehouse has insufficient quantity of item %s to make the transfer' % item)
+                messages.info(
+                    request, 'The selected source warehouse has insufficient quantity of item %s to make the transfer' % item)
         return resp
+
 
 class TransferOrderListView(ContextMixin, PaginationMixin, FilterView):
     filterset_class = filters.TransferOrderFilter
@@ -164,8 +165,9 @@ class TransferOrderListView(ContextMixin, PaginationMixin, FilterView):
     paginate_by = 20
     extra_context = {
         'title': 'List of Transfer Orders',
-        
+
     }
+
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['warehouse'] = int(self.kwargs['pk'])
@@ -177,7 +179,6 @@ class TransferOrderListView(ContextMixin, PaginationMixin, FilterView):
         warehouse = models.WareHouse.objects.get(pk=self.kwargs['pk'])
         return models.TransferOrder.objects.filter(Q(source_warehouse=warehouse) | Q(receiving_warehouse=warehouse)).order_by('date').reverse()
 
-    
 
 class TransferOrderDetailView(DetailView):
     model = models.TransferOrder
@@ -193,7 +194,6 @@ class TransferOrderReceiveView(ContextMixin, UpdateView):
         'title': 'Receive Transfer of Inventory'
     }
 
-
     def post(self, request, *args, **kwargs):
         resp = super().post(request, *args, **kwargs)
 
@@ -203,11 +203,11 @@ class TransferOrderReceiveView(ContextMixin, UpdateView):
                 pk=item['item'].split('-')[0])
             if item["receiving_location"] != "":
                 location = item["receiving_location"].split("-")[0]
-                line.move(float(item['quantity_to_move']), 
-                    location=location)
+                line.move(float(item['quantity_to_move']),
+                          location=location)
             else:
                 line.move(float(item['quantity_to_move']))
-                
+
         return resp
 
 
@@ -220,7 +220,7 @@ class StockReceiptCreateView(CreateView):
     form_class = forms.StockReceiptForm
     model = models.StockReceipt
     template_name = os.path.join("inventory", "goods_received",
-        "stock_receipt.html")
+                                 "stock_receipt.html")
     extra_context = {"title": "Receive Ordered goods"}
 
     def get_initial(self):
@@ -231,7 +231,8 @@ class StockReceiptCreateView(CreateView):
         }
 
     def post(self, request, *args, **kwargs):
-        resp = super(StockReceiptCreateView, self).post(request, *args, **kwargs)
+        resp = super(StockReceiptCreateView, self).post(
+            request, *args, **kwargs)
         if not self.object:
             return resp
 
@@ -252,64 +253,67 @@ class StockReceiptCreateView(CreateView):
                 item.receive(n, receipt=self.object)
 
             subtotal += item.order_price * D(n)
-        # Only credit supplier account the money we owe them for received 
+        # Only credit supplier account the money we owe them for received
         # inventory
         tax = subtotal * (D(self.object.order.tax.rate) / D(100))
         total = subtotal + tax
         entry = JournalEntry.objects.create(
-            date = self.object.receive_date,
-            memo = f"Order {self.object.order.pk} received ",
-            journal = Journal.objects.get(pk=4),
-            recorded_by = self.object.order.issuing_inventory_controller.employee,
+            date=self.object.receive_date,
+            memo=f"Order {self.object.order.pk} received ",
+            journal=Journal.objects.get(pk=4),
+            recorded_by=self.object.order.issuing_inventory_controller.employee,
             draft=False
         )
 
         if not self.object.order.supplier.account:
             self.object.order.supplier.create_account()
-            
+
         entry.credit(total, self.object.order.supplier.account)
-        entry.debit(subtotal, Account.objects.get(pk=4006))#purchases
-        entry.debit(tax, Account.objects.get(pk=2001))#tax
-        
-        return resp 
+        entry.debit(subtotal, Account.objects.get(pk=4006))  # purchases
+        entry.debit(tax, Account.objects.get(pk=2001))  # tax
+
+        return resp
+
 
 class GoodsReceivedVoucherView(ContextMixin,
                                MultiPageDocument,
-                               ConfigMixin, 
+                               ConfigMixin,
                                DetailView):
     model = models.StockReceipt
-    page_length=20
+    page_length = 20
     template_name = os.path.join("inventory", "goods_received", "voucher.html")
-    extra_context ={
+    extra_context = {
         'pdf_link': True
     }
 
     def get_multipage_queryset(self):
         return self.object.stockreceiptline_set.all()
-        
+
+
 class GoodsReceivedVoucherPDFView(ConfigMixin,
-                                  MultiPageDocument, 
+                                  MultiPageDocument,
                                   PDFDetailView):
     template_name = os.path.join("inventory", "goods_received", "voucher.html")
     model = models.StockReceipt
-    page_length=20
+    page_length = 20
 
     def get_multipage_queryset(self):
         return models.StockReceipt.objects.get(
             pk=self.kwargs['pk']
         ).stockreceiptline_set.all()
-        
+
 
 class GoodsReceiptsList(TemplateView):
-    template_name=os.path.join('inventory','goods_received', 'list.html')
+    template_name = os.path.join('inventory', 'goods_received', 'list.html')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['order'] = models.Order.objects.get(
             pk=self.kwargs['pk'])
 
-        return context 
-    
+        return context
+
+
 class TransferOrderAPIView(RetrieveAPIView):
-    serializer_class = serializers.TransferOrderSerializer 
+    serializer_class = serializers.TransferOrderSerializer
     queryset = models.TransferOrder.objects.all()

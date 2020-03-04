@@ -15,31 +15,39 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Bill',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('date', models.DateField()),
                 ('reference', models.CharField(blank=True, max_length=255)),
                 ('due', models.DateField()),
                 ('memo', models.TextField(blank=True)),
-                ('vendor', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.Supplier')),
+                ('vendor', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.Supplier')),
             ],
         ),
         migrations.CreateModel(
             name='BillLine',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('bill', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='accounting.Bill')),
-                ('expense', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='accounting.Expense')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
+                ('bill', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='accounting.Bill')),
+                ('expense', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='accounting.Expense')),
             ],
         ),
         migrations.CreateModel(
             name='BillPayment',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('date', models.DateField()),
                 ('amount', models.DecimalField(decimal_places=2, max_digits=12)),
                 ('memo', models.TextField(blank=True)),
-                ('account', models.ForeignKey(limit_choices_to=models.Q(type='asset'), null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Account')),
-                ('bill', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Bill')),
+                ('account', models.ForeignKey(limit_choices_to=models.Q(type='asset'), null=True,
+                                              on_delete=django.db.models.deletion.SET_NULL, to='accounting.Account')),
+                ('bill', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Bill')),
             ],
         ),
     ]

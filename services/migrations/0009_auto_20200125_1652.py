@@ -14,21 +14,25 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='serviceperson',
             name='employee',
-            field=models.OneToOneField(limit_choices_to=models.Q(active=True), null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee'),
+            field=models.OneToOneField(limit_choices_to=models.Q(
+                active=True), null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee'),
         ),
         migrations.AlterField(
             model_name='serviceteam',
             name='manager',
-            field=models.ForeignKey(blank=True, limit_choices_to=models.Q(active=True), null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='service_team_manager', to='services.ServicePerson'),
+            field=models.ForeignKey(blank=True, limit_choices_to=models.Q(
+                active=True), null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='service_team_manager', to='services.ServicePerson'),
         ),
         migrations.AlterField(
             model_name='serviceteam',
             name='members',
-            field=models.ManyToManyField(limit_choices_to=models.Q(active=True), related_name='service_team_members', to='services.ServicePerson'),
+            field=models.ManyToManyField(limit_choices_to=models.Q(
+                active=True), related_name='service_team_members', to='services.ServicePerson'),
         ),
         migrations.AlterField(
             model_name='serviceworkorder',
             name='service_people',
-            field=models.ManyToManyField(blank=True, limit_choices_to=models.Q(active=True), to='services.ServicePerson'),
+            field=models.ManyToManyField(blank=True, limit_choices_to=models.Q(
+                active=True), to='services.ServicePerson'),
         ),
     ]

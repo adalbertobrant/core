@@ -1,15 +1,15 @@
 from .models import (
-    CommonModelTests, 
-    CustomerModelTests, 
-    PaymentModelTests, 
-    SalesRepModelTests, 
-    CreditNoteModelTests, 
-    ProductInvoiceTests, 
+    CommonModelTests,
+    CustomerModelTests,
+    PaymentModelTests,
+    SalesRepModelTests,
+    CreditNoteModelTests,
+    ProductInvoiceTests,
     InvoiceModelTests)
 from .views import (ConfigWizardTests,
-    CommonViewsTests, 
-    ReportViewsTests, 
-    CustomerViewsTests, 
-    SalesRepViewsTests, 
-    InvoiceViewTests, 
-    QuotationViewTests)
+                    CommonViewsTests,
+                    ReportViewsTests,
+                    CustomerViewsTests,
+                    SalesRepViewsTests,
+                    InvoiceViewTests,
+                    QuotationViewTests)

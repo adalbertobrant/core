@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='inventorysettings',
             name='default_warehouse',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.SET_DEFAULT, to='inventory.WareHouse'),
+            field=models.ForeignKey(
+                default=1, on_delete=django.db.models.deletion.SET_DEFAULT, to='inventory.WareHouse'),
         ),
     ]

@@ -1,15 +1,14 @@
 from django.db import models
 from django.db.models import Q
 import datetime
-import os 
-from latrom.settings import MEDIA_ROOT
-from django.shortcuts import reverse 
-from django.contrib.auth.hashers import make_password
+import os
+from django.shortcuts import reverse
 import common_data
 from cryptography.fernet import Fernet
 from django.core.files import File
 import imaplib
 import string
+
 
 class EmailAddress(models.Model):
     address = models.CharField(max_length=255)
@@ -25,10 +24,11 @@ class EmailAddress(models.Model):
         else:
             return EmailAddress.objects.create(address=address)
 
+
 class EmailFolder(models.Model):
     name = models.CharField(max_length=32)
-    owner = models.ForeignKey('messaging.UserProfile', null=True, 
-        on_delete=models.SET_NULL)
+    owner = models.ForeignKey('messaging.UserProfile', null=True,
+                              on_delete=models.SET_NULL)
     label = models.CharField(max_length=255)
 
     @property
@@ -36,7 +36,7 @@ class EmailFolder(models.Model):
         qs = Email.objects.filter(folder=self)
         if qs.exists():
             return qs.order_by('server_id').reverse()[0]
-    
+
     def __str__(self):
         return self.name
 
@@ -44,19 +44,21 @@ class EmailFolder(models.Model):
     def emails(self):
         return Email.objects.filter(folder=self)
 
+
 class UserProfile(common_data.utilities.mixins.ContactsMixin, models.Model):
-    email_fields =['email_address']
+    email_fields = ['email_address']
 
     user = models.OneToOneField('auth.user', on_delete=models.CASCADE)
     avatar = models.ImageField(
         upload_to='chat/', blank=True, null=True)
     email_address = models.CharField(max_length=255)
     email_password = models.CharField(max_length=255)
-    outgoing_server = models.CharField(max_length=255, default='smtp.gmail.com')
+    outgoing_server = models.CharField(
+        max_length=255, default='smtp.gmail.com')
     outgoing_port = models.IntegerField(default=465)
     incoming_host = models.CharField(max_length=255, default='imap.gmail.com')
     incoming_port = models.IntegerField(default=993)
-    
+
     @property
     def get_plaintext_password(self):
         if self.email_password == "":
@@ -105,7 +107,6 @@ class UserProfile(common_data.utilities.mixins.ContactsMixin, models.Model):
             return qs.first()
         return None
 
-
     @property
     def sent_folder(self):
         self.get_folder('sent')
@@ -126,8 +127,8 @@ class UserProfile(common_data.utilities.mixins.ContactsMixin, models.Model):
             folder_label = folder_name.string(string.punctuation)
             if not EmailFolder.objects.filter(
                     owner=self, name=folder_name).exists():
-                EmailFolder.objects.create(owner=self, 
-                                            #in case
+                EmailFolder.objects.create(owner=self,
+                                           # in case
                                            name=folder_name.split('/')[-1],
                                            label=folder_label)
 
@@ -138,34 +139,35 @@ class UserProfile(common_data.utilities.mixins.ContactsMixin, models.Model):
     def address_obj(self):
         return EmailAddress.get_address(self.email_address)
 
+
 class Email(models.Model):
     '''Communication between people online using email'''
-    copy = models.ManyToManyField('messaging.EmailAddress', 
-        related_name='copy_email', blank=True)
-    blind_copy = models.ManyToManyField('messaging.EmailAddress', 
-        related_name='blind_copy_email', blank=True)
-    server_id = models.IntegerField( 
+    copy = models.ManyToManyField('messaging.EmailAddress',
+                                  related_name='copy_email', blank=True)
+    blind_copy = models.ManyToManyField('messaging.EmailAddress',
+                                        related_name='blind_copy_email', blank=True)
+    server_id = models.IntegerField(
         blank=True, null=True)
-    to = models.ForeignKey('messaging.EmailAddress', on_delete=models.SET_NULL, 
-        null=True,
-        related_name='to')
-    sent_from = models.ForeignKey('messaging.EmailAddress',     
-        on_delete=models.SET_NULL, 
-        null=True,
-        related_name='email_sent_from')
-    owner = models.ForeignKey('auth.user', on_delete=models.SET_NULL, 
-        null=True,
-        related_name='email_author')
+    to = models.ForeignKey('messaging.EmailAddress', on_delete=models.SET_NULL,
+                           null=True,
+                           related_name='to')
+    sent_from = models.ForeignKey('messaging.EmailAddress',
+                                  on_delete=models.SET_NULL,
+                                  null=True,
+                                  related_name='email_sent_from')
+    owner = models.ForeignKey('auth.user', on_delete=models.SET_NULL,
+                              null=True,
+                              related_name='email_author')
     read = models.BooleanField(default=False)
     subject = models.CharField(max_length=255, blank=True)
-    body = models.FileField(upload_to='messaging/', 
-        blank=True, null=True)
+    body = models.FileField(upload_to='messaging/',
+                            blank=True, null=True)
     text = models.TextField(blank=True, default="")
-    folder=models.ForeignKey('messaging.EmailFolder', null=True, 
-        on_delete=models.SET_NULL)
+    folder = models.ForeignKey('messaging.EmailFolder', null=True,
+                               on_delete=models.SET_NULL)
     sent = models.BooleanField(default=False)
-    attachment=models.FileField(null=True, blank=True, upload_to='messaging/'
-    )
+    attachment = models.FileField(null=True, blank=True, upload_to='messaging/'
+                                  )
     created_timestamp = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -176,7 +178,8 @@ class Email(models.Model):
         elif self.to:
             return f"From {self.to.address}"
 
-        else: return 'Unknown details'
+        else:
+            return 'Unknown details'
 
     def write_body(self, body_string):
         filename = f'{self.owner.id}-{self.server_id}-' + \
@@ -186,7 +189,7 @@ class Email(models.Model):
                 f.write(body_string)
 
             with open(filename, 'r') as sf:
-                self.body.save(filename, File(sf)) 
+                self.body.save(filename, File(sf))
         finally:
             if os.path.exists(filename):
                 os.remove(filename)
@@ -200,13 +203,13 @@ class Email(models.Model):
 
 
 class Notification(models.Model):
-    user = models.ForeignKey('auth.user', default = 1, 
-        on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey('auth.user', default=1,
+                             on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=255)
     read = models.BooleanField(default=False)
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now=True)
-    #HMTL link depending on the notification
+    # HMTL link depending on the notification
     action = models.CharField(max_length=255, blank=True)
 
     def open(self):
@@ -215,17 +218,17 @@ class Notification(models.Model):
 
 
 class Bubble(models.Model):
-    sender = models.ForeignKey('auth.user', 
-        on_delete=models.SET_NULL, null=True)
+    sender = models.ForeignKey('auth.user',
+                               on_delete=models.SET_NULL, null=True)
     created_timestamp = models.DateTimeField(null=True, blank=True)
     opened_timestamp = models.DateTimeField(blank=True, null=True)
     message_text = models.TextField()
-    attachment = models.FileField(upload_to=
-        'messaging/', blank=True, null=True)
-    chat = models.ForeignKey('messaging.Chat', 
-        on_delete=models.CASCADE, null=True)
-    group = models.ForeignKey('messaging.Group', 
-        on_delete=models.CASCADE, null=True)
+    attachment = models.FileField(
+        upload_to='messaging/', blank=True, null=True)
+    chat = models.ForeignKey('messaging.Chat',
+                             on_delete=models.CASCADE, null=True)
+    group = models.ForeignKey('messaging.Group',
+                              on_delete=models.CASCADE, null=True)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -235,14 +238,14 @@ class Bubble(models.Model):
 
 
 class Chat(models.Model):
-    sender = models.ForeignKey("auth.user", 
-        on_delete=models.SET_NULL, 
-        null=True,
-        related_name='chat_sender')
-    receiver = models.ForeignKey("auth.user", 
-        on_delete=models.SET_NULL, 
-        null=True,
-        related_name='chat_receiver')
+    sender = models.ForeignKey("auth.user",
+                               on_delete=models.SET_NULL,
+                               null=True,
+                               related_name='chat_sender')
+    receiver = models.ForeignKey("auth.user",
+                                 on_delete=models.SET_NULL,
+                                 null=True,
+                                 related_name='chat_receiver')
     archived = models.BooleanField(default=False)
 
     @staticmethod
@@ -250,24 +253,25 @@ class Chat(models.Model):
         return Chat.objects.filter(
             Q(sender=user) | Q(receiver=user)
         )
-    
+
     @property
     def messages(self):
         return Bubble.objects.filter(Q(
             chat=self
         )).order_by('pk')
 
+
 class Group(models.Model):
-    admin = models.ForeignKey('auth.user', 
-        null=True, 
-        on_delete=models.SET_NULL,
-        related_name='admin')
+    admin = models.ForeignKey('auth.user',
+                              null=True,
+                              on_delete=models.SET_NULL,
+                              related_name='admin')
     participants = models.ManyToManyField('auth.user',
-        related_name='group_participants')
+                                          related_name='group_participants')
     created = models.DateTimeField(auto_now=True)
     name = models.CharField(blank=True, default="", max_length=255)
-    icon = models.ImageField(upload_to='chat/', 
-        null=True)
+    icon = models.ImageField(upload_to='chat/',
+                             null=True)
     active = models.BooleanField(default=True)
 
     @property
@@ -275,7 +279,6 @@ class Group(models.Model):
         return Bubble.objects.filter(Q(
             group=self
         )).order_by('pk')
-        
+
     def get_absolute_url(self):
         return reverse("messaging:group", kwargs={"pk": self.pk})
-    

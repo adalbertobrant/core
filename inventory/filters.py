@@ -1,6 +1,5 @@
 
 import django_filters
-from django.db import models
 
 from .models import *
 
@@ -15,6 +14,7 @@ class OrderFilter(django_filters.FilterSet):
             'date': ['exact'],
             'expected_receipt_date': ['exact']
         }
+
 
 class SupplierFilter(django_filters.FilterSet):
     class Meta:
@@ -43,6 +43,7 @@ class TransferOrderFilter(django_filters.FilterSet):
             'receiving_warehouse': ['exact']
         }
 
+
 class UnitFilter(django_filters.FilterSet):
     class Meta:
         model = UnitOfMeasure
@@ -61,7 +62,7 @@ class ControllerFilter(django_filters.FilterSet):
 
 
 class InventoryItemFilter(django_filters.FilterSet):
-    
+
     class Meta:
         model = InventoryItem
         fields = {
@@ -69,12 +70,11 @@ class InventoryItemFilter(django_filters.FilterSet):
             'unit': ['exact'],
             'supplier': ['exact'],
             'category': ['exact'],
-            }
+        }
 
 
 class InventorySearchField(django_filters.FilterSet):
-    
+
     class Meta:
         model = InventoryItem
-        fields = {'name':['icontains']}
-
+        fields = {'name': ['icontains']}

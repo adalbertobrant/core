@@ -15,10 +15,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='POSSession',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('start', models.DateTimeField()),
                 ('end', models.DateTimeField(blank=True, null=True)),
-                ('sales_person', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='employees.Employee')),
+                ('sales_person', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='employees.Employee')),
             ],
         ),
         migrations.AddField(

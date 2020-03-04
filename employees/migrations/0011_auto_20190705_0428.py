@@ -18,6 +18,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='payrolltax',
             name='paid_by',
-            field=models.IntegerField(choices=[(0, 'Employees'), (1, 'Employer'), (2, 'Both')]),
+            field=models.IntegerField(
+                choices=[(0, 'Employees'), (1, 'Employer'), (2, 'Both')]),
         ),
     ]

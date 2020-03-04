@@ -15,11 +15,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='deduction',
             name='liability_account',
-            field=models.ForeignKey(default=2010, on_delete=django.db.models.deletion.SET_DEFAULT, related_name='liability_account', to='accounting.Account'),
+            field=models.ForeignKey(default=2010, on_delete=django.db.models.deletion.SET_DEFAULT,
+                                    related_name='liability_account', to='accounting.Account'),
         ),
         migrations.AlterField(
             model_name='deduction',
             name='account_paid_into',
-            field=models.ForeignKey(default=5008, on_delete=django.db.models.deletion.SET_DEFAULT, related_name='expense_account', to='accounting.Account'),
+            field=models.ForeignKey(default=5008, on_delete=django.db.models.deletion.SET_DEFAULT,
+                                    related_name='expense_account', to='accounting.Account'),
         ),
     ]

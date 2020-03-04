@@ -1,23 +1,19 @@
 
 import datetime
 from decimal import Decimal as D
-from functools import reduce
 
-import rest_framework
-from django.conf import settings
 from django.db import models
 from django.db.models import Q
 
 import inventory
 from accounting.models import Account, Journal, JournalEntry
-from common_data.models import SingletonModel, SoftDeletionModel
+from common_data.models import SoftDeletionModel
 
-from .warehouse_models import StorageMedia, WareHouseItem
 from django.shortcuts import reverse
-from accounting.models import Expense, Asset, AccountingSettings
 
-# TODO i need to separate the order types into product, consumable and 
-# equipment orders. Each order has its own entries 
+# TODO i need to separate the order types into product, consumable and
+# equipment orders. Each order has its own entries
+
 
 class Order(SoftDeletionModel):
     '''The record of all purchase orders for inventory of items that 
@@ -37,7 +33,7 @@ class Order(SoftDeletionModel):
         been received.
     percent_received - is the percentage of the order that has been
         fulfilled by the supplier.
-    
+
     methods
     -------------
     receive - quickly generates a stock receipt where all items are 
@@ -49,58 +45,55 @@ class Order(SoftDeletionModel):
         ('draft', 'Internal Draft'),
         ('order', 'Order')
     ]
-    validated_by = models.ForeignKey('employees.Employee', 
-                                    on_delete=models.SET_NULL, 
-                                    null=True, 
-                                    blank=True)
+    validated_by = models.ForeignKey('employees.Employee',
+                                     on_delete=models.SET_NULL,
+                                     null=True,
+                                     blank=True)
     expected_receipt_date = models.DateField()
     date = models.DateField()
     due = models.DateField(blank=True, null=True)
-    supplier = models.ForeignKey('inventory.supplier', 
-        on_delete=models.SET_NULL, null=True, default=1)
-    supplier_invoice_number = models.CharField(max_length=32, 
-        blank=True,  default="")
-    bill_to = models.CharField(max_length=128, blank=True, 
-        default="")
-    ship_to = models.ForeignKey('inventory.WareHouse', 
-        on_delete=models.SET_NULL, null=True)
-    tax = models.ForeignKey('accounting.Tax',on_delete=models.SET_NULL, 
-        null=True, 
-        default=1)
-    tracking_number = models.CharField(max_length=64, blank=True, 
-        default="")
+    supplier = models.ForeignKey('inventory.supplier',
+                                 on_delete=models.SET_NULL, null=True, default=1)
+    supplier_invoice_number = models.CharField(max_length=32,
+                                               blank=True,  default="")
+    bill_to = models.CharField(max_length=128, blank=True,
+                               default="")
+    ship_to = models.ForeignKey('inventory.WareHouse',
+                                on_delete=models.SET_NULL, null=True)
+    tax = models.ForeignKey('accounting.Tax', on_delete=models.SET_NULL,
+                            null=True,
+                            default=1)
+    tracking_number = models.CharField(max_length=64, blank=True,
+                                       default="")
     notes = models.TextField(blank=True)
-    status = models.CharField(max_length=24, 
-        choices=ORDER_STATUS_CHOICES)
+    status = models.CharField(max_length=24,
+                              choices=ORDER_STATUS_CHOICES)
     received_to_date = models.FloatField(default=0.0)
     issuing_inventory_controller = models.ForeignKey(
-        'inventory.InventoryController', 
-        default=1, 
+        'inventory.InventoryController',
+        default=1,
         limit_choices_to=Q(active=True),
-        on_delete=models.SET_NULL, 
+        on_delete=models.SET_NULL,
         null=True)
     entry = models.ForeignKey('accounting.JournalEntry',
-         blank=True, on_delete=models.SET_NULL, null=True, 
-         related_name="order_entry")
+                              blank=True, on_delete=models.SET_NULL, null=True,
+                              related_name="order_entry")
     entries = models.ManyToManyField('accounting.JournalEntry',
-        related_name="order_entries")
-    shipping_cost_entries = models.ManyToManyField('accounting.JournalEntry', 
-        related_name="shipping_cost_entries")
+                                     related_name="order_entries")
+    shipping_cost_entries = models.ManyToManyField('accounting.JournalEntry',
+                                                   related_name="shipping_cost_entries")
 
     def get_absolute_url(self):
         return reverse("inventory:order-detail", kwargs={"pk": self.pk})
-    
 
     @property
     def total_shipping_costs(self):
         # TODO test
-        return sum([e.total_credits  for e in self.shipping_cost_entries.all()])
+        return sum([e.total_credits for e in self.shipping_cost_entries.all()])
 
     @property
     def percentage_shipping_cost(self):
         return (float(self.total_shipping_costs) / float(self.total)) * 100.0
-    
-
 
     def __str__(self):
         return 'ORD' + str(self.pk)
@@ -114,17 +107,17 @@ class Order(SoftDeletionModel):
     @property
     def product_total(self):
         return sum([i.subtotal for i in self.orderitem_set.filter(
-            item_type = 1)])
+            item_type=1)])
 
     @property
     def equipment_total(self):
         return sum([i.subtotal for i in self.orderitem_set.filter(
-            item_type = 3)])
+            item_type=3)])
 
     @property
     def consumables_total(self):
         return sum([i.subtotal for i in self.orderitem_set.filter(
-            item_type = 2)])
+            item_type=2)])
 
     @property
     def items(self):
@@ -133,11 +126,10 @@ class Order(SoftDeletionModel):
     @property
     def total(self):
         return self.subtotal + self.tax_amount
-        
+
     @property
     def latest_receipt_date(self):
         return self.stockreceipt_set.all().latest('pk').receive_date
-
 
     @property
     def subtotal(self):
@@ -148,16 +140,15 @@ class Order(SoftDeletionModel):
         if self.tax:
             return self.subtotal * (D(self.tax.rate) / D(100))
         return D(0.0)
-    
+
     @property
     def payments(self):
         return inventory.models.item_management.OrderPayment.objects.filter(order=self)
-    
-    @property 
+
+    @property
     def amount_paid(self):
         return sum([i.amount for i in self.payments])
-    
-    
+
     @property
     def total_due(self):
         return self.total - self.amount_paid
@@ -175,11 +166,12 @@ class Order(SoftDeletionModel):
     @property
     def received_total(self):
         return sum([i.received_total for i in self.orderitem_set.all()])
-    
+
     @property
     def fully_received(self):
         for item in self.items:
-            if item.fully_received == False : return False
+            if item.fully_received == False:
+                return False
         return True
 
     @property
@@ -194,81 +186,80 @@ class Order(SoftDeletionModel):
         return (received_quantity / ordered_quantity) * 100.0
 
     def create_entry(self):
-        #verified
+        # verified
         if not self.entry:
             j = JournalEntry.objects.create(
-                    date=self.date,
-                    memo = self.notes,
-                    journal = Journal.objects.get(pk=4),
-                    recorded_by = self.issuing_inventory_controller.employee,
-                    draft=False
-                )
+                date=self.date,
+                memo=self.notes,
+                journal=Journal.objects.get(pk=4),
+                recorded_by=self.issuing_inventory_controller.employee,
+                draft=False
+            )
 
-            #accounts payable
+            # accounts payable
             # since we owe the supplier
             if not self.supplier.account:
                 self.supplier.create_account()
             j.credit(self.total, self.supplier.account)
-            j.debit(self.subtotal, Account.objects.get(pk=4006))#purchases
-            j.debit(self.tax_amount, Account.objects.get(pk=2001))#tax
+            j.debit(self.subtotal, Account.objects.get(pk=4006))  # purchases
+            j.debit(self.tax_amount, Account.objects.get(pk=2001))  # tax
         else:
             j = self.entry
 
         if not self.entry:
             self.entry = j
-    
-        
+
     def receive(self):
         if self.status != 'received':
             sr = inventory.models.item_management.StockReceipt.objects.create(
-                    order=self,
-                    receive_date= datetime.date.today(),
-                    note = 'Autogenerated receipt from order number' + \
-                        str(self.pk),
-                    fully_received=True
-                )
+                order=self,
+                receive_date=datetime.date.today(),
+                note='Autogenerated receipt from order number' +
+                str(self.pk),
+                fully_received=True
+            )
             for item in self.orderitem_set.all():
                 item.receive(item.quantity, receipt=sr)
             self.status = 'received'
             self.save()
 
-    #check for deffered date with deferred type of invoice
+    # check for deffered date with deferred type of invoice
 
     @property
     def returned_total(self):
         return sum([i.returned_value for i in self.orderitem_set.all()])
 
+
 class OrderItem(models.Model):
     '''A component of an order this tracks the order price 
     of an item its quantity and how much has been received.
-    
+
     methods
     -----------
     receive - takes a number and adds its value to the item inventory
         and the orderitem's received quantity field.
-    
+
     properties
     -----------
     received_total - returns the cash value of the items received
     subtotal - returns the cash value of the items ordered
     '''
-    
-    order = models.ForeignKey('inventory.Order', 
-        on_delete=models.SET_NULL, null=True)
-    item = models.ForeignKey('inventory.inventoryitem', 
-        null=True,
-        on_delete=models.SET_NULL)
+
+    order = models.ForeignKey('inventory.Order',
+                              on_delete=models.SET_NULL, null=True)
+    item = models.ForeignKey('inventory.inventoryitem',
+                             null=True,
+                             on_delete=models.SET_NULL)
     quantity = models.FloatField()
-    unit = models.ForeignKey('inventory.UnitOfMeasure', 
-        on_delete=models.SET_NULL, null=True, default=1)
+    unit = models.ForeignKey('inventory.UnitOfMeasure',
+                             on_delete=models.SET_NULL, null=True, default=1)
     order_price = models.DecimalField(max_digits=16, decimal_places=2)
     received = models.FloatField(default=0.0)
 
     @property
     def returned_quantity(self):
-        return sum([dn.quantity \
-            for dn in inventory.models.debit_note.DebitNoteLine.objects.filter(item=self)])
-
+        return sum([dn.quantity
+                    for dn in inventory.models.debit_note.DebitNoteLine.objects.filter(item=self)])
 
     @property
     def fully_received(self):
@@ -277,28 +268,27 @@ class OrderItem(models.Model):
         return True
 
     def receive(self, n, medium=None, receipt=None):
-        n= float(n)
+        n = float(n)
         self.received += n
         inventory.models.StockReceiptLine.objects.create(
-            quantity= n,
+            quantity=n,
             line=self,
             receipt=receipt
         )
-        
+
         wh_item = self.order.ship_to.add_item(self.item, n, location=medium)
-        
+
         self.item.set_purchase_price(self.order_price)
-            
+
         self.save()
-        
+
     def __str__(self):
         return str(self.item) + ' -' + str(self.order_price)
 
-        
     @property
     def received_total(self):
         '''The total value of the item as received'''
-        return D(self.received)  * self.order_price
+        return D(self.received) * self.order_price
 
     @property
     def subtotal(self):
@@ -309,15 +299,12 @@ class OrderItem(models.Model):
     def returned(self):
         return self.returned_quantity > 0
 
-
     def _return_to_vendor(self, n):
         self.order.ship_to.decrement_item(self.item, n)
         self.received -= n
         self.save()
         self.order.received_to_date = self.order.received_total
         self.order.save
-
-        
 
     @property
     def returned_value(self):

@@ -19,7 +19,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='interaction',
             name='contact',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='common_data.Individual'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='common_data.Individual'),
         ),
         migrations.AlterField(
             model_name='lead',

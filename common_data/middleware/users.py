@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib import messages
 
+
 class UserTestMiddleware(object):
     def __init__(self, get_response):
         self.get_response = get_response
@@ -42,8 +43,7 @@ class UserTestMiddleware(object):
 
         ]
 
-        #check if the first user has been created
-        
+        # check if the first user has been created
 
         # TODO add manufacturing
         if request.user.is_superuser or \
@@ -56,7 +56,7 @@ class UserTestMiddleware(object):
                 'api' in request.path or \
                 request.path in exempted_urls:
             return self.get_response(request)
-        
+
         elif User.objects.all().count() == 0:
             return HttpResponseRedirect('/base/create-superuser/')
 
@@ -76,12 +76,13 @@ class UserTestMiddleware(object):
             elif request.path.startswith("/employees"):
                 if request.user.employee.is_payroll_officer:
                     return self.get_response(request)
-                elif any([request.path.startswith(path) \
-                    for path in exempted_base_urls]):
-                        return self.get_response(request)
+                elif any([request.path.startswith(path)
+                          for path in exempted_base_urls]):
+                    return self.get_response(request)
 
                 else:
-                    messages.info(request, "The currently logged in user does not have the appropriate permissions to access this feature")
+                    messages.info(
+                        request, "The currently logged in user does not have the appropriate permissions to access this feature")
                     return HttpResponseRedirect(
                         "/login/?next={}".format(redirect) if redirect else "/login/")
 
@@ -90,12 +91,13 @@ class UserTestMiddleware(object):
                 return self.get_response(request)
 
             else:
-                messages.info(request, "The currently logged in user does not have the appropriate permissions to access this feature")
+                messages.info(
+                    request, "The currently logged in user does not have the appropriate permissions to access this feature")
                 return HttpResponseRedirect(
-                "/login/?next={}".format(redirect) if redirect else "/login/")
+                    "/login/?next={}".format(redirect) if redirect else "/login/")
 
         else:
-            messages.info(request, "The currently logged in user does not have the appropriate permissions to access this feature")
+            messages.info(
+                request, "The currently logged in user does not have the appropriate permissions to access this feature")
             return HttpResponseRedirect(
                 "/login/?next={}".format(redirect) if redirect else "/login/")
-        

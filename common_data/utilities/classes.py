@@ -12,20 +12,18 @@ class MultiPageDocument(CMixin):
     Makes use of django's built in pagination feature
 
     '''
-    page_length = 20 #default value
+    page_length = 20  # default value
     first_page_length = None
     multi_page_queryset = None
 
     def get_multipage_queryset(self):
         '''Used to create the queryset'''
-        pass
-        
 
     @property
     def pages(self):
         '''Returns a list of pages'''
-        pages = [self._paginator.get_page(page) \
-                    for page in self._paginator.page_range]
+        pages = [self._paginator.get_page(page)
+                 for page in self._paginator.page_range]
 
         return pages
 
@@ -40,10 +38,10 @@ class MultiPageDocument(CMixin):
 
         if not self.first_page_length:
             self.first_page_length = self.page_length
-        
-        self._paginator = VariableLengthPaginator(self.multi_page_queryset, 
-            self.page_length, 
-            first_page_length=self.first_page_length)
+
+        self._paginator = VariableLengthPaginator(self.multi_page_queryset,
+                                                  self.page_length,
+                                                  first_page_length=self.first_page_length)
         context['pages'] = self.pages
         return context
 
@@ -53,14 +51,14 @@ class MultiPagePDFDocument(CMixin):
     Makes use of django's built in pagination feature
 
     '''
-    page_length = 10 #default value
+    page_length = 10  # default value
     multipage_queryset = None
 
     @property
     def pages(self):
         '''Returns a list of pages'''
-        pages = [self._paginator.get_page(page) \
-                    for page in self._paginator.page_range]
+        pages = [self._paginator.get_page(page)
+                 for page in self._paginator.page_range]
 
         return pages
 
@@ -69,7 +67,8 @@ class MultiPagePDFDocument(CMixin):
         return self._paginator.num_pages
 
     def get_multipage_queryset(self):
-        if self.multipage_queryset: return self.multipage_queryset
+        if self.multipage_queryset:
+            return self.multipage_queryset
         return None
 
 
@@ -86,26 +85,26 @@ class ConfigWizardBase(SessionWizardView):
         """
         if step is None:
             step = self.steps.current
-        
+
         form_list = self.get_form_list()
         keys = list(form_list.keys())
-        
+
         if step in keys:
             key = keys.index(step) + 1
             if len(keys) > key:
                 return keys[key]
         else:
-            
+
             all_forms_keys = list(self.form_list.keys())
-            
-            if step == all_forms_keys[-1]:#last step
+
+            if step == all_forms_keys[-1]:  # last step
                 return None
             next_key = all_forms_keys.index(step) + 1
             key_string = all_forms_keys[next_key]
             key_index = keys.index(key_string)
 
             return keys[key_index]
-            #find where it originally was in the list
+            # find where it originally was in the list
 
         return None
 
@@ -127,11 +126,11 @@ class ConfigWizardBase(SessionWizardView):
                 data=self.storage.get_step_data(form_key),
                 files=self.storage.get_step_files(form_key)
             )
-            
+
             final_forms[form_key] = form_obj
-            done_response = self.done(final_forms.values(), 
-                form_dict=final_forms, **kwargs)
-            
+            done_response = self.done(final_forms.values(),
+                                      form_dict=final_forms, **kwargs)
+
             self.storage.reset()
 
             return done_response
@@ -145,13 +144,13 @@ class ConfigWizardBase(SessionWizardView):
 
 class VariableLengthPaginator(Paginator):
     def __init__(self, object_list, per_page, orphans=0,
-                 allow_empty_first_page=True,first_page_length=10):
+                 allow_empty_first_page=True, first_page_length=10):
         self.object_list = object_list
         self._check_object_list_is_ordered()
         self._per_page = int(per_page)
         self.orphans = int(orphans)
         self.allow_empty_first_page = allow_empty_first_page
-        self.first_page_length= first_page_length
+        self.first_page_length = first_page_length
 
     def page(self, number):
         """Return a Page object for the given 1-based page number."""

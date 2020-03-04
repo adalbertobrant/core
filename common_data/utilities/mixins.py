@@ -2,14 +2,10 @@ import datetime
 import json
 import os
 
-from django.urls import re_path
 from django.http import HttpResponse
-from django.views.generic import DetailView, ListView, View
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic import View
 from common_data import models
 import messaging
-import invoicing
-from latrom import settings
 from .functions import apply_style, PeriodSelectionException
 import logging
 import sys
@@ -29,6 +25,7 @@ console_handler = logging.StreamHandler(sys.stdout)
 console_handler.setFormatter(log_format)
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
+
 
 class ConfigMixin(object):
     def get_context_data(self, *args, **kwargs):
@@ -85,17 +82,17 @@ class ContactsMixin(object):
         return ret
 
 
-class AutomatedServiceMixin(object):#not really a mixin
+class AutomatedServiceMixin(object):  # not really a mixin
     service_name = None
     active_services = ['inventory', 'accounting', 'common']
 
     DEFAULT_CONFIG = {
-                    'inventory': False,
-                    'employees': False,
-                    'accounting': False,
-                    'common': False,
-                    'messaging': False
-                }
+        'inventory': False,
+        'employees': False,
+        'accounting': False,
+        'common': False,
+        'messaging': False
+    }
     '''
     Ensures the service is only run once per day. Especially for servers 
     that restart multiple times a day.
@@ -108,11 +105,12 @@ class AutomatedServiceMixin(object):#not really a mixin
     execute the service
     if the record exists is less than a day old check the config file against the specific service, if run skip else run again
     '''
+
     def __init__(self):
         if not os.path.exists('service_config.json'):
             with open('service_config.json', 'w') as conf:
                 json.dump(self.DEFAULT_CONFIG, conf)
-        
+
         with open('service_config.json', 'r') as conf:
             self.config = json.load(conf)
 
@@ -121,25 +119,23 @@ class AutomatedServiceMixin(object):#not really a mixin
         config = models.GlobalConfig.objects.first()
         last_run = config.last_automated_service_run
         complete = all([self.config[i] for i in self.active_services])
-        if complete and (last_run and (datetime.datetime.now() - \
-                    last_run).total_seconds() > 86400):
+        if complete and (last_run and (datetime.datetime.now() -
+                                       last_run).total_seconds() > 86400):
             self.config = self.DEFAULT_CONFIG
             with open('service_config.json', 'w') as conf:
                 json.dump(self.config, conf)
 
     def update_config(self):
         self.config[self.service_name] = True
-        
-        
+
         with open('service_config.json', 'w') as conf:
             json.dump(self.config, conf)
-        
-        #only update the last service run when all the services are run.
+
+        # only update the last service run when all the services are run.
         if all([self.config[i] for i in self.active_services]):
             config = models.GlobalConfig.objects.first()
             config.last_automated_service_run = datetime.datetime.now()
             config.save()
-        
 
     def _run(self):
         print(f'running service {self.service_name}...\n')
@@ -153,9 +149,8 @@ class AutomatedServiceMixin(object):#not really a mixin
         print(f'attempting to run service {self.service_name}')
         config = models.GlobalConfig.objects.first()
         if not config.last_automated_service_run or (
-                (datetime.datetime.now() - \
-                    config.last_automated_service_run).total_seconds() > 86400 \
-                        and not self.config[self.service_name]):
+            (datetime.datetime.now() -
+             config.last_automated_service_run).total_seconds() > 86400
+                and not self.config[self.service_name]):
             self._run()
             self.update_config()
-

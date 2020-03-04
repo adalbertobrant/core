@@ -2,12 +2,10 @@ import random
 
 import os
 import datetime
-from django.core.mail import EmailMessage, send_mail
+from django.core.mail import send_mail
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
-from django.template import loader
 from django.urls import reverse_lazy
 from django.views.generic import (DeleteView, DetailView, FormView, ListView,
                                   TemplateView)
@@ -16,19 +14,15 @@ from django_filters.views import FilterView
 from wkhtmltopdf import utils as pdf_tools
 from wkhtmltopdf.views import PDFTemplateView
 from messaging.views import UserEmailConfiguredMixin
-from messaging.models import Email, UserProfile
-from messaging.forms import AxiosEmailForm
+from messaging.models import UserProfile
 
-from accounting.models import Journal
 from common_data import filters, models, serializers, forms
-from common_data.forms import SendMailForm
 from common_data.models import GlobalConfig, Organization
-from common_data.utilities import (ContextMixin, 
-                                    apply_style, 
-                                    MultiPageDocument, 
-                                    MultiPagePDFDocument,
-                                    ConfigWizardBase)
-from invoicing.models import SalesConfig
+from common_data.utilities import (ContextMixin,
+                                   apply_style,
+                                   MultiPageDocument,
+                                   MultiPagePDFDocument,
+                                   ConfigWizardBase)
 from rest_framework.generics import RetrieveAPIView, ListAPIView
 from django.contrib.auth.models import User
 from django.apps import apps
@@ -36,32 +30,33 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 import services
 from messaging.email_api.email import EmailSMTP
-from messaging.forms import EmailForm, PrePopulatedEmailForm
-import json 
-from employees.models import Employee
+from messaging.forms import PrePopulatedEmailForm
+import json
 from common_data.schedules import backup_db
-import hashlib
 from common_data.middleware.license import license_check
 
 try:
     backup_db(repeat=Task.DAILY)
-except: pass
+except:
+    pass
 
 
+class DocumentPaginationMixin():
+    pass
 
-class DocumentPaginationMixin():pass
 
 class PaginationMixin(object):
     '''quick and dirty mixin to support pagination on filterviews '''
+
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
 
         if not self.queryset and hasattr(self, 'get_queryset'):
             self.queryset = self.get_queryset()
-            
+
         filter = self.filterset_class(self.request.GET, queryset=self.queryset)
         object_list = filter.qs
-        
+
         if not self.paginate_by:
             self.paginate_by = 20
 
@@ -71,10 +66,10 @@ class PaginationMixin(object):
         try:
             page = p.page(page_str)
         except PageNotAnInteger:
-            #gets first page
+            # gets first page
             page = p.page(1)
         except EmptyPage:
-            #gets last page 
+            # gets last page
             page = p.page(p.num_pages)
 
         context['object_list'] = page
@@ -84,12 +79,14 @@ class PaginationMixin(object):
 
         return context
 
+
 CREATE_TEMPLATE = os.path.join('common_data', 'create_template.html')
 CRISPY_TEMPLATE = os.path.join('common_data', 'crispy_create_template.html')
 
 #########################################################
 #                  Organization Views                   #
 #########################################################
+
 
 class OrganizationCreateView(ContextMixin, LoginRequiredMixin, CreateView):
     template_name = CREATE_TEMPLATE
@@ -109,14 +106,14 @@ class OrganizationUpdateView(ContextMixin, LoginRequiredMixin, UpdateView):
 
 
 class OrganizationDetailView(ContextMixin, LoginRequiredMixin, DetailView):
-    template_name = os.path.join('common_data', 'organization','detail.html')
+    template_name = os.path.join('common_data', 'organization', 'detail.html')
     model = models.Organization
-    
 
-class OrganizationListView(ContextMixin, 
-                            PaginationMixin,  
-                            LoginRequiredMixin, 
-                            FilterView):
+
+class OrganizationListView(ContextMixin,
+                           PaginationMixin,
+                           LoginRequiredMixin,
+                           FilterView):
     template_name = os.path.join('common_data', 'organization', 'list.html')
     queryset = models.Organization.objects.all()
     filterset_class = filters.OrganizationFilter
@@ -124,7 +121,6 @@ class OrganizationListView(ContextMixin,
         'title': 'Organization List',
         'new_link': reverse_lazy('base:organization-create')
     }
-
 
 
 #########################################################
@@ -143,6 +139,7 @@ class IndividualCreateView(ContextMixin,  LoginRequiredMixin, CreateView):
         }]
     }
 
+
 class IndividualUpdateView(ContextMixin,  LoginRequiredMixin, UpdateView):
     template_name = CRISPY_TEMPLATE
     form_class = forms.IndividualForm
@@ -157,15 +154,13 @@ class IndividualUpdateView(ContextMixin,  LoginRequiredMixin, UpdateView):
     }
 
 
-
-
 class IndividualDetailView(ContextMixin,  LoginRequiredMixin, DetailView):
-    template_name = os.path.join('common_data', 'individual','detail.html')
+    template_name = os.path.join('common_data', 'individual', 'detail.html')
     model = models.Individual
-    
 
-class IndividualListView(ContextMixin, PaginationMixin,  LoginRequiredMixin, 
-        FilterView):
+
+class IndividualListView(ContextMixin, PaginationMixin,  LoginRequiredMixin,
+                         FilterView):
     template_name = os.path.join('common_data', 'individual', 'list.html')
     queryset = models.Individual.objects.all()
     filterset_class = filters.IndividualFilter
@@ -190,13 +185,13 @@ class WorkFlowView(LoginRequiredMixin, TemplateView):
         context["month"] = "{}/{}".format(date.year, date.month)
         return context
 
+
 class ReactTestView(TemplateView):
     template_name = os.path.join("common_data", "react_test.html")
 
 
 class AboutView(LoginRequiredMixin, TemplateView):
     template_name = os.path.join("common_data", "about.html")
-
 
 
 class GlobalConfigView(ContextMixin,  LoginRequiredMixin, UpdateView):
@@ -213,13 +208,13 @@ class GlobalConfigView(ContextMixin,  LoginRequiredMixin, UpdateView):
             return {
                 'organization_name': self.object.organization.legal_name,
                 'organization_logo': self.object.logo,
-                'organization_address': \
-                    self.object.organization.business_address,
+                'organization_address':
+                self.object.organization.business_address,
                 'organization_email': self.object.organization.email,
                 'organization_phone': self.object.organization.phone,
                 'organization_website': self.object.organization.website,
-                'organization_business_partner_number': \
-                    self.object.organization.bp_number
+                'organization_business_partner_number':
+                self.object.organization.bp_number
             }
 
         return None
@@ -232,7 +227,7 @@ class GlobalConfigView(ContextMixin,  LoginRequiredMixin, UpdateView):
         else:
             org = Organization()
 
-        org.legal_name = form.cleaned_data['organization_name'] 
+        org.legal_name = form.cleaned_data['organization_name']
         org.business_address = form.cleaned_data['organization_address']
         org.website = form.cleaned_data['organization_website']
         org.bp_number = \
@@ -247,6 +242,7 @@ class GlobalConfigView(ContextMixin,  LoginRequiredMixin, UpdateView):
 
         return resp
 
+
 class AuthenticationView(FormView):
     # TODO add features to use as a plugin for views that require
     # authentication
@@ -256,13 +252,13 @@ class AuthenticationView(FormView):
 
 
 def get_logo_url(request):
-    return JsonResponse({'url': models.GlobalConfig.logo_url() })
+    return JsonResponse({'url': models.GlobalConfig.logo_url()})
 
 
 class SendEmail(ContextMixin,  LoginRequiredMixin, FormView):
     template_name = CREATE_TEMPLATE
     form_class = forms.SendMailForm
-    success_url= reverse_lazy('invoicing:home')
+    success_url = reverse_lazy('invoicing:home')
     extra_context = {
         'title': 'Compose New Email'
     }
@@ -280,46 +276,48 @@ class SendEmail(ContextMixin,  LoginRequiredMixin, FormView):
             return resp
         return resp
 
+
 class PDFException(Exception):
     pass
 
+
 class EmailPlusPDFView(UserEmailConfiguredMixin,
-                       CreateView, 
+                       CreateView,
                        MultiPagePDFDocument):
     '''THe pagination is optional, it will be ignored '''
-    form_class = PrePopulatedEmailForm #SendMailForm
+    form_class = PrePopulatedEmailForm  # SendMailForm
     template_name = os.path.join('messaging', 'email', 'compose.html')
     success_url = None
     pdf_template_name = None
     inv_class = None
-    
+
     def get(self, *args, **kwargs):
         return super().get(*args, **kwargs)
-        
+
         try:
             return super().get(*args, **kwargs)
         except PDFException:
             return HttpResponse('<p>An error occurred rendering the PDF</p>')
-        
+
         except Exception as e:
             raise e
 
     def get_initial(self):
         if not self.inv_class:
-            raise ValueError('Improperly configured, needs an inv_class attribute')
+            raise ValueError(
+                'Improperly configured, needs an inv_class attribute')
 
         inv = self.inv_class.objects.get(pk=self.kwargs['pk'])
-        
 
-        out_file = os.path.join(os.getcwd(), 'media', 'temp','out.pdf')
+        out_file = os.path.join(os.getcwd(), 'media', 'temp', 'out.pdf')
         if os.path.exists(out_file):
             out_file = os.path.join(
-                os.getcwd(), 
-                'media', 
+                os.getcwd(),
+                'media',
                 'temp',
                 f'out_{random.randint(1, 100000)}.pdf')
-            
-        #use the context for pagination and the object
+
+        # use the context for pagination and the object
         obj = self.inv_class.objects.get(pk=self.kwargs['pk'])
         context = {
             'object': obj,
@@ -337,29 +335,28 @@ class EmailPlusPDFView(UserEmailConfiguredMixin,
         }
         try:
             pdf_tools.render_pdf_from_template(
-                self.pdf_template_name, None, None, 
+                self.pdf_template_name, None, None,
                 apply_style(context),
                 cmd_options=options)
 
         except Exception as e:
-            print('Error occured creating pdf %s' % e )
+            print('Error occured creating pdf %s' % e)
             raise PDFException()
-        
+
         return {
             'owner': self.request.user.pk,
             'folder': 'sent',
             'attachment_path': out_file
         }
-    
-    def post(self,request, *args, **kwargs):
+
+    def post(self, request, *args, **kwargs):
         resp = super(EmailPlusPDFView, self).post(
             request, *args, **kwargs)
         form = self.form_class(request.POST)
-        
+
         if not form.is_valid():
             return resp
 
-        
         u = UserProfile.objects.get(user=self.request.user)
         e = EmailSMTP(u)
 
@@ -372,10 +369,11 @@ class EmailPlusPDFView(UserEmailConfiguredMixin,
             form.cleaned_data['body'],
             open(form.cleaned_data['attachment_path'], 'rb'),
             html=True
-            )
+        )
 
         if not self.pdf_template_name:
-            raise ValueError('Improperly configured. Needs pdf_template_name attribute.')
+            raise ValueError(
+                'Improperly configured. Needs pdf_template_name attribute.')
 
         if os.path.exists(form.cleaned_data['attachment_path']):
             os.remove(form.cleaned_data['attachment_path'])
@@ -388,6 +386,7 @@ class UserAPIView(ListAPIView):
     queryset = User.objects.all()
     model = User
 
+
 class UserDetailAPIView(RetrieveAPIView):
     serializer_class = serializers.UserSerializer
     queryset = User.objects.all()
@@ -399,18 +398,22 @@ def get_current_user(request):
         return JsonResponse({
             'pk': request.user.pk,
             'name': request.user.username
-            })
+        })
 
     return JsonResponse({'pk': None})
+
 
 class LicenseErrorPage(TemplateView):
     template_name = os.path.join('common_data', 'licenses_error.html')
 
+
 class LicenseFeaturesErrorPage(TemplateView):
     template_name = os.path.join('common_data', 'license_error_features.html')
 
+
 class UsersErrorPage(TemplateView):
     template_name = os.path.join('common_data', 'users_error.html')
+
 
 class CreateSuperUserView(FormView):
     form_class = forms.CreateSuperuserForm
@@ -430,10 +433,11 @@ class CreateSuperUserView(FormView):
                                       form.cleaned_data['password'],)
         return resp
 
+
 class LicenseCheck(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
+
         if os.path.exists('license.json'):
             with open('license.json', 'r') as lic_f:
                 data = json.load(lic_f)
@@ -443,16 +447,19 @@ class LicenseCheck(TemplateView):
     def get(self, *args, **kwargs):
         HID = models.GlobalConfig.generate_hardware_id()
         with open('key.txt', 'w') as f:
-                f.write(HID)
+            f.write(HID)
         if not os.path.exists('license.json'):
-            self.template_name = os.path.join('common_data', 'licensing', 'no_license.html')
+            self.template_name = os.path.join(
+                'common_data', 'licensing', 'no_license.html')
             # later implement a form where a person can send their hardware id
         else:
             output = license_check()
             if output == 'ok':
-                self.template_name = os.path.join('common_data', 'licensing', 'valid_license.html')
+                self.template_name = os.path.join(
+                    'common_data', 'licensing', 'valid_license.html')
             else:
-                self.template_name = os.path.join('common_data', 'licensing', 'invalid_license.html')
+                self.template_name = os.path.join(
+                    'common_data', 'licensing', 'invalid_license.html')
 
         return super().get(*args, **kwargs)
 
@@ -461,8 +468,9 @@ NOTE_TARGET = {
     'work_order': services.models.ServiceWorkOrder
 }
 
+
 def create_note(request):
-    global NOTE_TARGET 
+    global NOTE_TARGET
     '''This simple function allows a large variety of objects to support 
     notes without modification. The global note target dictionary mapps 
     strings of notes with their corresponding objects to which the notes are 
@@ -470,12 +478,13 @@ def create_note(request):
     identification for the target namely its classname and the objects primary 
     key'''
     if not hasattr(request.user, 'employee'):
-        messages.info(request, 'Only users linked to employees can write notes')
+        messages.info(
+            request, 'Only users linked to employees can write notes')
         return JsonResponse({'status': 'error'})
-        
+
     note = models.Note.objects.create(
-        author = request.user.employee,
-        note = request.POST['note']
+        author=request.user.employee,
+        note=request.POST['note']
     )
 
     NOTE_TARGET[request.POST['target']].objects.get(
@@ -495,8 +504,10 @@ class PDFDetailView(PDFTemplateView):
         context.update(self.context)
         return context
 
+
 def get_model_latest(request, model_name=None):
-    app_list = ['services', 'inventory', 'common_data', 'messaging', 'accounting', 'employees', 'planner', 'messaging', 'invoicing']
+    app_list = ['services', 'inventory', 'common_data', 'messaging',
+                'accounting', 'employees', 'planner', 'messaging', 'invoicing']
     alias_mapping = {
         'salesperson': 'salesrepresentative',
         'ship_from': 'warehouse',
@@ -504,7 +515,7 @@ def get_model_latest(request, model_name=None):
         'ship_to': 'warehouse',
         'paid_to': 'supplier',
         'vendor': 'supplier',
-        'parent_account':'account',
+        'parent_account': 'account',
         'procedure': 'serviceprocedure'
 
     }
@@ -518,12 +529,12 @@ def get_model_latest(request, model_name=None):
 
         except LookupError:
             pass
-    
-    
+
     if not latest:
         return JsonResponse({'data': -1})
 
     return JsonResponse({'data': [latest.pk, str(latest)]})
+
 
 def get_create_link(request, name=None):
     mapping = {
@@ -551,42 +562,46 @@ def get_create_link(request, name=None):
 class ConfigWizard(ConfigWizardBase):
     template_name = os.path.join('common_data', 'wizard.html')
     form_list = [forms.GlobalConfigForm]
-    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'logo'))
+    file_storage = FileSystemStorage(
+        location=os.path.join(settings.MEDIA_ROOT, 'logo'))
     config_class = GlobalConfig
     success_url = reverse_lazy('base:workflow')
-    
-    #TODO fix logo and file handling
+
+    # TODO fix logo and file handling
     def post(self, request, *args, **kwargs):
 
         return super().post(request, *args, **kwargs)
+
     def done(self, form_list, **kwargs):
         """Because there is only one form"""
         for form in form_list:
             form.save()
         return super().done(form_list, **kwargs)
-    
+
 
 def document_notes_api(request, document=None, id=None):
-    notes =[]
-    
+    notes = []
+
     if document == 'service':
         doc = services.models.ServiceWorkOrder.objects.get(pk=id)
-        notes = [{'note': i.note, 'author': i.author.pk} \
-                    for i in doc.notes.all()]
-    
+        notes = [{'note': i.note, 'author': i.author.pk}
+                 for i in doc.notes.all()]
+
     return JsonResponse(notes, safe=False)
 
 
 class ReportBlankView(TemplateView):
     template_name = os.path.join('common_data', 'reports', 'blank.html')
 
+
 def current_db(request):
-    #TODO support other database types
+    # TODO support other database types
     with open(os.path.join('database', 'config.json')) as fil:
         config = json.load(fil)
         return JsonResponse({
             'db': config['current'].strip('sqlite3')
         })
+
 
 class ConfigAPIView(RetrieveAPIView):
     queryset = GlobalConfig.objects.all()

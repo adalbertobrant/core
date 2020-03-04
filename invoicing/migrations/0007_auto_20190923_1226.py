@@ -13,12 +13,14 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='expenselinecomponent',
             name='price',
-            field=models.DecimalField(decimal_places=2, default=0.0, max_digits=16),
+            field=models.DecimalField(
+                decimal_places=2, default=0.0, max_digits=16),
         ),
         migrations.AlterField(
             model_name='invoiceline',
             name='discount',
-            field=models.DecimalField(decimal_places=2, default=0.0, max_digits=16),
+            field=models.DecimalField(
+                decimal_places=2, default=0.0, max_digits=16),
         ),
         migrations.AlterField(
             model_name='payment',
@@ -28,31 +30,37 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='productlinecomponent',
             name='quantity',
-            field=models.DecimalField(decimal_places=2, default=0.0, max_digits=16),
+            field=models.DecimalField(
+                decimal_places=2, default=0.0, max_digits=16),
         ),
         migrations.AlterField(
             model_name='productlinecomponent',
             name='unit_price',
-            field=models.DecimalField(decimal_places=2, default=0.0, max_digits=16),
+            field=models.DecimalField(
+                decimal_places=2, default=0.0, max_digits=16),
         ),
         migrations.AlterField(
             model_name='productlinecomponent',
             name='value',
-            field=models.DecimalField(decimal_places=2, default=0.0, max_digits=16),
+            field=models.DecimalField(
+                decimal_places=2, default=0.0, max_digits=16),
         ),
         migrations.AlterField(
             model_name='servicelinecomponent',
             name='flat_fee',
-            field=models.DecimalField(decimal_places=2, default=0.0, max_digits=16),
+            field=models.DecimalField(
+                decimal_places=2, default=0.0, max_digits=16),
         ),
         migrations.AlterField(
             model_name='servicelinecomponent',
             name='hourly_rate',
-            field=models.DecimalField(decimal_places=2, default=0.0, max_digits=16),
+            field=models.DecimalField(
+                decimal_places=2, default=0.0, max_digits=16),
         ),
         migrations.AlterField(
             model_name='servicelinecomponent',
             name='hours',
-            field=models.DecimalField(decimal_places=2, default=0.0, max_digits=16),
+            field=models.DecimalField(
+                decimal_places=2, default=0.0, max_digits=16),
         ),
     ]

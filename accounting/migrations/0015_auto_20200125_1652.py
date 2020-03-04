@@ -14,11 +14,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='accountingsettings',
             name='default_bookkeeper',
-            field=models.ForeignKey(blank=True, limit_choices_to=models.Q(active=True), null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Bookkeeper'),
+            field=models.ForeignKey(blank=True, limit_choices_to=models.Q(
+                active=True), null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Bookkeeper'),
         ),
         migrations.AlterField(
             model_name='adjustment',
             name='created_by',
-            field=models.ForeignKey(default=1, limit_choices_to=models.Q(active=True), null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Bookkeeper'),
+            field=models.ForeignKey(default=1, limit_choices_to=models.Q(
+                active=True), null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Bookkeeper'),
         ),
     ]

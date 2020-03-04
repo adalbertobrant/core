@@ -1,23 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import datetime
-from decimal import Decimal as D
 
-import rest_framework
-from django.conf import settings
 from django.db import models
 from django.db.models import Q
 
-from accounting.models import Account, Journal, JournalEntry
 from common_data.models import SingletonModel, SoftDeletionModel
 from inventory.models.item import InventoryItem
-from inventory.schedules import run_inventory_service
 from django.shortcuts import reverse
 
 
 class InventorySettings(SingletonModel):
-    INVENTORY_VALUATION_PERIOD=[
+    INVENTORY_VALUATION_PERIOD = [
         (30, 'Month'),
         (90, 'Quarter'),
         (182, 'Six Months'),
@@ -41,9 +35,9 @@ class InventorySettings(SingletonModel):
         (i, i) for i in range(28, 1)
     ]
     inventory_valuation_method = models.PositiveSmallIntegerField(
-        choices = INVENTORY_VALUATION_METHODS, default=1
+        choices=INVENTORY_VALUATION_METHODS, default=1
     )
-    default_product_sales_pricing_method= models.PositiveSmallIntegerField(
+    default_product_sales_pricing_method = models.PositiveSmallIntegerField(
         choices=PRICING_METHODS, default=1
     )
     inventory_check_frequency = models.PositiveSmallIntegerField(
@@ -58,10 +52,11 @@ class InventorySettings(SingletonModel):
     use_equipment_inventory = models.BooleanField(default=True)
     use_consumables_inventory = models.BooleanField(default=True)
     use_raw_materials_inventory = models.BooleanField(default=True)
-    #TODO capitalization_limit = models.DecimalField(max_digits=16, decimal_places=2)
+    # TODO capitalization_limit = models.DecimalField(max_digits=16, decimal_places=2)
     is_configured = models.BooleanField(default=False)
     service_hash = models.CharField(max_length=255, default="", blank=True)
-    default_warehouse = models.ForeignKey('inventory.warehouse', default=1, on_delete=models.SET_DEFAULT)
+    default_warehouse = models.ForeignKey(
+        'inventory.warehouse', default=1, on_delete=models.SET_DEFAULT)
 
 
 class InventoryController(SoftDeletionModel):
@@ -69,20 +64,19 @@ class InventoryController(SoftDeletionModel):
     inventory controller and have the ability to make purchase orders,
     receive them, transfer inventory between warehouses and perform other 
     functions.'''
-    employee = models.OneToOneField('employees.Employee', 
-        on_delete=models.SET_NULL, 
-        null=True, 
-        limit_choices_to=Q(
-            Q(user__isnull=False) &
-            Q(active=True)
-        ))
+    employee = models.OneToOneField('employees.Employee',
+                                    on_delete=models.SET_NULL,
+                                    null=True,
+                                    limit_choices_to=Q(
+                                        Q(user__isnull=False) &
+                                        Q(active=True)
+                                    ))
     can_authorize_equipment_requisitions = models.BooleanField(default=False)
     can_authorize_consumables_requisitions = models.BooleanField(default=False)
     can_validate_orders = models.BooleanField(default=False)
+
     def __str__(self):
         return self.employee.full_name
-
-
 
 
 class UnitOfMeasure(SoftDeletionModel):
@@ -92,8 +86,9 @@ class UnitOfMeasure(SoftDeletionModel):
     name = models.CharField(max_length=64)
     description = models.TextField(default="")
     eval_string = models.CharField(max_length=255, default="")
-    is_derived = models.BooleanField(default = False)
-    base_unit = models.ForeignKey('inventory.UnitOfMeasure', on_delete=models.SET_NULL, null=True, blank=True)
+    is_derived = models.BooleanField(default=False)
+    base_unit = models.ForeignKey(
+        'inventory.UnitOfMeasure', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -104,24 +99,24 @@ class UnitOfMeasure(SoftDeletionModel):
 
     def get_absolute_url(self):
         return reverse("inventory:unit-detail", kwargs={"pk": self.pk})
-    
+
 
 class Category(models.Model):
     '''Used to organize inventory'''
     name = models.CharField(max_length=64)
-    parent = models.ForeignKey('inventory.Category', on_delete=models.SET_NULL, null=True, blank=True)
+    parent = models.ForeignKey(
+        'inventory.Category', on_delete=models.SET_NULL, null=True, blank=True)
     description = models.TextField(default="")
 
     def get_absolute_url(self):
         return reverse("inventory:category-detail", kwargs={"pk": self.pk})
-    
 
     def __str__(self):
         return self.name
 
     @property
     def items(self):
-        #deprecating
+        # deprecating
         return InventoryItem.objects.filter(category=self, active=True)
 
     @property
@@ -135,4 +130,4 @@ class Category(models.Model):
                 pk=self.pk)
         else:
             return Category.objects.filter(parent=self.parent).exclude(
-                pk=self.pk) 
+                pk=self.pk)

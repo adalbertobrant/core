@@ -1,10 +1,12 @@
 from common_data.tests.model_util import CommonModelCreator
 from common_data.tests.accounts import create_accounts
 from employees.tests.model_util import EmployeeModelCreator
-from inventory import models 
+from inventory import models
 import datetime
 
-#change order status from order
+# change order status from order
+
+
 class InventoryModelCreator():
     def __init__(self, klass):
         self.cls = klass
@@ -24,17 +26,16 @@ class InventoryModelCreator():
     def create_supplier(self):
         if not hasattr(self.cls, 'organization'):
             CommonModelCreator(self.cls).create_organization()
-        
+
         if not hasattr(self.cls, 'account_c'):
             create_accounts(self.cls)
 
         self.cls.supplier = models.Supplier.objects.create(
             organization=self.cls.organization,
-            account = self.cls.account_c
-            )
+            account=self.cls.account_c
+        )
 
         return self.cls.supplier
-
 
     def create_unit(self):
         self.cls.unit = models.UnitOfMeasure.objects.create(
@@ -52,26 +53,25 @@ class InventoryModelCreator():
 
     def create_product_component(self):
         self.cls.product_component = models.ProductComponent.objects.create(
-            pricing_method=0, #KISS direct pricing
+            pricing_method=0,  # KISS direct pricing
             direct_price=10,
             margin=0.5,
         )
-        return self.cls.product_component 
-
+        return self.cls.product_component
 
     def create_product(self):
         if hasattr(self.cls, 'product'):
             return self.cls.product
-        
+
         if not hasattr(self.cls, 'product_component'):
             self.create_product_component()
-        
+
         if not hasattr(self.cls, 'unit'):
             self.create_unit()
 
         if not hasattr(self.cls, 'inventory_category'):
             self.create_inventory_category()
-        
+
         if not hasattr(self.cls, 'supplier'):
             self.create_supplier()
         self.cls.product = models.InventoryItem.objects.create(
@@ -80,11 +80,11 @@ class InventoryModelCreator():
             type=0,
             unit_purchase_price=10,
             description='Test Description',
-            supplier = self.cls.supplier,
-            minimum_order_level = 0,
-            maximum_stock_level = 20,
-            category = self.cls.inventory_category,
-            product_component = self.cls.product_component
+            supplier=self.cls.supplier,
+            minimum_order_level=0,
+            maximum_stock_level=20,
+            category=self.cls.inventory_category,
+            product_component=self.cls.product_component
         )
 
         return self.cls.product
@@ -128,14 +128,14 @@ class InventoryModelCreator():
             self.create_inventory_controller()
 
         self.cls.order = models.Order.objects.create(
-            expected_receipt_date = datetime.date.today(),
-            date = datetime.date.today(),
+            expected_receipt_date=datetime.date.today(),
+            date=datetime.date.today(),
             supplier=self.cls.supplier,
-            bill_to = 'Test Bill to',
-            ship_to = self.cls.warehouse,
-            tracking_number = '34234',
-            notes = 'Test Note',
-            status = 'draft',
+            bill_to='Test Bill to',
+            ship_to=self.cls.warehouse,
+            tracking_number='34234',
+            notes='Test Note',
+            status='draft',
             issuing_inventory_controller=self.cls.controller
         )
 

@@ -13,7 +13,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='globalconfig',
             name='backup_frequency',
-            field=models.CharField(choices=[('D', 'Daily'), ('M', 'Monthly'), ('W', 'Weekly')], default='D', max_length=32),
+            field=models.CharField(choices=[(
+                'D', 'Daily'), ('M', 'Monthly'), ('W', 'Weekly')], default='D', max_length=32),
         ),
         migrations.AddField(
             model_name='globalconfig',

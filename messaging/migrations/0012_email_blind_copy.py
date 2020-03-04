@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='email',
             name='blind_copy',
-            field=models.ManyToManyField(blank=True, related_name='blind_copy_email', to='messaging.EmailAddress'),
+            field=models.ManyToManyField(
+                blank=True, related_name='blind_copy_email', to='messaging.EmailAddress'),
         ),
     ]

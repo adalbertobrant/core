@@ -7,5 +7,3 @@ from employees import models
 
 admin.site.register(models.Employee)
 admin.site.register(models.PayrollOfficer)
-
-

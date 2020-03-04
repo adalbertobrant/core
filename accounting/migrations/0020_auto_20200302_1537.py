@@ -14,21 +14,25 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='asset',
             name='initialized_by',
-            field=models.ForeignKey(default=1, limit_choices_to=models.Q(active=True), null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee'),
+            field=models.ForeignKey(default=1, limit_choices_to=models.Q(
+                active=True), null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee'),
         ),
         migrations.AlterField(
             model_name='expense',
             name='recorded_by',
-            field=models.ForeignKey(default=1, limit_choices_to=models.Q(active=True), on_delete=django.db.models.deletion.SET_DEFAULT, to='employees.Employee'),
+            field=models.ForeignKey(default=1, limit_choices_to=models.Q(
+                active=True), on_delete=django.db.models.deletion.SET_DEFAULT, to='employees.Employee'),
         ),
         migrations.AlterField(
             model_name='journalentry',
             name='recorded_by',
-            field=models.ForeignKey(default=1, limit_choices_to=models.Q(active=True), on_delete=django.db.models.deletion.SET_DEFAULT, to='employees.Employee'),
+            field=models.ForeignKey(default=1, limit_choices_to=models.Q(
+                active=True), on_delete=django.db.models.deletion.SET_DEFAULT, to='employees.Employee'),
         ),
         migrations.AlterField(
             model_name='recurringexpense',
             name='recorded_by',
-            field=models.ForeignKey(default=1, limit_choices_to=models.Q(active=True), on_delete=django.db.models.deletion.SET_DEFAULT, to='employees.Employee'),
+            field=models.ForeignKey(default=1, limit_choices_to=models.Q(
+                active=True), on_delete=django.db.models.deletion.SET_DEFAULT, to='employees.Employee'),
         ),
     ]

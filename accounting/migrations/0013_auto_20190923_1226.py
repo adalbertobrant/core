@@ -58,7 +58,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='interestbearingaccount',
             name='interest_rate',
-            field=models.DecimalField(decimal_places=2, default=0.0, max_digits=16),
+            field=models.DecimalField(
+                decimal_places=2, default=0.0, max_digits=16),
         ),
         migrations.AlterField(
             model_name='recurringexpense',

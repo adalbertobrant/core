@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='productcomponent',
             name='tax',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.SET_DEFAULT, to='accounting.Tax'),
+            field=models.ForeignKey(
+                default=1, on_delete=django.db.models.deletion.SET_DEFAULT, to='accounting.Tax'),
         ),
     ]

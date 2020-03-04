@@ -8,6 +8,7 @@ class TaxSerializer(serializers.ModelSerializer):
         model = models.Tax
         fields = '__all__'
 
+
 class AccountingSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.AccountingSettings
@@ -19,11 +20,12 @@ class AccountSerializer(serializers.ModelSerializer):
         model = models.Account
         fields = "__all__"
 
-        
+
 class ExpenseSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Expense
         fields = "__all__"
+
 
 class CurrencySerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,7 +35,7 @@ class CurrencySerializer(serializers.ModelSerializer):
 
 class CurrencyConversionLineSerializer(serializers.ModelSerializer):
     currency = CurrencySerializer(many=False)
-    
+
     class Meta:
         model = models.CurrencyConversionLine
         fields = "__all__"
@@ -49,9 +51,11 @@ class CurrencyConversionLineSerializer(serializers.ModelSerializer):
         )
         return line
 
+
 class CurrencyConversionTableSerializer(serializers.ModelSerializer):
     reference_currency = CurrencySerializer(many=False, read_only=False)
-    currencyconversionline_set = CurrencyConversionLineSerializer(many=True, read_only=True)
+    currencyconversionline_set = CurrencyConversionLineSerializer(
+        many=True, read_only=True)
 
     class Meta:
         model = models.CurrencyConversionTable
@@ -59,9 +63,9 @@ class CurrencyConversionTableSerializer(serializers.ModelSerializer):
         validators = []
 
     def create(self, validated_data):
-        
+
         table = models.CurrencyConversionTable.objects.create(
-            reference_currency = validated_data['reference_currency'],
-            name = validated_data['name']
+            reference_currency=validated_data['reference_currency'],
+            name=validated_data['name']
         )
         return table

@@ -1,8 +1,6 @@
 
 import datetime
-import itertools
 from decimal import Decimal as D
-from functools import reduce
 
 from django.db import models
 from django.db.models import Q
@@ -15,15 +13,16 @@ from common_data.models import SoftDeletionModel
 import inventory
 from services.models import WorkOrderRequest
 from invoicing.models.credit_note import CreditNoteLine
-from django.shortcuts import reverse 
+from django.shortcuts import reverse
 from messaging.models import Notification
 from inventory.models import InventoryController
+
 
 class Invoice(SoftDeletionModel):
     '''An invoice is a document that represents a sale. Because of the complexity of the object, both a quotation and an invoice are represented by the same model. The document starts as a quotation and then can move to a proforma invoice culminating in the creation of an invoice.
     In each stage the document can be considered a draft in which case no journal entries are made and no fiscalization takes place. Only non draft invoices can be sent
-    
-    
+
+
     methods
     -------
     add_line 
@@ -32,7 +31,7 @@ class Invoice(SoftDeletionModel):
     _line_getter - gets all the invoice lines of a certain type
 
 
-    
+
 
     properties
     --------
@@ -61,7 +60,7 @@ class Invoice(SoftDeletionModel):
 
 
     '''
-    DEFAULT_WAREHOUSE = 1 #use  fixture
+    DEFAULT_WAREHOUSE = 1  # use  fixture
     DEFAULT_SALES_REP = 1
     DEFAULT_CUSTOMER = 1
     SALE_STATUS = [
@@ -70,46 +69,47 @@ class Invoice(SoftDeletionModel):
         ('invoice', 'Invoice'),
         ('paid', 'Paid In Full'),
         ('paid-partially', 'Paid Partially'),
-    ]# reversal is handled in credit notes
+    ]  # reversal is handled in credit notes
 
     status = models.CharField(max_length=16, choices=SALE_STATUS)
     invoice_number = models.PositiveIntegerField(null=True)
     quotation_number = models.PositiveIntegerField(null=True)
     quotation_date = models.DateField(blank=True, null=True)
-    quotation_valid= models.DateField(blank=True, null=True)
-    invoice_validated_by = models.ForeignKey('employees.employee', 
-        blank=True, 
-        null=True, 
-        on_delete=models.SET_NULL)
+    quotation_valid = models.DateField(blank=True, null=True)
+    invoice_validated_by = models.ForeignKey('employees.employee',
+                                             blank=True,
+                                             null=True,
+                                             on_delete=models.SET_NULL)
     draft = models.BooleanField(blank=True, default=True)
-    customer = models.ForeignKey("invoicing.Customer", 
-        on_delete=models.SET_NULL, 
-        null=True,
-        default=DEFAULT_CUSTOMER)
+    customer = models.ForeignKey("invoicing.Customer",
+                                 on_delete=models.SET_NULL,
+                                 null=True,
+                                 default=DEFAULT_CUSTOMER)
     salesperson = models.ForeignKey('invoicing.SalesRepresentative',
-        on_delete=models.SET_NULL, 
-        null=True,
-        limit_choices_to=Q(active=True),
-        default=DEFAULT_SALES_REP)
-    due= models.DateField( default=datetime.date.today)
-    date= models.DateField(default=datetime.date.today)
-    terms = models.CharField(max_length = 128, 
-        blank=True)
+                                    on_delete=models.SET_NULL,
+                                    null=True,
+                                    limit_choices_to=Q(active=True),
+                                    default=DEFAULT_SALES_REP)
+    due = models.DateField(default=datetime.date.today)
+    date = models.DateField(default=datetime.date.today)
+    terms = models.CharField(max_length=128,
+                             blank=True)
     comments = models.TextField(blank=True)
-    purchase_order_number = models.CharField(blank=True, 
-        max_length=32)
-    #product sales specific fields 
-    ship_from = models.ForeignKey('inventory.WareHouse', 
-        on_delete=models.SET_NULL, 
-        null=True,
-        default=DEFAULT_WAREHOUSE)
+    purchase_order_number = models.CharField(blank=True,
+                                             max_length=32)
+    # product sales specific fields
+    ship_from = models.ForeignKey('inventory.WareHouse',
+                                  on_delete=models.SET_NULL,
+                                  null=True,
+                                  default=DEFAULT_WAREHOUSE)
     shipping_expenses = models.ManyToManyField('accounting.Expense')
-    timestamp = models.DateTimeField(null=True, blank=True, auto_now=False)# for pos
-    entry = models.ForeignKey('accounting.JournalEntry', 
-        on_delete=models.SET_NULL,  blank=True, null=True)
-    
+    timestamp = models.DateTimeField(
+        null=True, blank=True, auto_now=False)  # for pos
+    entry = models.ForeignKey('accounting.JournalEntry',
+                              on_delete=models.SET_NULL,  blank=True, null=True)
+
     def get_absolute_url(self):
-        if self.status in ['invoice', 'proforma','paid', 'paid-partially']:
+        if self.status in ['invoice', 'proforma', 'paid', 'paid-partially']:
             return reverse("invoicing:invoice-details", kwargs={"pk": self.pk})
         else:
             return reverse("invoicing:quotation-details", kwargs={
@@ -128,16 +128,16 @@ class Invoice(SoftDeletionModel):
             component = ProductLineComponent.objects.create(
                 product=product,
                 quantity=data['quantity'],
-                unit_price= data['unitPrice']
-                
+                unit_price=data['unitPrice']
+
             )
             line = self.invoiceline_set.create(
-                line_type=1,#product 
+                line_type=1,  # product
                 product=component,
                 tax=tax,
                 discount=discount
             )
-            
+
         elif data['type'] == 'service':
             pk = data['selected'].split('-')[0]
             service = Service.objects.get(pk=pk)
@@ -148,13 +148,11 @@ class Invoice(SoftDeletionModel):
                 hourly_rate=data['rate']
             )
             self.invoiceline_set.create(
-                line_type=2,#service
+                line_type=2,  # service
                 service=component,
                 tax=tax,
                 discount=discount
             )
-
-            
 
         elif data['type'] == 'expense':
             pk = data['selected'].split('-')[0]
@@ -164,7 +162,7 @@ class Invoice(SoftDeletionModel):
                 price=expense.amount
             )
             self.invoiceline_set.create(
-                line_type=3,#expense
+                line_type=3,  # expense
                 expense=component,
                 tax=tax,
                 discount=discount
@@ -174,7 +172,7 @@ class Invoice(SoftDeletionModel):
         '''Removes inventory from the warehouse'''
         #called in views.py
         for line in self.invoiceline_set.filter(product__isnull=False):
-            #check if ship_from has the product in sufficient quantity
+            # check if ship_from has the product in sufficient quantity
             self.ship_from.decrement_item(line.product.product, line.quantity)
 
     def verify_inventory(self):
@@ -186,7 +184,6 @@ class Invoice(SoftDeletionModel):
             if shortage['quantity'] > 0:
                 shortages.append(shortage)
 
-
         if len(shortages) > 0:
             qs = InventoryController.objects.filter(active=True)
             if qs.exists():
@@ -197,12 +194,12 @@ class Invoice(SoftDeletionModel):
                     title='Sales: Inventory deficit',
                     message="""Invoice #{} requires the following inventory to be completed:
                     {}
-                    """.format(self.pk, 
-                        '\n'.join([f'{shortage["product"]} ->{shortage["quantity"]}' for shortage in shortages]))
+                    """.format(self.pk,
+                               '\n'.join([f'{shortage["product"]} ->{shortage["quantity"]}' for shortage in shortages]))
                 )
         return shortages
 
-    @property 
+    @property
     def cost_of_goods_sold(self):
         '''calculates the value of each line in the invoice and returns their 
         sum'''
@@ -223,7 +220,7 @@ class Invoice(SoftDeletionModel):
         if TODAY > self.due:
             return (TODAY - self.due).days
         return 0
-        
+
     @property
     def total(self):
         '''the total value of the invoice inclusive of tax'''
@@ -238,7 +235,7 @@ class Invoice(SoftDeletionModel):
     def on_credit(self):
         '''Checks if the invoice is on credit returns bool'''
         return self.status in ['invoice', 'paid-partially'] and not self.draft \
-            and self.due > self.date 
+            and self.due > self.date
 
     @property
     def total_paid(self):
@@ -263,7 +260,7 @@ class Invoice(SoftDeletionModel):
     @property
     def subtotal(self):
         '''The total of the invoice minus tax including discounts'''
-        
+
         return sum([i.subtotal for i in self.invoiceline_set.all()])
 
     def __str__(self):
@@ -274,11 +271,10 @@ class Invoice(SoftDeletionModel):
         return self.status == "quotation" and \
             self.quotation_valid and \
             self.quotation_valid >= datetime.date.today()
-        
 
     def set_quote_invoice_number(self):
         '''This method is called when the invoice is created to follow the numbering sequence stored in the sales config '''
-        config = inv_models.SalesConfig.objects.first() 
+        config = inv_models.SalesConfig.objects.first()
         if self.is_quotation:
             if self.quotation_number is None:
                 self.quotation_number = config.next_quotation_number
@@ -298,21 +294,22 @@ class Invoice(SoftDeletionModel):
         '''Makes the necessary inputs into the accounting system after a 
             transaction. It debits the customer account and credits the sales 
             account as well as crediting the tax account'''
-        
+
         j = JournalEntry.objects.create(
-                memo= f'Journal entry for invoice #{self.invoice_number}.',
-                date=self.date,
-                journal =Journal.objects.get(pk=3),#Sales Journal
-                recorded_by = self.salesperson.employee,
-                draft=False
-            )
+            memo=f'Journal entry for invoice #{self.invoice_number}.',
+            date=self.date,
+            journal=Journal.objects.get(pk=3),  # Sales Journal
+            recorded_by=self.salesperson.employee,
+            draft=False
+        )
 
-        j.credit(self.subtotal, Account.objects.get(pk=4000))#sales does not affect balance sheet
+        # sales does not affect balance sheet
+        j.credit(self.subtotal, Account.objects.get(pk=4000))
 
-        j.debit(self.total, self.customer.account)#asset increase
+        j.debit(self.total, self.customer.account)  # asset increase
 
         if self.tax_amount > D(0):
-            j.credit(self.tax_amount, Account.objects.get(pk=2001))#sales tax
+            j.credit(self.tax_amount, Account.objects.get(pk=2001))  # sales tax
 
         self.entry = j
         self.save()
@@ -326,17 +323,16 @@ class Invoice(SoftDeletionModel):
         '''Retrives all the lines in a the invoice of a certain type'''
         return InvoiceLine.objects.filter(
             Q(invoice=self) & Q(line_type=type_id))
-    
+
     @property
     def sales_lines(self):
         '''Returns all product sales lines'''
         return self._line_getter(1)
 
-    @property 
+    @property
     def sales_total(self):
         '''Returns numeric total of product sales'''
         return self._line_total(self.sales_lines)
-
 
     @property
     def service_lines(self):
@@ -347,7 +343,6 @@ class Invoice(SoftDeletionModel):
     def service_total(self):
         '''Returns all invoice lines for services '''
         return self._line_total(self.service_lines)
-        
 
     @property
     def expense_lines(self):
@@ -359,13 +354,13 @@ class Invoice(SoftDeletionModel):
         '''Returns the numerical value of all expense lines'''
         return self._line_total(self.expense_lines)
 
-    #sales specific expenses
+    # sales specific expenses
     @property
     def total_shipping_costs(self):
         '''Returns the numerical value of all recorded shipping expenses for a 
         particular invoice'''
         # TODO test
-        return sum([e.amount for  e in self.shipping_expenses.all()])
+        return sum([e.amount for e in self.shipping_expenses.all()])
 
     @property
     def percentage_shipping_cost(self):
@@ -377,30 +372,27 @@ class Invoice(SoftDeletionModel):
     def returned_total(self):
         '''returns the value of products returned to the warehouse'''
         return sum([
-            i.product.returned_value for i in self.invoiceline_set.all() \
-                if i.product ])
-
+            i.product.returned_value for i in self.invoiceline_set.all()
+            if i.product])
 
     @property
     def sales_only(self):
         '''returns true if all lines are product lines'''
-        return all([True if line.product != None else False \
-            for line in self.invoiceline_set.all() ])
-
+        return all([True if line.product != None else False
+                    for line in self.invoiceline_set.all()])
 
     @property
     def service_only(self):
         '''returns true if all lines are service lines'''
-        return all([True if line.service != None else False \
-            for line in self.invoiceline_set.all() ])
-            
+        return all([True if line.service != None else False
+                    for line in self.invoiceline_set.all()])
 
     @property
     def expense_only(self):
         '''Checks if an invoice consists only of expense lines'''
-        return all([True if line.product != None else False \
-            for line in self.invoiceline_set.all() ])
-            
+        return all([True if line.product != None else False
+                    for line in self.invoiceline_set.all()])
+
     def save(self, *args, **kwargs):
         '''Makes sure that every invoice and quotation is numbered.
         Also makes sure that each service has a valid work order request'''
@@ -412,13 +404,14 @@ class Invoice(SoftDeletionModel):
                 if not WorkOrderRequest.objects.filter(
                         invoice=self, service=line.service.service).exists():
                     WorkOrderRequest.objects.create(
-                        invoice=self, 
+                        invoice=self,
                         service=line.service.service,
                         status="request",
                         created=datetime.date.today(),
                         created_by=self.salesperson.employee,
-                        description = f'{line.service.service.name}: {line.service.service.description}'
+                        description=f'{line.service.service.name}: {line.service.service.description}'
                     )
+
 
 class InvoiceLine(models.Model):
     LINE_CHOICES = [
@@ -426,26 +419,27 @@ class InvoiceLine(models.Model):
         (2, 'service'),
         (3, 'expense'),
     ]
-    invoice = models.ForeignKey('invoicing.Invoice', 
-        on_delete=models.SET_NULL, 
-        null=True, 
-        default=1)
+    invoice = models.ForeignKey('invoicing.Invoice',
+                                on_delete=models.SET_NULL,
+                                null=True,
+                                default=1)
     product = models.OneToOneField('invoicing.ProductLineComponent',
-        on_delete=models.SET_NULL, 
-        null=True, )
+                                   on_delete=models.SET_NULL,
+                                   null=True, )
     service = models.OneToOneField('invoicing.ServiceLineComponent',
-        on_delete=models.SET_NULL, 
-        null=True,)
-    expense = models.OneToOneField("invoicing.ExpenseLineComponent", 
-        on_delete=models.SET_NULL, 
-        null=True,)
+                                   on_delete=models.SET_NULL,
+                                   null=True,)
+    expense = models.OneToOneField("invoicing.ExpenseLineComponent",
+                                   on_delete=models.SET_NULL,
+                                   null=True,)
     line_type = models.PositiveSmallIntegerField(choices=LINE_CHOICES)
-    tax = models.ForeignKey('accounting.tax', on_delete=models.SET_NULL, 
-        null=True)
-    discount =models.DecimalField(max_digits=16, decimal_places=2, default=0.0)
+    tax = models.ForeignKey('accounting.tax', on_delete=models.SET_NULL,
+                            null=True)
+    discount = models.DecimalField(
+        max_digits=16, decimal_places=2, default=0.0)
 
-    #what it is sold for
-    
+    # what it is sold for
+
     @property
     def type_string(self):
         mapping = {
@@ -455,7 +449,7 @@ class InvoiceLine(models.Model):
         }
         return mapping[self.line_type]
 
-    @property 
+    @property
     def component(self):
         mapping = {
             1: self.product,
@@ -464,7 +458,7 @@ class InvoiceLine(models.Model):
         }
 
         return mapping[self.line_type]
-    
+
     @property
     def name(self):
         if self.line_type == 1:
@@ -473,7 +467,6 @@ class InvoiceLine(models.Model):
             return self.component.service.name
         else:
             return self.component.expense.description
-
 
     def __str__(self):
         if not self.component:
@@ -494,13 +487,13 @@ class InvoiceLine(models.Model):
                 )
             if self.component.hours > 0 and \
                     self.component.hourly_rate > 0:
-                ret_string +=  '+ {}Hrs @ ${:0.2f}/Hr'.format(
+                ret_string += '+ {}Hrs @ ${:0.2f}/Hr'.format(
                     self.component.hours,
                     self.component.hourly_rate)
-            
+
             return ret_string
 
-        elif self.line_type ==3:
+        elif self.line_type == 3:
             return '[BILLABE EXPENSE] %s' % self.expense.expense.description
 
     @property
@@ -513,7 +506,7 @@ class InvoiceLine(models.Model):
         '''Includes price after discount and tax'''
         if not self.component:
             return 0
-        
+
         return self.subtotal + self.tax_
 
     @property
@@ -526,10 +519,9 @@ class InvoiceLine(models.Model):
         '''Returns the tax obtained from an invoice line'''
         if self.tax == None:
             return D(0)
-        
+
         return self.subtotal * D(self.tax.rate / 100.0)
 
-    
     def __getattribute__(self, name):
         try:
             return super().__getattribute__(name)
@@ -541,33 +533,34 @@ class InvoiceLine(models.Model):
                 return getattr(self.service, name)
             elif self.expense and hasattr(self.expense, name):
                 return getattr(self.expense, name)
-            
+
             raise attrerr
         raise AttributeError(f"{type(self)} has no attribute '{name}'")
-    
-class ProductLineComponent(models.Model):
-    product = models.ForeignKey('inventory.InventoryItem', null=True, 
-        on_delete=models.SET_NULL)
-    returned = models.BooleanField(default=False)
-    unit_price = models.DecimalField(max_digits=16, 
-        decimal_places=2, 
-        default=0.0)
 
-    # value is calculated once when the invoice is generated to prevent 
+
+class ProductLineComponent(models.Model):
+    product = models.ForeignKey('inventory.InventoryItem', null=True,
+                                on_delete=models.SET_NULL)
+    returned = models.BooleanField(default=False)
+    unit_price = models.DecimalField(max_digits=16,
+                                     decimal_places=2,
+                                     default=0.0)
+
+    # value is calculated once when the invoice is generated to prevent
     # distortions as prices change
-    #what it is worth to the business
+    # what it is worth to the business
     value = models.DecimalField(max_digits=16, decimal_places=2, default=0.0)
     quantity = models.DecimalField(
-        max_digits=16, 
-        decimal_places=2, 
-        default=0.0)  
+        max_digits=16,
+        decimal_places=2,
+        default=0.0)
 
     @property
     def nominal_price(self):
         '''The price of the line without discount and taxes'''
         return self.quantity * self.unit_price
 
-    @property 
+    @property
     def line(self):
         '''The invoice line the component belongs to'''
         if InvoiceLine.objects.filter(product=self).exists():
@@ -579,18 +572,17 @@ class ProductLineComponent(models.Model):
         '''The returns effected by credit notes for this particular invoice 
         line'''
         if self.line:
-            return sum([ item.quantity \
-                for item in CreditNoteLine.objects.filter(line=self.line)])
+            return sum([item.quantity
+                        for item in CreditNoteLine.objects.filter(line=self.line)])
         return 0
 
     def __str__(self):
         return str(self.product)
 
-
     def _return(self, quantity):
         self.returned = True
-        #Must increment inventory here !! Important
-        # increment inventory here. Can be scrapped later or just kept in 
+        # Must increment inventory here !! Important
+        # increment inventory here. Can be scrapped later or just kept in
         # inventory if ok
         self.invoiceline.invoice.ship_from.add_item(self.product, quantity)
         self.save()
@@ -604,8 +596,9 @@ class ProductLineComponent(models.Model):
         '''accounting for discount and tax in unit pricing'''
         if self.quantity > 0:
             invoiced_unit_price = self.line.total / self.quantity
-        else: return 0
-        
+        else:
+            return 0
+
         return invoiced_unit_price * D(self.returned_quantity)
 
     def check_inventory(self):
@@ -631,7 +624,6 @@ class ProductLineComponent(models.Model):
                 'product': self.product,
                 'quantity': self.quantity
             }
-        pass
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -640,23 +632,24 @@ class ProductLineComponent(models.Model):
 
         if self.value == D(0.0) and \
                 self.product.product_component.unit_value > D(0.0):
-            self.set_value()  
+            self.set_value()
         if self.unit_price == D(0.0) and \
                 self.product.product_component.unit_sales_price != 0:
             self.unit_price = self.product.product_component.unit_sales_price
             self.save()
-        
+
 
 class ServiceLineComponent(models.Model):
     service = models.ForeignKey('services.service',
-        on_delete=models.SET_NULL, null=True)
+                                on_delete=models.SET_NULL, null=True)
     hours = models.DecimalField(
-        max_digits=16, 
-        decimal_places=2, 
+        max_digits=16,
+        decimal_places=2,
         default=0.0)
-    flat_fee = models.DecimalField(max_digits=16, decimal_places=2, default=0.0)
-    hourly_rate = models.DecimalField(max_digits=16, decimal_places=2, 
-        default=0.0)
+    flat_fee = models.DecimalField(
+        max_digits=16, decimal_places=2, default=0.0)
+    hourly_rate = models.DecimalField(max_digits=16, decimal_places=2,
+                                      default=0.0)
 
     def __str__(self):
         return str(self.service)
@@ -664,7 +657,7 @@ class ServiceLineComponent(models.Model):
     @property
     def nominal_price(self):
         '''Returns the value of the line excluding taxes and discounts'''
-        return self.flat_fee  + (D(self.hours) * D(self.hourly_rate))
+        return self.flat_fee + (D(self.hours) * D(self.hourly_rate))
 
     @property
     def line(self):
@@ -687,18 +680,18 @@ class ServiceLineComponent(models.Model):
             return 0
 
         orders = WorkOrderRequest.objects.filter(
-                    invoice=self.line.invoice,
-                    service=self.service).first().work_orders
+            invoice=self.line.invoice,
+            service=self.service).first().work_orders
 
         total_expenses = 0
         total_wages = 0
         total_consumables = 0
         for order in orders:
-            total_expenses += sum([i.expense.amount \
-                    for i in order.expenses])
+            total_expenses += sum([i.expense.amount
+                                   for i in order.expenses])
             total_wages += sum([i.total_cost for i in order.time_logs])
-            total_consumables += sum([i.line_value for i in \
-                order.consumables_used])
+            total_consumables += sum([i.line_value for i in
+                                      order.consumables_used])
 
         return total_expenses + total_wages + total_consumables
 
@@ -706,10 +699,11 @@ class ServiceLineComponent(models.Model):
     def gross_income(self):
         return self.invoiceline.subtotal - self.cost_of_sale
 
+
 class ExpenseLineComponent(models.Model):
-    expense = models.ForeignKey('accounting.Expense', 
-        on_delete=models.SET_NULL, 
-        null=True)
+    expense = models.ForeignKey('accounting.Expense',
+                                on_delete=models.SET_NULL,
+                                null=True)
     price = models.DecimalField(max_digits=16, decimal_places=2, default=0.0)
 
     @property

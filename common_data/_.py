@@ -10,15 +10,17 @@ class Event(object):
         if not self.label or self.icon:
             raise NotImplementedError('This class has no icon or label')
 
+
 EVENT_MAPPING = {
-    'sales': 
+    'sales':
     'employees':
-    'inventory': 
-    'accounting': 
-}
+    'inventory':
+    'accounting': }
+
 
 def get_inventory_events(date_filters):
     pass
+
 
 class MonthCalendar():
     def __init__(self, request, current):
@@ -28,8 +30,11 @@ class MonthCalendar():
 
     def get_event_access(self):
         if self.user
+
+
 class WeekCalendar():
     pass
+
 
 class DayCalendar():
     pass

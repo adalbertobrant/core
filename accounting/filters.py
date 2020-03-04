@@ -12,12 +12,14 @@ class BillFilter(django_filters.FilterSet):
             'date': ['exact']
         }
 
+
 class JournalFilter(django_filters.FilterSet):
     class Meta:
         model = models.Journal
         fields = {
             'name': ['icontains'],
         }
+
 
 class AccountFilter(django_filters.FilterSet):
     class Meta:
@@ -26,6 +28,7 @@ class AccountFilter(django_filters.FilterSet):
             'name': ['icontains'],
             'type': ['exact']
         }
+
 
 class TaxFilter(django_filters.FilterSet):
     class Meta:
@@ -71,7 +74,7 @@ class AssetFilter(django_filters.FilterSet):
             'init_date': ['gt', 'lt']
 
         }
-        
+
 
 class EntryFilter(django_filters.FilterSet):
     class Meta:
@@ -79,6 +82,7 @@ class EntryFilter(django_filters.FilterSet):
         fields = {
             'date': ['exact'],
         }
+
 
 class DirectPaymentFilter(django_filters.FilterSet):
     class Meta:
