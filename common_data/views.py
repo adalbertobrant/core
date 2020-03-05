@@ -34,6 +34,7 @@ from messaging.forms import PrePopulatedEmailForm
 import json
 from common_data.schedules import backup_db
 from common_data.middleware.license import license_check
+import urllib
 
 try:
     backup_db(repeat=Task.DAILY)
@@ -534,6 +535,61 @@ def get_model_latest(request, model_name=None):
         return JsonResponse({'data': -1})
 
     return JsonResponse({'data': [latest.pk, str(latest)]})
+
+def get_models_latest(request):
+    app_list = ['services', 'inventory', 'common_data', 'messaging',
+                'accounting', 'employees', 'planner', 'messaging', 'invoicing']
+    alias_mapping = {
+        'salesperson': 'salesrepresentative',
+        'ship_from': 'warehouse',
+        'account_paid_from': 'account',
+        'ship_to': 'warehouse',
+        'paid_to': 'supplier',
+        'vendor': 'supplier',
+        'parent_account': 'account',
+        'procedure': 'serviceprocedure'
+
+    }
+
+    mapping = {
+        'organization': '/base/organization/create',
+        'parent_account': '/accounting/create-account',
+        'account_paid_from': '/accounting/create-account',
+        'ship_from': '/inventory/warehouse-create/',
+        'ship_to': '/inventory/warehouse-create/',
+        'warehouse': '/inventory/warehouse-create/',
+        'customer': '/invoicing/create-customer/',
+        'salesperson': '/invoicing/create-sales-rep',
+        'supplier': '/inventory/supplier/create',
+        'paid_to': '/inventory/supplier/create',
+        'vendor': '/inventory/supplier/create',
+        'salesteam': '/invoicing/create-sales-team',
+        'leadsource': '/invoicing/create-lead-source',
+        'journal': '/accounting/create-journal',
+        'procedure': '/services/create-procedure',
+        'service': '/services/create-service'
+    }
+
+    payload = {}
+    scraped = json.loads(request.POST['names'])
+    for name in scraped:
+        model_name = alias_mapping.get(name, name)
+        latest = None
+        for app in app_list:
+            try:
+                model = apps.get_model(app_label=app, model_name=model_name)
+                latest = model.objects.latest('pk')
+
+            except LookupError:
+                pass
+
+        if latest:
+            payload[name] = {
+                'name': str(latest), 
+                'value': latest.pk,
+                'link': mapping.get(name, '')}
+
+    return JsonResponse(payload)
 
 
 def get_create_link(request, name=None):

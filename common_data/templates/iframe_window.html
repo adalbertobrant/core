@@ -1,3 +1,5 @@
+{% load static %} 
+
 <style>
     .my-modal{
             display: none;
@@ -31,7 +33,8 @@
 
         .frame-style {
             width: 100%;
-            height: 100%
+            height: 100%;
+            border: 0px;
         }
 
         .iframe-minimized {
@@ -46,7 +49,26 @@
             right: 0px;
             transition: display 0.3s;
         }
+    #loading-iframe {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
 
+    #loading-iframe img {
+        width: auto;
+        height: 15%;
+    }
+
+    .iframe-loaded, .iframe-hidden {
+        display: none !important;
+    }
         
 </style>
 
@@ -55,8 +77,13 @@
         <button onclick="closeModal()"  class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button>
         <button onclick="minimizeModal()"  class="btn btn-sm btn-warning"><i class="far fa-window-minimize"></i></button>
     </div>
-    <div class="modal-content">
-        <iframe  class="frame-style" frameborder="0" id="popup-frame" src=""></iframe>
+    <div class="modal-content" id='iframe-container'>
+        <div id="loading-iframe" >
+            <img src="{% static 'common_data/images/spinner.gif' %}" alt="">
+        </div>
+        {% comment %} <iframe  class="frame-style" id="popup-frame" src="">
+
+        </iframe> {% endcomment %}
     </div>
 </div>
 
@@ -67,60 +94,4 @@
     </button>
 </div>
 
-<script>
-var iframeURL = '';
-var curURL = '';
-    $("#popup-frame").on('load', function(){
-        iframeURL = $('#popup-frame').attr('src');
-        curURL = document.getElementById('popup-frame').contentWindow.location.href;
-        curURL = '/' + curURL.replace(/^(?:\/\/|[^\/]+)*\//, "");
-        console.log(curURL)
-        console.log(iframeURL)
-
-        
-        if(iframeURL != '' && curURL.localeCompare(iframeURL) != 0){
-            
-            $("#id-my-modal").hide();
-            $('#popup-frame').empty();
-            iframeURL = '';
-            curURL = '';
-        }
-    });
-
-     function inIframe () {
-        try {
-            return window.self !== window.top;
-        } catch (e) {
-            return true;
-        }
-    }
-
-    $(document).ready(function(){
-        if(inIframe()){
-         $("#nav").hide();
-         $("#footer").hide();
-         $('a.btn').each(function(){$(this).hide()})
-         $(".jumbotron").addClass('shrink')
-     }
-    })
-
-    function closeModal(){
-        if(confirm('Are you sure you want to close this page?')){
-            $("#id-my-modal").hide();
-            $('#popup-frame').empty();
-            $('.iframe-minimized').hide();
-        }
-    }
-
-    function minimizeModal(){
-        console.log('minimize')
-        $("#id-my-modal").hide();
-        $('.iframe-minimized').show();
-    }
-
-    function maximizeModal(){
-        $("#id-my-modal").show();
-        $('.iframe-minimized').hide();
-    }
-
-</script>
+<script src="{% static 'common_data/js/iframe.js' %}" defer ></script>

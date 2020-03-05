@@ -53,10 +53,10 @@ function toggleMobileNav(){
     $('#nav').toggle()
 }
 
-
-
 // for employees deduction page
 $(document).ready(function () {
+
+
     if($('#title').length){
         if(!$('#mobile-nav').length){
             $('#title').prepend("<button class='btn btn-primary' onclick='toggleMobileNav()' > <i class='fas fa-bars'></i> </button>")
@@ -66,6 +66,8 @@ $(document).ready(function () {
     if(inIframe()){
         $('body').addClass('framed');
     }
+
+    setNavbarActive();
 
     window.scrollTo(0, 0);
 
@@ -110,3 +112,32 @@ $(document).ready(function () {
     
     $(".jumbotron").addClass('shrink')
 })
+
+
+$(".ui-date-picker").datepicker({
+    changeYear: true,
+    changeMonth: true,
+    dateFormat: 'yy-mm-dd',
+    minDate: new Date(1955, 1,1),
+    yearRange: "1955:2035"
+    });
+
+
+function setNavbarActive(){
+    var url = window.location.href;
+    if(url.search('invoicing') !== -1){
+        $("#sales").addClass('active')
+    }else if(url.search('inventory') !== -1){
+        $("#inventory").addClass('active')
+    }else if(url.search('services') !== -1){
+        $("#services").addClass('active')
+    }else if(url.search('accounting') !== -1){
+        $("#accounting").addClass('active')
+    }else if(url.search('employees') !== -1){
+        $("#employees").addClass('active')
+    }else if(url.search('messaging') !== -1){
+        $("#inbox").addClass('active')
+    }else if(url.search('planner') !== -1){
+        $("#planner").addClass('active')
+    }
+}
