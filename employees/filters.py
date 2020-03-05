@@ -23,6 +23,7 @@ class PayslipFilter(django_filters.FilterSet):
             'status': ['exact']
         }
 
+
 class TimeSheetFilter(django_filters.FilterSet):
     class Meta:
         model = models.EmployeeTimeSheet
@@ -49,6 +50,7 @@ class PayrollOfficerFilter(django_filters.FilterSet):
             'employee': ['exact']
         }
 
+
 class PayrollTaxFilter(django_filters.FilterSet):
     class Meta:
         model = models.PayrollTax
@@ -56,6 +58,7 @@ class PayrollTaxFilter(django_filters.FilterSet):
             'name': ['icontains'],
             'paid_by': ['exact']
         }
+
 
 class LeaveRequestFilter(django_filters.FilterSet):
     class Meta:
@@ -73,6 +76,7 @@ class PayrollDateFilter(django_filters.FilterSet):
         fields = {
             'date': ['exact']
         }
+
 
 class ContractFilter(django_filters.FilterSet):
     class Meta:

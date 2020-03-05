@@ -14,16 +14,19 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='invoice',
             name='salesperson',
-            field=models.ForeignKey(default=1, limit_choices_to=models.Q(active=True), null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.SalesRepresentative'),
+            field=models.ForeignKey(default=1, limit_choices_to=models.Q(
+                active=True), null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.SalesRepresentative'),
         ),
         migrations.AlterField(
             model_name='payment',
             name='sales_rep',
-            field=models.ForeignKey(limit_choices_to=models.Q(active=True), null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.SalesRepresentative'),
+            field=models.ForeignKey(limit_choices_to=models.Q(
+                active=True), null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.SalesRepresentative'),
         ),
         migrations.AlterField(
             model_name='salesrepresentative',
             name='employee',
-            field=models.OneToOneField(limit_choices_to=models.Q(active=True), null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee'),
+            field=models.OneToOneField(limit_choices_to=models.Q(
+                active=True), null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee'),
         ),
     ]

@@ -8,11 +8,11 @@ from django.views.generic import TemplateView, DetailView
 from django.db.models import Q
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
-from common_data.utilities import (ContextMixin, 
-                                    ConfigMixin,
+from common_data.utilities import (ContextMixin,
+                                   ConfigMixin,
                                    MultiPageDocument,
-                                   extract_period, 
-                                   PeriodReportMixin, 
+                                   extract_period,
+                                   PeriodReportMixin,
                                    PeriodSelectionException,
                                    encode_period,
                                    extract_encoded_period)
@@ -24,19 +24,22 @@ from invoicing.models import InvoiceLine
 import pygal
 from services.views.report_utils.plotters import plot_expense_breakdown
 
+
 class ServicePersonUtilizationFormView(ContextMixin, FormView):
-    template_name = os.path.join('common_data', 'reports', 
-        'report_template.html')
+    template_name = os.path.join('common_data', 'reports',
+                                 'report_template.html')
     form_class = PeriodReportForm
-    
+
     extra_context = {
-        'action':reverse_lazy('services:reports-service-person-utilization'),
+        'action': reverse_lazy('services:reports-service-person-utilization'),
     }
 
-class ServicePersonUtilizationReport(PeriodReportMixin, 
-                                    ConfigMixin, 
-                                    TemplateView):
-    template_name = os.path.join('services', 'reports', 'service_person_utilization.html')
+
+class ServicePersonUtilizationReport(PeriodReportMixin,
+                                     ConfigMixin,
+                                     TemplateView):
+    template_name = os.path.join(
+        'services', 'reports', 'service_person_utilization.html')
 
     @staticmethod
     def common_context(context, start, end):
@@ -47,16 +50,16 @@ class ServicePersonUtilizationReport(PeriodReportMixin,
             histogram[str(log.employee)].append(log.normal_time)
 
         x = histogram.keys()
-        y = [reduce(lambda x, y: x + y, histogram[key], datetime.timedelta(seconds=0)).seconds / 3600  for key in x]
-        
+        y = [reduce(lambda x, y: x + y, histogram[key],
+                    datetime.timedelta(seconds=0)).seconds / 3600 for key in x]
+
         chart = pygal.Bar(style=CustomStyle, height=300)
         chart.title = 'Service Person Utilization'
         chart.x_labels = x
         chart.add('Hours', y)
 
-
         context['graph'] = chart.render(is_unicode=True)
-        average_time = 0 
+        average_time = 0
         if len(y) > 0:
             average_time = sum(y) / len(y)
         context.update({
@@ -65,45 +68,46 @@ class ServicePersonUtilizationReport(PeriodReportMixin,
             'date': datetime.date.today(),
             'number_employees': len(x),
             'average_time': average_time
-            })
+        })
         return context
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        kwargs =  self.request.GET
+        kwargs = self.request.GET
         start, end = extract_period(kwargs)
         context['pdf_link'] = True
-        return ServicePersonUtilizationReport.common_context(context, start, 
-            end)
-
-    
+        return ServicePersonUtilizationReport.common_context(context, start,
+                                                             end)
 
 
 class ServicePersonUtilizationReportPDFView(ConfigMixin, PDFTemplateView):
-    template_name = os.path.join('services', 'reports', 'service_person_utilization.html')
+    template_name = os.path.join(
+        'services', 'reports', 'service_person_utilization.html')
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data( **kwargs)
+        context = super().get_context_data(**kwargs)
         start = datetime.datetime.strptime(urllib.parse.unquote(
             self.kwargs['start']), "%d %B %Y")
         end = datetime.datetime.strptime(urllib.parse.unquote(
             self.kwargs['end']), "%d %B %Y")
 
-        return ServicePersonUtilizationReport.common_context(context, start, 
-            end)
+        return ServicePersonUtilizationReport.common_context(context, start,
+                                                             end)
+
 
 class JobProfitabilityReportFormView(ContextMixin, FormView):
-    template_name = os.path.join('common_data', 'reports', 
-        'report_template.html')
+    template_name = os.path.join('common_data', 'reports',
+                                 'report_template.html')
     form_class = PeriodReportForm
-    
+
     extra_context = {
-        'action':reverse_lazy('services:reports-job-profitability'),
+        'action': reverse_lazy('services:reports-job-profitability'),
     }
 
-class JobProfitabilityReport(ContextMixin,ConfigMixin, MultiPageDocument, TemplateView):
-    template_name = os.path.join('services', 'reports', 
-        'job_profitability.html')
+
+class JobProfitabilityReport(ContextMixin, ConfigMixin, MultiPageDocument, TemplateView):
+    template_name = os.path.join('services', 'reports',
+                                 'job_profitability.html')
     page_length = 20
     extra_context = {
         'pdf_link': True
@@ -113,20 +117,20 @@ class JobProfitabilityReport(ContextMixin,ConfigMixin, MultiPageDocument, Templa
         start, end = extract_period(self.request.GET)
 
         return InvoiceLine.objects.filter(
-                Q(invoice__date__gte=start) &
-                Q(invoice__date__lte=end) &
-                Q(invoice__draft=False) &
-                Q(invoice__status__in=['paid', 'invoice', 'paid-partially']) &
-                Q(service__isnull=False))
+            Q(invoice__date__gte=start) &
+            Q(invoice__date__lte=end) &
+            Q(invoice__draft=False) &
+            Q(invoice__status__in=['paid', 'invoice', 'paid-partially']) &
+            Q(service__isnull=False))
 
     @staticmethod
     def common_context(context, start, end):
         jobs = InvoiceLine.objects.filter(
-                Q(invoice__date__gte=start) &
-                Q(invoice__date__lte=end) &
-                Q(invoice__draft=False) &
-                Q(invoice__status__in=['paid', 'invoice', 'paid-partially']) &
-                Q(service__isnull=False))
+            Q(invoice__date__gte=start) &
+            Q(invoice__date__lte=end) &
+            Q(invoice__draft=False) &
+            Q(invoice__status__in=['paid', 'invoice', 'paid-partially']) &
+            Q(service__isnull=False))
         revenue = sum([i.subtotal for i in jobs])
         expenses = sum([i.service.cost_of_sale for i in jobs])
         context['jobs_count'] = jobs.count()
@@ -141,11 +145,12 @@ class JobProfitabilityReport(ContextMixin,ConfigMixin, MultiPageDocument, Templa
         })
 
     def get_context_data(self, *args, **kwargs):
-        context =super().get_context_data(*args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
         start, end = extract_period(self.request.GET)
         self.__class__.common_context(context, start, end)
 
         return context
+
 
 class JobProfitabilityPDFView(MultiPageDocument, ConfigMixin, PDFTemplateView):
     template_name = JobProfitabilityReport.template_name
@@ -155,18 +160,19 @@ class JobProfitabilityPDFView(MultiPageDocument, ConfigMixin, PDFTemplateView):
         context = super().get_context_data(**kwargs)
         start, end = extract_encoded_period(self.kwargs)
         JobProfitabilityReport.common_context(context, start, end)
-        
+
         return context
 
     def get_multipage_queryset(self):
         start, end = extract_encoded_period(self.kwargs)
 
         return InvoiceLine.objects.filter(
-                Q(invoice__date__gte=start) &
-                Q(invoice__date__lte=end) &
-                Q(invoice__draft=False) &
-                Q(invoice__status__in=['paid', 'invoice', 'paid-partially']) &
-                Q(service__isnull=False))
+            Q(invoice__date__gte=start) &
+            Q(invoice__date__lte=end) &
+            Q(invoice__draft=False) &
+            Q(invoice__status__in=['paid', 'invoice', 'paid-partially']) &
+            Q(service__isnull=False))
+
 
 class WorkOrderCostingView(ContextMixin, DetailView):
     template_name = os.path.join('services', 'work_order', 'costing.html')
@@ -178,18 +184,16 @@ class WorkOrderCostingView(ContextMixin, DetailView):
     @staticmethod
     def common_context(context, obj):
         labour = sum([i.total_cost for i in obj.time_logs])
-        expenses = sum([i.expense.amount \
-            for i in obj.workorderexpense_set.all()])
-        consumables = sum([i.line_value for i in \
-                 obj.consumables_used])
-        
+        expenses = sum([i.expense.amount
+                        for i in obj.workorderexpense_set.all()])
+        consumables = sum([i.line_value for i in
+                           obj.consumables_used])
+
         context['total_consumables_costs'] = consumables
-        context['total_labour_cost'] = labour 
+        context['total_labour_cost'] = labour
         context['total_expense_costs'] = expenses
         context['total_costs'] = labour + expenses + consumables
         context['graph'] = plot_expense_breakdown(obj)
-        
-
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -202,24 +206,25 @@ class WorkOrderCostingPDFView(PDFTemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['object'] =ServiceWorkOrder.objects.get(pk=self.kwargs['pk'])
+        context['object'] = ServiceWorkOrder.objects.get(pk=self.kwargs['pk'])
         WorkOrderCostingView.common_context(context,
-            context['object'])
+                                            context['object'])
         return context
 
 
 class UnbilledCostsByJobReportFormView(ContextMixin, FormView):
-    template_name = os.path.join('common_data', 'reports', 
-        'report_template.html')
+    template_name = os.path.join('common_data', 'reports',
+                                 'report_template.html')
     form_class = PeriodReportForm
-    
+
     extra_context = {
-        'action':reverse_lazy('services:reports-unbilled-costs-by-job'),
+        'action': reverse_lazy('services:reports-unbilled-costs-by-job'),
     }
+
 
 class UnbilledCostsByJobReportView(ContextMixin,
                                    ConfigMixin,
-                                   MultiPageDocument, 
+                                   MultiPageDocument,
                                    TemplateView):
     template_name = os.path.join('services', 'reports', 'unbilled_costs.html')
     page_length = 10
@@ -229,9 +234,9 @@ class UnbilledCostsByJobReportView(ContextMixin,
 
     def get_multipage_queryset(self):
         start, end = extract_period(self.request.GET)
-        
-        return ServiceWorkOrder.objects.filter(date__gte=start, 
-            date__lte=end)
+
+        return ServiceWorkOrder.objects.filter(date__gte=start,
+                                               date__lte=end)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -242,18 +247,18 @@ class UnbilledCostsByJobReportView(ContextMixin,
             'date': datetime.date.today()
         })
         return context
-    
 
-class UnbilledCostsByJobPDFView(MultiPageDocument, 
-                                ConfigMixin, 
+
+class UnbilledCostsByJobPDFView(MultiPageDocument,
+                                ConfigMixin,
                                 PDFTemplateView):
     template_name = UnbilledCostsByJobReportView.template_name
     page_length = UnbilledCostsByJobReportView.page_length
 
     def get_multipage_queryset(self):
         start, end = extract_encoded_period(self.kwargs)
-        return ServiceWorkOrder.objects.filter(date__gte=start, 
-            date__lte=end)
+        return ServiceWorkOrder.objects.filter(date__gte=start,
+                                               date__lte=end)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -264,17 +269,17 @@ class UnbilledCostsByJobPDFView(MultiPageDocument,
             'date': datetime.date.today()
         })
         return context
-    
 
 
 class TimeLogReportFormView(ContextMixin, FormView):
-    template_name = os.path.join('common_data', 'reports', 
-        'report_template.html')
+    template_name = os.path.join('common_data', 'reports',
+                                 'report_template.html')
     form_class = PeriodReportForm
-    
+
     extra_context = {
-        'action':reverse_lazy('services:reports-time-logs'),
+        'action': reverse_lazy('services:reports-time-logs'),
     }
+
 
 class TimeLogReportView(ContextMixin,
                         ConfigMixin,
@@ -296,15 +301,14 @@ class TimeLogReportView(ContextMixin,
                 'total': datetime.timedelta(seconds=0)
             })
             data[str(log.employee)]['logs'].append(log)
-            data[str(log.employee)]['total'] = sum([i.total_time \
-                for i in data[str(log.employee)]['logs']], 
-                    datetime.timedelta(seconds=0))
+            data[str(log.employee)]['total'] = sum([i.total_time
+                                                    for i in data[str(log.employee)]['logs']],
+                                                   datetime.timedelta(seconds=0))
 
         context['employees'] = data.values()
         context['total_time'] = sum([i['total'] for i in data.values()],
-            datetime.timedelta(seconds=0))
+                                    datetime.timedelta(seconds=0))
         return context
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -313,19 +317,19 @@ class TimeLogReportView(ContextMixin,
             'start': start,
             'end': end,
         })
-        return TimeLogReportView.common_context(context, start,end)
-    
+        return TimeLogReportView.common_context(context, start, end)
 
-class TimeLogReportPDFView(MultiPageDocument, 
-                                ConfigMixin, 
-                                PDFTemplateView):
+
+class TimeLogReportPDFView(MultiPageDocument,
+                           ConfigMixin,
+                           PDFTemplateView):
     template_name = UnbilledCostsByJobReportView.template_name
     page_length = UnbilledCostsByJobReportView.page_length
 
     def get_multipage_queryset(self):
         start, end = extract_encoded_period(self.kwargs)
-        return ServiceWorkOrder.objects.filter(date__gte=start, 
-            date__lte=end)
+        return ServiceWorkOrder.objects.filter(date__gte=start,
+                                               date__lte=end)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -336,4 +340,3 @@ class TimeLogReportPDFView(MultiPageDocument,
             'date': datetime.date.today()
         })
         return context
-    

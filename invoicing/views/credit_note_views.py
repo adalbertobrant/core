@@ -5,30 +5,23 @@ import json
 import os
 import urllib
 
-from django.conf import settings
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
-from django.urls import reverse, reverse_lazy
-from django.views.generic import DetailView, FormView, ListView, TemplateView
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic import DetailView
+from django.views.generic.edit import CreateView, UpdateView
 from django_filters.views import FilterView
-from rest_framework import generics, viewsets
 
-from accounting.forms import TaxForm
 from common_data.utilities import ConfigMixin, ContextMixin, MultiPageDocument
 from common_data.views import PaginationMixin, PDFDetailView
-from invoicing import filters, forms, serializers
+from invoicing import filters, forms
 from invoicing.models import CreditNote, SalesConfig
 from invoicing.models.credit_note import CreditNoteLine
-from invoicing.models.invoice import InvoiceLine, Invoice 
+from invoicing.models.invoice import InvoiceLine
 
 #########################################
 #           Credit Note Views           #
 #########################################
 
-class CreditNoteCreateView( ContextMixin, CreateView):
+
+class CreditNoteCreateView(ContextMixin, CreateView):
     '''Credit notes are created along with react on the front end.
     each note tracks each invoice item and returns the quantity 
     of the item that was returned. The data is shared as a single 
@@ -38,8 +31,8 @@ class CreditNoteCreateView( ContextMixin, CreateView):
     database side of things.
     '''
     extra_context = {"title": "Create New Credit Note"}
-    template_name = os.path.join("invoicing", "invoice", 
-        "credit_note", "create.html")
+    template_name = os.path.join("invoicing", "invoice",
+                                 "credit_note", "create.html")
     model = CreditNote
     form_class = forms.CreditNoteForm
 
@@ -55,7 +48,6 @@ class CreditNoteCreateView( ContextMixin, CreateView):
 
         if not self.object:
             return resp
-            
 
         data = json.loads(urllib.parse.unquote(request.POST['returned-items']))
         for line in data:
@@ -67,7 +59,7 @@ class CreditNoteCreateView( ContextMixin, CreateView):
                 note=self.object,
                 quantity=float(line["returned_quantity"])
             )
-            
+
             inv_line.product._return(float(line["returned_quantity"]))
 
         self.object.create_entry()
@@ -75,18 +67,19 @@ class CreditNoteCreateView( ContextMixin, CreateView):
         return resp
 
 
-class CreditNoteUpdateView( ContextMixin, UpdateView):
+class CreditNoteUpdateView(ContextMixin, UpdateView):
     extra_context = {"title": "Update Existing Credit Note"}
     template_name = os.path.join("invoicing", "create_credit_note.html")
     model = CreditNote
     form_class = forms.CreditNoteForm
 
 
-class CreditNoteDetailView( ConfigMixin, MultiPageDocument, DetailView):
-    template_name = os.path.join('invoicing', 'invoice', 'credit_note', 'detail.html')
+class CreditNoteDetailView(ConfigMixin, MultiPageDocument, DetailView):
+    template_name = os.path.join(
+        'invoicing', 'invoice', 'credit_note', 'detail.html')
     model = CreditNote
-    
-    page_length=16
+
+    page_length = 16
 
     def get_multipage_queryset(self):
         return CreditNoteLine.objects.filter(note=CreditNote.objects.get(
@@ -98,11 +91,14 @@ class CreditNoteDetailView( ConfigMixin, MultiPageDocument, DetailView):
         context['pdf_link'] = True
         return context
 
-#Deprecated
-#credit notes now accessed on an invoice by invoice basis
-class CreditNoteListView( ContextMixin, PaginationMixin, FilterView):
+# Deprecated
+# credit notes now accessed on an invoice by invoice basis
+
+
+class CreditNoteListView(ContextMixin, PaginationMixin, FilterView):
     extra_context = {"title": "List of Credit Notes"}
-    template_name = os.path.join("invoicing", "invoice", "credit_note", "list.html")
+    template_name = os.path.join(
+        "invoicing", "invoice", "credit_note", "list.html")
     filterset_class = filters.CreditNoteFilter
     paginate_by = 20
 
@@ -112,9 +108,10 @@ class CreditNoteListView( ContextMixin, PaginationMixin, FilterView):
 
 class CreditNotePDFView(ConfigMixin, MultiPageDocument, PDFDetailView):
     model = CreditNote
-    template_name = os.path.join('invoicing', 'invoice', 'credit_note', 'pdf.html')
+    template_name = os.path.join(
+        'invoicing', 'invoice', 'credit_note', 'pdf.html')
     file_name = "credit note.pdf"
-    page_length=16
+    page_length = 16
 
     def get_multipage_queryset(self):
         return CreditNoteLine.objects.filter(note=CreditNote.objects.get(

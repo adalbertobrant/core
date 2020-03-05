@@ -13,11 +13,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='expense',
             name='category',
-            field=models.PositiveSmallIntegerField(choices=[(0, 'Advertising'), (1, 'Bank Service Charges'), (2, 'Dues and Subscriptions'), (3, 'Equipment Rental'), (4, 'Telephone'), (5, 'Vehicles'), (6, 'Travel and Expenses'), (7, 'Supplies'), (8, 'Salaries and Wages'), (9, 'Rent'), (10, 'Payroll Taxes'), (11, 'Legal and Accounting'), (12, 'Insurance'), (13, 'Office Expenses'), (14, 'Carriage Outwards'), (15, 'Training'), (16, 'Vendor Services'), (17, 'Other')]),
+            field=models.PositiveSmallIntegerField(choices=[(0, 'Advertising'), (1, 'Bank Service Charges'), (2, 'Dues and Subscriptions'), (3, 'Equipment Rental'), (4, 'Telephone'), (5, 'Vehicles'), (6, 'Travel and Expenses'), (7, 'Supplies'), (
+                8, 'Salaries and Wages'), (9, 'Rent'), (10, 'Payroll Taxes'), (11, 'Legal and Accounting'), (12, 'Insurance'), (13, 'Office Expenses'), (14, 'Carriage Outwards'), (15, 'Training'), (16, 'Vendor Services'), (17, 'Other')]),
         ),
         migrations.AlterField(
             model_name='recurringexpense',
             name='category',
-            field=models.PositiveSmallIntegerField(choices=[(0, 'Advertising'), (1, 'Bank Service Charges'), (2, 'Dues and Subscriptions'), (3, 'Equipment Rental'), (4, 'Telephone'), (5, 'Vehicles'), (6, 'Travel and Expenses'), (7, 'Supplies'), (8, 'Salaries and Wages'), (9, 'Rent'), (10, 'Payroll Taxes'), (11, 'Legal and Accounting'), (12, 'Insurance'), (13, 'Office Expenses'), (14, 'Carriage Outwards'), (15, 'Training'), (16, 'Vendor Services'), (17, 'Other')]),
+            field=models.PositiveSmallIntegerField(choices=[(0, 'Advertising'), (1, 'Bank Service Charges'), (2, 'Dues and Subscriptions'), (3, 'Equipment Rental'), (4, 'Telephone'), (5, 'Vehicles'), (6, 'Travel and Expenses'), (7, 'Supplies'), (
+                8, 'Salaries and Wages'), (9, 'Rent'), (10, 'Payroll Taxes'), (11, 'Legal and Accounting'), (12, 'Insurance'), (13, 'Office Expenses'), (14, 'Carriage Outwards'), (15, 'Training'), (16, 'Vendor Services'), (17, 'Other')]),
         ),
     ]

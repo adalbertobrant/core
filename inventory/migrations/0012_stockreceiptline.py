@@ -14,10 +14,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='StockReceiptLine',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('quantity', models.FloatField(default=0.0)),
-                ('line', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='inventory.OrderItem')),
-                ('receipt', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='inventory.StockReceipt')),
+                ('line', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='inventory.OrderItem')),
+                ('receipt', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='inventory.StockReceipt')),
             ],
         ),
     ]

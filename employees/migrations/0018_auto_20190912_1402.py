@@ -13,7 +13,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='contract',
             name='employee_category',
-            field=models.CharField(choices=[('Temporary', 'Temporary Employee'), ('Subcontractor', 'Subcontractor'), ('Permanent Employee', 'Permanent Employee')], default='Permanent Employee', max_length=64),
+            field=models.CharField(choices=[('Temporary', 'Temporary Employee'), ('Subcontractor', 'Subcontractor'), (
+                'Permanent Employee', 'Permanent Employee')], default='Permanent Employee', max_length=64),
             preserve_default=False,
         ),
         migrations.AlterField(

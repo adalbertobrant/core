@@ -14,11 +14,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='consumablesrequisition',
             name='requested_by',
-            field=models.ForeignKey(limit_choices_to=models.Q(active=True), null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='consumable_requested_by', to='employees.Employee'),
+            field=models.ForeignKey(limit_choices_to=models.Q(
+                active=True), null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='consumable_requested_by', to='employees.Employee'),
         ),
         migrations.AlterField(
             model_name='serviceperson',
             name='employee',
-            field=models.OneToOneField(limit_choices_to=models.Q(active=True), null=True, on_delete=django.db.models.deletion.CASCADE, to='employees.Employee'),
+            field=models.OneToOneField(limit_choices_to=models.Q(
+                active=True), null=True, on_delete=django.db.models.deletion.CASCADE, to='employees.Employee'),
         ),
     ]

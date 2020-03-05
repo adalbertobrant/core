@@ -1,13 +1,12 @@
 import json
 import os
 import urllib
-import datetime 
-from functools import reduce
+import datetime
 
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django_filters.views import FilterView
 from rest_framework.viewsets import ModelViewSet
@@ -19,8 +18,8 @@ from services import filters, forms, models, serializers
 from accounting.forms import ExpenseForm
 from accounting.models import Expense
 from employees.models import Employee
-from decimal import Decimal as D
 from services.views.report_utils.plotters import plot_time_budget
+
 
 class WorkOrderCRUDMixin(object):
     def post(self, request, *args, **kwargs):
@@ -30,7 +29,7 @@ class WorkOrderCRUDMixin(object):
             return resp
         service_people = json.loads(urllib.parse.unquote(
             request.POST['service_people']))
-        
+
         if update_flag and service_people != "":
             self.object.service_people.clear()
 
@@ -42,9 +41,8 @@ class WorkOrderCRUDMixin(object):
         return resp
 
 
-
-class WorkOrderCreateView( WorkOrderCRUDMixin, ContextMixin,
-        CreateView):
+class WorkOrderCreateView(WorkOrderCRUDMixin, ContextMixin,
+                          CreateView):
     template_name = os.path.join('services', 'work_order', 'create.html')
     form_class = forms.ServiceWorkOrderForm
     extra_context = {
@@ -55,14 +53,15 @@ class WorkOrderCreateView( WorkOrderCRUDMixin, ContextMixin,
             }
         ]
     }
+
     def get_initial(self):
         return {
             'status': 'requested',
             'works_request': self.kwargs['pk']
         }
 
-    
-class WorkOrderUpdateView( WorkOrderCRUDMixin, UpdateView):
+
+class WorkOrderUpdateView(WorkOrderCRUDMixin, UpdateView):
     template_name = os.path.join('services', 'work_order', 'update.html')
     form_class = forms.ServiceWorkOrderForm
     model = models.ServiceWorkOrder
@@ -74,18 +73,18 @@ def log_time_for_work_order(request, pk=None):
 
     log_data = json.loads(urllib.parse.unquote(
         request.POST['service_time'])) \
-             if request.POST['service_time'] != '' else []
+        if request.POST['service_time'] != '' else []
 
     for log in log_data:
         pk = log['employee'].split('-')[0]
         employee = Employee.objects.get(pk=pk)
-        date= datetime.datetime.strptime(
+        date = datetime.datetime.strptime(
             log['date'], "%Y-%m-%d")
         normal_time = datetime.datetime.strptime(
             log['normal_time'], "%H:%M")
         normal_time = datetime.timedelta(
             hours=normal_time.hour, minutes=normal_time.minute)
-        
+
         overtime = datetime.datetime.strptime(log['overtime'], "%H:%M")
         overtime = datetime.timedelta(
             hours=overtime.hour, minutes=overtime.minute)
@@ -101,12 +100,12 @@ def log_time_for_work_order(request, pk=None):
         return JsonResponse({'status': 'ok'})
 
 
-class WorkOrderDetailView( DetailView):
+class WorkOrderDetailView(DetailView):
     template_name = os.path.join('services', 'work_order', 'detail.html')
     model = models.ServiceWorkOrder
 
     def get_context_data(self, **kwargs):
-        context= super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['budget'] = False
         if self.object.expected_duration:
             context['budget'] = plot_time_budget(self.object)
@@ -116,18 +115,21 @@ class WorkOrderDetailView( DetailView):
             })
 
         return context
-class WorkOrderListView( ContextMixin, PaginationMixin, FilterView):
+
+
+class WorkOrderListView(ContextMixin, PaginationMixin, FilterView):
     template_name = os.path.join('services', 'work_order', 'list.html')
     filterset_class = filters.WorkOrderFilter
     queryset = models.ServiceWorkOrder.objects.all().order_by('date').reverse()
     extra_context = {
         'title': 'List of Work Orders'
-            }
+    }
 
 
 class WorkOrderViewSet(ModelViewSet):
     serializer_class = serializers.WorkOrderSerializer
     queryset = models.ServiceWorkOrder.objects.all()
+
 
 class WorkOrderTaskViewSet(ModelViewSet):
     serializer_class = serializers.WorkOrderTaskSerializer
@@ -141,7 +143,7 @@ def work_order_authorize(request, pk=None):
         worder.status = form.cleaned_data['status']
         worder.authorized_by = form.cleaned_data['authorized_by']
         worder.save()
-    else: 
+    else:
         pk = request.path.split("/")[-1]
         messages.info(request, "The authorization password is incorrect")
         return HttpResponseRedirect("/services/work-order-detail/{}".format(pk))
@@ -149,16 +151,17 @@ def work_order_authorize(request, pk=None):
 
 
 class WorkOrderRequestListView(ContextMixin, PaginationMixin, FilterView):
-    template_name = os.path.join('services', 'work_order', 'request', 
-        'list.html')
+    template_name = os.path.join('services', 'work_order', 'request',
+                                 'list.html')
     queryset = models.WorkOrderRequest.objects.all()
     paginate_by = 20
     filterset_class = filters.WorkOrderRequestFilters
-    extra_context= {
+    extra_context = {
         'title': 'Work Order Requests',
         'description': 'Work Order Requests are requests generated by the system whenever a service invoice is created. These are fulfilled by work orders that track the execution of a service ',
         'new_link': '/services/work-order/request/create/'
     }
+
 
 class WorkOrderRequestCreateView(ContextMixin, CreateView):
     template_name = os.path.join('common_data', 'crispy_create_template.html')
@@ -167,13 +170,14 @@ class WorkOrderRequestCreateView(ContextMixin, CreateView):
     extra_context = {
         'title': 'Create Work Order Request'
     }
-    
+
 
 class WorkOrderRequestDetailView(DetailView):
-    template_name = os.path.join("services", "work_order", "request", 
-        "detail.html")
+    template_name = os.path.join("services", "work_order", "request",
+                                 "detail.html")
 
     model = models.WorkOrderRequest
+
 
 class WorkOrderExpenseCreateView(ContextMixin, CreateView):
     template_name = os.path.join("common_data", "crispy_create_template.html")
@@ -182,8 +186,9 @@ class WorkOrderExpenseCreateView(ContextMixin, CreateView):
     extra_context = {
         'title': 'Record Work Order Expense'
     }
+
     def get_success_url(self):
-        #TODO fix
+        # TODO fix
         '''pk = models.WorkOrderExpense.objects.latest('pk').pk
         if pk:
             return reverse_lazy('services:work-order-costing', kwargs={'pk': pk})'''
@@ -195,12 +200,10 @@ class WorkOrderExpenseCreateView(ContextMixin, CreateView):
         if not self.object:
             return resp
         work_order = models.ServiceWorkOrder.objects.get(pk=self.kwargs['pk'])
-        
+
         models.WorkOrderExpense.objects.create(
             expense=self.object,
             work_order=work_order
         )
 
-        return resp 
-
-
+        return resp

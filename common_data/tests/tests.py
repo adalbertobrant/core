@@ -2,39 +2,35 @@ from django.test import Client, TestCase
 from common_data.models import *
 import datetime
 from .test_models import create_test_user, create_test_common_entities
-from django.db import models
 from django.contrib.auth.models import User
 from django.shortcuts import reverse
 import json
 from common_data.utilities import (
-    ConfigMixin, 
-    ContextMixin, 
-    extract_period, 
+    ConfigMixin,
+    ContextMixin,
+    extract_period,
     time_choices)
-import responses
-import requests
-import services
 from services.tests.model_util import ServiceModelCreator
 from employees.models import Employee
 
+
 class ModelTests(TestCase):
-    @classmethod 
+    @classmethod
     def setUpTestData(cls):
         cls.individual = Individual.objects.create(
             first_name='Test',
             last_name='Name'
         )
-        cls.user = User.objects.create_superuser('Testuser', 
-            'admin@test.com', '123')
+        cls.user = User.objects.create_superuser('Testuser',
+                                                 'admin@test.com', '123')
         cls.user.save()
 
         cls.organization = Organization.objects.create(
             legal_name='Organization'
         )
 
-
     def test_person_full_name(self):
-        #using individual as a template
+        # using individual as a template
         self.assertEqual(self.individual.full_name, 'Test Name')
 
     def test_create_individual(self):
@@ -44,7 +40,6 @@ class ModelTests(TestCase):
         )
         self.assertIsInstance(obj, Individual)
         self.assertEqual(str(obj), 'Test Name')
-
 
     def test_delete_individual(self):
         obj = Individual.objects.create(
@@ -82,7 +77,7 @@ class ModelTests(TestCase):
 
         self.assertEqual(org.members.count(), 0)
         org.add_member(ind)
-        
+
         self.assertEqual(org.members.count(), 1)
 
     '''def test_config(self):
@@ -93,16 +88,15 @@ class ModelTests(TestCase):
 
 class ViewTests(TestCase):
     fixtures = ['common.json']
-    
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.client = Client()
 
-    
     @classmethod
     def setUpTestData(cls):
-        create_test_user(cls)    
+        create_test_user(cls)
         create_test_common_entities(cls)
         cls.employee = Employee.objects.create(
             user=cls.user,
@@ -114,7 +108,7 @@ class ViewTests(TestCase):
         self.client.login(username='Testuser', password='123')
 
     def test_pagination_mixin(self):
-        #tested in pages that inherit from it
+        # tested in pages that inherit from it
         self.assertTrue(True)
 
     def test_get_organization_create_view(self):
@@ -123,9 +117,9 @@ class ViewTests(TestCase):
 
     def test_post_organization_create_view(self):
         resp = self.client.post('/base/organization/create',
-            data={
-              'legal_name': 'Name'  
-            })
+                                data={
+                                    'legal_name': 'Name'
+                                })
         self.assertEqual(resp.status_code, 302)
 
     def test_get_organization_update_view(self):
@@ -134,9 +128,9 @@ class ViewTests(TestCase):
 
     def test_post_organization_update_view(self):
         resp = self.client.post('/base/organization/update/' + '1',
-            data={
-              'legal_name': 'Name'  
-            })
+                                data={
+                                    'legal_name': 'Name'
+                                })
         self.assertEqual(resp.status_code, 302)
 
     def test_get_organization_list(self):
@@ -153,10 +147,10 @@ class ViewTests(TestCase):
 
     def test_post_individual_create_view(self):
         resp = self.client.post('/base/individual/create',
-            data={
-              'first_name': 'Name',
-              'last_name': 'Name'  
-            })
+                                data={
+                                    'first_name': 'Name',
+                                    'last_name': 'Name'
+                                })
         self.assertEqual(resp.status_code, 302)
 
     def test_get_individual_update_view(self):
@@ -165,10 +159,10 @@ class ViewTests(TestCase):
 
     def test_post_individual_update_view(self):
         resp = self.client.post('/base/individual/update/' + '1',
-            data={
-              'first_name': 'Name',
-              'last_name': 'Name'  
-            })
+                                data={
+                                    'first_name': 'Name',
+                                    'last_name': 'Name'
+                                })
         self.assertEqual(resp.status_code, 302)
 
     def test_get_individual_list(self):
@@ -184,7 +178,7 @@ class ViewTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_post_send_mail_page(self):
-        #TODO simulate email do research 
+        # TODO simulate email do research
         self.assertTrue(True)
 
     def test_get_about_page(self):
@@ -192,40 +186,39 @@ class ViewTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_get_workflow_page(self):
-        #ensure that all links are shown
+        # ensure that all links are shown
         resp = self.client.get('/base/workflow')
         self.assertEqual(resp.status_code, 302)
         settings = GlobalConfig.objects.first()
-        settings.is_configured=True
+        settings.is_configured = True
         settings.save()
 
         resp = self.client.get('/base/workflow')
         self.assertEqual(resp.status_code, 200)
-        settings.is_configured=False
+        settings.is_configured = False
         settings.save()
 
-
     def test_get_global_config_page(self):
-        #ensure that all links are shown
+        # ensure that all links are shown
         resp = self.client.get('/base/config/1')
         self.assertEqual(resp.status_code, 200)
 
     def test_post_global_config_page(self):
-        #ensure that all links are shown
+        # ensure that all links are shown
         resp = self.client.post('/base/config/1',
-            data={
-                'email_user': 'username',
-                'backup_frequency': 'D',
-                'organization_name': 'latrom',
-                'organization_address': 'somewhere',
-                'logo_aspect_ratio': 0,
-                "pos_supervisor_password": 1000
-            })
-        
+                                data={
+                                    'email_user': 'username',
+                                    'backup_frequency': 'D',
+                                    'organization_name': 'latrom',
+                                    'organization_address': 'somewhere',
+                                    'logo_aspect_ratio': 0,
+                                    "pos_supervisor_password": 1000
+                                })
+
         self.assertEqual(resp.status_code, 302)
 
     def test_get_global_config_page_with_organization(self):
-        #ensure that all links are shown
+        # ensure that all links are shown
         config = GlobalConfig.objects.first()
         config.organization = self.organization
         config.save()
@@ -236,21 +229,21 @@ class ViewTests(TestCase):
         config.save()
 
     def test_post_global_config_page_with_organization(self):
-        #ensure that all links are shown
+        # ensure that all links are shown
         config = GlobalConfig.objects.first()
 
         config.organization = self.organization
         config.save()
         resp = self.client.post('/base/config/1',
-            data={
-                'email_user': 'username',
-                'backup_frequency': 'D',
-                'organization_name': 'latrom',
-                'organization_address': 'somewhere',
-                'logo_aspect_ratio': 0,
-                "pos_supervisor_password": 1000
-            })
-        
+                                data={
+                                    'email_user': 'username',
+                                    'backup_frequency': 'D',
+                                    'organization_name': 'latrom',
+                                    'organization_address': 'somewhere',
+                                    'logo_aspect_ratio': 0,
+                                    "pos_supervisor_password": 1000
+                                })
+
         self.assertEqual(resp.status_code, 302)
         config.organization = None
         config.save()
@@ -267,7 +260,6 @@ class ViewTests(TestCase):
     def test_get_api_current_user(self):
         resp = self.client.get('/base/api/current-user')
         self.assertEqual(json.loads(resp.content)['name'], 'Testuser')
-
 
     def test_get_api_logo_url(self):
         resp = self.client.get('/base/logo-url')
@@ -295,8 +287,10 @@ class ViewTests(TestCase):
         resp = self.client.get('/base/api/current-db/')
         self.assertEqual(resp.status_code, 200)
 
+
 class UtilityTests(TestCase):
-    fixtures = ['common.json','accounts.json', 'employees.json', 'inventory.json', 'invoicing.json']
+    fixtures = ['common.json', 'accounts.json',
+                'employees.json', 'inventory.json', 'invoicing.json']
 
     def test_config_mixin(self):
         class ConfigChild(ConfigMixin):
@@ -314,22 +308,19 @@ class UtilityTests(TestCase):
         mixin = MixinParent()
         self.assertIsInstance(mixin.get_context_data(), dict)
 
-
     def test_extract_period(self):
         start, end = extract_period({
             'start_period': '01/01/2018',
             'end_period': '12/31/2018'
         })
         self.assertEqual(start, datetime.datetime(2018, 1, 1, 0, 0))
-        self.assertEqual(end, datetime.datetime(2018, 12, 31,0 ,0))
+        self.assertEqual(end, datetime.datetime(2018, 12, 31, 0, 0))
         start, end = extract_period({
             'default_periods': '1'
         })
         delta = datetime.date.today() - datetime.timedelta(days=7)
         self.assertEqual(start, delta)
         self.assertEqual(end, datetime.date.today())
-        
-
 
     def test_time_choices(self):
         output = time_choices('06:00:00', '12:00:00', '00:30:00')
@@ -366,14 +357,15 @@ class CommonDataWizardTests(TestCase):
 
         }
 
-        resp = self.client.post(reverse('base:config-wizard'), data=config_data)
+        resp = self.client.post(
+            reverse('base:config-wizard'), data=config_data)
 
         self.assertEqual(resp.status_code, 302)
 
+
 class LicenseTaskTests(TestCase):
     fixtures = ['common.json']
-    
+
     @classmethod
     def setUpTestData(cls):
         pass
-

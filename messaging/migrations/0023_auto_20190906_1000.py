@@ -14,7 +14,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='EmailFolder',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=32)),
                 ('label', models.CharField(max_length=255)),
             ],
@@ -42,11 +43,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='email',
             name='folder',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='messaging.EmailFolder'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='messaging.EmailFolder'),
         ),
         migrations.AddField(
             model_name='emailfolder',
             name='owner',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='messaging.UserProfile'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='messaging.UserProfile'),
         ),
     ]

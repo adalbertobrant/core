@@ -36,52 +36,13 @@
 </head>
 <body>
     {% block window %}{% endblock %}
-    <script type="text/javascript" src="{% static 'common_data/js/async_select.js' %}"></script>
-<script src='{% static "common_data/js/suave.js" %}'></script>
-<script src='{% static "common_data/js/select3.js" %}'></script>
-
-
+    
+<script defer src='{% static "common_data/js/suave.js" %}'></script>
+{% comment %} select 3 before iframe {% endcomment %}
+<script defer src='{% static "common_data/js/select3.js" %}'></script>
 {% include 'iframe_window.html' %}
 
 
-<script>
-    //iframe redirect detection
-    
-
-       $(".ui-date-picker").datepicker({
-        changeYear: true,
-        changeMonth: true,
-        dateFormat: 'yy-mm-dd',
-        minDate: new Date(1955, 1,1),
-        yearRange: "1955:2035"
-        });
-    
-    
-    function setNavbarActive(){
-        var url = window.location.href;
-        if(url.search('invoicing') !== -1){
-            $("#sales").addClass('active')
-        }else if(url.search('inventory') !== -1){
-            $("#inventory").addClass('active')
-        }else if(url.search('services') !== -1){
-            $("#services").addClass('active')
-        }else if(url.search('accounting') !== -1){
-            $("#accounting").addClass('active')
-        }else if(url.search('employees') !== -1){
-            $("#employees").addClass('active')
-        }else if(url.search('messaging') !== -1){
-            $("#inbox").addClass('active')
-        }else if(url.search('planner') !== -1){
-            $("#planner").addClass('active')
-        }
-    }
-
-    $(document).ready(function(){
-        setNavbarActive();
-    })
-
-
-</script>
     {{form.media.js}}
 
 </body>

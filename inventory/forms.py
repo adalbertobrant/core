@@ -1,20 +1,18 @@
 from crispy_forms.bootstrap import Tab, TabHolder
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import (Fieldset, 
-                                Layout, 
-                                Submit, 
-                                HTML,
-                                Row,
-                                Div,
-                                Column)
+from crispy_forms.layout import (Fieldset,
+                                 Layout,
+                                 Submit,
+                                 HTML,
+                                 Row,
+                                 Div,
+                                 Column)
 from django import forms
-from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
 from django_select2.forms import Select2Widget
 
-from accounting.models import (Account, 
-                               Expense, 
-                               Tax, 
+from accounting.models import (Account,
+                               Expense,
+                               Tax,
                                Bill,
                                Asset,
                                ASSET_CHOICES,
@@ -25,18 +23,20 @@ from common_data.models import Individual, Organization
 import datetime
 from . import models
 
-#models ommitted UnitOfMeasure OrderItem Category
+# models ommitted UnitOfMeasure OrderItem Category
 VALUATION_OPTIONS = [
-        ('fifo', 'First In First Out'),
-        ('lifo', 'Last In First Out'),
-        ('averaging', 'Averaging'),
-        ('lcm', 'Lower of Cost or Market'),
-    ]
+    ('fifo', 'First In First Out'),
+    ('lifo', 'Last In First Out'),
+    ('averaging', 'Averaging'),
+    ('lcm', 'Lower of Cost or Market'),
+]
+
+
 class ConfigForm(forms.ModelForm, BootstrapMixin):
     class Meta:
         exclude = "is_configured", 'service_hash'
         model = models.InventorySettings
-       
+
         widgets = {
             'inventory_check_date': forms.Select(choices=[(i, i) for i in range(1, 29)])
         }
@@ -64,39 +64,38 @@ class ConfigForm(forms.ModelForm, BootstrapMixin):
                     'use_raw_materials_inventory')
             )
         )
-        
+
         self.helper.add_input(Submit('submit', 'Submit'))
-    
 
 
 class SupplierForm(BootstrapMixin, forms.Form):
     vendor_type = forms.ChoiceField(widget=forms.RadioSelect, choices=[
         ('individual', 'Individual'),
         ('organization', 'Organization')
-        ], required=True)
-    name=forms.CharField()
-    address=forms.CharField(widget=forms.Textarea(attrs={'rows':4, 'cols':15}), 
-                            required=False)
-    billing_address=forms.CharField(widget=forms.Textarea(attrs={'rows':4, 'cols':15}), 
-                            required=False)
-    banking_details=forms.CharField(widget=forms.Textarea(attrs={'rows':4, 'cols':15}), 
-                            required=False)
-    email= forms.EmailField(required=False)
-    organization=forms.ModelChoiceField(Organization.objects.all(), 
-        required=False)
-    phone_1=forms.CharField(required=False)
-    phone_2=forms.CharField(required=False)
-    image=forms.ImageField(required=False)
-    website=forms.CharField(required=False)
-    business_partner_number=forms.CharField(required=False)
+    ], required=True)
+    name = forms.CharField()
+    address = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 15}),
+                              required=False)
+    billing_address = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 15}),
+                                      required=False)
+    banking_details = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 15}),
+                                      required=False)
+    email = forms.EmailField(required=False)
+    organization = forms.ModelChoiceField(Organization.objects.all(),
+                                          required=False)
+    phone_1 = forms.CharField(required=False)
+    phone_2 = forms.CharField(required=False)
+    image = forms.ImageField(required=False)
+    website = forms.CharField(required=False)
+    business_partner_number = forms.CharField(required=False)
 
-    other_details=forms.CharField(widget=forms.Textarea(attrs={'rows':4, 'cols':15}), 
-                            required=False)
+    other_details = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 15}),
+                                    required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.layout= Layout(
+        self.helper.layout = Layout(
             TabHolder(
                 Tab('details',
                     Row(
@@ -105,28 +104,31 @@ class SupplierForm(BootstrapMixin, forms.Form):
                     ),
                     'email',
                     Row(
-                        Column('address', css_class='form-group col-md-6 col-sm-12'),
-                        Column('banking_details', css_class='form-group col-md-6 col-sm-12'),
+                        Column(
+                            'address', css_class='form-group col-md-6 col-sm-12'),
+                        Column('banking_details',
+                               css_class='form-group col-md-6 col-sm-12'),
                     ),
-                ),
-                    
+                    ),
+
                 Tab('other',
                     'website',
                     'image',
                     'billing_address',
                     'organization',
                     'other_details',
-                ),
+                    ),
             ),
             Submit('submit', 'Submit')
         )
 
     def clean(self, *args, **kwargs):
         cleaned_data = super().clean(*args, **kwargs)
-        
+
         if cleaned_data['vendor_type'] == "individual":
             if " " not in cleaned_data['name']:
-                raise forms.ValidationError('The vendor name must have both a first and last name separated by a space.')
+                raise forms.ValidationError(
+                    'The vendor name must have both a first and last name separated by a space.')
 
         return cleaned_data
 
@@ -135,7 +137,8 @@ class SupplierForm(BootstrapMixin, forms.Form):
         if cleaned_data['vendor_type'] == "individual":
             names = cleaned_data['name'].split(' ')
             individual = Individual.objects.create(
-                first_name=" ".join(names[:-1]),# for those with multiple first names
+                # for those with multiple first names
+                first_name=" ".join(names[:-1]),
                 last_name=names[-1],
                 address=cleaned_data['address'],
                 email=cleaned_data['email'],
@@ -166,6 +169,7 @@ class SupplierForm(BootstrapMixin, forms.Form):
                 banking_details=cleaned_data['banking_details']
             )
 
+
 class ItemInitialMixin(forms.Form):
     initial_quantity = forms.CharField(widget=forms.NumberInput, initial=0)
     warehouse = forms.ModelChoiceField(
@@ -174,19 +178,19 @@ class ItemInitialMixin(forms.Form):
     def save(self):
         obj = super().save()
         if float(self.cleaned_data['initial_quantity']) > 0 and \
-            self.cleaned_data['warehouse'] is not None:
+                self.cleaned_data['warehouse'] is not None:
             wh = self.cleaned_data['warehouse']
             wh.add_item(self.instance, self.cleaned_data['initial_quantity'])
-            #create an order item for initial stock valuuation 
+            # create an order item for initial stock valuuation
             order = models.Order.objects.create(
-                date=datetime.date.today(),#might need to add form field
+                date=datetime.date.today(),  # might need to add form field
                 expected_receipt_date=datetime.date.today(),
                 ship_to=wh,
                 status='received',
-                tax=self.cleaned_data.get('tax', Tax.objects.first()),#none
+                tax=self.cleaned_data.get('tax', Tax.objects.first()),  # none
                 notes='Auto generated order for items with initial inventory',
             )
-            
+
             models.OrderItem.objects.create(
                 item=self.instance,
                 order=order,
@@ -195,25 +199,27 @@ class ItemInitialMixin(forms.Form):
                 unit=self.instance.unit,
                 order_price=self.cleaned_data['unit_purchase_price']
             )
-        
+
         return obj
+
 
 class ProductForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
     pricing_method = forms.CharField(widget=forms.NumberInput, required=False)
     margin = forms.CharField(widget=forms.NumberInput, required=False)
     markup = forms.CharField(widget=forms.NumberInput, required=False)
     direct_price = forms.CharField(widget=forms.NumberInput, required=False)
-    type=forms.CharField(widget=forms.HiddenInput)
-    tax=forms.ModelChoiceField(Tax.objects.all())
-    description = forms.CharField(widget=forms.Textarea(attrs={'rows':4, 'cols':15}), required=False)    
+    type = forms.CharField(widget=forms.HiddenInput)
+    tax = forms.ModelChoiceField(Tax.objects.all())
+    description = forms.CharField(widget=forms.Textarea(
+        attrs={'rows': 4, 'cols': 15}), required=False)
 
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
             TabHolder(
-                Tab('Main', 
-                    
+                Tab('Main',
+
                     Row(
                         Column(
                             'name',
@@ -223,16 +229,19 @@ class ProductForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                         Column(
                             HTML("<div id='pricing-widget' style='margin:30px auto;'></div>"), css_class="form-group col-sm-6"),
                     ),
-                    
-                    'type',#hidden field
+
+                    'type',  # hidden field
                     ),
-                Tab('Details', 
+                Tab('Details',
                     'description',
                     'unit',
                     Row(
-                        Column(Div('initial_quantity'), css_class='form-group col-md-4 col-sm-12'),
-                        Column('minimum_order_level', css_class="form-group col-md-4 col-sm-12"),
-                        Column('maximum_stock_level', css_class="form-group col-md-4 col-sm-12"),
+                        Column(Div('initial_quantity'),
+                               css_class='form-group col-md-4 col-sm-12'),
+                        Column('minimum_order_level',
+                               css_class="form-group col-md-4 col-sm-12"),
+                        Column('maximum_stock_level',
+                               css_class="form-group col-md-4 col-sm-12"),
                     ),
                     Row(
                         Column('length', css_class="form group col-md-4 col-sm-12"),
@@ -240,18 +249,21 @@ class ProductForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                         Column('height', css_class="form group col-md-4 col-sm-12"),
                     ),
                     Row(
-                        Column('supplier', css_class="form group col-md-6 col-sm-12"),
-                        Column('warehouse', css_class="form group col-md-6 col-sm-12"),
+                        Column(
+                            'supplier', css_class="form group col-md-6 col-sm-12"),
+                        Column('warehouse',
+                               css_class="form group col-md-6 col-sm-12"),
                     ),
                     Row(
-                        Column('category', css_class="form group col-md-6 col-sm-12"),
+                        Column(
+                            'category', css_class="form group col-md-6 col-sm-12"),
                         Column('image', css_class="form group col-md-6 col-sm-12"),
                     ),
                     'active'
                     ),
-                ),
+            ),
             Submit('submit', 'Submit')
-            )
+        )
 
     class Meta:
         exclude = 'quantity', 'product_component', 'equipment_component'
@@ -260,18 +272,17 @@ class ProductForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
             'supplier': Select2Widget(attrs={'data-width': '24rem'})
         }
 
-
     def save(self, *args, **kwargs):
         instance = super().save(*args, **kwargs)
 
         if instance.product_component:
             component = instance.product_component
-            component.pricing_method= self.cleaned_data['pricing_method']
-            component.direct_price= self.cleaned_data['direct_price']
-            component.margin=self.cleaned_data['margin']
-            component.markup=self.cleaned_data['markup']
-            component.tax=self.cleaned_data['tax']
-            
+            component.pricing_method = self.cleaned_data['pricing_method']
+            component.direct_price = self.cleaned_data['direct_price']
+            component.margin = self.cleaned_data['margin']
+            component.markup = self.cleaned_data['markup']
+            component.tax = self.cleaned_data['tax']
+
             instance.product_component.save()
 
         else:
@@ -284,58 +295,61 @@ class ProductForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
             )
 
             instance.product_component = component
-    
+
         instance.save()
 
         return instance
-    
+
 
 class EquipmentForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
-    type=forms.CharField(widget=forms.HiddenInput)
-    #asset name will take product equipment name
-    #description will take equipment decription
+    type = forms.CharField(widget=forms.HiddenInput)
+    # asset name will take product equipment name
+    # description will take equipment decription
     record_as_asset = forms.BooleanField(required=False)
     initial_value = forms.CharField(widget=forms.NumberInput, required=False)
-    depreciation_period =forms.CharField(label="Depreciation period(years)",
-        widget=forms.NumberInput,
-        required=False)
-    date_purchased=forms.DateField(required=False)
+    depreciation_period = forms.CharField(label="Depreciation period(years)",
+                                          widget=forms.NumberInput,
+                                          required=False)
+    date_purchased = forms.DateField(required=False)
     salvage_value = forms.CharField(widget=forms.NumberInput, required=False)
-    asset_category = forms.ChoiceField(choices= ASSET_CHOICES, required=False)
+    asset_category = forms.ChoiceField(choices=ASSET_CHOICES, required=False)
     description = forms.CharField(widget=forms.Textarea(
-        attrs={'rows':4, 'cols':15}), required=False)
+        attrs={'rows': 4, 'cols': 15}), required=False)
 
     def __init__(self, *args, **kwargs):
         super(EquipmentForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
             TabHolder(
-                Tab('Main', 
+                Tab('Main',
                     Row(
                         Column('name',
-                    'unit_purchase_price',
-                    'type',
-                    'initial_quantity', css_class='col-md-6 col-sm-12 form-group'),
-                    Column('unit',
-                    'description', css_class='col-md-6 col-sm-12 form-group')
+                               'unit_purchase_price',
+                               'type',
+                               'initial_quantity', css_class='col-md-6 col-sm-12 form-group'),
+                        Column('unit',
+                               'description', css_class='col-md-6 col-sm-12 form-group')
                     )
-                ),
+                    ),
                 Tab('Details',
-                    
+
                     Row(
                         Column('length', css_class='form group col-md-4 col-sm-12'),
                         Column('width', css_class='form group col-md-4 col-sm-12'),
                         Column('height', css_class='form group col-md-4 col-sm-12'),
                     ),
                     Row(
-                        Column('supplier', css_class='form group col-md-6 col-sm-12'),
-                        Column('warehouse', css_class='form group col-md-6 col-sm-12'),
+                        Column(
+                            'supplier', css_class='form group col-md-6 col-sm-12'),
+                        Column('warehouse',
+                               css_class='form group col-md-6 col-sm-12'),
                     ),
                     Row(
-                        Column('category', css_class='form group col-md-6 col-sm-12'),
+                        Column(
+                            'category', css_class='form group col-md-6 col-sm-12'),
                         Column('image', css_class='form group col-md-6 col-sm-12'),
-                    ), 
-                ),
+                    ),
+                    ),
                 Tab('Asset',
                     'record_as_asset',
                     'asset_category',
@@ -344,17 +358,19 @@ class EquipmentForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                         Column('salvage_value', css_class="col-md-6 col-sm-12"),
                     ),
                     Row(
-                        Column('date_purchased', css_class="col-md-6 col-sm-12"),
-                        Column('depreciation_period', css_class="col-md-6 col-sm-12"),
+                        Column('date_purchased',
+                               css_class="col-md-6 col-sm-12"),
+                        Column('depreciation_period',
+                               css_class="col-md-6 col-sm-12"),
                     ),
-                )
+                    )
             ),
             Submit('submit', 'Submit')
 
         )
 
     class Meta:
-        exclude = "maximum_stock_level", "minimum_order_level", "product_component", "equipment_component", 
+        exclude = "maximum_stock_level", "minimum_order_level", "product_component", "equipment_component",
         model = models.InventoryItem
         widgets = {
             'supplier': Select2Widget(attrs={'data-width': '24rem'})
@@ -366,11 +382,12 @@ class EquipmentForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
             AccountingSettings.objects.first().equipment_capitalization_limit
         if not cleaned_data['record_as_asset'] and \
                 cleaned_data['unit_purchase_price'] > cap_limit:
-            raise forms.ValidationError("""The purchase price for this equipment is above the capitalization limit, either adjust this limit in the accouting settings or record this equipment as an asset.""")
+            raise forms.ValidationError(
+                """The purchase price for this equipment is above the capitalization limit, either adjust this limit in the accouting settings or record this equipment as an asset.""")
         elif cleaned_data['record_as_asset'] and \
                 cleaned_data['unit_purchase_price'] < cap_limit:
-            raise forms.ValidationError("""The purchase price for this equipment is below the capitalization limit so it cannot be recorded as an asset.""")
-
+            raise forms.ValidationError(
+                """The purchase price for this equipment is below the capitalization limit so it cannot be recorded as an asset.""")
 
         if cleaned_data['record_as_asset']:
             if cleaned_data['initial_value'] == "" or \
@@ -378,84 +395,85 @@ class EquipmentForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                     cleaned_data['date_purchased'] == "" or \
                     cleaned_data["salvage_value"] == "" or \
                     cleaned_data['asset_category'] == "":
-                raise forms.ValidationError("To record equipment as an asset, all the fields in the 'Asset' tab must be filled.")
+                raise forms.ValidationError(
+                    "To record equipment as an asset, all the fields in the 'Asset' tab must be filled.")
 
         return cleaned_data
-            
 
     def save(self, **kwargs):
         instance = super().save(**kwargs)
 
         def create_asset():
             return Asset.objects.create(
-                    name=instance.name,
+                name=instance.name,
                 description=instance.description,
-                category = self.cleaned_data['asset_category'],
-                initial_value = self.cleaned_data['initial_value'],
-                init_date = self.cleaned_data['date_purchased'],
-                salvage_value = self.cleaned_data['salvage_value'],
+                category=self.cleaned_data['asset_category'],
+                initial_value=self.cleaned_data['initial_value'],
+                init_date=self.cleaned_data['date_purchased'],
+                salvage_value=self.cleaned_data['salvage_value'],
                 depreciation_period=self.cleaned_data['depreciation_period']
-                )
+            )
 
         if self.cleaned_data['record_as_asset']:
             if instance.equipment_component and \
                     instance.equipment_component.asset_data:
-                #edit each field
+                # edit each field
                 asset = instance.equipment_component.asset_data
-                asset.name=instance.name
-                asset.description=instance.description
+                asset.name = instance.name
+                asset.description = instance.description
                 asset.category = self.cleaned_data['asset_category']
                 asset.initial_value = self.cleaned_data['initial_value']
                 asset.init_date = self.cleaned_data['date_purchased']
                 asset.salvage_value = self.cleaned_data['salvage_value']
-                asset.depreciation_period=self.cleaned_data['depreciation_period']
+                asset.depreciation_period = self.cleaned_data['depreciation_period']
                 asset.save()
                 instance.equipment_component.asset = asset
                 instance.equipment_component.save()
 
             elif instance.equipment_component and \
                     instance.equipment_component.asset_data is None:
-                #create asset
+                # create asset
                 asset = create_asset()
                 instance.equipment_component.asset_data = asset
                 instance.equipment_component.save()
 
             elif instance.equipment_component is None:
-                #create component and asset
+                # create component and asset
                 asset = create_asset()
                 instance.equipment_component = \
                     models.EquipmentComponent.objects.create(
                         asset_data=asset
                     )
 
-
         instance.save()
         return instance
-        
+
 
 class ConsumableForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
-    type=forms.CharField(widget=forms.HiddenInput, )
-    description = forms.CharField(widget=forms.Textarea(attrs={'rows':4, 'cols':15}), required=False)    
-
+    type = forms.CharField(widget=forms.HiddenInput, )
+    description = forms.CharField(widget=forms.Textarea(
+        attrs={'rows': 4, 'cols': 15}), required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
             TabHolder(
-                Tab('Main', 
+                Tab('Main',
                     Row(
                         Column('name',
-                    'unit_purchase_price',
-                    'initial_quantity',css_class='col-md-6 col-sm-12 form-group'),
-                    Column('unit',
-                    'description', css_class='col-md-6 col-sm-12 form-group')
+                               'unit_purchase_price',
+                               'initial_quantity', css_class='col-md-6 col-sm-12 form-group'),
+                        Column('unit',
+                               'description', css_class='col-md-6 col-sm-12 form-group')
                     )
-            ),
+                    ),
                 Tab('Details',
                     Row(
-                        Column('minimum_order_level', css_class="form-group col-sm-6"),
-                        Column('maximum_stock_level', css_class="form-group col-sm-6"),
+                        Column('minimum_order_level',
+                               css_class="form-group col-sm-6"),
+                        Column('maximum_stock_level',
+                               css_class="form-group col-sm-6"),
                     ),
                     Row(
                         Column('length', css_class="form-group col-sm-4"),
@@ -470,11 +488,11 @@ class ConsumableForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                         Column('category', css_class="form-group col-sm-6"),
                         Column('image', css_class="form-group col-sm-6"),
                     ),
-                    'type', 
-                )
+                    'type',
+                    )
             ),
             Submit('submit', 'Submit')
-            
+
         )
 
     class Meta:
@@ -485,18 +503,17 @@ class ConsumableForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
         }
 
 
-
 class OrderForm(forms.ModelForm, BootstrapMixin):
-    tax=forms.ModelChoiceField(
+    tax = forms.ModelChoiceField(
         Tax.objects.all(),
         widget=forms.HiddenInput
     )
-    make_payment= forms.BooleanField(initial=False, required=False)
+    make_payment = forms.BooleanField(initial=False, required=False)
     status = forms.CharField(widget=forms.HiddenInput)
-    ship_to = forms.ModelChoiceField(models.WareHouse.objects.all(), label='Ship To Warehouse')
-    notes = forms.CharField(widget=forms.Textarea(attrs={'rows': 6}),   
-        required=False)
-
+    ship_to = forms.ModelChoiceField(
+        models.WareHouse.objects.all(), label='Ship To Warehouse')
+    notes = forms.CharField(widget=forms.Textarea(attrs={'rows': 6}),
+                            required=False)
 
     def __init__(self, *args, **kwargs):
         super(OrderForm, self).__init__(*args, **kwargs)
@@ -505,17 +522,19 @@ class OrderForm(forms.ModelForm, BootstrapMixin):
         self.helper.layout = Layout(
             TabHolder(
                 Tab('Basic',
-                Row(
-                    Column('date', 'expected_receipt_date', 'due', css_class='form group col-md-6 col-sm-12'),
-                    Column('supplier','ship_to', 'issuing_inventory_controller',css_class='form group col-md-6 col-sm-12'),
-                ),
-                'tax',
+                    Row(
+                        Column('date', 'expected_receipt_date', 'due',
+                               css_class='form group col-md-6 col-sm-12'),
+                        Column('supplier', 'ship_to', 'issuing_inventory_controller',
+                               css_class='form group col-md-6 col-sm-12'),
                     ),
-                Tab('Shipping and Payment', 
+                    'tax',
+                    ),
+                Tab('Shipping and Payment',
                     Row(
                         Column(
                             'supplier_invoice_number',
-                            'bill_to', 
+                            'bill_to',
                             'tracking_number',
                             'make_payment',
                             css_class='col-md-6 col-sm-12'),
@@ -543,47 +562,52 @@ class OrderForm(forms.ModelForm, BootstrapMixin):
                                 value="order">                           
                         </div>
             """)
-            )
+        )
+
     class Meta:
-        exclude = ['validated_by', "entry", 'entries', "received_to_date", "shipping_cost_entries"]
+        exclude = ['validated_by', "entry", 'entries',
+                   "received_to_date", "shipping_cost_entries"]
         model = models.Order
         widgets = {
             'supplier': Select2Widget
         }
-        
+
 
 class OrderUpdateForm(forms.ModelForm, BootstrapMixin):
-    tax=forms.ModelChoiceField(
+    tax = forms.ModelChoiceField(
         Tax.objects.all(),
         widget=forms.HiddenInput
     )
+
     class Meta:
         model = models.Order
-        fields = ['date', 'expected_receipt_date', 
-             'due', 'supplier', 'bill_to',
-            'notes', 'tax']
-        
+        fields = ['date', 'expected_receipt_date',
+                  'due', 'supplier', 'bill_to',
+                  'notes', 'tax']
+
 
 class OrderPaymentForm(forms.ModelForm, BootstrapMixin):
     order = forms.ModelChoiceField(
         models.Order.objects.all(), widget=forms.HiddenInput)
+
     class Meta:
         exclude = "entry",
         model = models.OrderPayment
-        
+
+
 class StockReceiptForm(forms.ModelForm, BootstrapMixin):
-    order = forms.ModelChoiceField(models.Order.objects.all(),     
-        widget=forms.HiddenInput)
+    order = forms.ModelChoiceField(models.Order.objects.all(),
+                                   widget=forms.HiddenInput)
     warehouse = forms.CharField(widget=forms.HiddenInput)
+
     class Meta:
         exclude = 'fully_received',
-        model= models.StockReceipt
+        model = models.StockReceipt
         widgets = {
             'note': forms.Textarea(attrs={
                 'rows': 5
             })
         }
-
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -591,17 +615,16 @@ class StockReceiptForm(forms.ModelForm, BootstrapMixin):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-            Column('received_by', 
-                    'receive_date',
-                    'order',
-                    'warehouse',
-                    css_class="col-sm-6"),
-            Column('note', css_class="col-sm-6")
+                Column('received_by',
+                       'receive_date',
+                       'order',
+                       'warehouse',
+                       css_class="col-sm-6"),
+                Column('note', css_class="col-sm-6")
             )
         )
 
         self.helper.add_input(Submit('submit', 'Submit'))
-
 
 
 class UnitForm(forms.ModelForm, BootstrapMixin):
@@ -610,22 +633,24 @@ class UnitForm(forms.ModelForm, BootstrapMixin):
         model = models. UnitOfMeasure
 
 
-
 class CategoryForm(forms.ModelForm, BootstrapMixin):
-    parent = forms.ModelChoiceField(models.Category.objects.all(), widget=forms.HiddenInput, required=False)
+    parent = forms.ModelChoiceField(
+        models.Category.objects.all(), widget=forms.HiddenInput, required=False)
+
     class Meta:
         fields = "__all__"
         model = models.Category
-        
+
+
 class WareHouseForm(forms.ModelForm, BootstrapMixin):
     class Meta:
         fields = '__all__'
         model = models.WareHouse
 
         widgets = {
-                'address':forms.Textarea(attrs={'rows':4, 'cols':15}), 
-                'description':forms.Textarea(attrs={'rows':4, 'cols':15}),
-            }
+            'address': forms.Textarea(attrs={'rows': 4, 'cols': 15}),
+            'description': forms.Textarea(attrs={'rows': 4, 'cols': 15}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -645,7 +670,9 @@ class WareHouseForm(forms.ModelForm, BootstrapMixin):
 
 
 class InventoryCheckForm(forms.ModelForm, BootstrapMixin):
-    warehouse = forms.ModelChoiceField(models.WareHouse.objects.all(), widget=forms.HiddenInput)
+    warehouse = forms.ModelChoiceField(
+        models.WareHouse.objects.all(), widget=forms.HiddenInput)
+
     class Meta:
         fields = "__all__"
         model = models.InventoryCheck
@@ -661,11 +688,11 @@ class InventoryCheckForm(forms.ModelForm, BootstrapMixin):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-            Column('date', 
-                    'adjusted_by',
-                    'warehouse',
-                    css_class="col-sm-6"),
-            Column('comments', css_class="col-sm-6")
+                Column('date',
+                       'adjusted_by',
+                       'warehouse',
+                       css_class="col-sm-6"),
+                Column('comments', css_class="col-sm-6")
             )
         )
         self.helper.add_input(Submit('submit', 'Submit'))
@@ -673,12 +700,14 @@ class InventoryCheckForm(forms.ModelForm, BootstrapMixin):
 
 class TransferOrderForm(forms.ModelForm, BootstrapMixin):
     source_warehouse = forms.ModelChoiceField(models.WareHouse.objects.all(),
-        widget=forms.HiddenInput)
+                                              widget=forms.HiddenInput)
     items = forms.CharField(widget=forms.HiddenInput)
     order_issuing_notes = forms.CharField(widget=forms.Textarea(
         attrs={'rows': 8}))
+
     class Meta:
-        exclude = ['actual_completion_date', 'receiving_inventory_controller','receive_notes', 'completed']
+        exclude = ['actual_completion_date',
+                   'receiving_inventory_controller', 'receive_notes', 'completed']
         model = models.TransferOrder
 
     def __init__(self, *args, **kwargs):
@@ -687,17 +716,18 @@ class TransferOrderForm(forms.ModelForm, BootstrapMixin):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-            Column(
+                Column(
                     Row(
                         Column('date', css_class="col-sm-6"),
-                        Column('expected_completion_date',css_class="col-sm-6"),
+                        Column('expected_completion_date',
+                               css_class="col-sm-6"),
                     ),
                     'issuing_inventory_controller',
                     'receiving_warehouse',
                     'source_warehouse',
                     'items',
                     css_class="col-sm-6"),
-            Column('order_issuing_notes', css_class="col-sm-6")
+                Column('order_issuing_notes', css_class="col-sm-6")
             )
         )
 
@@ -706,7 +736,8 @@ class TransferOrderForm(forms.ModelForm, BootstrapMixin):
 
 class TransferReceiptForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        fields = ['actual_completion_date', 'receive_notes', 'receiving_inventory_controller']
+        fields = ['actual_completion_date', 'receive_notes',
+                  'receiving_inventory_controller']
         model = models.TransferOrder
 
     def __init__(self, *args, **kwargs):
@@ -715,14 +746,13 @@ class TransferReceiptForm(forms.ModelForm, BootstrapMixin):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-            Column('actual_completion_date', 
-                    'receiving_inventory_controller', 
-                    css_class="col-sm-6"),
-            Column('receive_notes', css_class="col-sm-6")
+                Column('actual_completion_date',
+                       'receiving_inventory_controller',
+                       css_class="col-sm-6"),
+                Column('receive_notes', css_class="col-sm-6")
             )
         )
         self.helper.add_input(Submit('submit', 'Submit'))
-
 
 
 class InventoryControllerForm(forms.ModelForm, BootstrapMixin):
@@ -743,16 +773,17 @@ class InventoryControllerForm(forms.ModelForm, BootstrapMixin):
         self.helper.add_input(Submit('submit', 'Submit'))
 
 
-
 class InventoryControllerUpdateForm(forms.ModelForm, BootstrapMixin):
     class Meta:
         exclude = "employee", 'active',
         model = models.InventoryController
 
+
 class ScrappingRecordForm(forms.ModelForm, BootstrapMixin):
-    warehouse = forms.ModelChoiceField(models.WareHouse.objects.all(), 
-        widget=forms.HiddenInput)
+    warehouse = forms.ModelChoiceField(models.WareHouse.objects.all(),
+                                       widget=forms.HiddenInput)
     items = forms.CharField(widget=forms.HiddenInput)
+
     class Meta:
         fields = "__all__"
         model = models.InventoryScrappingRecord
@@ -766,26 +797,30 @@ class ScrappingRecordForm(forms.ModelForm, BootstrapMixin):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-            Column('date', 
-                    'controller',
-                    'items',
-                    'warehouse',
-                    css_class="col-sm-6"),
-            Column('comments', css_class="col-sm-6")
+                Column('date',
+                       'controller',
+                       'items',
+                       'warehouse',
+                       css_class="col-sm-6"),
+                Column('comments', css_class="col-sm-6")
             )
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
+
 class StorageMediaForm(forms.ModelForm, BootstrapMixin):
-    location = forms.ModelChoiceField(models.StorageMedia.objects.all(), widget=forms.HiddenInput, required=False)
-    warehouse = forms.ModelChoiceField(models.WareHouse.objects.all(), widget=forms.HiddenInput)
+    location = forms.ModelChoiceField(
+        models.StorageMedia.objects.all(), widget=forms.HiddenInput, required=False)
+    warehouse = forms.ModelChoiceField(
+        models.WareHouse.objects.all(), widget=forms.HiddenInput)
+
     class Meta:
         fields = "__all__"
         model = models.StorageMedia
 
         widgets = {
-                'description':forms.Textarea(attrs={'rows':4, 'cols':15}),
-            }
+            'description': forms.Textarea(attrs={'rows': 4, 'cols': 15}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -800,38 +835,41 @@ class StorageMediaForm(forms.ModelForm, BootstrapMixin):
                         Column('height', css_class="form group col-md-4 col-sm-12"),
                     ),
                     'capacity',
-                ),
+                    ),
                 Tab('description',
                     'description',
                     'unit',
                     'warehouse',
                     'location',
-                ),
+                    ),
                 Tab('Parent Storage Medium',
                     HTML(
                         """
                         <div id="storage-media-select-widget"></div>                        
                         """
                     ),
-                ),
+                    ),
             ),
-        )        
+        )
         self.helper.add_input(Submit('submit', 'Submit'))
+
+
 class AutoStorageMedia(BootstrapMixin, forms.Form):
-    warehouse = forms.ModelChoiceField(models.WareHouse.objects.all(), widget=forms.HiddenInput)
+    warehouse = forms.ModelChoiceField(
+        models.WareHouse.objects.all(), widget=forms.HiddenInput)
     number_of_corridors = forms.CharField(widget=forms.NumberInput)
     number_of_aisles_per_corridor = forms.CharField(widget=forms.NumberInput)
     number_of_shelves_per_aisle = forms.CharField(widget=forms.NumberInput)
 
+
 class ShippingAndHandlingForm(BootstrapMixin, forms.Form):
-    #using current account 
-    #debiting cost of sales account 
+    # using current account
+    # debiting cost of sales account
     amount = forms.CharField(widget=forms.NumberInput)
     date = forms.DateField()
     description = forms.CharField(widget=forms.Textarea, required=False)
     recorded_by = forms.ModelChoiceField(Employee.objects.filter(active=True))
     reference = forms.CharField(widget=forms.HiddenInput)
-
 
 
 class DebitNoteForm(forms.ModelForm, BootstrapMixin):
@@ -840,14 +878,15 @@ class DebitNoteForm(forms.ModelForm, BootstrapMixin):
         model = models.DebitNote
 
     order = forms.ModelChoiceField(models.Order.objects.all(),
-        widget=forms.HiddenInput)
+                                   widget=forms.HiddenInput)
+
 
 class ImportItemsForm(forms.Form):
     file = forms.FileField()
     sheet_name = forms.CharField()
     warehouse = forms.ModelChoiceField(models.WareHouse.objects.all())
     name = forms.IntegerField()
-    type= forms.IntegerField()
+    type = forms.IntegerField()
     purchase_price = forms.IntegerField()
     sales_price = forms.IntegerField()
     quantity = forms.IntegerField()
@@ -895,6 +934,7 @@ class ImportItemsForm(forms.Form):
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
+
 class BulkCreateItemsForm(forms.Form):
     data = forms.CharField(widget=forms.HiddenInput)
     warehouse = forms.ModelChoiceField(models.WareHouse.objects.all())
@@ -910,9 +950,10 @@ class BulkCreateItemsForm(forms.Form):
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
+
 class CreateMultipleSuppliersForm(forms.Form):
     data = forms.CharField(widget=forms.HiddenInput)
-    
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -922,7 +963,6 @@ class CreateMultipleSuppliersForm(forms.Form):
             HTML("""<div id='multiple-suppliers-list'></div>""")
         )
         self.helper.add_input(Submit('submit', 'Submit'))
-
 
 
 class ImportSuppliersForm(forms.Form):
@@ -978,9 +1018,10 @@ class EquipmentandConsumablesPurchaseForm(forms.ModelForm, BootstrapMixin):
     paid_in_full = forms.BooleanField(required=False)
     data = forms.CharField(widget=forms.HiddenInput)
     warehouse = forms.ModelChoiceField(models.WareHouse.objects.all())
+
     class Meta:
         model = Bill
-        exclude = 'entry', 
+        exclude = 'entry',
         widgets = {
             'vendor': Select2Widget,
             'memo': forms.Textarea(attrs={'rows': 4})
@@ -995,17 +1036,17 @@ class EquipmentandConsumablesPurchaseForm(forms.ModelForm, BootstrapMixin):
                     Row(
                         Column('date', css_class='col-md-6 col-sm-12'),
                         Column('due', css_class='col-md-6 col-sm-12'),
-                    ),  'vendor',  'warehouse', 'paid_in_full',css_class='col-md-6 col-sm-12'),
+                    ),  'vendor',  'warehouse', 'paid_in_full', css_class='col-md-6 col-sm-12'),
                 Column('reference', 'memo',
-                    css_class='col-md-6 col-sm-12')
-                ),
-                
-                'data',
-                HTML("""
+                       css_class='col-md-6 col-sm-12')
+            ),
+
+            'data',
+            HTML("""
                     <div id='purchase-table'></div>
                     {% load render_bundle from webpack_loader %}
                     {% render_bundle 'inventory' %}
                     """)
-            
+
         )
         self.helper.add_input(Submit('submit', 'Submit'))

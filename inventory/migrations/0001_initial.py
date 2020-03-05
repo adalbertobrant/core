@@ -20,16 +20,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Category',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=64)),
                 ('description', models.TextField(default='')),
-                ('parent', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.Category')),
+                ('parent', models.ForeignKey(blank=True, null=True,
+                                             on_delete=django.db.models.deletion.SET_NULL, to='inventory.Category')),
             ],
         ),
         migrations.CreateModel(
             name='DebitNote',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('date', models.DateField()),
                 ('comments', models.TextField()),
             ],
@@ -37,53 +40,68 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DebitNoteLine',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('quantity', models.FloatField()),
             ],
         ),
         migrations.CreateModel(
             name='EquipmentComponent',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('condition', models.CharField(choices=[('excellent', 'Excellent'), ('good', 'Good'), ('poor', 'Poor'), ('broken', 'Not Functioning')], default='excellent', max_length=16)),
-                ('asset_data', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Asset')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
+                ('condition', models.CharField(choices=[('excellent', 'Excellent'), ('good', 'Good'), (
+                    'poor', 'Poor'), ('broken', 'Not Functioning')], default='excellent', max_length=16)),
+                ('asset_data', models.ForeignKey(blank=True, null=True,
+                                                 on_delete=django.db.models.deletion.SET_NULL, to='accounting.Asset')),
             ],
         ),
         migrations.CreateModel(
             name='InventoryCheck',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('date', models.DateField()),
                 ('comments', models.TextField()),
-                ('adjusted_by', models.ForeignKey(limit_choices_to=models.Q(user__isnull=False), null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee')),
+                ('adjusted_by', models.ForeignKey(limit_choices_to=models.Q(user__isnull=False),
+                                                  null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee')),
             ],
         ),
         migrations.CreateModel(
             name='InventoryController',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('can_authorize_equipment_requisitions', models.BooleanField(default=False)),
-                ('can_authorize_consumables_requisitions', models.BooleanField(default=False)),
-                ('employee', models.OneToOneField(limit_choices_to=models.Q(user__isnull=False), null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
+                ('can_authorize_equipment_requisitions',
+                 models.BooleanField(default=False)),
+                ('can_authorize_consumables_requisitions',
+                 models.BooleanField(default=False)),
+                ('employee', models.OneToOneField(limit_choices_to=models.Q(user__isnull=False),
+                                                  null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee')),
             ],
         ),
         migrations.CreateModel(
             name='InventoryItem',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('active', models.BooleanField(default=True)),
                 ('name', models.CharField(max_length=64)),
-                ('type', models.PositiveSmallIntegerField(choices=[(0, 'Product'), (1, 'Equipment'), (2, 'Consumables'), (3, 'Raw Material')])),
+                ('type', models.PositiveSmallIntegerField(choices=[
+                 (0, 'Product'), (1, 'Equipment'), (2, 'Consumables'), (3, 'Raw Material')])),
                 ('length', models.FloatField(default=0.0)),
                 ('width', models.FloatField(default=0.0)),
                 ('height', models.FloatField(default=0.0)),
                 ('image', models.FileField(blank=True, null=True)),
                 ('description', models.TextField(blank=True, default='')),
-                ('unit_purchase_price', models.DecimalField(decimal_places=2, default=0.0, max_digits=9)),
+                ('unit_purchase_price', models.DecimalField(
+                    decimal_places=2, default=0.0, max_digits=9)),
                 ('minimum_order_level', models.IntegerField(default=0)),
                 ('maximum_stock_level', models.IntegerField(default=0)),
-                ('category', models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.Category')),
-                ('equipment_component', models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.EquipmentComponent')),
+                ('category', models.ForeignKey(default=1, null=True,
+                                               on_delete=django.db.models.deletion.SET_NULL, to='inventory.Category')),
+                ('equipment_component', models.OneToOneField(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.EquipmentComponent')),
             ],
             options={
                 'abstract': False,
@@ -92,29 +110,38 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='InventoryScrappingRecord',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('date', models.DateField()),
                 ('comments', models.TextField(blank=True)),
-                ('controller', models.ForeignKey(limit_choices_to=models.Q(user__isnull=False), null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee')),
+                ('controller', models.ForeignKey(limit_choices_to=models.Q(user__isnull=False),
+                                                 null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee')),
             ],
         ),
         migrations.CreateModel(
             name='InventoryScrappingRecordLine',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('quantity', models.FloatField()),
                 ('note', models.TextField(blank=True)),
-                ('item', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryItem')),
-                ('scrapping_record', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryScrappingRecord')),
+                ('item', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryItem')),
+                ('scrapping_record', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryScrappingRecord')),
             ],
         ),
         migrations.CreateModel(
             name='InventorySettings',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('inventory_valuation_method', models.PositiveSmallIntegerField(choices=[(1, 'Averaging')], default=1)),
-                ('default_product_sales_pricing_method', models.PositiveSmallIntegerField(choices=[(1, 'Direct Pricing'), (2, 'Margin'), (3, 'Markup')], default=1)),
-                ('inventory_check_frequency', models.PositiveSmallIntegerField(choices=[(1, 'Monthly'), (2, 'Quarterly'), (3, 'Bi-Annually'), (4, 'Annually')], default=1)),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
+                ('inventory_valuation_method', models.PositiveSmallIntegerField(
+                    choices=[(1, 'Averaging')], default=1)),
+                ('default_product_sales_pricing_method', models.PositiveSmallIntegerField(
+                    choices=[(1, 'Direct Pricing'), (2, 'Margin'), (3, 'Markup')], default=1)),
+                ('inventory_check_frequency', models.PositiveSmallIntegerField(choices=[
+                 (1, 'Monthly'), (2, 'Quarterly'), (3, 'Bi-Annually'), (4, 'Annually')], default=1)),
                 ('inventory_check_date', models.PositiveSmallIntegerField(default=1)),
                 ('use_warehousing_model', models.BooleanField(default=True)),
                 ('use_storage_media_model', models.BooleanField(default=True)),
@@ -130,19 +157,25 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Order',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('active', models.BooleanField(default=True)),
                 ('expected_receipt_date', models.DateField()),
                 ('date', models.DateField()),
                 ('due', models.DateField(blank=True, null=True)),
-                ('supplier_invoice_number', models.CharField(blank=True, default='', max_length=32)),
+                ('supplier_invoice_number', models.CharField(
+                    blank=True, default='', max_length=32)),
                 ('bill_to', models.CharField(blank=True, default='', max_length=128)),
-                ('tracking_number', models.CharField(blank=True, default='', max_length=64)),
+                ('tracking_number', models.CharField(
+                    blank=True, default='', max_length=64)),
                 ('notes', models.TextField(blank=True)),
-                ('status', models.CharField(choices=[('received-partially', 'Partially Received'), ('received', 'Received in Total'), ('draft', 'Internal Draft'), ('order', 'Order')], max_length=24)),
+                ('status', models.CharField(choices=[('received-partially', 'Partially Received'), ('received',
+                                                                                                    'Received in Total'), ('draft', 'Internal Draft'), ('order', 'Order')], max_length=24)),
                 ('received_to_date', models.FloatField(default=0.0)),
-                ('entry', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='order_entry', to='accounting.JournalEntry')),
-                ('issuing_inventory_controller', models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                ('entry', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                            related_name='order_entry', to='accounting.JournalEntry')),
+                ('issuing_inventory_controller', models.ForeignKey(default=1, null=True,
+                                                                   on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'abstract': False,
@@ -151,78 +184,102 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='OrderItem',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('quantity', models.FloatField()),
-                ('order_price', models.DecimalField(decimal_places=2, max_digits=6)),
+                ('order_price', models.DecimalField(
+                    decimal_places=2, max_digits=6)),
                 ('received', models.FloatField(default=0.0)),
-                ('item', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryItem')),
-                ('order', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.Order')),
+                ('item', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryItem')),
+                ('order', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.Order')),
             ],
         ),
         migrations.CreateModel(
             name='OrderPayment',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('date', models.DateField()),
                 ('amount', models.DecimalField(decimal_places=2, max_digits=16)),
                 ('comments', models.TextField()),
-                ('entry', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.JournalEntry')),
-                ('order', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.Order')),
+                ('entry', models.ForeignKey(blank=True, null=True,
+                                            on_delete=django.db.models.deletion.SET_NULL, to='accounting.JournalEntry')),
+                ('order', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.Order')),
             ],
         ),
         migrations.CreateModel(
             name='ProductComponent',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('pricing_method', models.IntegerField(choices=[(0, 'Manual'), (1, 'Margin'), (2, 'Markup')], default=0)),
-                ('direct_price', models.DecimalField(decimal_places=2, max_digits=9)),
-                ('margin', models.DecimalField(decimal_places=2, default=0, max_digits=9)),
-                ('markup', models.DecimalField(decimal_places=2, default=0, max_digits=9)),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
+                ('pricing_method', models.IntegerField(choices=[
+                 (0, 'Manual'), (1, 'Margin'), (2, 'Markup')], default=0)),
+                ('direct_price', models.DecimalField(
+                    decimal_places=2, max_digits=9)),
+                ('margin', models.DecimalField(
+                    decimal_places=2, default=0, max_digits=9)),
+                ('markup', models.DecimalField(
+                    decimal_places=2, default=0, max_digits=9)),
                 ('sku', models.CharField(blank=True, max_length=16)),
-                ('tax', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Tax')),
+                ('tax', models.ForeignKey(blank=True, null=True,
+                                          on_delete=django.db.models.deletion.SET_NULL, to='accounting.Tax')),
             ],
         ),
         migrations.CreateModel(
             name='StockAdjustment',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('adjustment', models.FloatField()),
                 ('note', models.TextField()),
-                ('inventory_check', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryCheck')),
+                ('inventory_check', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryCheck')),
             ],
         ),
         migrations.CreateModel(
             name='StockReceipt',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('receive_date', models.DateField()),
                 ('note', models.TextField(blank=True, default='')),
                 ('fully_received', models.BooleanField(default=False)),
-                ('order', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.Order')),
-                ('received_by', models.ForeignKey(default=1, limit_choices_to=models.Q(user__isnull=False), null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee')),
+                ('order', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.Order')),
+                ('received_by', models.ForeignKey(default=1, limit_choices_to=models.Q(user__isnull=False),
+                                                  null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee')),
             ],
         ),
         migrations.CreateModel(
             name='StorageMedia',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255)),
                 ('description', models.TextField(blank=True)),
                 ('length', models.FloatField(default=0.0)),
                 ('width', models.FloatField(default=0.0)),
                 ('height', models.FloatField(default=0.0)),
                 ('capacity', models.FloatField(default=0.0)),
-                ('location', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.StorageMedia')),
+                ('location', models.ForeignKey(blank=True, null=True,
+                                               on_delete=django.db.models.deletion.SET_NULL, to='inventory.StorageMedia')),
             ],
         ),
         migrations.CreateModel(
             name='Supplier',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('active', models.BooleanField(default=True)),
-                ('account', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Account')),
-                ('individual', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='common_data.Individual')),
-                ('organization', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='common_data.Organization')),
+                ('account', models.ForeignKey(blank=True, null=True,
+                                              on_delete=django.db.models.deletion.SET_NULL, to='accounting.Account')),
+                ('individual', models.OneToOneField(blank=True, null=True,
+                                                    on_delete=django.db.models.deletion.SET_NULL, to='common_data.Individual')),
+                ('organization', models.OneToOneField(blank=True, null=True,
+                                                      on_delete=django.db.models.deletion.SET_NULL, to='common_data.Organization')),
             ],
             options={
                 'abstract': False,
@@ -231,37 +288,45 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TransferOrder',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('date', models.DateField()),
                 ('expected_completion_date', models.DateField()),
                 ('actual_completion_date', models.DateField(null=True)),
                 ('order_issuing_notes', models.TextField(blank=True)),
                 ('receive_notes', models.TextField(blank=True)),
                 ('completed', models.BooleanField(default=False)),
-                ('issuing_inventory_controller', models.ForeignKey(limit_choices_to=models.Q(user__isnull=False), null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='issuing_inventory_controller', to='employees.Employee')),
-                ('receiving_inventory_controller', models.ForeignKey(limit_choices_to=models.Q(user__isnull=False), null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee')),
+                ('issuing_inventory_controller', models.ForeignKey(limit_choices_to=models.Q(user__isnull=False), null=True,
+                                                                   on_delete=django.db.models.deletion.SET_NULL, related_name='issuing_inventory_controller', to='employees.Employee')),
+                ('receiving_inventory_controller', models.ForeignKey(limit_choices_to=models.Q(
+                    user__isnull=False), null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee')),
             ],
         ),
         migrations.CreateModel(
             name='TransferOrderLine',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('quantity', models.FloatField()),
                 ('moved_quantity', models.FloatField(default=0.0)),
-                ('item', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryItem')),
-                ('transfer_order', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.TransferOrder')),
+                ('item', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryItem')),
+                ('transfer_order', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.TransferOrder')),
             ],
         ),
         migrations.CreateModel(
             name='UnitOfMeasure',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('active', models.BooleanField(default=True)),
                 ('name', models.CharField(max_length=64)),
                 ('description', models.TextField(default='')),
                 ('eval_string', models.CharField(default='', max_length=255)),
                 ('is_derived', models.BooleanField(default=False)),
-                ('base_unit', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.UnitOfMeasure')),
+                ('base_unit', models.ForeignKey(blank=True, null=True,
+                                                on_delete=django.db.models.deletion.SET_NULL, to='inventory.UnitOfMeasure')),
             ],
             options={
                 'abstract': False,
@@ -270,116 +335,141 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='WareHouse',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=128)),
                 ('address', models.TextField()),
                 ('description', models.TextField(blank=True)),
                 ('length', models.FloatField(default=0.0)),
                 ('width', models.FloatField(default=0.0)),
                 ('height', models.FloatField(default=0.0)),
-                ('last_inventory_check_date', models.DateField(blank=True, null=True)),
-                ('inventory_controller', models.ForeignKey(blank=True, limit_choices_to=models.Q(user__isnull=False), null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee')),
+                ('last_inventory_check_date',
+                 models.DateField(blank=True, null=True)),
+                ('inventory_controller', models.ForeignKey(blank=True, limit_choices_to=models.Q(
+                    user__isnull=False), null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee')),
             ],
         ),
         migrations.CreateModel(
             name='WareHouseItem',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('quantity', models.FloatField()),
                 ('verified', models.BooleanField(default=False)),
-                ('item', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryItem')),
-                ('location', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.StorageMedia')),
-                ('warehouse', models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.WareHouse')),
+                ('item', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryItem')),
+                ('location', models.ForeignKey(blank=True, null=True,
+                                               on_delete=django.db.models.deletion.SET_NULL, to='inventory.StorageMedia')),
+                ('warehouse', models.ForeignKey(default=1, null=True,
+                                                on_delete=django.db.models.deletion.SET_NULL, to='inventory.WareHouse')),
             ],
         ),
         migrations.AddField(
             model_name='transferorder',
             name='receiving_warehouse',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.WareHouse'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.WareHouse'),
         ),
         migrations.AddField(
             model_name='transferorder',
             name='source_warehouse',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='source_warehouse', to='inventory.WareHouse'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                    related_name='source_warehouse', to='inventory.WareHouse'),
         ),
         migrations.AddField(
             model_name='storagemedia',
             name='unit',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.UnitOfMeasure'),
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.UnitOfMeasure'),
         ),
         migrations.AddField(
             model_name='storagemedia',
             name='warehouse',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.WareHouse'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.WareHouse'),
         ),
         migrations.AddField(
             model_name='stockadjustment',
             name='warehouse_item',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.WareHouseItem'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.WareHouseItem'),
         ),
         migrations.AddField(
             model_name='orderitem',
             name='unit',
-            field=models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.UnitOfMeasure'),
+            field=models.ForeignKey(
+                default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.UnitOfMeasure'),
         ),
         migrations.AddField(
             model_name='order',
             name='ship_to',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.WareHouse'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.WareHouse'),
         ),
         migrations.AddField(
             model_name='order',
             name='shipping_cost_entries',
-            field=models.ManyToManyField(related_name='shipping_cost_entries', to='accounting.JournalEntry'),
+            field=models.ManyToManyField(
+                related_name='shipping_cost_entries', to='accounting.JournalEntry'),
         ),
         migrations.AddField(
             model_name='order',
             name='supplier',
-            field=models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.Supplier'),
+            field=models.ForeignKey(
+                default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.Supplier'),
         ),
         migrations.AddField(
             model_name='order',
             name='tax',
-            field=models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Tax'),
+            field=models.ForeignKey(
+                default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Tax'),
         ),
         migrations.AddField(
             model_name='inventoryscrappingrecord',
             name='warehouse',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.WareHouse'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.WareHouse'),
         ),
         migrations.AddField(
             model_name='inventoryitem',
             name='product_component',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.ProductComponent'),
+            field=models.OneToOneField(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.ProductComponent'),
         ),
         migrations.AddField(
             model_name='inventoryitem',
             name='supplier',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.Supplier'),
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.Supplier'),
         ),
         migrations.AddField(
             model_name='inventoryitem',
             name='unit',
-            field=models.ForeignKey(blank=True, default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.UnitOfMeasure'),
+            field=models.ForeignKey(blank=True, default=1, null=True,
+                                    on_delete=django.db.models.deletion.SET_NULL, to='inventory.UnitOfMeasure'),
         ),
         migrations.AddField(
             model_name='inventorycheck',
             name='warehouse',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.WareHouse'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.WareHouse'),
         ),
         migrations.AddField(
             model_name='debitnoteline',
             name='item',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.OrderItem'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.OrderItem'),
         ),
         migrations.AddField(
             model_name='debitnoteline',
             name='note',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.DebitNote'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.DebitNote'),
         ),
         migrations.AddField(
             model_name='debitnote',
             name='order',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.Order'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.Order'),
         ),
     ]

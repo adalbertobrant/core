@@ -14,21 +14,25 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='order',
             name='issuing_inventory_controller',
-            field=models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryController'),
+            field=models.ForeignKey(
+                default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryController'),
         ),
         migrations.AlterField(
             model_name='transferorder',
             name='issuing_inventory_controller',
-            field=models.ForeignKey(limit_choices_to=models.Q(user__isnull=False), null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='issuing_inventory_controller', to='inventory.InventoryController'),
+            field=models.ForeignKey(limit_choices_to=models.Q(user__isnull=False), null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                    related_name='issuing_inventory_controller', to='inventory.InventoryController'),
         ),
         migrations.AlterField(
             model_name='transferorder',
             name='receiving_inventory_controller',
-            field=models.ForeignKey(limit_choices_to=models.Q(user__isnull=False), null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryController'),
+            field=models.ForeignKey(limit_choices_to=models.Q(user__isnull=False), null=True,
+                                    on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryController'),
         ),
         migrations.AlterField(
             model_name='warehouse',
             name='inventory_controller',
-            field=models.ForeignKey(blank=True, limit_choices_to=models.Q(user__isnull=False), null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryController'),
+            field=models.ForeignKey(blank=True, limit_choices_to=models.Q(
+                user__isnull=False), null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryController'),
         ),
     ]

@@ -1,18 +1,18 @@
-from .models import (SimpleModelTests, 
-    AssetTests, 
-    ExpenseModelTests, 
-    JournalEntryModelTests, 
-    AccountModelTests, 
-    CurrencyTests
-)
+from .models import (SimpleModelTests,
+                     AssetTests,
+                     ExpenseModelTests,
+                     JournalEntryModelTests,
+                     AccountModelTests,
+                     CurrencyTests
+                     )
 
-from .views import (CommonViewTests, 
-    JournalEntryViewTests, 
-    AccountViewTests, 
-    TestReportViews, 
-    TestCurrencyViews, 
-    AccountingWizardTests,
-    AssetViewTests,ExpesnseViewTests)
+from .views import (CommonViewTests,
+                    JournalEntryViewTests,
+                    AccountViewTests,
+                    TestReportViews,
+                    TestCurrencyViews,
+                    AccountingWizardTests,
+                    AssetViewTests, ExpesnseViewTests)
 
 from .model_util import AccountingModelCreator
 

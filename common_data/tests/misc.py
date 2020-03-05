@@ -1,9 +1,6 @@
-from django.test import Client, TestCase 
-from django.test.client import RequestFactory
-import datetime
-from django.shortcuts import reverse
+from django.test import Client, TestCase
 #from invoicing.tests.model_util import InvoicingModelCreator
-from invoicing.views import CustomerStatementPDFView
+
 
 class ReportViewTests(TestCase):
     @classmethod
@@ -13,7 +10,5 @@ class ReportViewTests(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        #InvoicingModelCreator(cls).create_all()
-        pass 
-
-    
+        # InvoicingModelCreator(cls).create_all()
+        pass

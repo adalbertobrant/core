@@ -6,33 +6,27 @@ import os
 import urllib
 
 from django.contrib import messages
-from inventory.views.util import InventoryConfigMixin 
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import UserPassesTestMixin
+from inventory.views.util import InventoryConfigMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic import DetailView, TemplateView
 from django.views.generic.edit import (CreateView, DeleteView, FormView,
                                        UpdateView)
 from django_filters.views import FilterView
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
 
-from common_data.models import GlobalConfig
 from common_data.utilities import *
 from common_data.views import PaginationMixin
 from inventory import filters, forms, models, serializers
-from invoicing.models import SalesConfig
 from services.models import EquipmentRequisition, ConsumablesRequisition
 from inventory.views.dash_plotters import composition_plot
-from formtools.wizard.views import SessionWizardView
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from employees.forms import EmployeeForm
 from employees.models import Employee
 
-CREATE_TEMPLATE =os.path.join("common_data", "create_template.html")
+CREATE_TEMPLATE = os.path.join("common_data", "create_template.html")
 
 
 #####################################################
@@ -43,7 +37,7 @@ CREATE_TEMPLATE =os.path.join("common_data", "create_template.html")
 class InventoryControllerCreateView(ContextMixin, CreateView):
     form_class = forms.InventoryControllerForm
     template_name = os.path.join('common_data', 'crispy_create_template.html')
-    success_url =  reverse_lazy('inventory:inventory-controller-list')
+    success_url = reverse_lazy('inventory:inventory-controller-list')
     extra_context = {
         'title': 'Create Inventory Controller',
         'description': 'Assign an existing employee to the role of inventory controller and provide the permissions for their role.',
@@ -52,27 +46,29 @@ class InventoryControllerCreateView(ContextMixin, CreateView):
             'url': '/employees/create-employee/'
         }],
         'box_array':  urllib.parse.quote(json.dumps([{
-                "model": "employee",
-                "app": "employees",
-                "id": "id_employee",
-            }]))
+            "model": "employee",
+            "app": "employees",
+            "id": "id_employee",
+        }]))
     }
+
 
 class InventoryControllerUpdateView(ContextMixin, UpdateView):
     form_class = forms.InventoryControllerUpdateForm
     template_name = CREATE_TEMPLATE
     queryset = models.InventoryController.objects.all()
-    success_url =  reverse_lazy('inventory:inventory-controller-list')
+    success_url = reverse_lazy('inventory:inventory-controller-list')
     extra_context = {
         'title': 'Update Inventory Controller',
-        
+
     }
+
 
 class InventoryControllerDeleteView(DeleteView):
     template_name = os.path.join('common_data', 'delete_template.html')
-    model = models.InventoryController    
-    success_url =  reverse_lazy('inventory:inventory-controller-list')
-    
+    model = models.InventoryController
+    success_url = reverse_lazy('inventory:inventory-controller-list')
+
 
 class InventoryControllerListView(ContextMixin,   PaginationMixin, FilterView):
     queryset = models.InventoryController.objects.filter(active=True)
@@ -89,19 +85,19 @@ class InventoryDashboard(InventoryConfigMixin, TemplateView):
     template_name = os.path.join("inventory", "dashboard.html")
 
     def get_context_data(self, **kwargs):
-        #check for outstanding requisitions
-        
+        # check for outstanding requisitions
+
         eq_count = EquipmentRequisition.objects.filter(
             released_by__isnull=True).count()
         if eq_count > 0:
-            messages.info(self.request, 
-                f'There are {eq_count} unreleased equipment requisition(s)')
+            messages.info(self.request,
+                          f'There are {eq_count} unreleased equipment requisition(s)')
         con_count = ConsumablesRequisition.objects.filter(
             released_by__isnull=True).count()
         if con_count > 0:
-            messages.info(self.request, 
-            f'There are {con_count} unreleased consumable requisition(s)')
-        
+            messages.info(self.request,
+                          f'There are {con_count} unreleased consumable requisition(s)')
+
         context = super().get_context_data(**kwargs)
         context['primary_warehouse'] = \
             models.InventorySettings.objects.first().default_warehouse.pk
@@ -110,28 +106,32 @@ class InventoryDashboard(InventoryConfigMixin, TemplateView):
     def get(self, *args, **kwargs):
         if models.InventorySettings.objects.first().is_configured:
             resp = super().get(*args, **kwargs)
-            return resp 
+            return resp
 
         else:
             return HttpResponseRedirect(reverse_lazy('inventory:config-wizard'))
 
-            
+
 class AsyncDashboard(ContextMixin, TemplateView):
     template_name = os.path.join('inventory', 'async_dashboard.html')
 
     def get_context_data(self, *args, **kwargs):
-        context =  super().get_context_data(*args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
 
-        context['undelivered_orders'] = models.Order.objects.filter(stockreceipt__isnull=True).count()
+        context['undelivered_orders'] = models.Order.objects.filter(
+            stockreceipt__isnull=True).count()
 
-        context['outstanding_orders'] = len([ i for i in models.Order.objects.filter(status="order") if i.payment_status != "paid"])
+        context['outstanding_orders'] = len([i for i in models.Order.objects.filter(
+            status="order") if i.payment_status != "paid"])
 
-        context['money_owed'] = sum([i.total_due for i in models.Order.objects.filter(status="order") if i.received_to_date > 0])
+        context['money_owed'] = sum([i.total_due for i in models.Order.objects.filter(
+            status="order") if i.received_to_date > 0])
 
-        context['vendors'] = models.Supplier.objects.filter(active=True).count()
+        context['vendors'] = models.Supplier.objects.filter(
+            active=True).count()
         context['warehouses'] = models.WareHouse.objects.all().count()
         context['open_requisitions'] = EquipmentRequisition.objects.filter(
-                released_by__isnull=True).count()  +  \
+            released_by__isnull=True).count() +  \
             ConsumablesRequisition.objects.filter(
                 released_by__isnull=True).count()
 
@@ -139,11 +139,11 @@ class AsyncDashboard(ContextMixin, TemplateView):
             completed=False).count()
 
         context['products'] = models.InventoryItem.objects.filter(
-            type=0,active=True).count()
+            type=0, active=True).count()
         context['equipment'] = models.InventoryItem.objects.filter(
-            type=1,active=True).count()
+            type=1, active=True).count()
         context['consumables'] = models.InventoryItem.objects.filter(
-            type=2,active=True).count()
+            type=2, active=True).count()
         context['graph'] = composition_plot().render(is_unicode=True)
 
         return context
@@ -158,18 +158,20 @@ class UnitCreateView(ContextMixin,  CreateView):
     model = models.UnitOfMeasure
     template_name = CREATE_TEMPLATE
     extra_context = {
-        'title':'Create New Unit of measure'
+        'title': 'Create New Unit of measure'
     }
+
 
 class UnitUpdateView(ContextMixin,  UpdateView):
     form_class = forms.UnitForm
     model = models.UnitOfMeasure
     template_name = CREATE_TEMPLATE
     extra_context = {
-        'title':'Update Unit of measure'
+        'title': 'Update Unit of measure'
     }
 
-class UnitDetailView( DetailView):
+
+class UnitDetailView(DetailView):
     model = models.UnitOfMeasure
     template_name = os.path.join('inventory', 'unit', 'detail.html')
 
@@ -185,38 +187,45 @@ class UnitListView(ContextMixin,  PaginationMixin, FilterView):
     }
 
 
-class UnitDeleteView( DeleteView):
+class UnitDeleteView(DeleteView):
     template_name = os.path.join('common_data', 'delete_template.html')
     model = models.UnitOfMeasure
     success_url = reverse_lazy('invoicing.product-list')
+
 
 class UnitAPIView(ModelViewSet):
     serializer_class = serializers.UnitSerializer
     queryset = models.UnitOfMeasure.objects.all()
 
-class ConfigView( UpdateView):
+
+class ConfigView(UpdateView):
     template_name = os.path.join('inventory', 'config.html')
     form_class = forms.ConfigForm
     model = models.InventorySettings
     success_url = reverse_lazy('inventory:home')
-    #change this page
+    # change this page
 
-class CategoryCreateView( CreateView):
+
+class CategoryCreateView(CreateView):
     form_class = forms.CategoryForm
     model = models.Category
     template_name = os.path.join('inventory', 'category', 'create.html')
 
-class CategoryUpdateView( UpdateView):
+
+class CategoryUpdateView(UpdateView):
     form_class = forms.CategoryForm
     model = models.Category
-    template_name = os.path.join('inventory', 'category','update.html')
+    template_name = os.path.join('inventory', 'category', 'update.html')
 
-class CategoryListView( TemplateView):
+
+class CategoryListView(TemplateView):
     template_name = os.path.join('inventory', 'category', 'list.html')
 
-class CategoryDetailView( DetailView):
+
+class CategoryDetailView(DetailView):
     template_name = os.path.join('inventory', 'category', 'detail.html')
     model = models.Category
+
 
 class CategoryListAPIView(ListAPIView):
     serializer_class = serializers.CategorySerializer
@@ -225,9 +234,9 @@ class CategoryListAPIView(ListAPIView):
         return models.Category.objects.filter(parent=None)
 
 
-
 def inventory_controller_condition(self):
     return models.InventoryController.objects.filter(active=True).count() == 0
+
 
 def employee_condition(self):
     return Employee.objects.all().count() == 0
@@ -236,11 +245,11 @@ def employee_condition(self):
 class ConfigWizard(ConfigWizardBase):
     template_name = os.path.join('inventory', 'wizard.html')
     form_list = [
-        forms.ConfigForm, 
+        forms.ConfigForm,
         EmployeeForm,
         forms.InventoryControllerForm,
-        forms.SupplierForm, 
-        ]
+        forms.SupplierForm,
+    ]
 
     condition_dict = {
         '1': employee_condition,

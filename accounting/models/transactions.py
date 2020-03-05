@@ -1,15 +1,12 @@
 import datetime
-from decimal import Decimal as D
-from functools import reduce
 from itertools import chain
 
 from django.db import models
 from django.db.models import Q
-from django.utils import timezone
 from accounting.models.books import Post
 from django.shortcuts import reverse
 
-    
+
 class Transaction(models.Model):
     '''
     Transaction
@@ -19,18 +16,16 @@ class Transaction(models.Model):
     Does not create a table on the database.
     Is an aggregate component of a JournalEntry
     '''
-    account = models.ForeignKey('accounting.Account', 
-        on_delete=models.SET_NULL, 
-        null=True)
-    amount =models.DecimalField(max_digits=16, 
-        decimal_places=2)
-    entry = models.ForeignKey('accounting.JournalEntry', 
-        on_delete=models.CASCADE)
+    account = models.ForeignKey('accounting.Account',
+                                on_delete=models.SET_NULL,
+                                null=True)
+    amount = models.DecimalField(max_digits=16,
+                                 decimal_places=2)
+    entry = models.ForeignKey('accounting.JournalEntry',
+                              on_delete=models.CASCADE)
 
-        
     class Meta:
-        abstract =True
-
+        abstract = True
 
     def __lt__(self, other):
         '''for comparing transactions when listing them in an account'''
@@ -48,6 +43,7 @@ class Transaction(models.Model):
         super().save(*args, **kwargs)
         self.execute()
 
+
 class Debit(Transaction):
     '''
     Debit
@@ -56,6 +52,7 @@ class Debit(Transaction):
     Inherits from transaction, is an aggregate part of a JournalEntry
     and subtracts from the account when saved.
     '''
+
     def __str__(self):
         return "Debit"
 
@@ -63,8 +60,9 @@ class Debit(Transaction):
         if not self.entry.draft:
             if self.account.type in ['asset', 'expense', 'cost-of-sales']:
                 self.account.increment(self.amount)
-            else: #income, liability, equity
+            else:  # income, liability, equity
                 self.account.decrement(self.amount)
+
 
 class Credit(Transaction):
     '''
@@ -75,17 +73,18 @@ class Credit(Transaction):
     Inherits from transaction, is an aggregate part of a JournalEntry
     and adds to the account when saved.
     '''
+
     def __str__(self):
         return "Credit"
 
-        
     def execute(self):
         '''credits reduce balances of asset accounts as '''
         if not self.entry.draft:
             if self.account.type in ['asset', 'expense', 'cost-of-sales']:
                 self.account.decrement(self.amount)
-            else: #income, liability, equity
+            else:  # income, liability, equity
                 self.account.increment(self.amount)
+
 
 class JournalEntry(models.Model):
     '''
@@ -96,14 +95,14 @@ class JournalEntry(models.Model):
     in any configuration.
     Includes a reference for identification and a memo to describe the entry.
     It is an aggregate component of a journal object.
-    
+
     properties
     ------------
     total - returns a tuple the total amount on each side of the transaction, (debit, credit)
     total_debits - returns a decimal of the total amount credited in the entry
     total_credits -returns a decimal of the total amount debited in the entry
     balanced -returns a boolean of whether the entry is balanced
-    
+
     methods
     ----------
     simple_entry() - takes 3 args, an amount, a credit account and a debit account and 
@@ -112,25 +111,23 @@ class JournalEntry(models.Model):
     date = models.DateField(default=datetime.date.today)
     draft = models.BooleanField(default=True)
     memo = models.TextField()
-    journal = models.ForeignKey('accounting.Journal', 
-        on_delete=models.SET_NULL, 
-        null=True)
+    journal = models.ForeignKey('accounting.Journal',
+                                on_delete=models.SET_NULL,
+                                null=True)
     posted_to_ledger = models.BooleanField(default=False)
     adjusted = models.BooleanField(default=False)
-    recorded_by = models.ForeignKey('employees.employee',default=1, on_delete=models.SET_DEFAULT, 
-        limit_choices_to=Q(active=True))
-    
+    recorded_by = models.ForeignKey('employees.employee', default=1, on_delete=models.SET_DEFAULT,
+                                    limit_choices_to=Q(active=True))
 
     def get_absolute_url(self):
         return reverse("accounting:entry-detail", kwargs={"pk": self.pk})
-    
 
     def __str__(self):
         return "{}: {}".format(self.pk, self.str_total)
 
     def verify(self):
         if not self.draft:
-            return #to prevent repeat execution of transactions
+            return  # to prevent repeat execution of transactions
 
         self.draft = False
         self.save()
@@ -149,21 +146,20 @@ class JournalEntry(models.Model):
 
         return Post.objects.filter(entry=self)
 
-
     @property
     def total_debits(self):
         return sum(
             [d.amount for d in self.debit_set.all()])
-    
+
     @property
     def total_credits(self):
         return sum(
             [d.amount for d in self.credit_set.all()])
-    
+
     @property
     def balanced(self):
         return (self.total_credits - self.total_debits) == 0
-    
+
     @property
     def total(self):
         return (self.total_debits, self.total_credits)
@@ -173,7 +169,7 @@ class JournalEntry(models.Model):
         '''Used for direct payment which has no model of its own'''
         if self.credit_set.first():
             return self.credit_set.first().account
-        return None 
+        return None
 
     @property
     def primary_debit(self):
@@ -181,11 +177,10 @@ class JournalEntry(models.Model):
         if self.debit_set.first():
             return self.debit_set.first().account
         return None
-        
+
     @property
     def str_total(self):
         return "DR:{};  CR{}".format(self.total_debits, self.total_credits)
-
 
     def simple_entry(self, amount, credit_acc, debit_acc):
         '''
@@ -198,22 +193,22 @@ class JournalEntry(models.Model):
         '''
         self.credit(amount, credit_acc)
         self.debit(amount, debit_acc)
-        
+
     def credit(self, amount, account):
         Credit.objects.create(
             entry=self,
-            account = account,
-            amount = amount
+            account=account,
+            amount=amount
         )
 
     def debit(self, amount, account):
         Debit.objects.create(
             entry=self,
-            account = account,
-            amount = amount
+            account=account,
+            amount=amount
         )
 
-    @property 
+    @property
     def debits(self):
         return self.debit_set.all()
 

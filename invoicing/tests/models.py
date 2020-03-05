@@ -1,17 +1,11 @@
 import datetime
 from decimal import Decimal as D
 
-from django.db.models import Q
-from django.test import Client, TestCase
-from django.urls import reverse
+from django.test import TestCase
 
-from accounting.models import Account, Expense, Tax, JournalEntry
-from common_data.models import Individual, Organization
-from employees.models import Employee, PayGrade
-from employees.tests import create_test_employees_models
+from accounting.models import Account, Expense, JournalEntry
 from inventory.models import WareHouseItem
 from invoicing.models import *
-from services.models import Service, ServiceCategory
 from .model_util import InvoicingModelCreator
 from inventory.tests.model_util import InventoryModelCreator
 import accounting
@@ -19,10 +13,10 @@ from services.models import WorkOrderRequest, ServiceWorkOrder, WorkOrderExpense
 TODAY = datetime.date.today()
 
 
-
 class CommonModelTests(TestCase):
-    fixtures = ['common.json','accounts.json','employees.json', 'inventory.json','invoicing.json']
-        
+    fixtures = ['common.json', 'accounts.json',
+                'employees.json', 'inventory.json', 'invoicing.json']
+
     def test_update_sales_config(self):
         obj = SalesConfig.objects.get(pk=1)
         obj.default_invoice_comments = "Test comment"
@@ -30,8 +24,9 @@ class CommonModelTests(TestCase):
 
 
 class CustomerModelTests(TestCase):
-    fixtures = ['common.json','accounts.json','employees.json', 'inventory.json','invoicing.json']
-        
+    fixtures = ['common.json', 'accounts.json',
+                'employees.json', 'inventory.json', 'invoicing.json']
+
     @classmethod
     def setUpTestData(cls):
         cls.imc = InvoicingModelCreator(cls)
@@ -71,22 +66,23 @@ class CustomerModelTests(TestCase):
         '''Invoice created in model creator'''
         self.assertEqual(len([i for i in self.customer_org.invoices]), 1)
 
-    def test_credit_invoices(self):        
+    def test_credit_invoices(self):
         self.assertEqual(len(self.customer_org.credit_invoices), 1)
-        #once paid the credit should go down to zero
-        self.invoice.status='paid'
+        # once paid the credit should go down to zero
+        self.invoice.status = 'paid'
         self.invoice.save()
         self.assertEqual(len(self.customer_org.credit_invoices), 0)
 
     def test_age_list(self):
         self.invoice.due = TODAY - datetime.timedelta(days=8)
         self.invoice.save()
-        self.assertEqual(self.customer_org.age_list, [0, 0,D(190.0), 0, 0, 0])
+        self.assertEqual(self.customer_org.age_list, [0, 0, D(190.0), 0, 0, 0])
 
 
 class PaymentModelTests(TestCase):
-    fixtures = ['common.json','accounts.json', 'journals.json', 'employees.json', 'inventory.json','invoicing.json']
-        
+    fixtures = ['common.json', 'accounts.json', 'journals.json',
+                'employees.json', 'inventory.json', 'invoicing.json']
+
     @classmethod
     def setUpTestData(cls):
         imc = InvoicingModelCreator(cls)
@@ -94,7 +90,6 @@ class PaymentModelTests(TestCase):
 
     def test_create_payment(self):
         self.assertIsInstance(self.payment, Payment)
-
 
     def test_payment_due(self):
         '''invoice value $210, payment value $10'''
@@ -106,50 +101,50 @@ class PaymentModelTests(TestCase):
 
 
 class SalesRepModelTests(TestCase):
-    fixtures = ['common.json','accounts.json','employees.json', 'inventory.json','invoicing.json']
-        
+    fixtures = ['common.json', 'accounts.json',
+                'employees.json', 'inventory.json', 'invoicing.json']
+
     @classmethod
     def setUpTestData(cls):
         imc = InvoicingModelCreator(cls)
         imc.create_all()
-    
+
     def test_create_sales_rep(self):
         self.assertIsInstance(self.sales_representative, SalesRepresentative)
 
     def test_sales_total(self):
-        self.invoice.status='paid'
-        self.invoice.due=TODAY
+        self.invoice.status = 'paid'
+        self.invoice.due = TODAY
         self.invoice.save()
         self.assertEqual(self.sales_representative.sales(TODAY, TODAY), D(210))
-        self.invoice.status='invoice'
+        self.invoice.status = 'invoice'
         self.invoice.save()
 
 
 class CreditNoteModelTests(TestCase):
-    fixtures = ['common.json','accounts.json', 'journals.json', 'employees.json', 'inventory.json','invoicing.json']
+    fixtures = ['common.json', 'accounts.json', 'journals.json',
+                'employees.json', 'inventory.json', 'invoicing.json']
 
     @classmethod
     def setUpTestData(cls):
         cls.imc = InvoicingModelCreator(cls)
         cls.imc.create_credit_note()
         cls.imc.create_credit_note_line()
-    
+
     def test_create_credit_note(self):
         self.assertIsInstance(self.credit_note, CreditNote)
 
     def test_returned_products(self):
         self.assertEqual(self.credit_note.returned_products.count(), 1)
 
-
     def test_returned_total(self):
         self.assertEqual(self.credit_note.returned_total, 10)
-
 
     def test_create_entry(self):
         initial_balance = self.credit_note.invoice.customer.account.balance
         self.credit_note.create_entry()
-        self.assertEqual(self.credit_note.invoice.customer.account.balance, 
-            initial_balance - D(10))
+        self.assertEqual(self.credit_note.invoice.customer.account.balance,
+                         initial_balance - D(10))
 
     def test_credit_note_tax_credit(self):
         self.assertEqual(self.credit_note.tax_credit, 0)
@@ -159,8 +154,9 @@ class CreditNoteModelTests(TestCase):
 
 
 class ProductInvoiceTests(TestCase):
-    fixtures = ['common.json','accounts.json', 'journals.json','employees.json', 'inventory.json','invoicing.json', 'settings.json']
-    
+    fixtures = ['common.json', 'accounts.json', 'journals.json',
+                'employees.json', 'inventory.json', 'invoicing.json', 'settings.json']
+
     @classmethod
     def setUpTestData(cls):
         invmc = InventoryModelCreator(cls)
@@ -178,9 +174,8 @@ class ProductInvoiceTests(TestCase):
         self.invoice.save()
         self.assertFalse(self.invoice.overdue)
         self.invoice.due = datetime.date.today() - datetime.timedelta(days=1)
-        self.invoice.save()        
+        self.invoice.save()
         self.assertTrue(self.invoice.overdue)
-
 
     def test_set_quote_invoice_number(self):
         old_status = self.invoice.status
@@ -193,7 +188,6 @@ class ProductInvoiceTests(TestCase):
         self.invoice.set_quote_invoice_number()
         self.assertEqual(self.invoice.invoice_number, 1)
 
-
     def test_sales_invoice_cost_of_goods_sold(self):
         self.assertEqual(self.invoice.cost_of_goods_sold, 10)
 
@@ -201,7 +195,7 @@ class ProductInvoiceTests(TestCase):
         self.product_line.tax = self.tax
         self.product_line.save()
         self.assertAlmostEqual(self.invoice.total, D('211.50'))
-        self.product_line.tax=None
+        self.product_line.tax = None
         self.product_line.save()
 
     def test_on_credit(self):
@@ -216,7 +210,7 @@ class ProductInvoiceTests(TestCase):
 
     def test_total_paid(self):
         self.assertEqual(self.invoice.total_paid, 10)
-        
+
     def test_total_due(self):
         '''the difference between the invoice total $210 and the payment $10'''
         self.assertEqual(self.invoice.total_due, 190)
@@ -226,15 +220,14 @@ class ProductInvoiceTests(TestCase):
         self.product_line.tax = self.tax
         self.product_line.save()
         self.assertAlmostEqual(self.invoice.tax_amount, D('1.50'))
-        self.product_line.tax=None
+        self.product_line.tax = None
         self.product_line.save()
 
     def test_subtotal(self):
         self.assertEqual(self.invoice.subtotal, D(210.0))
 
-
     def test_returned_total(self):
-        pass #TODO fix
+        pass  # TODO fix
 
     def test_update_inventory(self):
 
@@ -254,15 +247,14 @@ class ProductInvoiceTests(TestCase):
 
     def test_create_sales_invoice_line(self):
         self.assertIsInstance(self.product_line, InvoiceLine)
-        
+
     def test_set_value_of_goods(self):
         self.assertEqual(self.product_line.value, 10)
-        
 
     def test_return_invoice_line(self):
         self.product_line._return(1)
         self.assertTrue(self.product_line.product.returned)
-        
+
     def test_returned_value(self):
         self.product_line._return(1)
         # TODO fix
@@ -271,7 +263,6 @@ class ProductInvoiceTests(TestCase):
         # TODO expand tests
         data = self.product_line.check_inventory()
         self.assertIsInstance(data, dict)
-
 
     def test_invoice_verify_inventory(self):
         shortages = self.invoice.verify_inventory()
@@ -285,43 +276,42 @@ class ProductInvoiceTests(TestCase):
         line = InvoiceLine.objects.create(
             invoice=self.invoice,
             product=component,
-            line_type=1   
+            line_type=1
         )
         shortages = self.invoice.verify_inventory()
         self.assertEqual(len(shortages), 1)
 
-        #teardown
+        # teardown
         line.delete()
         component.delete()
-
 
     def test_quotation_is_valid(self):
         self.assertTrue(self.quotation.quotation_is_valid)
 
 
-
 class InvoiceModelTests(TestCase):
-    fixtures = ['common.json','accounts.json', 'employees.json', 'inventory.json','invoicing.json', 'settings.json', 'journals.json']
-    
+    fixtures = ['common.json', 'accounts.json', 'employees.json',
+                'inventory.json', 'invoicing.json', 'settings.json', 'journals.json']
+
     @classmethod
     def setUpTestData(cls):
         cls.imc = InvoicingModelCreator(cls)
         cls.imc.create_all()
-        #create request
+        # create request
         request = WorkOrderRequest.objects.create(
             status="request",
             service=cls.service,
             invoice=cls.invoice
         )
-        #create order
+        # create order
         order = ServiceWorkOrder.objects.create(
-            date = datetime.date.today(),
+            date=datetime.date.today(),
             time=datetime.datetime.now().time(),
             status='progress',
             works_request=request
         )
 
-        #create expense
+        # create expense
         WorkOrderExpense.objects.create(
             work_order=order,
             expense=cls.expense
@@ -332,7 +322,7 @@ class InvoiceModelTests(TestCase):
         self.invoice.add_line({
             'type': 'product',
             'selected': '1-name',
-            'quantity': 1,            
+            'quantity': 1,
             'tax': '1- tax',
             'discount': '0',
             'unitPrice': 50.00
@@ -364,12 +354,10 @@ class InvoiceModelTests(TestCase):
         added = Expense.objects.get(pk=1).amount
         self.assertEqual(self.invoice.total, pre_total + added)
 
-
     def test_line_subtotal(self):
         self.assertEqual(self.product_line.subtotal, 10)
         self.assertEqual(self.service_line.subtotal, 100)
         self.assertEqual(self.expense_line.subtotal, 100)
-
 
     def test_invoice_str(self):
         self.assertIsInstance(str(self.product_line), str)
@@ -381,15 +369,14 @@ class InvoiceModelTests(TestCase):
 
     def test_expense_line_line_property(self):
         self.assertIsInstance(self.expense_line.line, InvoiceLine)
-        
 
     def test_service_cost_of_sale(self):
         c = InvoiceLine.objects.create(
             service=self.service_line_component,
             invoice=self.invoice,
             line_type=2)
-        self.assertEqual(self.service_line_component.cost_of_sale, 
-            self.expense.amount)
+        self.assertEqual(self.service_line_component.cost_of_sale,
+                         self.expense.amount)
         c.delete()
 
     def test_service_gross_income(self):

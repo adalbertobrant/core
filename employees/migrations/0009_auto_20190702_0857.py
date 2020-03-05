@@ -41,7 +41,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='deduction',
             name='deduction_method',
-            field=models.PositiveSmallIntegerField(choices=[(0, 'Custom'), (1, 'Fixed')], default=1),
+            field=models.PositiveSmallIntegerField(
+                choices=[(0, 'Custom'), (1, 'Fixed')], default=1),
             preserve_default=False,
         ),
         migrations.AddField(

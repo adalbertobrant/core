@@ -13,7 +13,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='inventoryitem',
             name='unit_purchase_price',
-            field=models.DecimalField(decimal_places=2, default=0.0, max_digits=16),
+            field=models.DecimalField(
+                decimal_places=2, default=0.0, max_digits=16),
         ),
         migrations.AlterField(
             model_name='orderitem',
@@ -28,11 +29,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='productcomponent',
             name='margin',
-            field=models.DecimalField(decimal_places=2, default=0, max_digits=16),
+            field=models.DecimalField(
+                decimal_places=2, default=0, max_digits=16),
         ),
         migrations.AlterField(
             model_name='productcomponent',
             name='markup',
-            field=models.DecimalField(decimal_places=2, default=0, max_digits=16),
+            field=models.DecimalField(
+                decimal_places=2, default=0, max_digits=16),
         ),
     ]

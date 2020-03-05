@@ -24,11 +24,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='timelog',
             name='normal_time_cost',
-            field=models.DecimalField(decimal_places=2, default=Decimal('0'), max_digits=16),
+            field=models.DecimalField(
+                decimal_places=2, default=Decimal('0'), max_digits=16),
         ),
         migrations.AlterField(
             model_name='timelog',
             name='overtime_cost',
-            field=models.DecimalField(decimal_places=2, default=Decimal('0'), max_digits=16),
+            field=models.DecimalField(
+                decimal_places=2, default=Decimal('0'), max_digits=16),
         ),
     ]

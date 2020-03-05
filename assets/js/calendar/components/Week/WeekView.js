@@ -4,7 +4,6 @@ import {Aux} from '../../../src/common';
 import styles from './week.css';
 import {showWeekCalendar} from '../../calendar'
 import moment from 'moment'
-import COntext from '../../container/provider'
 import Context from '../../container/provider';
 
 class WeekView extends Component{
@@ -50,11 +49,14 @@ class WeekView extends Component{
             <Context.Consumer>
                 {context =>(
                     <Aux>
-                    <h3  style={{backgroundColor: context.primary}} className={styles.weekHeader}>Week: {this.state.week}</h3>
+                    <h3  style={{backgroundColor: context.primary}} 
+                         className={styles.weekHeader}>
+                         Week: {this.state.week}
+                    </h3>
                    <div style={{
                     height: height + "px",
                     overflowY: "scroll",
-                    width: '80vw',
+                    width: window.screen.width < 575 ? '100%' : '80vw' ,
                     margin: '0px'
                     }}>
                         <table style={{width:'100%'}}>
@@ -62,7 +64,10 @@ class WeekView extends Component{
                                 <tr>
                                 <th style={{backgroundColor: context.primary}} className={styles.headStyle}>Sunday</th>
     
-                                    <th  style={{backgroundColor: context.primary}} className={styles.headStyle}>Monday</th>
+                                    <th  style={{
+                                            backgroundColor: context.primary
+                                        }} 
+                                        className={styles.headStyle}>Monday</th>
                                     <th  style={{backgroundColor: context.primary}} className={styles.headStyle}>Tuesday</th>
                                     <th  style={{backgroundColor: context.primary}}className={styles.headStyle}>Wednesday</th>
                                     <th  style={{backgroundColor: context.primary}}className={styles.headStyle}>Thursday</th>

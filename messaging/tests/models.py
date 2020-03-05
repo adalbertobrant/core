@@ -7,6 +7,8 @@ from messaging.models import *
 
 
 TODAY = datetime.date.today()
+
+
 class NotificationTests(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -20,6 +22,7 @@ class NotificationTests(TestCase):
             title='Title',
             message="Message"
         )
+
     def setUp(self):
         pass
 
@@ -38,7 +41,6 @@ class NotificationTests(TestCase):
         self.assertTrue(self.notification.read)
 
 
-
 class ChatTests(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -53,7 +55,7 @@ class ChatTests(TestCase):
             sender=cls.usr,
             receiver=cls.receiver
         )
-        
+
     def setUp(self):
         pass
 
@@ -70,11 +72,12 @@ class ChatTests(TestCase):
     def test_chat_messages(self):
         bubble = Bubble.objects.create(
             sender=self.usr,
-            message_text = 'Hello world',
+            message_text='Hello world',
             chat=self.chat
         )
 
         self.assertEqual(self.chat.messages.first().pk, bubble.pk)
+
 
 class GroupTests(TestCase):
     @classmethod
@@ -92,7 +95,6 @@ class GroupTests(TestCase):
         cls.group.participants.add(cls.usr)
         cls.group.participants.add(cls.receiver)
 
-        
     def setUp(self):
         pass
 
@@ -107,11 +109,12 @@ class GroupTests(TestCase):
     def test_group_messages(self):
         bubble = Bubble.objects.create(
             sender=self.usr,
-            message_text = 'Hello world',
+            message_text='Hello world',
             group=self.group
         )
 
         self.assertEqual(self.group.messages.first().pk, bubble.pk)
+
 
 class BubbleTests(TestCase):
     @classmethod
@@ -134,28 +137,28 @@ class BubbleTests(TestCase):
 
         cls.bubble = Bubble.objects.create(
             sender=cls.usr,
-            message_text = "Hi",
+            message_text="Hi",
             chat=cls.chat,
         )
 
     def test_create_chat_bubble(self):
         obj = Bubble.objects.create(
             sender=self.usr,
-            message_text = "Hi",
+            message_text="Hi",
             chat=self.chat,
         )
 
         self.assertIsInstance(obj, Bubble)
 
-
     def test_create_group_bubble(self):
         obj = Bubble.objects.create(
             sender=self.usr,
-            message_text = "Hi",
+            message_text="Hi",
             group=self.group,
         )
 
         self.assertIsInstance(obj, Bubble)
+
 
 class EmailTests(TestCase):
     @classmethod
@@ -165,7 +168,8 @@ class EmailTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.usr = User.objects.create_user(username="someone")
-        cls.from_address = EmailAddress.objects.create(address='test@email.com')
+        cls.from_address = EmailAddress.objects.create(
+            address='test@email.com')
         cls.to_address = EmailAddress.objects.create(address='to@email.com')
 
         cls.profile = UserProfile.objects.create(
@@ -186,13 +190,12 @@ class EmailTests(TestCase):
     def test_create_email_address(self):
         obj = EmailAddress.objects.create(address='email@address.com')
         self.assertIsInstance(obj, EmailAddress)
-        
 
     def test_create_user_profile(self):
         self.assertIsInstance(self.profile, UserProfile)
 
     def test_create_email(self):
-        obj= Email.objects.create(
+        obj = Email.objects.create(
             sent_from=self.from_address,
             to=self.to_address,
             created_timestamp=datetime.datetime.now(),
@@ -204,10 +207,10 @@ class EmailTests(TestCase):
 
     def test_get_email_address_existing(self):
         self.assertIsInstance(
-            EmailAddress.get_address('test@email.com'), 
+            EmailAddress.get_address('test@email.com'),
             EmailAddress)
 
     def test_get_email_address_new(self):
         self.assertIsInstance(
-            EmailAddress.get_address('test99@email.com'), 
+            EmailAddress.get_address('test99@email.com'),
             EmailAddress)

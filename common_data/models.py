@@ -10,19 +10,21 @@ from latrom import settings
 import subprocess
 from common_data.utilities.mixins import ContactsMixin
 from django.shortcuts import reverse
-import invoicing
+
+
 class PhoneNumber(models.Model):
     number = models.CharField(max_length=16)
 
     def __str__(self):
         return str(self.number)
 
+
 class Person(models.Model):
-    first_name = models.CharField(max_length =32)
-    last_name = models.CharField(max_length =32)
-    address = models.TextField(max_length =128, blank=True, default="")
-    email = models.CharField(max_length =32, blank=True, default="")
-    phone = models.CharField(max_length =16, blank=True, default="")
+    first_name = models.CharField(max_length=32)
+    last_name = models.CharField(max_length=32)
+    address = models.TextField(max_length=128, blank=True, default="")
+    email = models.CharField(max_length=32, blank=True, default="")
+    phone = models.CharField(max_length=16, blank=True, default="")
 
     class Meta:
         abstract = True
@@ -31,12 +33,12 @@ class Person(models.Model):
     def full_name(self):
         return "{} {}".format(self.first_name, self.last_name)
 
+
 class SoftDeletionModel(models.Model):
     class Meta:
         abstract = True
 
     active = models.BooleanField(default=True)
-
 
     def delete(self):
         self.active = False
@@ -44,6 +46,7 @@ class SoftDeletionModel(models.Model):
 
     def hard_delete(self):
         super().delete()
+
 
 class Individual(ContactsMixin, Person, SoftDeletionModel):
     '''inherits from the base person class in common data
@@ -54,29 +57,28 @@ class Individual(ContactsMixin, Person, SoftDeletionModel):
     '''
     phone_fields = ['phone', 'phone_two']
     email_fields = ['email']
-    phone_two = models.CharField(max_length = 16,blank=True , default="")
+    phone_two = models.CharField(max_length=16, blank=True, default="")
     other_details = models.TextField(blank=True, default="")
-    organization = models.ForeignKey('common_data.Organization', 
-        on_delete=models.CASCADE,null=True, blank=True)
+    organization = models.ForeignKey('common_data.Organization',
+                                     on_delete=models.CASCADE, null=True, blank=True)
     photo = models.ImageField(null=True, blank=True)
-    
-  
+
     def __str__(self):
         return self.full_name
 
     def get_absolute_url(self):
         return reverse("base:individual-detail", kwargs={"pk": self.pk})
-    
+
 
 class Note(models.Model):
     timestamp = models.DateTimeField(auto_now=True)
-    author = models.ForeignKey('employees.employee', on_delete=models.SET_NULL, 
-        null=True)
+    author = models.ForeignKey('employees.employee', on_delete=models.SET_NULL,
+                               null=True)
     note = models.TextField()
-    
 
     def __str__(self):
         return "{}({}): {}".format(self.timestamp.strftime("%d %b %y, %H:%M "), self.author, self.note)
+
 
 class Organization(ContactsMixin, models.Model):
     phone_fields = ['phone']
@@ -86,14 +88,14 @@ class Organization(ContactsMixin, models.Model):
     business_address = models.TextField(blank=True)
     website = models.CharField(max_length=255, blank=True)
     bp_number = models.CharField(max_length=64, blank=True)
-    email=models.CharField(max_length=128, blank=True)
+    email = models.CharField(max_length=128, blank=True)
     phone = models.CharField(max_length=32, blank=True)
     logo = models.ImageField(null=True, blank=True)
 
     def __str__(self):
         return self.legal_name
 
-    @property 
+    @property
     def members(self):
         return self.individual_set.all()
 
@@ -103,9 +105,8 @@ class Organization(ContactsMixin, models.Model):
 
     def get_absolute_url(self):
         return reverse("base:organization-detail", kwargs={"pk": self.pk})
-    
 
-    @property 
+    @property
     def interactions(self):
         intrs = []
         try:
@@ -115,6 +116,7 @@ class Organization(ContactsMixin, models.Model):
         except:
             pass
         return intrs
+
 
 class SingletonModel(models.Model):
     class Meta:
@@ -132,6 +134,7 @@ class SingletonModel(models.Model):
         obj, created = cls.objects.get_or_create(pk=1)
         return obj
 
+
 class GlobalConfig(SingletonModel):
     DOCUMENT_THEME_CHOICES = [
         (1, 'Simple'),
@@ -145,7 +148,7 @@ class GlobalConfig(SingletonModel):
         ('D', 'Daily'),
         ('M', 'Monthly'),
         ('W', 'Weekly')
-        ]
+    ]
 
     LOGO_CHOICES = [
         (0, '3:2 (Medium rectangle)'),
@@ -154,45 +157,44 @@ class GlobalConfig(SingletonModel):
         (3, ':16:9 (Wide Rectangle)'),
     ]
     document_theme = models.IntegerField(
-        choices= DOCUMENT_THEME_CHOICES, 
+        choices=DOCUMENT_THEME_CHOICES,
         default=1)
     currency = models.ForeignKey(
-        'accounting.Currency', 
-        blank=True, 
-        on_delete=models.SET_NULL, 
+        'accounting.Currency',
+        blank=True,
+        on_delete=models.SET_NULL,
         null=True)
     organization = models.ForeignKey(
         'common_data.organization',
-        on_delete=models.SET_NULL, 
+        on_delete=models.SET_NULL,
         null=True)
     payment_details = models.TextField(
-        blank=True, 
+        blank=True,
         default="")
     application_version = models.CharField(
-        max_length=16, 
-        blank=True, 
+        max_length=16,
+        blank=True,
         default="1.0.0")
     hardware_id = models.CharField(
-        max_length=255, 
-        blank=True, 
+        max_length=255,
+        blank=True,
         default="")
     last_automated_service_run = models.DateTimeField(null=True, blank=True)
     use_backups = models.BooleanField(
         blank=True,
         default=False)
     backup_frequency = models.CharField(
-        max_length=32, 
-        choices=BACKUP_FREQUENCY_CHOICES, 
+        max_length=32,
+        choices=BACKUP_FREQUENCY_CHOICES,
         default="D")
     is_configured = models.BooleanField(
         default=False
     )
     logo_aspect_ratio = models.PositiveSmallIntegerField(
-        default=0, 
+        default=0,
         choices=LOGO_CHOICES)
     pos_supervisor_password = models.CharField(max_length=16, default='1234')
-    
-   
+
     @property
     def task_mapping(self):
         mapping = {
@@ -203,14 +205,21 @@ class GlobalConfig(SingletonModel):
         }
         return mapping[self.backup_frequency]
 
+    @staticmethod
+    def generate_hardware_id():
+        result = subprocess.run('wmic csproduct get uuid',
+                                stdout=subprocess.PIPE, shell=True)
+        _id = result.stdout.decode('utf-8')
+        _id = _id[_id.find('\n') + 1:]
+        id = _id[:_id.find(' ')]
+
+        return id
+
     def save(self, *args, **kwargs):
-        
+
         super().save(*args, **kwargs)
 
-       
-
-
-        #serialize and store in json file so settings.py can access
+        # serialize and store in json file so settings.py can access
         json_config = os.path.join(settings.BASE_DIR, 'global_config.json')
         with open(json_config, 'w+') as fil:
             fields = copy.deepcopy(self.__dict__)
@@ -219,7 +228,6 @@ class GlobalConfig(SingletonModel):
             del fields['_state']
             print(fields)
             json.dump(fields, fil)
-
 
     @property
     def logo_width(self):

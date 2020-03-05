@@ -1,10 +1,8 @@
 import datetime
 from decimal import Decimal as D
-from functools import reduce
 
 from django.db import models
 from django.db.models import Q
-from django.utils import timezone
 import accounting
 from calendar import monthrange
 from django.shortcuts import reverse
@@ -16,10 +14,11 @@ DEPRECIATION_METHOD = [
     #(2, 'Double Declining balance')
 ]
 asset_choices = ['Land', 'Buildings', 'Vehicles', 'LeaseHold Improvements',
-    'Furniture and Fixtures', 'Equipment']
+                 'Furniture and Fixtures', 'Equipment']
 ASSET_CHOICES = [(asset_choices.index(i), i) for i in asset_choices]
 
-#TODO add flexibility to create custom asset accounts
+# TODO add flexibility to create custom asset accounts
+
 
 class Asset(models.Model):
     '''Represents a resource controlled by the organization from which 
@@ -31,37 +30,36 @@ class Asset(models.Model):
     name = models.CharField(max_length=128)
     description = models.TextField(blank=True)
     category = models.IntegerField(choices=ASSET_CHOICES)
-    initial_value  = models.DecimalField(max_digits=16, decimal_places=2)
-    credit_account = models.ForeignKey('accounting.Account', 
-        on_delete=models.SET_DEFAULT, default=1000)
-    depreciation_period = models.IntegerField()#years
+    initial_value = models.DecimalField(max_digits=16, decimal_places=2)
+    credit_account = models.ForeignKey('accounting.Account',
+                                       on_delete=models.SET_DEFAULT, default=1000)
+    depreciation_period = models.IntegerField()  # years
     init_date = models.DateField()
-    depreciation_method = models.IntegerField(default=0, choices=DEPRECIATION_METHOD)
+    depreciation_method = models.IntegerField(
+        default=0, choices=DEPRECIATION_METHOD)
     salvage_value = models.DecimalField(max_digits=16, decimal_places=2)
-    initialized_by = models.ForeignKey('employees.employee', default=1, on_delete=models.SET_NULL, null=True, 
-        limit_choices_to=Q(active=True))
+    initialized_by = models.ForeignKey('employees.employee', default=1, on_delete=models.SET_NULL, null=True,
+                                       limit_choices_to=Q(active=True))
 
     def get_absolute_url(self):
         return reverse("accounting:asset-detail", kwargs={"pk": self.pk})
-    
 
     def create_entry(self):
         '''debits the debit account and credits the appropriate asset account'''
-    
+
         j = accounting.models.transactions.JournalEntry.objects.create(
-            date = datetime.date.today(),
-            memo =  "Asset added. Name: %s. Description: %s " % (
+            date=datetime.date.today(),
+            memo="Asset added. Name: %s. Description: %s " % (
                 self.name, self.description
             ),
-            recorded_by = self.initialized_by,# not ideal general journal
-            journal = accounting.models.books.Journal.objects.get(pk=5),
+            recorded_by=self.initialized_by,  # not ideal general journal
+            journal=accounting.models.books.Journal.objects.get(pk=5),
             draft=False
         )
-        j.simple_entry(self.initial_value, 
-            self.credit_account,# defaults to cash account
-            self.account)# asset account
+        j.simple_entry(self.initial_value,
+                       self.credit_account,  # defaults to cash account
+                       self.account)  # asset account
 
-        
     @property
     def account(self):
         '''maps an asset choice to an asset account from the chart of accounts'''
@@ -79,9 +77,9 @@ class Asset(models.Model):
     def depreciation_account(self):
         '''maps an asset choice to an asset account from the chart of accounts'''
         if self.category == 0:
-            return None # land does not depreciate
+            return None  # land does not depreciate
         #'Buildings', 'Vehicles', 'LeaseHold Improvements',
-        #'Furniture and Fixtures', 'Equipment']
+        # 'Furniture and Fixtures', 'Equipment']
         mapping = {
             1: 5017,
             3: 5020,
@@ -91,20 +89,19 @@ class Asset(models.Model):
         }
         return accounting.models.accounts.Account.objects.get(pk=mapping[self.category])
 
-
     def __str__(self):
         return self.name
-        
+
     @property
     def salvage_date(self):
         return self.init_date + datetime.timedelta(
             days=365 * self.depreciation_period)
 
     def salvage(self):
-        #removes asset from the books and credits the appropriate account
+        # removes asset from the books and credits the appropriate account
         pass
 
-    @property 
+    @property
     def _timedelta(self):
         '''returns the duration since the asset was created in years'''
         return int((datetime.date.today() - self.init_date).days / 365)
@@ -120,7 +117,7 @@ class Asset(models.Model):
             return depreciable_value / self.depreciation_period
         return 0
 
-    @property 
+    @property
     def daily_depreciation(self):
         return self.annual_depreciation / D(365.0)
 
@@ -138,4 +135,3 @@ class Asset(models.Model):
 
     def __str__(self):
         return self.name
-

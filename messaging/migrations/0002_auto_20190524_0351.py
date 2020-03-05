@@ -16,7 +16,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Bubble',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_timestamp', models.DateTimeField(auto_now=True)),
                 ('opened_timestamp', models.DateTimeField(blank=True, null=True)),
                 ('message_text', models.TextField()),
@@ -26,35 +27,44 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Chat',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('archived', models.BooleanField(default=False)),
-                ('receiver', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='chat_receiver', to=settings.AUTH_USER_MODEL)),
-                ('sender', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='chat_sender', to=settings.AUTH_USER_MODEL)),
+                ('receiver', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                               related_name='chat_receiver', to=settings.AUTH_USER_MODEL)),
+                ('sender', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                             related_name='chat_sender', to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
             name='Group',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('created', models.DateTimeField(auto_now=True)),
                 ('active', models.BooleanField(default=True)),
-                ('admin', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='admin', to=settings.AUTH_USER_MODEL)),
-                ('participants', models.ManyToManyField(related_name='group_participants', to=settings.AUTH_USER_MODEL)),
+                ('admin', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                            related_name='admin', to=settings.AUTH_USER_MODEL)),
+                ('participants', models.ManyToManyField(
+                    related_name='group_participants', to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(
             model_name='bubble',
             name='chat',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='messaging.Chat'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.CASCADE, to='messaging.Chat'),
         ),
         migrations.AddField(
             model_name='bubble',
             name='group',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='messaging.Group'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.CASCADE, to='messaging.Group'),
         ),
         migrations.AddField(
             model_name='bubble',
             name='sender',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
         ),
     ]

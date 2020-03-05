@@ -3,19 +3,18 @@ import datetime
 
 from crispy_forms.bootstrap import Tab, TabHolder
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import (Fieldset, 
-                                Layout, 
-                                Submit, 
-                                Div,
-                                Row, 
-                                Column,
-                                HTML)
+from crispy_forms.layout import (Fieldset,
+                                 Layout,
+                                 Submit,
+                                 Div,
+                                 Row,
+                                 Column,
+                                 HTML)
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
 from common_data.forms import BootstrapMixin
-from inventory.models import Supplier
 from accounting.models import Account
 from django.db.models import Q
 from django.forms import ValidationError
@@ -24,59 +23,63 @@ from django_select2.forms import Select2MultipleWidget, Select2Widget
 
 
 class EmployeesSettingsForm(forms.ModelForm, BootstrapMixin):
-    #when running payroll - a message must be raised that the hours of 
-    #hourly workers must be calculated first
+    # when running payroll - a message must be raised that the hours of
+    # hourly workers must be calculated first
     class Meta:
         model = models.EmployeesSettings
         exclude = "last_payroll_date", 'is_configured', 'service_hash'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Submit'))
 
-#named benefits on the front end
+# named benefits on the front end
+
+
 class AllowanceForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        exclude="active",
+        exclude = "active",
         model = models.Allowance
+
 
 class AllowanceUpdateForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        exclude="active", 'amount', 'taxable' 
+        exclude = "active", 'amount', 'taxable'
         model = models.Allowance
-    
+
+
 class CommissionForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        exclude="active",
+        exclude = "active",
         model = models.CommissionRule
+
 
 class CommissionUpdateForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        exclude="active", "min_sales", "rate"
+        exclude = "active", "min_sales", "rate"
         model = models.CommissionRule
 
+
 class DeductionForm(forms.ModelForm, BootstrapMixin):
-    #only allow deduction accounts for 
+    # only allow deduction accounts for
     account_paid_into = forms.ModelChoiceField(
         Account.objects.filter(Q(type="liability") | Q(
             type="expense")))
-    
-    
+
     class Meta:
-        exclude="active",
+        exclude = "active",
         model = models.Deduction
         widgets = {
-            'payroll_taxes':Select2MultipleWidget(attrs={'data-width':'40rem'}),
-            'commission': Select2MultipleWidget(attrs={'data-width':'40rem'}),
-            'benefits': Select2MultipleWidget(attrs={'data-width':'40rem'})
+            'payroll_taxes': Select2MultipleWidget(attrs={'data-width': '40rem'}),
+            'commission': Select2MultipleWidget(attrs={'data-width': '40rem'}),
+            'benefits': Select2MultipleWidget(attrs={'data-width': '40rem'})
         }
         labels = {
             'fixed_amount': 'Fixed amount(paid by employee)',
             'employer_contribution': 'Employer Contribution(% of employee contribution)'
         }
-        
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -88,37 +91,40 @@ class DeductionForm(forms.ModelForm, BootstrapMixin):
             'account_paid_into',
             'liability_account',
             Div(
-            HTML("""<h5>Custom Income Deductions:</h5>"""),
-            'basic_income',
-            'hourly_income',
-            'overtime_income',
-            'benefits',
-            'commission',
-            'payroll_taxes',
-            'rate', css_class='custom-options'),
+                HTML("""<h5>Custom Income Deductions:</h5>"""),
+                'basic_income',
+                'hourly_income',
+                'overtime_income',
+                'benefits',
+                'commission',
+                'payroll_taxes',
+                'rate', css_class='custom-options'),
             Div(
-            HTML("""<h5>Fixed Income Deductions:</h5>"""),
-            'fixed_amount', css_class='fixed-options'),
-            
+                HTML("""<h5>Fixed Income Deductions:</h5>"""),
+                'fixed_amount', css_class='fixed-options'),
+
         )
         self.helper.add_input(Submit('submit', 'Submit'))
+
+
 class DeductionUpdateForm(forms.ModelForm, BootstrapMixin):
     account_paid_into = forms.ModelChoiceField(Account.objects.filter(
         Q(type="liability") | Q(type="expense")), required=False)
+
     class Meta:
         fields = "name", 'account_paid_into'
         model = models.Deduction
 
 
 class PayGradeForm(forms.ModelForm, BootstrapMixin):
-    
+
     class Meta:
         fields = "__all__"
         model = models.PayGrade
         widgets = {
-            'payroll_taxes':Select2MultipleWidget(attrs={'data-width':'40rem'}),
-            'deductions': Select2MultipleWidget(attrs={'data-width':'40rem'}),
-            'allowances': Select2MultipleWidget(attrs={'data-width':'40rem'})
+            'payroll_taxes': Select2MultipleWidget(attrs={'data-width': '40rem'}),
+            'deductions': Select2MultipleWidget(attrs={'data-width': '40rem'}),
+            'allowances': Select2MultipleWidget(attrs={'data-width': '40rem'})
         }
 
     def __init__(self, *args, **kwargs):
@@ -129,35 +135,45 @@ class PayGradeForm(forms.ModelForm, BootstrapMixin):
                 Tab('basic',
                     'name',
                     Row(
-                        Column('monthly_leave_days', css_class='form-group col-md-6 col-sm-12'),
-                        Column('maximum_leave_days', css_class='form-group col-md-6 col-sm-12')
-                    ),                    
+                        Column('monthly_leave_days',
+                               css_class='form-group col-md-6 col-sm-12'),
+                        Column('maximum_leave_days',
+                               css_class='form-group col-md-6 col-sm-12')
+                    ),
                     Row(
                         Column('salary', css_class='form-group col-md-6 col-sm-12'),
-                        Column('pay_frequency', css_class='form-group col-md-6 col-sm-12'),
+                        Column('pay_frequency',
+                               css_class='form-group col-md-6 col-sm-12'),
                     ),
                     Row(
-                        Column('hourly_rate', css_class='form-group col-md-4 col-sm-12'),
-                        Column('overtime_rate', css_class='form-group col-md-4 col-sm-12'),
-                        Column('overtime_two_rate', css_class='form-group col-md-4 col-sm-12'),                        
+                        Column('hourly_rate',
+                               css_class='form-group col-md-4 col-sm-12'),
+                        Column('overtime_rate',
+                               css_class='form-group col-md-4 col-sm-12'),
+                        Column('overtime_two_rate',
+                               css_class='form-group col-md-4 col-sm-12'),
                     ),
                     Row(
-                        Column('commission', css_class='form-group col-md-6 col-sm-12'),
-                        Column('lunch_duration', css_class='form-group col-md-6 col-sm-12'),
+                        Column('commission',
+                               css_class='form-group col-md-6 col-sm-12'),
+                        Column('lunch_duration',
+                               css_class='form-group col-md-6 col-sm-12'),
                     ),
                     'subtract_lunch_time_from_working_hours',
-                ),
+                    ),
                 Tab('Allowances, Deductions and Taxes',
                     'allowances',
                     'deductions',
                     'payroll_taxes',
-                ),
+                    ),
             )
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
+
 class CreateEmployeeUserForm(BootstrapMixin, forms.Form):
-    employee = forms.ModelChoiceField(models.Employee.objects.all(), widget=forms.HiddenInput)
+    employee = forms.ModelChoiceField(
+        models.Employee.objects.all(), widget=forms.HiddenInput)
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
     confirm_password = forms.CharField(widget=forms.PasswordInput)
@@ -167,7 +183,8 @@ class CreateEmployeeUserForm(BootstrapMixin, forms.Form):
         password = cleaned_data['password']
         name = cleaned_data['username']
         if User.objects.filter(username=name).exists():
-            raise forms.ValidationError('The username selected is already in use')
+            raise forms.ValidationError(
+                'The username selected is already in use')
 
         if password != cleaned_data['confirm_password']:
             raise forms.ValidationError(' The new passwords do not match')
@@ -176,13 +193,15 @@ class CreateEmployeeUserForm(BootstrapMixin, forms.Form):
         usr.set_password(password)
         usr.save()
         employee = cleaned_data['employee']
-        employee.user= usr
+        employee.user = usr
         employee.save()
 
-        return cleaned_data 
+        return cleaned_data
+
 
 class EmployeePasswordChangeForm(BootstrapMixin, forms.Form):
-    employee = forms.ModelChoiceField(models.Employee.objects.all(), widget=forms.HiddenInput)
+    employee = forms.ModelChoiceField(
+        models.Employee.objects.all(), widget=forms.HiddenInput)
     old_password = forms.CharField(widget=forms.PasswordInput)
     new_password = forms.CharField(widget=forms.PasswordInput)
     confirm_new_password = forms.CharField(widget=forms.PasswordInput)
@@ -201,25 +220,27 @@ class EmployeePasswordChangeForm(BootstrapMixin, forms.Form):
         usr.set_password(new_password)
         usr.save()
 
-        return cleaned_data 
+        return cleaned_data
+
 
 class EmployeePasswordResetForm(BootstrapMixin, forms.Form):
-    employee = forms.ModelChoiceField(models.Employee.objects.all(), 
-        widget=forms.HiddenInput)
+    employee = forms.ModelChoiceField(models.Employee.objects.all(),
+                                      widget=forms.HiddenInput)
     superuser = forms.CharField()
     superuser_password = forms.CharField(widget=forms.PasswordInput)
     new_user_password = forms.CharField(widget=forms.PasswordInput)
     confirm_new_user_password = forms.CharField(widget=forms.PasswordInput)
-    
+
     def clean(self):
         cleaned_data = super().clean()
         usr = cleaned_data['employee'].user
         superuser = cleaned_data['superuser']
-        
-        if not authenticate(username=superuser, 
-                password=cleaned_data['superuser_password']):
-            raise forms.ValidationError('Only a superuser can reset an ordinary user account. Please provide correct credentials for the superuser.')
-        
+
+        if not authenticate(username=superuser,
+                            password=cleaned_data['superuser_password']):
+            raise forms.ValidationError(
+                'Only a superuser can reset an ordinary user account. Please provide correct credentials for the superuser.')
+
         new_password = cleaned_data['new_user_password']
 
         if new_password != cleaned_data['confirm_new_user_password']:
@@ -228,61 +249,68 @@ class EmployeePasswordResetForm(BootstrapMixin, forms.Form):
         usr.set_password(new_password)
         usr.save()
 
-        return cleaned_data 
+        return cleaned_data
+
 
 class EmployeeForm(forms.ModelForm, BootstrapMixin):
-    pay_grade = forms.ModelChoiceField(models.PayGrade.objects.all(), 
-        required=False)
+    pay_grade = forms.ModelChoiceField(models.PayGrade.objects.all(),
+                                       required=False)
+
     class Meta:
-        exclude="active", 'user','last_leave_day_increment'
+        exclude = "active", 'user', 'last_leave_day_increment'
         model = models.Employee
 
         widgets = {
-                'address':forms.Textarea(attrs={'rows':4, 'cols':15}), 
-            }
+            'address': forms.Textarea(attrs={'rows': 4, 'cols': 15}),
+        }
 
     date_of_birth = forms.DateField(required=False)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         user_string = ''
         if models.Employee.objects.filter(active=True).count() == 0:
             print('called')
             user_string = 'Please note that the employee created with this form is linked with the superuser account.'
-        
+
         self.helper = FormHelper()
         self.helper.layout = Layout(
             TabHolder(
-                Tab('Basic', 
+                Tab('Basic',
                     HTML(f'<br/><p>{user_string}</p>'),
                     Row(
-                        Column('first_name', css_class='form-group col-md-6 col-sm-12'),
-                        Column('last_name', css_class='form-group col-md-6 col-sm-12'),
-                    ), 
+                        Column('first_name',
+                               css_class='form-group col-md-6 col-sm-12'),
+                        Column('last_name',
+                               css_class='form-group col-md-6 col-sm-12'),
+                    ),
                     Row(
-                        Column('email','phone', css_class='form-group col-md-6 col-sm-12'),
-                        Column('address', css_class='form-group col-md-6 col-sm-12'),
+                        Column('email', 'phone',
+                               css_class='form-group col-md-6 col-sm-12'),
+                        Column(
+                            'address', css_class='form-group col-md-6 col-sm-12'),
                     ),
                     ),
-                    Tab('Personal',
-                        'date_of_birth',
-                        'id_number',
-                        'social_security_number',
-                        'gender',
+                Tab('Personal',
+                    'date_of_birth',
+                    'id_number',
+                    'social_security_number',
+                    'gender',
                     ),
-                    Tab('Conditions of service',
-                        # 'pay_grade',
-                        'leave_days',
-                        'pin',
-                        'uses_timesheet'
+                Tab('Conditions of service',
+                    # 'pay_grade',
+                    'leave_days',
+                    'pin',
+                    'uses_timesheet'
                     )
-                    ))
+            ))
         self.helper.add_input(Submit('submit', 'Submit'))
 
     def save(self, *args, **kwargs):
         '''The very first employee created in the application is automatically assigned a user.'''
         resp = super().save(*args, **kwargs)
         if models.Employee.objects.filter(active=True).count() == 1 and not \
-                    models.Employee.objects.first().user:
+                models.Employee.objects.first().user:
 
             self.instance.user = User.objects.first()
             self.instance.save()
@@ -292,15 +320,18 @@ class EmployeeForm(forms.ModelForm, BootstrapMixin):
 
 class EmployeePortalForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        fields=['first_name', 'last_name', 'address', 'email', 'phone', 'date_of_birth', 'gender', 'id_number']
+        fields = ['first_name', 'last_name', 'address', 'email',
+                  'phone', 'date_of_birth', 'gender', 'id_number']
         model = models.Employee
 
         widgets = {
-                'address':forms.Textarea(attrs={'rows':4, 'cols':15}), 
-            }
+            'address': forms.Textarea(attrs={'rows': 4, 'cols': 15}),
+        }
+
+
 class PayrollTaxForm(forms.ModelForm, BootstrapMixin):
     brackets = forms.CharField(required=True, widget=forms.HiddenInput)
-    
+
     class Meta:
         model = models.PayrollTax
         fields = '__all__'
@@ -314,24 +345,26 @@ class PayrollTaxForm(forms.ModelForm, BootstrapMixin):
                     'brackets',
                     'name',
                     'paid_by',
-                ),
+                    ),
                 Tab('Tax Brackets',
                     HTML(
                         """
             <div id="tax-brackets"></div>                        
                         """
                     )
-                )
+                    )
             )
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
+
 class PayrollTaxUpdateForm(forms.ModelForm, BootstrapMixin):
-    
+
     class Meta:
         model = models.PayrollTax
         fields = 'name',
-        
+
+
 class TimesheetForm(forms.ModelForm, BootstrapMixin):
     class Meta:
         model = models.EmployeeTimeSheet
@@ -357,6 +390,7 @@ class TimesheetForm(forms.ModelForm, BootstrapMixin):
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
+
 class PayrollOfficerForm(forms.ModelForm, BootstrapMixin):
     class Meta:
         exclude = "can_run_payroll", "can_create_payroll_elements", 'active'
@@ -366,6 +400,7 @@ class PayrollOfficerForm(forms.ModelForm, BootstrapMixin):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Submit'))
+
 
 class PayrollOfficerUpdateForm(forms.ModelForm, BootstrapMixin):
     class Meta:
@@ -381,44 +416,45 @@ class TimeLoggerForm(BootstrapMixin, forms.Form):
         cleaned_data = super().clean()
         e_num = cleaned_data['employee_number']
         if not models.Employee.objects.filter(pk=e_num).exists():
-            raise forms.ValidationError('The selected Employee number is invalid')
-        
+            raise forms.ValidationError(
+                'The selected Employee number is invalid')
+
         employee = models.Employee.objects.get(pk=e_num)
 
         if cleaned_data['pin'] != employee.pin:
             raise forms.ValidationError('Incorrect pin used for employee')
 
-        # check if a timesheet for this employee for this month exists, if not 
-        # create a new one. Check if today has a attendance line if not create a new 
+        # check if a timesheet for this employee for this month exists, if not
+        # create a new one. Check if today has a attendance line if not create a new
         # one. Check if this line has been logged in, if so log out if not log in.
         TODAY = datetime.date.today()
         NOW = datetime.datetime.now().time()
-        sheet_filters = Q(Q(employee=employee) & 
-                Q(month=TODAY.month) &
-                Q(year=TODAY.year))
+        sheet_filters = Q(Q(employee=employee) &
+                          Q(month=TODAY.month) &
+                          Q(year=TODAY.year))
         if models.EmployeeTimeSheet.objects.filter(sheet_filters).exists():
             curr_sheet = models.EmployeeTimeSheet.objects.get(sheet_filters)
         else:
             curr_sheet = models.EmployeeTimeSheet.objects.create(
-                employee=employee, 
+                employee=employee,
                 month=TODAY.month,
                 year=TODAY.year
-                )
-        
+            )
+
         if models.AttendanceLine.objects.filter(
                 Q(timesheet=curr_sheet) &
                 Q(date=TODAY)
-                ).exists():
-                
+        ).exists():
+
             curr_line = models.AttendanceLine.objects.get(
                 Q(timesheet=curr_sheet) &
                 Q(date=TODAY)
-                )
+            )
         else:
             curr_line = models.AttendanceLine.objects.create(
                 timesheet=curr_sheet,
                 date=TODAY
-                )
+            )
 
         if curr_line.time_in is None:
             cleaned_data['in_out'] = 'in'
@@ -432,9 +468,9 @@ class TimeLoggerForm(BootstrapMixin, forms.Form):
 
         return cleaned_data
 
+
 class TimeLoggerFormWithEmployee(TimeLoggerForm):
     employee_number = forms.IntegerField(widget=forms.HiddenInput)
-
 
 
 class PayrollForm(BootstrapMixin, forms.Form):
@@ -444,14 +480,14 @@ class PayrollForm(BootstrapMixin, forms.Form):
         models.Employee.objects.filter(payrollofficer__isnull=False))
     employees = forms.ModelMultipleChoiceField(
         models.Employee.objects.all(),
-        widget= Select2MultipleWidget)
+        widget=Select2MultipleWidget)
 
 
 class LeaveRequestForm(forms.ModelForm, BootstrapMixin):
     class Meta:
         model = models.Leave
         exclude = 'status', 'authorized_by', 'recorded'
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -459,69 +495,75 @@ class LeaveRequestForm(forms.ModelForm, BootstrapMixin):
             TabHolder(
                 Tab('basic',
                     Row(
-                        Column('start_date', css_class='form-group col-md-6 col-sm-12'),
-                        Column('end_date', css_class='form-group col-md-6 col-sm-12'),
+                        Column('start_date',
+                               css_class='form-group col-md-6 col-sm-12'),
+                        Column(
+                            'end_date', css_class='form-group col-md-6 col-sm-12'),
                     ),
                     'employee',
                     'category',
-                ),
+                    ),
                 Tab('notes',
                     'notes',
-                ),
+                    ),
             )
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
+
 class LeaveAuthorizationForm(BootstrapMixin, forms.Form):
-    leave_request = forms.ModelChoiceField(models.Leave.objects.all(), 
-        widget=forms.HiddenInput)
-    status = forms.ChoiceField(choices = [
+    leave_request = forms.ModelChoiceField(models.Leave.objects.all(),
+                                           widget=forms.HiddenInput)
+    status = forms.ChoiceField(choices=[
         (1, 'Approved'),
         (2, 'Declined')
-        ])
-    notes = forms.CharField(widget=forms.Textarea, required=False)    
-    
+    ])
+    notes = forms.CharField(widget=forms.Textarea, required=False)
+
     authorized_by = forms.ModelChoiceField(models.PayrollOfficer.objects.all())
     password = forms.CharField(widget=forms.PasswordInput)
-    
 
     def clean(self):
         cleaned_data = super().clean()
         usr = cleaned_data['authorized_by'].employee.user
         if not usr:
-            raise forms.ValidationError('The officer selected has no user profile')
+            raise forms.ValidationError(
+                'The officer selected has no user profile')
 
-         
         if not authenticate(username=usr.username,
-                password=cleaned_data['password']):
-            raise forms.ValidationError('You entered an incorrect password for this form')
+                            password=cleaned_data['password']):
+            raise forms.ValidationError(
+                'You entered an incorrect password for this form')
 
         return cleaned_data
 
+
 class PayrollDateForm(forms.ModelForm, BootstrapMixin):
-    schedule = forms.ModelChoiceField(models.PayrollSchedule.objects.all(), widget=forms.HiddenInput)
+    schedule = forms.ModelChoiceField(
+        models.PayrollSchedule.objects.all(), widget=forms.HiddenInput)
     employees = forms.ModelMultipleChoiceField(
-        models.Employee.objects.all(), 
-        widget = forms.CheckboxSelectMultiple,
+        models.Employee.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
         required=False
     )
     departments = forms.ModelMultipleChoiceField(
-        models.Department.objects.all(), 
-        widget = forms.CheckboxSelectMultiple,
+        models.Department.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
         required=False
     )
     pay_grades = forms.ModelMultipleChoiceField(
-        models.PayGrade.objects.all(), 
-        widget = forms.CheckboxSelectMultiple,
+        models.PayGrade.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
         required=False
     )
+
     class Meta:
         fields = "__all__"
         model = models.PayrollDate
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
         self.helper = FormHelper()
         self.helper.layout = Layout(
             TabHolder(
@@ -529,13 +571,13 @@ class PayrollDateForm(forms.ModelForm, BootstrapMixin):
                     'schedule',
                     'date',
                     'employees'
-                ),
+                    ),
                 Tab('Departments',
                     'departments'
-                ),
+                    ),
                 Tab('Pay Grades',
                     'pay_grades'
-                ),
+                    ),
             )
         )
 
@@ -544,14 +586,15 @@ class PayrollDateForm(forms.ModelForm, BootstrapMixin):
 
 class DepartmentForm(forms.ModelForm, BootstrapMixin):
     employees = forms.ModelMultipleChoiceField(models.Employee.objects.all(),
-        widget=forms.CheckboxSelectMultiple)
+                                               widget=forms.CheckboxSelectMultiple)
+
     class Meta:
         fields = "__all__"
         model = models.Department
 
         widgets = {
-                'description':forms.Textarea(attrs={'rows':4, 'cols':15}), 
-            }
+            'description': forms.Textarea(attrs={'rows': 4, 'cols': 15}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -564,17 +607,18 @@ class DepartmentForm(forms.ModelForm, BootstrapMixin):
                     'description',
                     'parent_department',
 
-                ),
+                    ),
                 Tab('members',
                     'employees'
-                ),
+                    ),
             )
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
+
 class EmployeeAuthenticateForm(BootstrapMixin, forms.Form):
     employee = forms.ModelChoiceField(models.Employee.objects.all())
-    pin = forms.CharField(widget = forms.NumberInput)
+    pin = forms.CharField(widget=forms.NumberInput)
 
     def clean(self, *args, **kwargs):
         cleaned_data = super().clean(*args, **kwargs)
@@ -583,25 +627,31 @@ class EmployeeAuthenticateForm(BootstrapMixin, forms.Form):
 
         return cleaned_data
 
+
 def get_tax_period_choices():
     today = datetime.date.today()
     year = today.year
+
     def get_strings(y):
-        return [datetime.date(y, i, 1).strftime("%b %Y") \
-            for i in range(1,13)]
+        return [datetime.date(y, i, 1).strftime("%b %Y")
+                for i in range(1, 13)]
     months_current = get_strings(year)
     months_previous = get_strings(year - 1)
-    
-    choices = [(i,i) for i in months_current + months_previous]
 
-    return choices 
+    choices = [(i, i) for i in months_current + months_previous]
+
+    return choices
+
+
 class NSSAReportForm(BootstrapMixin, forms.Form):
     period = forms.ChoiceField(choices=get_tax_period_choices)
+
 
 class ZimraReportForm(BootstrapMixin, forms.Form):
     tax_period = forms.ChoiceField(choices=get_tax_period_choices)
     postal_address = forms.CharField(widget=forms.Textarea(attrs={'rows': 4}))
     due_date = forms.DateField()
+
 
 class ContractForm(forms.ModelForm, BootstrapMixin):
     class Meta:
@@ -650,9 +700,10 @@ class TerminationForm(forms.ModelForm, BootstrapMixin):
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
+
 class CreateMultipleEmployeesForm(forms.Form):
     data = forms.CharField(widget=forms.HiddenInput)
-    
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -662,7 +713,6 @@ class CreateMultipleEmployeesForm(forms.Form):
             HTML("""<div id='multiple-employees-list'></div>""")
         )
         self.helper.add_input(Submit('submit', 'Submit'))
-
 
 
 class ImportEmployeesForm(forms.Form):
@@ -719,9 +769,9 @@ class ImportEmployeesForm(forms.Form):
 class OutstandingPayslipsForm(forms.Form):
     data = forms.CharField(widget=forms.HiddenInput)
     payroll_officer = forms.ModelChoiceField(
-            models.PayrollOfficer.objects.all())
+        models.PayrollOfficer.objects.all())
     password = forms.CharField(widget=forms.PasswordInput)
-    
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.helper = FormHelper()
@@ -741,8 +791,8 @@ class OutstandingPayslipsForm(forms.Form):
     def clean(self, *args, **kwargs):
         cleaned_data = super().clean(*args, **kwargs)
         usr = cleaned_data['payroll_officer'].employee.user
-        if not authenticate(username=usr.username, 
-                password=cleaned_data['password']):
+        if not authenticate(username=usr.username,
+                            password=cleaned_data['password']):
             raise ValidationError('The password supplied is incorrect')
 
         return cleaned_data

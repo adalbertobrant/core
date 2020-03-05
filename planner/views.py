@@ -5,6 +5,7 @@ import datetime
 import json
 import os
 import urllib
+from django.contrib import messages
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -14,7 +15,7 @@ from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic import DetailView, TemplateView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django_filters.views import FilterView
 from rest_framework import viewsets
@@ -27,22 +28,24 @@ from . import filters, forms, models, serializers
 
 
 class ReactCalendar(LoginRequiredMixin, TemplateView):
-    template_name = os.path.join('planner','calendar.html')
+    template_name = os.path.join('planner', 'calendar.html')
+
 
 class PlannerDashboard(LoginRequiredMixin, TemplateView):
     template_name = os.path.join('planner', 'dashboard.html')
 
-    
+
 class PlannerConfigUpdateView(LoginRequiredMixin, UpdateView):
     template_name = os.path.join('planner', 'config.html')
     form_class = forms.ConfigForm
     success_url = reverse_lazy('planner:dashboard')
     model = models.PlannerConfig
 
+
 class EventParticipantMixin():
     def get_initial(self):
         initial = super().get_initial()
-        
+
         if isinstance(self, UpdateView):
             participant_mapping = {
                 0: 'employee',
@@ -51,24 +54,26 @@ class EventParticipantMixin():
             }
             initial['json_participants'] = urllib.parse.quote(
                 json.dumps([{
-                    'type': participant_mapping[i.participant_type], 
-                    'pk': i.participant_pk, 
+                    'type': participant_mapping[i.participant_type],
+                    'pk': i.participant_pk,
                     'name': str(i)
-                    } for i in self.object.participants.all()])
+                } for i in self.object.participants.all()])
             )
-            
 
-        return initial 
+        return initial
+
     def post(self, request, *args, **kwargs):
-        resp = super().post(request, *args,**kwargs)
+        resp = super().post(request, *args, **kwargs)
 
         if not self.object:
             return resp
-        
+
         try:
-            participants = json.loads(urllib.parse.unquote(request.POST['json_participants']))
+            participants = json.loads(urllib.parse.unquote(
+                request.POST['json_participants']))
         except json.JSONDecodeError:
-            messages.info(request, 'This event has no participants, please provide at least one')
+            messages.info(
+                request, 'This event has no participants, please provide at least one')
             return resp
 
         if isinstance(self, UpdateView):
@@ -80,21 +85,24 @@ class EventParticipantMixin():
 
         return resp
 
+
 class EventCreateView(LoginRequiredMixin, EventParticipantMixin, CreateView):
-    template_name = os.path.join('planner', 'events','create.html')
+    template_name = os.path.join('planner', 'events', 'create.html')
     form_class = forms.EventForm
 
     def get(self, request, *args, **kwargs):
         if not hasattr(request.user, 'employee'):
-            messages.info(request, 'Only users linked to employees can create events in the calendar.')
-            return HttpResponseRedirect('/planner/')
+            messages.info(
+                request, 'Only users linked to employees can create events in the calendar.')
+            return HttpResponseRedirect('/planner/dashboard')
 
         return super().get(request, *args, **kwargs)
 
     def get_initial(self):
         return {
-            'owner': self.request.user.employee 
+            'owner': self.request.user.employee
         }
+
 
 class EventUpdateView(LoginRequiredMixin, EventParticipantMixin, UpdateView):
     template_name = os.path.join('planner', 'events', 'update.html')
@@ -103,35 +111,42 @@ class EventUpdateView(LoginRequiredMixin, EventParticipantMixin, UpdateView):
 
     def get(self, *args, **kwargs):
         resp = super().get(*args, **kwargs)
-            
+
         if not hasattr(self.request.user, 'employee') or \
                 self.request.user.employee != self.object.owner:
-            messages.info(self.request, f'{self.request.user} is not the owner of this event and does not have permission to change it.')
+            messages.info(
+                self.request, f'{self.request.user} is not the owner of this event and does not have permission to change it.')
             return HttpResponseRedirect(reverse_lazy('planner:event-detail',
-                kwargs={
-                    'pk': self.object.pk
-                }))
+                                                     kwargs={
+                                                         'pk': self.object.pk
+                                                     }))
 
         return resp
 
 
-class EventListView(ContextMixin, 
-        LoginRequiredMixin, 
-        PaginationMixin, 
-        FilterView):
+class EventListView(ContextMixin,
+                    LoginRequiredMixin,
+                    PaginationMixin,
+                    FilterView):
     template_name = os.path.join('planner', 'events', 'list.html')
     filterset_class = filters.EventFilter
     extra_context = {
         'title': 'Event List',
         'new_link': reverse_lazy('planner:event-create')
     }
+
     def get_queryset(self):
+        if not hasattr(self.request.user, 'employee'):
+            messages.info(self.request, 'Only users linked to employees can create events in the calendar.')
+            return HttpResponseRedirect('/planner/dashboard')
+
         return models.Event.objects.filter( 
-            Q(owner=self.request.user)
+            Q(owner=self.request.user.employee)
         ).order_by('date').reverse()
 
+
 class EventDetailView(LoginRequiredMixin, DetailView):
-    model = models.Event 
+    model = models.Event
     template_name = os.path.join('planner', 'events', 'detail.html')
 
     def get_context_data(self, **kwargs):
@@ -139,21 +154,25 @@ class EventDetailView(LoginRequiredMixin, DetailView):
         context['date_string'] = self.object.date.strftime('%Y/%m/%d')
         return context
 
+
 class EventDeleteView(LoginRequiredMixin, DeleteView):
-    model = models.Event 
+    model = models.Event
     template_name = os.path.join('common_data', 'delete_template.html')
     success_url = "/planner/dashboard"
 
+
 class AgendaView(LoginRequiredMixin, TemplateView):
     template_name = os.path.join('planner', 'agenda.html')
-    
+
     def get(self, *args, **kwargs):
         if not hasattr(self.request.user, "employee"):
-            from django.contrib import messages
-            messages.info(self.request, "The user logged in is not linked to any employee. Please login as another user to access the agenda.")
+            
+            messages.info(
+                self.request, "The user logged in is not linked to any employee. Please login as another user to access the agenda.")
             return HttpResponseRedirect("/login")
 
         return super().get(*args, **kwargs)
+
 
 class AsyncDashboard(LoginRequiredMixin, TemplateView):
     template_name = os.path.join('planner', 'async_dashboard.html')
@@ -162,8 +181,9 @@ class AsyncDashboard(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(*args, **kwargs)
         today = datetime.date.today()
         context['day'] = today.day
-        context['day_detail'] = "{}, {}".format(today.strftime('%B'), today.year) 
-        
+        context['day_detail'] = "{}, {}".format(
+            today.strftime('%B'), today.year)
+
         return context
 
 
@@ -172,26 +192,27 @@ class AgendaAPIView(ListAPIView):
 
     def get_queryset(self):
         pk = self.kwargs['pk']
-        filter = None
+        filter = Q()
         agenda_items = \
             models.PlannerConfig.objects.first().number_of_agenda_items
         user = User.objects.get(pk=pk)
         if not hasattr(user, "employee"):
             return None
 
-        if user.employee:
+        if hasattr(user, 'employee'):
             filter = Q(Q(owner=user.employee) | 
                 Q(eventparticipant__employee__in=[user.employee.pk]))
-        else:
-            filter = Q(owner=user)
+        
         
         return models.Event.objects.filter(
-            Q(date__gte=datetime.date.today()) & 
+            Q(date__gte=datetime.date.today()) &
             Q(completed=False) & filter).order_by('date')[:agenda_items]
+
 
 class EventAPIViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.EventSerializer
     queryset = models.Event.objects.all()
+
 
 def complete_event(request, pk=None):
     evt = get_object_or_404(models.Event, pk=pk)

@@ -6,4 +6,5 @@ from background_task.models import Task
 
 try:
     run_accounting_service(repeat=Task.DAILY)
-except: pass
+except:
+    pass

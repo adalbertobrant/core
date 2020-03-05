@@ -17,50 +17,61 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Inbox',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
             ],
         ),
         migrations.CreateModel(
             name='Message',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('subject', models.CharField(blank=True, max_length=255)),
                 ('body', models.TextField()),
                 ('read', models.BooleanField(default=False)),
                 ('sent', models.BooleanField(default=False)),
                 ('created_timestamp', models.DateTimeField(auto_now=True)),
                 ('opened_timestamp', models.DateTimeField(blank=True, null=True)),
-                ('copy', models.ManyToManyField(blank=True, related_name='copy', to=settings.AUTH_USER_MODEL)),
-                ('recipient', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='to', to=settings.AUTH_USER_MODEL)),
-                ('sender', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='sender', to=settings.AUTH_USER_MODEL)),
+                ('copy', models.ManyToManyField(blank=True,
+                                                related_name='copy', to=settings.AUTH_USER_MODEL)),
+                ('recipient', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                                related_name='to', to=settings.AUTH_USER_MODEL)),
+                ('sender', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                             related_name='sender', to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
             name='MessageThread',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('closed', models.BooleanField(default=False)),
-                ('initiator', models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='_from', to=settings.AUTH_USER_MODEL)),
+                ('initiator', models.ForeignKey(default=1, null=True,
+                                                on_delete=django.db.models.deletion.SET_NULL, related_name='_from', to=settings.AUTH_USER_MODEL)),
                 ('messages', models.ManyToManyField(to='messaging.Message')),
-                ('participants', models.ManyToManyField(related_name='participants', to=settings.AUTH_USER_MODEL)),
+                ('participants', models.ManyToManyField(
+                    related_name='participants', to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
             name='Notification',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=255)),
                 ('read', models.BooleanField(default=False)),
                 ('message', models.TextField()),
                 ('timestamp', models.DateTimeField(auto_now=True)),
                 ('action', models.CharField(blank=True, max_length=255)),
-                ('user', models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(default=1, null=True,
+                                           on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(
             model_name='message',
             name='thread',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='messaging.MessageThread'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='messaging.MessageThread'),
         ),
         migrations.AddField(
             model_name='inbox',
@@ -70,6 +81,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='inbox',
             name='user',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            field=models.OneToOneField(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
         ),
     ]

@@ -118,8 +118,13 @@ export default class CalendarApp extends Component{
         // subtract the sidebar width
         // divide by 7
         // subtract the padding and border widths 
-        this.setState({windowWidth: Math.floor(
-            ((window.screen.width -250) / 7) - 12)});
+        if(window.screen.width < 575){
+            this.setState({windowWidth: 200});
+        }else{
+            this.setState({windowWidth: Math.floor(
+                ((window.screen.width -250) / 7) - 12)});
+        }
+        
         const today = new Date()
         this.setState({
             day: today.getDate(),
@@ -192,7 +197,8 @@ export default class CalendarApp extends Component{
                                 monthString={this.state.monthText}
                                 prevHandler={this.prevHandler}/>
                         <div className={styles.renderedCalendar} >
-        <h4 className={styles.monthText}>{this.state.monthText}</h4>
+        <h4 className={styles.monthText} 
+            style={{display: this.state.view == 'month' ? 'block': 'none'}}>{this.state.monthText}</h4>
                             {/*App */}
                             {rendered}
                         </div>

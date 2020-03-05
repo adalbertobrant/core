@@ -18,11 +18,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='deduction',
             name='commission',
-            field=models.ManyToManyField(blank=True, to='employees.CommissionRule'),
+            field=models.ManyToManyField(
+                blank=True, to='employees.CommissionRule'),
         ),
         migrations.AlterField(
             model_name='deduction',
             name='payroll_taxes',
-            field=models.ManyToManyField(blank=True, to='employees.PayrollTax'),
+            field=models.ManyToManyField(
+                blank=True, to='employees.PayrollTax'),
         ),
     ]

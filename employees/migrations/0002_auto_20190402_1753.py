@@ -18,6 +18,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='paygrade',
             name='pay_frequency',
-            field=models.PositiveSmallIntegerField(choices=[(0, 'Weekly'), (1, 'Bi-Monthly'), (2, 'Monthly')], default=2),
+            field=models.PositiveSmallIntegerField(
+                choices=[(0, 'Weekly'), (1, 'Bi-Monthly'), (2, 'Monthly')], default=2),
         ),
     ]

@@ -6,4 +6,3 @@ admin.site.register(models.GlobalConfig)
 admin.site.register(models.Individual)
 admin.site.register(models.Organization)
 admin.site.register(models.PhoneNumber)
-

@@ -1,6 +1,7 @@
 from django_filters.filterset import FilterSet
 from manufacturing import models
 
+
 class ProcessFilter(FilterSet):
     class Meta:
         model = models.Process
@@ -26,7 +27,6 @@ class ProductionOrderFilter(FilterSet):
             'date': ['exact'],
             'product': ['exact']
         }
-
 
 
 class ShiftFilter(FilterSet):
@@ -59,5 +59,3 @@ class MachineGroupFilter(FilterSet):
         fields = {
             'name': ['icontains']
         }
-
-

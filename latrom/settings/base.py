@@ -9,12 +9,8 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
-import environ
 import os
-import json
 
-env = environ.Env()
-environ.Env.read_env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(
@@ -24,10 +20,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = 'n99y(&BG9872vnb97bt8bTB&^C$E*&b 987wwrxhjq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-
 
 
 # Application definition
@@ -60,7 +55,7 @@ INSTALLED_APPS = [
     'dbbackup',
     'formtools',
     'django_select2'
-    
+
 ] + USER_APPS
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
@@ -70,8 +65,8 @@ LOGOUT_REDIRECT_URL = '/login'
 PROJECT_NAME = 'Smart business solutions'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
-SESSION_COOKIE_HTTPONLY =True
-SESSION_COOKIE_AGE = 600 #10 minutes
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_AGE = 600  # 10 minutes
 SESSION_SAVE_EVERY_REQUEST = True
 
 MIDDLEWARE = [
@@ -161,8 +156,6 @@ LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/invoicing/'
 
 
-
-
 WKHTMLTOPDF_CMD_OPTIONS = {
     'quiet': True,
     'disable-smart-shrinking': True
@@ -173,16 +166,10 @@ DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 CACHES = {
     'default': {
-		'BACKEND': \
-			'django.core.cache.backends.locmem.LocMemCache',
+        'BACKEND':
+        'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'djangoq-localmem',
     }
 }
 
 MAX_ATTEMPTS = 1
-
-EMAIL_HOST = 'in-v3.mailjet.com'
-EMAIL_HOST_USER = env('EMAIL_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_KEY')
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True

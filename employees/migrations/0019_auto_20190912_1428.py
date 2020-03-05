@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='termination',
             name='contract',
-            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Contract'),
+            field=models.OneToOneField(
+                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Contract'),
         ),
     ]

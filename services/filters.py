@@ -10,6 +10,7 @@ class ServiceFilter(django_filters.FilterSet):
             'name': ['icontains']
         }
 
+
 class ProcedureFilter(django_filters.FilterSet):
     class Meta:
         model = models.ServiceProcedure
@@ -17,12 +18,14 @@ class ProcedureFilter(django_filters.FilterSet):
             'name': ['icontains']
         }
 
+
 class ServicePersonFilter(django_filters.FilterSet):
     class Meta:
         model = models.ServicePerson
         fields = {
             'employee': ['exact']
         }
+
 
 class WorkOrderFilter(django_filters.FilterSet):
     class Meta:
@@ -32,6 +35,7 @@ class WorkOrderFilter(django_filters.FilterSet):
             'status': ['exact'],
             'completed': ['exact']
         }
+
 
 class ConsumableRequisitionFilter(django_filters.FilterSet):
     class Meta:
@@ -49,6 +53,7 @@ class EquipmentRequisitionFilter(django_filters.FilterSet):
             'date': ['exact'],
             'requested_by': ['exact']
         }
+
 
 class WorkOrderRequestFilters(django_filters.FilterSet):
     class Meta:

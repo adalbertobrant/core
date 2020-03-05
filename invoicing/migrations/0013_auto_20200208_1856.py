@@ -17,7 +17,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Contact',
             fields=[
-                ('individual_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='common_data.Individual')),
+                ('individual_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE,
+                                                        parent_link=True, primary_key=True, serialize=False, to='common_data.Individual')),
             ],
             options={
                 'abstract': False,
@@ -27,16 +28,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Interaction',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('timestamp', models.DateTimeField(auto_now=True)),
                 ('description', models.TextField(blank=True)),
-                ('contact', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.Contact')),
+                ('contact', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.Contact')),
             ],
         ),
         migrations.CreateModel(
             name='InteractionType',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=64)),
                 ('description', models.TextField()),
             ],
@@ -44,23 +48,28 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Lead',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=255)),
                 ('description', models.TextField(blank=True)),
                 ('created', models.DateTimeField(auto_now=True)),
                 ('projected_closing', models.DateField(blank=True, null=True)),
                 ('opportunity', models.FloatField(default=0.0)),
                 ('probability_of_sale', models.FloatField(default=100.0)),
-                ('status', models.CharField(choices=[('lead', 'Lead'), ('quotation', ' Quotation'), ('invoice', 'Invoice'), ('sale', 'Sale'), ('cold', 'Cold')], default='lead', max_length=16)),
+                ('status', models.CharField(choices=[('lead', 'Lead'), ('quotation', ' Quotation'), (
+                    'invoice', 'Invoice'), ('sale', 'Sale'), ('cold', 'Cold')], default='lead', max_length=16)),
                 ('contacts', models.ManyToManyField(to='invoicing.Contact')),
-                ('organization', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='common_data.Organization')),
-                ('owner', models.ForeignKey(default=1, on_delete=django.db.models.deletion.SET_DEFAULT, to='invoicing.SalesRepresentative')),
+                ('organization', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='common_data.Organization')),
+                ('owner', models.ForeignKey(
+                    default=1, on_delete=django.db.models.deletion.SET_DEFAULT, to='invoicing.SalesRepresentative')),
             ],
         ),
         migrations.CreateModel(
             name='LeadSource',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=64)),
                 ('description', models.TextField()),
             ],
@@ -68,48 +77,59 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Note',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('timestamp', models.DateTimeField(auto_now=True)),
                 ('text', models.TextField()),
-                ('author', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee')),
+                ('author', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee')),
             ],
         ),
         migrations.CreateModel(
             name='SalesTeam',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255)),
                 ('description', models.TextField(blank=True)),
-                ('members', models.ManyToManyField(to='invoicing.SalesRepresentative')),
+                ('members', models.ManyToManyField(
+                    to='invoicing.SalesRepresentative')),
             ],
         ),
         migrations.CreateModel(
             name='Task',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=255)),
                 ('description', models.TextField(blank=True)),
-                ('status', models.CharField(choices=[('planned', 'Planned'), ('progress', 'In Progress'), ('cancelled', 'Cancelled'), ('completed', 'Completed')], default='planned', max_length=16)),
+                ('status', models.CharField(choices=[('planned', 'Planned'), ('progress', 'In Progress'), (
+                    'cancelled', 'Cancelled'), ('completed', 'Completed')], default='planned', max_length=16)),
                 ('created', models.DateTimeField(auto_now=True)),
                 ('due', models.DateField()),
-                ('event', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='planner.Event')),
-                ('lead', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoicing.Lead')),
+                ('event', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='planner.Event')),
+                ('lead', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoicing.Lead')),
             ],
         ),
         migrations.AddField(
             model_name='lead',
             name='source',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.SET_DEFAULT, to='invoicing.LeadSource'),
+            field=models.ForeignKey(
+                default=1, on_delete=django.db.models.deletion.SET_DEFAULT, to='invoicing.LeadSource'),
         ),
         migrations.AddField(
             model_name='lead',
             name='team',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.SalesTeam'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.SalesTeam'),
         ),
         migrations.AddField(
             model_name='interaction',
             name='lead',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.Lead'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.Lead'),
         ),
         migrations.AddField(
             model_name='interaction',
@@ -119,11 +139,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='interaction',
             name='sales_representative',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.SalesRepresentative'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.SalesRepresentative'),
         ),
         migrations.AddField(
             model_name='interaction',
             name='type',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.SET_DEFAULT, to='invoicing.InteractionType'),
+            field=models.ForeignKey(
+                default=1, on_delete=django.db.models.deletion.SET_DEFAULT, to='invoicing.InteractionType'),
         ),
     ]

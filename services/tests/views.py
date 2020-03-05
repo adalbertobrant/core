@@ -1,10 +1,9 @@
 from django.contrib.auth.models import User
-from django.test import TestCase, Client 
+from django.test import TestCase, Client
 from django.test.client import RequestFactory
 import inventory
 from employees.tests.models import create_test_employees_models
 from employees.models import Employee
-from inventory.models import InventoryController
 from services.models import *
 import urllib
 import json
@@ -18,10 +17,11 @@ from services.views import (JobProfitabilityPDFView,
 
 TODAY = datetime.date.today()
 
-class BasicServiceViewTests(TestCase):
-    fixtures = ['common.json','inventory.json']
 
-    @classmethod 
+class BasicServiceViewTests(TestCase):
+    fixtures = ['common.json', 'inventory.json']
+
+    @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.client = Client()
@@ -30,20 +30,20 @@ class BasicServiceViewTests(TestCase):
     def setUpTestData(cls):
         create_test_employees_models(cls)
         create_test_user(cls)
-        #inventory.tests.models.create_test_inventory_models(cls)
+        # inventory.tests.models.create_test_inventory_models(cls)
         cls.category = ServiceCategory.objects.create(
-            **{'name': 'name', 'description': 'description'}   
+            **{'name': 'name', 'description': 'description'}
         )
         create_test_common_entities(cls)
         cls.settings_ = ServicesSettings.objects.create(
-            is_configured =True
+            is_configured=True
         )
 
     def setUp(self):
         self.client.login(username="Testuser", password="123")
 
     def test_get_dashboard_page(self):
-        
+
         resp = self.client.get('/services/')
         self.assertEqual(resp.status_code, 200)
         self.settings_.is_configured = False
@@ -54,15 +54,13 @@ class BasicServiceViewTests(TestCase):
         self.settings_.is_configured = True
         self.settings_.save()
 
-
-
     def test_get_create_category_page(self):
         resp = self.client.get('/services/create-category/')
         self.assertEqual(resp.status_code, 200)
 
     def test_post_create_category_page(self):
         resp = self.client.post('/services/create-category/',
-            data={'name': 'name', 'description': 'description'})
+                                data={'name': 'name', 'description': 'description'})
         self.assertEqual(resp.status_code, 302)
 
     def test_get_category_update_page(self):
@@ -71,7 +69,7 @@ class BasicServiceViewTests(TestCase):
 
     def test_post_category_update_page(self):
         resp = self.client.post('/services/update-category/1',
-            data={'name': 'name', 'description': 'other description'})
+                                data={'name': 'name', 'description': 'other description'})
         self.assertEqual(resp.status_code, 302)
 
     def test_get_category_detail_page(self):
@@ -84,9 +82,9 @@ class BasicServiceViewTests(TestCase):
 
 
 class ServicePersonnelViewTests(TestCase):
-    fixtures = ['common.json','inventory.json']
+    fixtures = ['common.json', 'inventory.json']
 
-    @classmethod 
+    @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.client = Client()
@@ -97,7 +95,7 @@ class ServicePersonnelViewTests(TestCase):
         create_test_common_entities(cls)
         inventory.tests.models.create_test_inventory_models(cls)
         cls.category = ServiceCategory.objects.create(
-            **{'name': 'name', 'description': 'description'}   
+            **{'name': 'name', 'description': 'description'}
         )
         cls.service_person = ServicePerson.objects.create(
             employee=cls.employee
@@ -116,20 +114,20 @@ class ServicePersonnelViewTests(TestCase):
 
     def test_post_service_person_creation_page(self):
         obj = Employee.objects.create(
-                first_name = 'First',
-                last_name = 'Last',
-                address = 'Model test address',
-                email = 'test@mail.com',
-                phone = '1234535234',
-                pay_grade = self.grade
-            )
-        resp = self.client.post('/services/service-person-create', 
-            data={
-                'employee': obj.pk,
-                'is_manager': True,
-                'can_authorize_equipment_requisitions': True,
-                'can_authorize_consumables_requisitions': True,
-            })
+            first_name='First',
+            last_name='Last',
+            address='Model test address',
+            email='test@mail.com',
+            phone='1234535234',
+            pay_grade=self.grade
+        )
+        resp = self.client.post('/services/service-person-create',
+                                data={
+                                    'employee': obj.pk,
+                                    'is_manager': True,
+                                    'can_authorize_equipment_requisitions': True,
+                                    'can_authorize_consumables_requisitions': True,
+                                })
         obj.delete()
         self.assertEqual(resp.status_code, 302)
 
@@ -138,12 +136,12 @@ class ServicePersonnelViewTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_post_service_person_update_page(self):
-        resp = self.client.post('/services/service-person-update/1', 
-            data={
-                'is_manager': False,
-                'can_authorize_equipment_requisitions': True,
-                'can_authorize_consumables_requisitions': True,
-            })
+        resp = self.client.post('/services/service-person-update/1',
+                                data={
+                                    'is_manager': False,
+                                    'can_authorize_equipment_requisitions': True,
+                                    'can_authorize_consumables_requisitions': True,
+                                })
         self.assertEqual(resp.status_code, 302)
 
     def test_get_service_person_detail_page(self):
@@ -191,12 +189,12 @@ class ServicePersonnelViewTests(TestCase):
     def test_get_service_team_list_page(self):
         resp = self.client.get('/services/team-list')
         self.assertEqual(resp.status_code, 200)
-     
+
 
 class ServiceProcedureViewTests(TestCase):
-    fixtures = ['common.json','inventory.json']
+    fixtures = ['common.json', 'inventory.json']
 
-    @classmethod 
+    @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.client = Client()
@@ -221,24 +219,24 @@ class ServiceProcedureViewTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_post_service_procedure(self):
-        resp = self.client.post('/services/create-procedure', 
-            data={
-                'tasks': urllib.parse.quote(json.dumps([
-                    'some task'
-                ])),
-                'equipment': urllib.parse.quote(json.dumps([
-                    '1 - item'
-                ])),
-                'consumables': urllib.parse.quote(json.dumps([
-                    '1 - item'
-                ])),
-                'as_checklist': True,
-                'name': 'name',
-                'description': 'some description',
-                'reference': 'ref',
-                'author': 1
-            })
-        
+        resp = self.client.post('/services/create-procedure',
+                                data={
+                                    'tasks': urllib.parse.quote(json.dumps([
+                                        'some task'
+                                    ])),
+                                    'equipment': urllib.parse.quote(json.dumps([
+                                        '1 - item'
+                                    ])),
+                                    'consumables': urllib.parse.quote(json.dumps([
+                                        '1 - item'
+                                    ])),
+                                    'as_checklist': True,
+                                    'name': 'name',
+                                    'description': 'some description',
+                                    'reference': 'ref',
+                                    'author': 1
+                                })
+
         self.assertEqual(resp.status_code, 302)
 
     def test_get_list_procedure_page(self):
@@ -250,34 +248,34 @@ class ServiceProcedureViewTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_post_service_procedure_update(self):
-        resp = self.client.post('/services/procedure-update/1', 
-            data={
-                'tasks': urllib.parse.quote(json.dumps([
-                    'some task'
-                ])),
-                'equipment': urllib.parse.quote(json.dumps([
-                    '1 - item'
-                ])),
-                'consumables': urllib.parse.quote(json.dumps([
-                    '1 - item'
-                ])),
-                'as_checklist': True,
-                'name': 'name',
-                'description': 'some description',
-                'reference': 'ref',
-                'author': 1
-            })
+        resp = self.client.post('/services/procedure-update/1',
+                                data={
+                                    'tasks': urllib.parse.quote(json.dumps([
+                                        'some task'
+                                    ])),
+                                    'equipment': urllib.parse.quote(json.dumps([
+                                        '1 - item'
+                                    ])),
+                                    'consumables': urllib.parse.quote(json.dumps([
+                                        '1 - item'
+                                    ])),
+                                    'as_checklist': True,
+                                    'name': 'name',
+                                    'description': 'some description',
+                                    'reference': 'ref',
+                                    'author': 1
+                                })
         self.assertEqual(resp.status_code, 302)
 
     def test_get_procedure_detail_page(self):
         resp = self.client.get('/services/procedure-detail/1')
         self.assertEqual(resp.status_code, 200)
 
-    
-class RequisitionViewTests(TestCase):
-    fixtures = ['common.json','inventory.json']
 
-    @classmethod 
+class RequisitionViewTests(TestCase):
+    fixtures = ['common.json', 'inventory.json']
+
+    @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.client = Client()
@@ -291,7 +289,7 @@ class RequisitionViewTests(TestCase):
         cls.controller.can_authorize_consumables_requisitions = True
         cls.controller.can_validate_orders = True
         cls.controller.save()
-            
+
         cls.category = ServiceCategory.objects.create(
             name="category",
             description="the description"
@@ -314,7 +312,7 @@ class RequisitionViewTests(TestCase):
         )
 
         cls.wr = WorkOrderRequest.objects.create(
-            service = cls.service,
+            service=cls.service,
             status="request",
         )
         cls.wo = ServiceWorkOrder.objects.create(
@@ -337,7 +335,8 @@ class RequisitionViewTests(TestCase):
             reference="ref",
             requested_by=cls.employee
         )
-        cls.employee.user=User.objects.create_superuser(username="user2", email='mail@test.com', password="123")
+        cls.employee.user = User.objects.create_superuser(
+            username="user2", email='mail@test.com', password="123")
         cls.employee.save()
 
     def setUp(self):
@@ -348,19 +347,19 @@ class RequisitionViewTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_post_equipment_requisition_page(self):
-        resp = self.client.post('/services/equipment-requisition-create', 
-            data={
-                'equipment': urllib.parse.quote(json.dumps([{
-                    'item': '1 - item',
-                    'condition': 'good',
-                    'quantity': 1
-                }])),
-                'date': TODAY,
-                'warehouse': 1,
-                'reference': 'ref',
-                'requested_by': 1,
-                "work_order": self.wo.pk
-            })
+        resp = self.client.post('/services/equipment-requisition-create',
+                                data={
+                                    'equipment': urllib.parse.quote(json.dumps([{
+                                        'item': '1 - item',
+                                        'condition': 'good',
+                                        'quantity': 1
+                                    }])),
+                                    'date': TODAY,
+                                    'warehouse': 1,
+                                    'reference': 'ref',
+                                    'requested_by': 1,
+                                    "work_order": self.wo.pk
+                                })
         self.assertEqual(resp.status_code, 302)
 
     def test_get_equipment_requsition_list(self):
@@ -373,42 +372,42 @@ class RequisitionViewTests(TestCase):
 
     def test_equipment_requisition_release(self):
         resp = self.client.post('/inventory/equipment-requisition-release/1',
-            data={
-                'user': self.employee.user.pk,
-                'password': '123'
-            })
+                                data={
+                                    'user': self.employee.user.pk,
+                                    'password': '123'
+                                })
         self.assertEqual(resp.status_code, 302)
-        self.assertEqual(EquipmentRequisition.objects.first().released_by, 
-            self.employee)
+        self.assertEqual(EquipmentRequisition.objects.first().released_by,
+                         self.employee)
 
     def test_equipment_requisition_authorize(self):
         resp = self.client.post('/inventory/equipment-requisition-authorize/1',
-            data={
-                'user': self.employee.user.pk,
-                'password': '123'
-            })
+                                data={
+                                    'user': self.employee.user.pk,
+                                    'password': '123'
+                                })
         self.assertEqual(resp.status_code, 302)
-        self.assertEqual(EquipmentRequisition.objects.first().authorized_by, 
-            self.employee)
+        self.assertEqual(EquipmentRequisition.objects.first().authorized_by,
+                         self.employee)
 
     def test_get_consumable_requisition_page(self):
         resp = self.client.get('/services/consumable-requisition-create')
         self.assertEqual(resp.status_code, 200)
 
     def test_post_consumable_requisition_page(self):
-        resp = self.client.post('/services/consumable-requisition-create', 
-            data={
-                'consumables': urllib.parse.quote(json.dumps([{
-                    'item': '1 - item',
-                    'unit': '1 - something',
-                    'quantity': 1
-                }])),
-                'date': TODAY,
-                'warehouse': 1,
-                'reference': 'ref',
-                'requested_by': 1,
-                'work_order': self.wo.pk
-            })
+        resp = self.client.post('/services/consumable-requisition-create',
+                                data={
+                                    'consumables': urllib.parse.quote(json.dumps([{
+                                        'item': '1 - item',
+                                        'unit': '1 - something',
+                                        'quantity': 1
+                                    }])),
+                                    'date': TODAY,
+                                    'warehouse': 1,
+                                    'reference': 'ref',
+                                    'requested_by': 1,
+                                    'work_order': self.wo.pk
+                                })
         self.assertEqual(resp.status_code, 302)
 
     def test_get_consumable_requsition_list(self):
@@ -421,13 +420,13 @@ class RequisitionViewTests(TestCase):
 
     def test_consumable_requisition_release(self):
         resp = self.client.post('/inventory/consumable-requisition-release/1',
-            data={
-                'user': self.employee.user.pk,
-                'password': '123'
-            })
+                                data={
+                                    'user': self.employee.user.pk,
+                                    'password': '123'
+                                })
         self.assertEqual(resp.status_code, 302)
-        self.assertEqual(ConsumablesRequisition.objects.first().released_by, 
-            self.employee)
+        self.assertEqual(ConsumablesRequisition.objects.first().released_by,
+                         self.employee)
 
     def test_get_consumable_requisition_get_auth(self):
         resp = self.client.get('/inventory/consumable-requisition-auth-view/1')
@@ -435,12 +434,13 @@ class RequisitionViewTests(TestCase):
 
     def test_consumable_requisition_authorize(self):
         resp = self.client.post('/inventory/consumable-requisition-authorize/1',
-            data={
-                'user': self.employee.user.pk,
-                'password': '123'
-            })
+                                data={
+                                    'user': self.employee.user.pk,
+                                    'password': '123'
+                                })
         self.assertEqual(resp.status_code, 302)
-        self.assertEqual(ConsumablesRequisition.objects.first().authorized_by, self.employee) 
+        self.assertEqual(
+            ConsumablesRequisition.objects.first().authorized_by, self.employee)
 
     def test_get_equipment_return_page(self):
         resp = self.client.get('/inventory/equipment-return/1')
@@ -461,9 +461,9 @@ class RequisitionViewTests(TestCase):
 
 
 class ServiceViewTests(TestCase):
-    fixtures = ['common.json','inventory.json']
+    fixtures = ['common.json', 'inventory.json']
 
-    @classmethod 
+    @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.client = Client()
@@ -543,7 +543,7 @@ class ServiceViewTests(TestCase):
 class WorkOrderViewTests(TestCase):
     fixtures = ['common.json',  'inventory.json']
 
-    @classmethod 
+    @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.client = Client()
@@ -575,7 +575,7 @@ class WorkOrderViewTests(TestCase):
         )
 
         cls.wr = WorkOrderRequest.objects.create(
-            service = cls.service,
+            service=cls.service,
             status="request",
         )
         cls.wo = ServiceWorkOrder.objects.create(
@@ -590,9 +590,9 @@ class WorkOrderViewTests(TestCase):
 
         cls.sp = ServicePerson.objects.create(
             employee=cls.employee,
-            is_manager = True,
-            can_authorize_equipment_requisitions = False,
-            can_authorize_consumables_requisitions = True
+            is_manager=True,
+            can_authorize_equipment_requisitions=False,
+            can_authorize_consumables_requisitions=True
         )
 
     def setUp(self):
@@ -607,32 +607,32 @@ class WorkOrderViewTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_post_work_order_create_page(self):
-        resp = self.client.post('/services/work-order-create/1', 
-            data={
-                'service_people': urllib.parse.quote(json.dumps([
-                    '1 - person'
-                    ])),
-                'date': TODAY,
-                'time': '08:00:00',
-                'expected_duration': '',
-                'status': 'requested',
-                'description': 'some description',
-                'works_request': 1
-            })
+        resp = self.client.post('/services/work-order-create/1',
+                                data={
+                                    'service_people': urllib.parse.quote(json.dumps([
+                                        '1 - person'
+                                    ])),
+                                    'date': TODAY,
+                                    'time': '08:00:00',
+                                    'expected_duration': '',
+                                    'status': 'requested',
+                                    'description': 'some description',
+                                    'works_request': 1
+                                })
         self.assertEqual(resp.status_code, 302)
 
     def test_post_work_order_update_page(self):
         resp = self.client.post('/services/work-order-update/1', data={
             'service_people': urllib.parse.quote(json.dumps([
-                    '1 - person'
-                    ])),
-                'date': TODAY,
-                'time': '08:00:00',
-                'expected_duration': '',
-                'status': 'requested',
-                'description': 'some description',
-                'works_request': 1
-                
+                '1 - person'
+            ])),
+            'date': TODAY,
+            'time': '08:00:00',
+            'expected_duration': '',
+            'status': 'requested',
+            'description': 'some description',
+            'works_request': 1
+
         })
         self.assertEqual(resp.status_code, 302)
 
@@ -644,19 +644,17 @@ class WorkOrderViewTests(TestCase):
         resp = self.client.get('/services/work-order-list')
         self.assertEqual(resp.status_code, 200)
 
-   
-
     def test_work_order_authorize(self):
         self.employee.user = self.user
         self.employee.save()
         resp = self.client.post('/services/work-order-authorize/1',
-            data={
-                'status': 'completed',
-                'authorized_by': self.employee.pk,
-                'password': '123'
-            })
+                                data={
+                                    'status': 'completed',
+                                    'authorized_by': self.employee.pk,
+                                    'password': '123'
+                                })
         self.assertEqual(resp.status_code, 302)
-        
+
     def test_get_work_order_costing_view(self):
         resp = self.client.get('/services/work-order/costing/1')
         self.assertEqual(resp.status_code, 200)
@@ -664,7 +662,6 @@ class WorkOrderViewTests(TestCase):
     def test_get_work_order_expense_view(self):
         resp = self.client.get("/services/work-order/1/expense-create")
         self.assertEqual(resp.status_code, 200)
-
 
     def test_post_work_order_expense_view(self):
         resp = self.client.post("/services/work-order/1/expense-create", data={
@@ -685,13 +682,12 @@ class ConfigWizardTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.client = Client()
-        
 
     @classmethod
     def setUpTestData(cls):
-        cls.user = User.objects.create_superuser(username="Testuser", email="admin@test.com", password="123")
+        cls.user = User.objects.create_superuser(
+            username="Testuser", email="admin@test.com", password="123")
         cls.settings = ServicesSettings.objects.create()
-
 
     def setUp(self):
         self.client.login(username='Testuser', password='123')
@@ -722,13 +718,11 @@ class ConfigWizardTests(TestCase):
 
         data_list = [service_data, employee_data, sp_data]
 
-
         for step, data in enumerate(data_list, 1):
 
             try:
-                resp = self.client.post(reverse('services:config-wizard'), 
-                    data=data)
-                
+                resp = self.client.post(reverse('services:config-wizard'),
+                                        data=data)
 
                 if step == len(data_list):
                     self.assertEqual(resp.status_code, 302)
@@ -748,13 +742,12 @@ class ServiceReportsTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.client = Client()
-        
 
     @classmethod
     def setUpTestData(cls):
-        cls.user = User.objects.create_superuser(username="Testuser", email="admin@test.com", password="123")
+        cls.user = User.objects.create_superuser(
+            username="Testuser", email="admin@test.com", password="123")
         cls.settings = ServicesSettings.objects.create()
-
 
     def setUp(self):
         self.client.login(username='Testuser', password='123')
@@ -769,17 +762,17 @@ class ServiceReportsTests(TestCase):
             'services:reports-service-person-utilization'), data={
                 'start_period': datetime.date.today() - datetime.timedelta(days=365),
                 'end_period': datetime.date.today()
-            })
+        })
         self.assertEqual(resp.status_code, 200)
 
     def test_service_person_utilization_pdf(self):
         kwargs = {
-                'start': (datetime.date.today() \
-                    - datetime.timedelta(days=365)).strftime("%d %B %Y"),
-                'end': datetime.date.today().strftime("%d %B %Y")
-            }
+            'start': (datetime.date.today()
+                      - datetime.timedelta(days=365)).strftime("%d %B %Y"),
+            'end': datetime.date.today().strftime("%d %B %Y")
+        }
         req = RequestFactory().get(reverse(
-            'services:reports-service-person-utilization-pdf', kwargs=kwargs)) 
+            'services:reports-service-person-utilization-pdf', kwargs=kwargs))
         resp = ServicePersonUtilizationReportPDFView.as_view()(req, **kwargs)
         self.assertEqual(resp.status_code, 200)
 
@@ -793,17 +786,17 @@ class ServiceReportsTests(TestCase):
             'services:reports-job-profitability'), data={
                 'start_period': datetime.date.today() - datetime.timedelta(days=365),
                 'end_period': datetime.date.today()
-            })
+        })
         self.assertEqual(resp.status_code, 200)
 
     def test_job_profitability_pdf(self):
         kwargs = {
-                'start': (datetime.date.today() \
-                    - datetime.timedelta(days=365)).strftime("%d %B %Y"),
-                'end': datetime.date.today().strftime("%d %B %Y")
-            }
+            'start': (datetime.date.today()
+                      - datetime.timedelta(days=365)).strftime("%d %B %Y"),
+            'end': datetime.date.today().strftime("%d %B %Y")
+        }
         req = RequestFactory().get(reverse(
-            'services:reports-job-profitability-pdf', kwargs=kwargs)) 
+            'services:reports-job-profitability-pdf', kwargs=kwargs))
         resp = JobProfitabilityPDFView.as_view()(req, **kwargs)
         self.assertEqual(resp.status_code, 200)
 
@@ -817,16 +810,16 @@ class ServiceReportsTests(TestCase):
             'services:reports-unbilled-costs-by-job'), data={
                 'start_period': datetime.date.today() - datetime.timedelta(days=365),
                 'end_period': datetime.date.today()
-            })
+        })
         self.assertEqual(resp.status_code, 200)
 
     def test_unbilled_costs_pdf(self):
         kwargs = {
-                'start': (datetime.date.today() \
-                    - datetime.timedelta(days=365)).strftime("%d %B %Y"),
-                'end': datetime.date.today().strftime("%d %B %Y")
-            }
+            'start': (datetime.date.today()
+                      - datetime.timedelta(days=365)).strftime("%d %B %Y"),
+            'end': datetime.date.today().strftime("%d %B %Y")
+        }
         req = RequestFactory().get(reverse(
-            'services:reports-unbilled-costs-by-job-pdf', kwargs=kwargs)) 
+            'services:reports-unbilled-costs-by-job-pdf', kwargs=kwargs))
         resp = UnbilledCostsByJobPDFView.as_view()(req, **kwargs)
         self.assertEqual(resp.status_code, 200)

@@ -2,16 +2,11 @@ from django.views.generic import TemplateView, DetailView, ListView
 
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.models import User
-from rest_framework.response import Response
-from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import reverse, get_object_or_404
+from django.http import HttpResponseRedirect
+from django.shortcuts import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from rest_framework.generics import RetrieveAPIView
-from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
-import datetime
-from messaging import models, forms, serializers, schedules
+from messaging import forms, models
 from django.db.models import Q
 from latrom.settings import MEDIA_ROOT
 from common_data.utilities.mixins import ContextMixin
@@ -19,11 +14,11 @@ import os
 import json
 import urllib
 from messaging.email_api.email import EmailSMTP
-from draftjs_exporter.html import HTML as exporterHTML
 from cryptography.fernet import Fernet
 import imaplib
 import smtplib
 from django.contrib import messages
+
 
 class UserEmailConfiguredMixin(object):
     def get(self, *args, **kwargs):
@@ -40,13 +35,16 @@ class InboxView(LoginRequiredMixin, UserEmailConfiguredMixin, TemplateView):
     # a list of threads not messages
     # includes a panel for notifications
     template_name = os.path.join('messaging', 'email', 'inbox.html')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
+
         context['profile'] = models.UserProfile.objects.get(
             user=self.request.user).id
-        
+
         return context
+
+
 class NotificationDetailView(LoginRequiredMixin, DetailView):
     template_name = os.path.join('messaging', 'notification_detail.html')
     model = models.Notification
@@ -57,18 +55,19 @@ class NotificationDetailView(LoginRequiredMixin, DetailView):
 
         return resp
 
-class ComposeEmailView(LoginRequiredMixin, 
-                        UserEmailConfiguredMixin, 
-                        CreateView):
+
+class ComposeEmailView(LoginRequiredMixin,
+                       UserEmailConfiguredMixin,
+                       CreateView):
     template_name = os.path.join('messaging', 'email', 'compose.html')
     form_class = forms.EmailForm
     model = models.Email
     success_url = "/messaging/inbox/"
 
     def get_initial(self):
-        profile = models.UserProfile.objects.get(user=self.request.user)        
+        profile = models.UserProfile.objects.get(user=self.request.user)
         qs = models.EmailFolder.objects.filter(
-                owner=profile, label='Local Outbox')
+            owner=profile, label='Local Outbox')
         if qs.exists():
             pk = qs.first().pk
         else:
@@ -82,15 +81,15 @@ class ComposeEmailView(LoginRequiredMixin,
     def form_valid(self, form):
         data = form.cleaned_data
 
-        #add all to addresses to email object
+        # add all to addresses to email object
         # add all address to smtp send
 
         to_data = self.request.POST['to']
         raw_cc_data = self.request.POST['copy']
         raw_bcc_data = self.request.POST['blind_carbon_copy']
-        
+
         to = models.EmailAddress.objects.get(pk=to_data.split('-')[0])
-        
+
         cc_data = json.loads(urllib.parse.unquote(raw_cc_data))
         bcc_data = json.loads(urllib.parse.unquote(raw_bcc_data))
         cc = []
@@ -110,14 +109,12 @@ class ComposeEmailView(LoginRequiredMixin,
         self.object.write_body(form.cleaned_data['body'])
         self.object.save()
 
-
         profile = models.UserProfile.objects.get(user=self.request.user)
         g = EmailSMTP(profile)
 
-        #create local drafts folder
-        
-        #create local sent folder
+        # create local drafts folder
 
+        # create local sent folder
 
         if data['save_as_draft']:
             qs = models.EmailFolder.objects.filter(
@@ -130,85 +127,86 @@ class ComposeEmailView(LoginRequiredMixin,
             self.object.save()
             return resp
 
-        if(data.get('attachment', None)):# and os.path.exists(path):
+        if(data.get('attachment', None)):  # and os.path.exists(path):
             path = os.path.join(
-                MEDIA_ROOT, 
-                'messaging', 
+                MEDIA_ROOT,
+                'messaging',
                 data['attachment'].name)
-            
+
             g.send_email_with_attachment(
-                data['subject'], 
+                data['subject'],
                 to.address,
                 [i.address for i in cc],
                 [i.address for i in bcc],
-                data['body'], 
+                data['body'],
                 data['attachment'], html=True)
         else:
             g.send_html_email(
-                data['subject'], 
-                to.address, 
+                data['subject'],
+                to.address,
                 [i.address for i in cc],
                 [i.address for i in bcc],
                 data['body'])
-        
-        
+
         self.object.save()
 
         return resp
 
-class DraftEmailUpdateView(LoginRequiredMixin, 
-                            UserEmailConfiguredMixin, 
-                            UpdateView):
-    
+
+class DraftEmailUpdateView(LoginRequiredMixin,
+                           UserEmailConfiguredMixin,
+                           UpdateView):
+
     template_name = os.path.join('messaging', 'email', 'update_draft.html')
-    form_class=forms.EmailForm
-    model=models.Email
+    form_class = forms.EmailForm
+    model = models.Email
     success_url = "/messaging/inbox/"
 
     def form_valid(self, form):
-        #slightly different from compose 'form_valid'
+        # slightly different from compose 'form_valid'
         data = form.cleaned_data
 
         to_data = self.request.POST['to']
         raw_cc_data = self.request.POST['copy']
         raw_bcc_data = self.request.POST['blind_carbon_copy']
-        
-        #string lacking a pk 
+
+        # string lacking a pk
         if('-' not in to_data):
             to = models.EmailAddress.get_address(to_data)
         else:
-            #in case another receiver has been chosen
+            # in case another receiver has been chosen
             to = models.EmailAddress.objects.get(pk=to_data.split('-')[0])
 
-        
         cc_data = json.loads(urllib.parse.unquote(raw_cc_data))
         bcc_data = json.loads(urllib.parse.unquote(raw_bcc_data))
-        
+
         cc = []
         bcc = []
         for addr in cc_data:
             if('-' not in addr):
                 cc.append(models.EmailAddress.get_address(addr))
             else:
-                address = models.EmailAddress.objects.get(pk=addr.split('-')[0])
+                address = models.EmailAddress.objects.get(
+                    pk=addr.split('-')[0])
                 cc.append(address)
 
         for addr in bcc_data:
             if('-' not in addr):
                 bcc.append(models.EmailAddress.get_address(addr))
             else:
-                address = models.EmailAddress.objects.get(pk=addr.split('-')[0])
+                address = models.EmailAddress.objects.get(
+                    pk=addr.split('-')[0])
                 bcc.append(address)
-  
+
         resp = super().form_valid(form)
 
         self.object.to = to
-        # remove all m2m before rebuilding relations 
+        # remove all m2m before rebuilding relations
         for a in self.object.copy.all():
             self.object.copy.remove(a)
 
         self.object.copy.add(*cc)
-        
+
         for a in self.object.blind_copy.all():
             self.object.blind_copy.remove(a)
 
@@ -231,23 +229,23 @@ class DraftEmailUpdateView(LoginRequiredMixin,
             self.object.save()
             return resp
 
-        if(data.get('attachment', None)):# and os.path.exists(path):
+        if(data.get('attachment', None)):  # and os.path.exists(path):
             path = os.path.join(
-                MEDIA_ROOT, 
-                'messaging', 
+                MEDIA_ROOT,
+                'messaging',
                 data['attachment'].name)
-            
+
             g.send_email_with_attachment(
-                data['subject'], 
+                data['subject'],
                 to.address,
                 [i.address for i in cc],
                 [i.address for i in bcc],
-                data['body'], 
+                data['body'],
                 data['attachment'], html=True)
         else:
             g.send_html_email(
-                data['subject'], 
-                to.address, 
+                data['subject'],
+                to.address,
                 [i.address for i in cc],
                 [i.address for i in bcc],
                 data['body'])
@@ -268,6 +266,7 @@ class ChatListView(LoginRequiredMixin, TemplateView):
         )
         return context
 
+
 class UserProfileView(ContextMixin, LoginRequiredMixin, UpdateView):
     template_name = os.path.join('common_data', 'crispy_create_template.html')
     extra_context = {
@@ -277,7 +276,7 @@ class UserProfileView(ContextMixin, LoginRequiredMixin, UpdateView):
     success_url = "/messaging/dashboard/"
 
     def get_initial(self):
-        
+
         return {
             'user': self.request.user.pk,
             'email_password': self.object.get_plaintext_password
@@ -289,27 +288,30 @@ class UserProfileView(ContextMixin, LoginRequiredMixin, UpdateView):
         usr = self.request.user
         if models.UserProfile.objects.filter(user=usr).exists():
             return models.UserProfile.objects.get(user=usr)
-        crypt=Fernet(get_secret_key())
+        crypt = Fernet(get_secret_key())
         password = "password".encode()
         profile = models.UserProfile.objects.create(
             user=usr,
             email_address='test@email.com',
             email_password=crypt.encrypt(password).decode()
-            )
+        )
 
         return profile
 
     def form_valid(self, form):
-        #TODO try validate credentials before allowing a user to submit settings
-        
+        # TODO try validate credentials before allowing a user to submit settings
+
         try:
-            mailbox = imaplib.IMAP4_SSL(form.cleaned_data['incoming_host'], 
-                form.cleaned_data['incoming_port'])
-            mailbox.login(form.cleaned_data['email_address'], self.object.get_plaintext_password)
+            mailbox = imaplib.IMAP4_SSL(form.cleaned_data['incoming_host'],
+                                        form.cleaned_data['incoming_port'])
+            mailbox.login(
+                form.cleaned_data['email_address'], self.object.get_plaintext_password)
         except smtplib.SMTPAuthenticationError:
-            messages.info(self.request, f'The email settings for {form.cleaned_data["email_address"]} could not be verified. Please check again to ensure these settings are correct.')
+            messages.info(
+                self.request, f'The email settings for {form.cleaned_data["email_address"]} could not be verified. Please check again to ensure these settings are correct.')
         except Exception as e:
-            messages.info(self.request, 'An error prevented the settings from being verified')
+            messages.info(
+                self.request, 'An error prevented the settings from being verified')
 
         else:
             messages.info(self.request, 'Settings verified successfully')
@@ -369,9 +371,9 @@ class GroupListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self, *args, **kwargs):
         return models.Group.objects.filter(Q(active=True) &
-            Q(
-                Q(participants__username=self.request.user.username)
-            )
+                                           Q(
+            Q(participants__username=self.request.user.username)
+        )
         )
 
 
@@ -390,6 +392,7 @@ def create_chat(request, user=None):
     return HttpResponseRedirect(reverse('messaging:chat', kwargs={
         'pk': chat.pk
     }))
+
 
 class EmailAddressCreateView(ContextMixin, CreateView):
     form_class = forms.EmailAddressForm

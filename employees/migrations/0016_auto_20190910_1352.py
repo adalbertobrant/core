@@ -14,21 +14,26 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Contract',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('start_date', models.DateField()),
                 ('job_position', models.CharField(blank=True, max_length=255)),
                 ('end_of_probation', models.DateField()),
                 ('termination_date', models.DateField()),
-                ('nature_of_employment', models.CharField(choices=[('A', 'Arduous'), ('N', 'Normal')], default='N', max_length=1)),
-                ('department', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Department')),
+                ('nature_of_employment', models.CharField(choices=[
+                 ('A', 'Arduous'), ('N', 'Normal')], default='N', max_length=1)),
+                ('department', models.ForeignKey(blank=True, null=True,
+                                                 on_delete=django.db.models.deletion.SET_NULL, to='employees.Department')),
             ],
         ),
         migrations.CreateModel(
             name='Termination',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('date', models.DateField()),
-                ('reason_for_termination', models.CharField(choices=[('R', 'Retirement'), ('C', 'Casual Employee'), ('D', 'Death'), ('O', 'Other')], default='R', max_length=1)),
+                ('reason_for_termination', models.CharField(choices=[('R', 'Retirement'), (
+                    'C', 'Casual Employee'), ('D', 'Death'), ('O', 'Other')], default='R', max_length=1)),
             ],
         ),
         migrations.RemoveField(
@@ -43,11 +48,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='employee',
             name='contract',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Contract'),
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Contract'),
         ),
         migrations.AddField(
             model_name='employee',
             name='termination',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Termination'),
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Termination'),
         ),
     ]

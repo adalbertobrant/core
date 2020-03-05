@@ -15,8 +15,8 @@ import sys
 import datetime
 import re
 import shutil
-import urllib
-from contextlib import closing
+# import urllib
+# from contextlib import closing
 import subprocess
 from tkinter import filedialog
 from tkinter import *
@@ -54,22 +54,22 @@ def restore_backup():
                 print('database restored successfully.')
                 break
         root.destroy()
-    else:
-        while True:
-            url = input('Enter backup network resource address')
-            filename = url.split('/')[-1]
-            try:
-                with closing(urllib.urlopen(url)) as r:
-                    with open(filename, 'wb') as f:
-                        shutil.copyfilobj(r, f)
+    # else:
+    #     while True:
+    #         url = input('Enter backup network resource address')
+    #         filename = url.split('/')[-1]
+    #         try:
+    #             with closing(urllib.urlopen(url)) as r:
+    #                 with open(filename, 'wb') as f:
+    #                     shutil.copyfilobj(r, f)
 
-            except:
-                print('failed to load resource.')
-                retry = input('Try Again? (y/n)')
-                if retry == 'y':
-                    continue
-                else:
-                    break
+    #         except:
+    #             print('failed to load resource.')
+    #             retry = input('Try Again? (y/n)')
+    #             if retry == 'y':
+    #                 continue
+    #             else:
+    #                 break
 
 
 def create_new_database():

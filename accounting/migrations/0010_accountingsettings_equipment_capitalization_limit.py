@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='accountingsettings',
             name='equipment_capitalization_limit',
-            field=models.DecimalField(decimal_places=2, default=0.0, max_digits=12),
+            field=models.DecimalField(
+                decimal_places=2, default=0.0, max_digits=12),
         ),
     ]

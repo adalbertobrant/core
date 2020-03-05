@@ -10,6 +10,7 @@ class OrganizationFilter(FilterSet):
             'legal_name': ['icontains']
         }
 
+
 class IndividualFilter(FilterSet):
     class Meta:
         model = models.Individual

@@ -18,17 +18,20 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='bubble',
             name='attachment',
-            field=models.FileField(blank=True, null=True, upload_to='messaging/'),
+            field=models.FileField(blank=True, null=True,
+                                   upload_to='messaging/'),
         ),
         migrations.AlterField(
             model_name='email',
             name='attachment',
-            field=models.FileField(blank=True, null=True, upload_to='messaging/'),
+            field=models.FileField(blank=True, null=True,
+                                   upload_to='messaging/'),
         ),
         migrations.AlterField(
             model_name='email',
             name='body',
-            field=models.FileField(blank=True, null=True, upload_to='messaging/'),
+            field=models.FileField(blank=True, null=True,
+                                   upload_to='messaging/'),
         ),
         migrations.AlterField(
             model_name='userprofile',
