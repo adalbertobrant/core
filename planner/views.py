@@ -177,18 +177,17 @@ class AgendaAPIView(ListAPIView):
 
     def get_queryset(self):
         pk = self.kwargs['pk']
-        filter = None
+        filter = Q()
         agenda_items = \
             models.PlannerConfig.objects.first().number_of_agenda_items
         user = User.objects.get(pk=pk)
         if not hasattr(user, "employee"):
             return None
 
-        if user.employee:
+        if hasattr(user, 'employee'):
             filter = Q(Q(owner=user.employee) | 
                 Q(eventparticipant__employee__in=[user.employee.pk]))
-        else:
-            filter = Q(owner=user)
+        
         
         return models.Event.objects.filter(
             Q(date__gte=datetime.date.today()) & 

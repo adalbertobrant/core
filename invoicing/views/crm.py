@@ -100,7 +100,7 @@ class LeadCreateView(ContextMixin, CreateView):
                 date=form.cleaned_data['reminder'],
                 description=self.object.description,
                 label=self.object.title,
-                owner=self.object.owner.employee.user
+                owner=self.object.owner.employee
             )
         return resp
 
@@ -149,7 +149,7 @@ class TaskCreateView(CreateView):
             date=self.object.due,
             description=self.object.description,
             label=self.object.title,
-            owner=self.object.assigned.employee.user
+            owner=self.object.assigned.employee
         )
         self.object.event = evt
         self.object.save()
@@ -173,7 +173,7 @@ class TaskUpdateView(UpdateView):
                 date=self.object.due,
                 description=self.object.description,
                 label=self.object.title,
-                owner=self.object.assigned.employee.user
+                owner=self.object.assigned.employee
             )
             self.object.event = evt
             self.object.save()
