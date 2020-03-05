@@ -48,8 +48,7 @@ urlpatterns = [
     re_path(r'^api/users/(?P<pk>[\d]+)/?$',
             views.UserDetailAPIView.as_view(), name='api-users'),
     re_path(r'^create-note/?$', views.create_note, name='create-note'),
-    re_path(r'^views/get-create-view/(?P<name>[\w ]+)/?$',
-            views.get_create_link, name='get-create-view'),
+    
     re_path(r'^models/get-latest/(?P<model_name>[\w ]+)/?$',
             views.get_model_latest, name='get-latest-model'),
     re_path(r'^models/get-latest-group/?$',

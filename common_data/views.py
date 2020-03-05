@@ -505,11 +505,7 @@ class PDFDetailView(PDFTemplateView):
         context.update(self.context)
         return context
 
-
-def get_model_latest(request, model_name=None):
-    app_list = ['services', 'inventory', 'common_data', 'messaging',
-                'accounting', 'employees', 'planner', 'messaging', 'invoicing']
-    alias_mapping = {
+ALIAS_MAPPING = {
         'salesperson': 'salesrepresentative',
         'ship_from': 'warehouse',
         'account_paid_from': 'account',
@@ -517,16 +513,23 @@ def get_model_latest(request, model_name=None):
         'paid_to': 'supplier',
         'vendor': 'supplier',
         'parent_account': 'account',
-        'procedure': 'serviceprocedure'
-
+        'procedure': 'serviceprocedure',
+        'team': 'salesteam',
+        'source': 'leadsource',
+        'contacts': 'individual'
     }
 
-    model_name = alias_mapping.get(model_name, model_name)
+APP_LIST = ['services', 'inventory', 'common_data', 'messaging',
+                'accounting', 'employees', 'planner', 'messaging', 'invoicing']
+
+def get_model_latest(request, model_name=None):
+    model_name = ALIAS_MAPPING.get(model_name, model_name)
     latest = None
-    for app in app_list:
+    for app in APP_LIST:
         try:
             model = apps.get_model(app_label=app, model_name=model_name)
-            latest = model.objects.latest('pk')
+            if model.objects.all().count() > 0:
+                latest = model.objects.latest('pk')
 
         except LookupError:
             pass
@@ -537,19 +540,8 @@ def get_model_latest(request, model_name=None):
     return JsonResponse({'data': [latest.pk, str(latest)]})
 
 def get_models_latest(request):
-    app_list = ['services', 'inventory', 'common_data', 'messaging',
-                'accounting', 'employees', 'planner', 'messaging', 'invoicing']
-    alias_mapping = {
-        'salesperson': 'salesrepresentative',
-        'ship_from': 'warehouse',
-        'account_paid_from': 'account',
-        'ship_to': 'warehouse',
-        'paid_to': 'supplier',
-        'vendor': 'supplier',
-        'parent_account': 'account',
-        'procedure': 'serviceprocedure'
-
-    }
+    
+    
 
     mapping = {
         'organization': '/base/organization/create',
@@ -567,52 +559,33 @@ def get_models_latest(request):
         'leadsource': '/invoicing/create-lead-source',
         'journal': '/accounting/create-journal',
         'procedure': '/services/create-procedure',
-        'service': '/services/create-service'
+        'service': '/services/create-service',
+        'contacts': '/base/individual/create',
     }
 
     payload = {}
     scraped = json.loads(request.POST['names'])
     for name in scraped:
-        model_name = alias_mapping.get(name, name)
+        model_name = ALIAS_MAPPING.get(name, name)
         latest = None
-        for app in app_list:
+        model = None
+        for app in APP_LIST:
             try:
                 model = apps.get_model(app_label=app, model_name=model_name)
-                latest = model.objects.latest('pk')
+                if model.objects.all().count() > 0:
+                    latest = model.objects.latest('pk')
 
             except LookupError:
                 pass
 
-        if latest:
+        if model:
             payload[name] = {
-                'name': str(latest), 
-                'value': latest.pk,
+                'name': str(latest) if latest else '', 
+                'value': latest.pk if latest else None,
                 'link': mapping.get(name, '')}
 
     return JsonResponse(payload)
 
-
-def get_create_link(request, name=None):
-    mapping = {
-        'organization': '/base/organization/create',
-        'parent_account': '/accounting/create-account',
-        'account_paid_from': '/accounting/create-account',
-        'ship_from': '/inventory/warehouse-create/',
-        'ship_to': '/inventory/warehouse-create/',
-        'warehouse': '/inventory/warehouse-create/',
-        'customer': '/invoicing/create-customer/',
-        'salesperson': '/invoicing/create-sales-rep',
-        'supplier': '/inventory/supplier/create',
-        'paid_to': '/inventory/supplier/create',
-        'vendor': '/inventory/supplier/create',
-        'salesteam': '/invoicing/create-sales-team',
-        'leadsource': '/invoicing/create-lead-source',
-        'journal': '/accounting/create-journal',
-        'procedure': '/services/create-procedure',
-        'service': '/services/create-service'
-    }
-
-    return JsonResponse({'link': mapping.get(name, '')})
 
 
 class ConfigWizard(ConfigWizardBase):

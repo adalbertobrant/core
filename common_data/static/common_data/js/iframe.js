@@ -11,11 +11,12 @@ $(window).on('load', function(){
 function resetModal(){
     //reset the src attribute for the iframe so that multiple items can be created
     
-    $('.iframe-loaded').each(function(i, el){
-        console.log(el)
-        var src = $(el).data('initial')
-        el.location.href = src
-        $(el).addClass('iframe-hidden')
+    $('.frame-style').each(function(i, el){
+        if(!$(el).hasClass('iframe-hidden')){
+            var src = $(el).data('initial')
+            el.contentWindow.location.href = src
+            $(el).addClass('iframe-hidden')
+        }
     })
     //show loading spinner
     $('#loading-iframe').removeClass('iframe-loaded');

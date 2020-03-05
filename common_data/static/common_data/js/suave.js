@@ -19,27 +19,27 @@ function inIframe() {
     }
 }
 
-function updateNotifications() {
-    $.ajax({
-        'method': 'GET',
-        'url': '/messaging/api/notifications'
-    }).then(function (data) {
-        if (data.unread > 0) {
-            $('#notification-title').text(data.latest.title);
-            $('#notification-timestamp').text(data.latest.stamp);
-            $('#notification-message').text(data.latest.message);
-            $('#notification-dismiss').attr({
-                'onclick': "$.get('/messaging/api/notifications/mark-read/" + data.latest.id + "')"
-            });
-            $('#notification-action').attr({
-                'href': data.latest.action,
-                'onclick': "$.get('/messaging/api/notifications/mark-read/" + data.latest.id + "')"
-            });
-            $('.notification-overlay').show(500);
+// function updateNotifications() {
+//     $.ajax({
+//         'method': 'GET',
+//         'url': '/messaging/api/notifications'
+//     }).then(function (data) {
+//         if (data.unread > 0) {
+//             $('#notification-title').text(data.latest.title);
+//             $('#notification-timestamp').text(data.latest.stamp);
+//             $('#notification-message').text(data.latest.message);
+//             $('#notification-dismiss').attr({
+//                 'onclick': "$.get('/messaging/api/notifications/mark-read/" + data.latest.id + "')"
+//             });
+//             $('#notification-action').attr({
+//                 'href': data.latest.action,
+//                 'onclick': "$.get('/messaging/api/notifications/mark-read/" + data.latest.id + "')"
+//             });
+//             $('.notification-overlay').show(500);
 
-        }
-    })
-}
+//         }
+//     })
+// }
 
 
 function linkClickHandler(link){

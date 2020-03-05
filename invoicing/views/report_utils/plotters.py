@@ -39,9 +39,11 @@ def plot_sales(start, end, filters=Q()):
 
     y = [get_sales_totals(q) for q in y_query]
 
-    chart = pygal.Bar(x_title="Periods", x_label_rotation=15,
+    chart = pygal.Line(x_title="Period", x_label_rotation=15, fill=True,
                       style=CustomStyle, height=400)
-    chart.x_labels = pygal_date_formatter(start, end)
+    # chart.x_labels = pygal_date_formatter(start, end)
+    
+    chart.x_labels = [f'Week {i + 1}' for i, val in enumerate(y)]
     chart.add('Sales($)', y)
 
     return chart.render(is_unicode=True)

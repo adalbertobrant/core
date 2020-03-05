@@ -24,7 +24,7 @@ class DayView extends Component{
         const windowWidth = document.documentElement.offsetWidth;
         const sidebarWidth = document.getElementById('sidebar').offsetWidth;
         const calendarWidth = windowWidth - sidebarWidth;
-        this.setState({width: calendarWidth})
+        this.setState({width: window.screen.width > 575 ? calendarWidth : 400 })
     }
 
     componentDidMount(){

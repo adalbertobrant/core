@@ -195,7 +195,7 @@ class inputLine extends Component{
                     <div className={styles.content}>
                     <div className={styles.contentHeader}>
                         <h4>Add Item</h4>
-                        <button class='btn btn-danger ' onClick={this.props.dismiss}><i class="fas fa-times" aria-hidden="true"></i></button>
+                        <button class='btn btn-danger ' type='button' onClick={this.props.dismiss}><i class="fas fa-times" aria-hidden="true"></i></button>
                     </div>
                 {this.props.fieldOrder.map((fieldName, i) =>(
                     <React.Fragment>

@@ -1,18 +1,29 @@
 function updateLastest(el){
     var name = el.id.replace('id_', '')
+  
     $.get('/base/models/get-latest/' + name, function(data){
+        console.log(data)
+        if(data.data == -1){
+            return
+        }
+
         var pk = data.data[0]
-        var last = el.children.length -1 
-        if(last != pk){
+        
+        var last = $(el.children[el.children.length -1]).val()
+        
+        if(last != pk ){
+            
             var jqel = $('#' + el.id)
-            if(jqel.hasClass('select2widget')){
+            if(jqel.hasClass('django-select2')){
                 var newOption = new Option(data.data[1], pk, false, false);
-                $('#' + el.id).append(newOption).trigger('change');
+                jqel.append(newOption).trigger('change');
+                $('#' + el.id).select2('close');
             }else{
                 var opt = document.createElement('option')
                 opt.value = pk
                 opt.text = data.data[1]
                 el.add(opt)
+                $(el).blur()
             }
             
         }
@@ -77,6 +88,7 @@ $(document).ready(function(){
 
         //updates input every time it is opened
         if($(el).hasClass('django-select2')){
+            
             $('#' + el.id).on('select2:opening', function (e) {
                 updateLastest(e.target)
               });
@@ -101,9 +113,13 @@ $(document).ready(function(){
         }, 
 
         success: function(data){
+            console.log(data)
             var frameContainer = $('#iframe-container')
             Object.keys(data).forEach(key => {
-                var select = $('select[name="'+ key +'"]') 
+                var select = $('select[name="'+ key +'"]')
+                if(select.length == 0){
+                    select = $('select#'+ key)
+                }
                 select.after("<div class='input-group-append'> \
                                 <button type='button' class='btn btn-primary btn-sm select3-btn' data-target='"  + key + "-frame" +  "' onclick='createNew(this)'> + </button> \
                             </div>")

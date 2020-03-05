@@ -49,11 +49,6 @@ class UserTestMiddleware(object):
         if request.user.is_superuser or \
                 request.path.startswith("/login") or \
                 request.path.startswith("/base") or \
-                request.path.startswith("/messaging") or \
-                request.path.startswith("/planner") or \
-                request.path.startswith("/media") or \
-                request.path.startswith("/calendar") or \
-                'api' in request.path or \
                 request.path in exempted_urls:
             return self.get_response(request)
 
