@@ -20,106 +20,127 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='expense',
             name='customer',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.Customer'),
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.Customer'),
         ),
         migrations.AddField(
             model_name='expense',
             name='debit_account',
-            field=models.ForeignKey(limit_choices_to=models.Q(type='asset'), null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Account'),
+            field=models.ForeignKey(limit_choices_to=models.Q(
+                type='asset'), null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Account'),
         ),
         migrations.AddField(
             model_name='expense',
             name='entry',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.JournalEntry'),
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.JournalEntry'),
         ),
         migrations.AddField(
             model_name='expense',
             name='recorded_by',
-            field=models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='debit',
             name='account',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Account'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Account'),
         ),
         migrations.AddField(
             model_name='debit',
             name='entry',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='accounting.JournalEntry'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to='accounting.JournalEntry'),
         ),
         migrations.AddField(
             model_name='currencyconversiontable',
             name='reference_currency',
-            field=models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='reference_currency', to='accounting.Currency'),
+            field=models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                    related_name='reference_currency', to='accounting.Currency'),
         ),
         migrations.AddField(
             model_name='currencyconversionline',
             name='conversion_table',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.CurrencyConversionTable'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.CurrencyConversionTable'),
         ),
         migrations.AddField(
             model_name='currencyconversionline',
             name='currency',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='exchange_currency', to='accounting.Currency'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                    related_name='exchange_currency', to='accounting.Currency'),
         ),
         migrations.AddField(
             model_name='credit',
             name='account',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Account'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Account'),
         ),
         migrations.AddField(
             model_name='credit',
             name='entry',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='accounting.JournalEntry'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to='accounting.JournalEntry'),
         ),
         migrations.AddField(
             model_name='bookkeeper',
             name='employee',
-            field=models.OneToOneField(default=1, limit_choices_to=models.Q(user__isnull=False), null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee'),
+            field=models.OneToOneField(default=1, limit_choices_to=models.Q(
+                user__isnull=False), null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee'),
         ),
         migrations.AddField(
             model_name='asset',
             name='created_by',
-            field=models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='asset',
             name='credit_account',
-            field=models.ForeignKey(default=1000, on_delete=django.db.models.deletion.SET_DEFAULT, to='accounting.Account'),
+            field=models.ForeignKey(
+                default=1000, on_delete=django.db.models.deletion.SET_DEFAULT, to='accounting.Account'),
         ),
         migrations.AddField(
             model_name='adjustment',
             name='adjusting_entry',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='adjusting_entry', to='accounting.JournalEntry'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
+                                    related_name='adjusting_entry', to='accounting.JournalEntry'),
         ),
         migrations.AddField(
             model_name='adjustment',
             name='created_by',
-            field=models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Bookkeeper'),
+            field=models.ForeignKey(
+                default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Bookkeeper'),
         ),
         migrations.AddField(
             model_name='adjustment',
             name='entry',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='entry', to='accounting.JournalEntry'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
+                                    related_name='entry', to='accounting.JournalEntry'),
         ),
         migrations.AddField(
             model_name='adjustment',
             name='workbook',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='accounting.WorkBook'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.CASCADE, to='accounting.WorkBook'),
         ),
         migrations.AddField(
             model_name='accountingsettings',
             name='currency_exchange_table',
-            field=models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.CurrencyConversionTable'),
+            field=models.ForeignKey(
+                default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.CurrencyConversionTable'),
         ),
         migrations.AddField(
             model_name='accountingsettings',
             name='default_bookkeeper',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Bookkeeper'),
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Bookkeeper'),
         ),
         migrations.AddField(
             model_name='account',
             name='parent_account',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Account'),
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Account'),
         ),
     ]

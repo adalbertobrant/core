@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='payrollofficer',
             name='employee',
-            field=models.OneToOneField(default=1, on_delete=django.db.models.deletion.CASCADE, to='employees.Employee'),
+            field=models.OneToOneField(
+                default=1, on_delete=django.db.models.deletion.CASCADE, to='employees.Employee'),
         ),
     ]

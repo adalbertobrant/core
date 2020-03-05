@@ -15,7 +15,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CreditNote',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('date', models.DateField()),
                 ('comments', models.TextField()),
             ],
@@ -23,14 +24,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CreditNoteLine',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('quantity', models.FloatField()),
             ],
         ),
         migrations.CreateModel(
             name='Customer',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('active', models.BooleanField(default=True)),
                 ('billing_address', models.TextField(blank=True, default='')),
                 ('banking_details', models.TextField(blank=True, default='')),
@@ -42,16 +45,20 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ExpenseLineComponent',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('price', models.DecimalField(decimal_places=2, default=0.0, max_digits=9)),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
+                ('price', models.DecimalField(
+                    decimal_places=2, default=0.0, max_digits=9)),
             ],
         ),
         migrations.CreateModel(
             name='Invoice',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('active', models.BooleanField(default=True)),
-                ('status', models.CharField(choices=[('quotation', 'Quotation'), ('proforma', 'Proforma Invoice'), ('invoice', 'Invoice'), ('paid', 'Paid In Full'), ('paid-partially', 'Paid Partially')], max_length=16)),
+                ('status', models.CharField(choices=[('quotation', 'Quotation'), ('proforma', 'Proforma Invoice'), (
+                    'invoice', 'Invoice'), ('paid', 'Paid In Full'), ('paid-partially', 'Paid Partially')], max_length=16)),
                 ('invoice_number', models.PositiveIntegerField(null=True)),
                 ('quotation_number', models.PositiveIntegerField(null=True)),
                 ('quotation_date', models.DateField(blank=True, null=True)),
@@ -61,7 +68,8 @@ class Migration(migrations.Migration):
                 ('date', models.DateField(default=datetime.date.today)),
                 ('terms', models.CharField(blank=True, max_length=128)),
                 ('comments', models.TextField(blank=True)),
-                ('purchase_order_number', models.CharField(blank=True, max_length=32)),
+                ('purchase_order_number', models.CharField(
+                    blank=True, max_length=32)),
             ],
             options={
                 'abstract': False,
@@ -70,9 +78,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='InvoiceLine',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('line_type', models.PositiveSmallIntegerField(choices=[(1, 'product'), (2, 'service'), (3, 'expense')])),
-                ('discount', models.DecimalField(decimal_places=2, default=0.0, max_digits=6)),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
+                ('line_type', models.PositiveSmallIntegerField(
+                    choices=[(1, 'product'), (2, 'service'), (3, 'expense')])),
+                ('discount', models.DecimalField(
+                    decimal_places=2, default=0.0, max_digits=6)),
             ],
         ),
         migrations.CreateModel(
@@ -81,8 +92,10 @@ class Migration(migrations.Migration):
                 ('active', models.BooleanField(default=True)),
                 ('amount', models.DecimalField(decimal_places=2, max_digits=6)),
                 ('date', models.DateField()),
-                ('method', models.CharField(choices=[('cash', 'Cash'), ('transfer', 'Transfer'), ('debit card', 'Debit Card'), ('ecocash', 'EcoCash')], default='transfer', max_length=32)),
-                ('reference_number', models.AutoField(primary_key=True, serialize=False)),
+                ('method', models.CharField(choices=[('cash', 'Cash'), ('transfer', 'Transfer'), (
+                    'debit card', 'Debit Card'), ('ecocash', 'EcoCash')], default='transfer', max_length=32)),
+                ('reference_number', models.AutoField(
+                    primary_key=True, serialize=False)),
                 ('comments', models.TextField(default='Thank you for your business')),
             ],
             options={
@@ -92,24 +105,30 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ProductLineComponent',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('returned', models.BooleanField(default=False)),
-                ('unit_price', models.DecimalField(decimal_places=2, default=0.0, max_digits=9)),
-                ('value', models.DecimalField(decimal_places=2, default=0.0, max_digits=9)),
-                ('quantity', models.DecimalField(decimal_places=2, default=0.0, max_digits=9)),
+                ('unit_price', models.DecimalField(
+                    decimal_places=2, default=0.0, max_digits=9)),
+                ('value', models.DecimalField(
+                    decimal_places=2, default=0.0, max_digits=9)),
+                ('quantity', models.DecimalField(
+                    decimal_places=2, default=0.0, max_digits=9)),
             ],
         ),
         migrations.CreateModel(
             name='SalesConfig',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('default_invoice_comments', models.TextField(blank=True)),
                 ('default_quotation_comments', models.TextField(blank=True)),
                 ('default_credit_note_comments', models.TextField(blank=True)),
                 ('default_terms', models.TextField(blank=True)),
                 ('include_shipping_address', models.BooleanField(default=False)),
                 ('include_tax_in_invoice', models.BooleanField(default=True)),
-                ('include_units_in_sales_invoice', models.BooleanField(default=True)),
+                ('include_units_in_sales_invoice',
+                 models.BooleanField(default=True)),
                 ('next_invoice_number', models.IntegerField(default=1)),
                 ('next_quotation_number', models.IntegerField(default=1)),
                 ('use_sales_invoice', models.BooleanField(default=True)),
@@ -136,10 +155,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ServiceLineComponent',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('hours', models.DecimalField(decimal_places=2, default=0.0, max_digits=9)),
-                ('flat_fee', models.DecimalField(decimal_places=2, default=0.0, max_digits=9)),
-                ('hourly_rate', models.DecimalField(decimal_places=2, default=0.0, max_digits=9)),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
+                ('hours', models.DecimalField(
+                    decimal_places=2, default=0.0, max_digits=9)),
+                ('flat_fee', models.DecimalField(
+                    decimal_places=2, default=0.0, max_digits=9)),
+                ('hourly_rate', models.DecimalField(
+                    decimal_places=2, default=0.0, max_digits=9)),
             ],
         ),
     ]

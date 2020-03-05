@@ -1,4 +1,3 @@
-from planner import models
 
 class PlannerService(object):
     def __init__(self, user):

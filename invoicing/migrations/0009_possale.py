@@ -14,10 +14,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='POSSale',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('timestamp', models.DateTimeField()),
-                ('invoice', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoicing.Invoice')),
-                ('session', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoicing.POSSession')),
+                ('invoice', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoicing.Invoice')),
+                ('session', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoicing.POSSession')),
             ],
         ),
     ]

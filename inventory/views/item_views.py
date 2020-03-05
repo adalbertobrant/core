@@ -6,36 +6,31 @@ import os
 import urllib
 
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic import DetailView
 from django.views.generic.edit import (CreateView, DeleteView, FormView,
                                        UpdateView)
 from django_filters.views import FilterView
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
 
 
-from common_data.models import GlobalConfig
 from common_data.utilities import *
 from common_data.views import PaginationMixin
 from inventory import filters, forms, models, serializers
 from invoicing.models import SalesConfig
-from services.models import EquipmentRequisition
 from inventory.views.dash_plotters import (inventory_track_plot,
-                                            single_item_composition_plot)
+                                           single_item_composition_plot)
 
 from .common import CREATE_TEMPLATE
 import openpyxl
-import csv
 from invoicing.models import SalesConfig
 from accounting.models import BillLine, Expense, BillPayment, Account, AccountingSettings
 
+
 class ProductAPIView(ModelViewSet):
-    queryset = models.InventoryItem.objects.filter(type=0,active=True)
+    queryset = models.InventoryItem.objects.filter(type=0, active=True)
     serializer_class = serializers.InventoryItemSerializer
 
 # class SearchProductByBarcodeAPIView(RetrieveAPIView):
@@ -43,32 +38,33 @@ class ProductAPIView(ModelViewSet):
 #         return models.InventoryItem.objects.filter(type=0,
 #             pk__startswith=self.kwargs['code'])
 
-    serializer_class= serializers.InventoryItemSerializer
+    serializer_class = serializers.InventoryItemSerializer
+
 
 class ItemsExcludingProducts(ListAPIView):
     queryset = models.InventoryItem.objects.exclude(type=0)
     serializer_class = serializers.InventoryItemSerializer
 
 
-class ProductDeleteView( DeleteView):
+class ProductDeleteView(DeleteView):
     template_name = os.path.join('common_data', 'delete_template.html')
     model = models.InventoryItem
     success_url = reverse_lazy('inventory:product-list')
 
 
-class ProductUpdateView( ContextMixin, UpdateView):
+class ProductUpdateView(ContextMixin, UpdateView):
     form_class = forms.ProductForm
     model = models.InventoryItem
     template_name = os.path.join("common_data", "crispy_create_template.html")
     extra_context = {"title": "Update Existing Product"}
-    
-    
+
+
 class ProductDetailView(ContextMixin, DetailView):
     model = models.InventoryItem
     template_name = os.path.join("inventory", "item", "product", "detail.html")
-    
+
     def get_context_data(self, *args, **kwargs):
-        context =super().get_context_data(*args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
         context['graph'] = single_item_composition_plot(
             self.object).render(is_unicode=True)
         if self.object.product_component:
@@ -76,7 +72,8 @@ class ProductDetailView(ContextMixin, DetailView):
                 is_unicode=True)
         return context
 
-class ProductListView( ContextMixin, PaginationMixin, FilterView):
+
+class ProductListView(ContextMixin, PaginationMixin, FilterView):
     paginate_by = 20
     filterset_class = filters.InventoryItemFilter
     template_name = os.path.join('inventory', 'item', "product", 'list.html')
@@ -107,8 +104,8 @@ class ProductListView( ContextMixin, PaginationMixin, FilterView):
         return models.InventoryItem.objects.filter(type=0, active=True).order_by('pk')
 
 
-class ProductCreateView( ContextMixin, 
-        CreateView):
+class ProductCreateView(ContextMixin,
+                        CreateView):
     form_class = forms.ProductForm
     template_name = os.path.join("common_data", "crispy_create_template.html")
     extra_context = {
@@ -117,64 +114,67 @@ class ProductCreateView( ContextMixin,
         'related_links': [{
             'name': 'Add Vendor',
             'url': '/inventory/supplier/create/'
-        },{
+        }, {
             'name': 'Add Unit',
             'url': '/inventory/unit-create/'
-        },{
+        }, {
             'name': 'Add Inventory Category',
             'url': '/inventory/category-create/'
-        },],
+        }, ],
         'box_array':  urllib.parse.quote(json.dumps([{
-                "model": "supplier",
-                "app": "inventory",
-                "id": "id_supplier",
-            },
+            "model": "supplier",
+            "app": "inventory",
+            "id": "id_supplier",
+        },
             {
                 "model": "unitofmeasure",
                 "app": "inventory",
                 "id": "id_unit",
-            },
+        },
             {
                 "model": "category",
                 "app": "inventory",
                 "id": "id_category",
-            }
-            ]))
         }
+        ]))
+    }
 
     def get_initial(self):
         return {
             'tax': 1,
-            'type': 0 #for product
+            'type': 0  # for product
         }
 
 ################################################
 #               Consumable                     #
 ################################################
 
+
 class ConsumableAPIView(ModelViewSet):
-    queryset = models.InventoryItem.objects.filter(type=2,active=True)
+    queryset = models.InventoryItem.objects.filter(type=2, active=True)
     serializer_class = serializers.InventoryItemSerializer
 
 
-class ConsumableUpdateView( ContextMixin,
-        UpdateView):
+class ConsumableUpdateView(ContextMixin,
+                           UpdateView):
     form_class = forms.ConsumableForm
     model = models.InventoryItem
     template_name = os.path.join("common_data", "crispy_create_template.html")
     extra_context = {"title": "Update Existing Consumable Inventory"}
 
 
-class ConsumableDetailView( DetailView):
+class ConsumableDetailView(DetailView):
     model = models.InventoryItem
-    template_name = os.path.join("inventory", "item", 'consumable',"detail.html")
+    template_name = os.path.join(
+        "inventory", "item", 'consumable', "detail.html")
 
 
-class ConsumableListView( ContextMixin, 
-        PaginationMixin, FilterView):
+class ConsumableListView(ContextMixin,
+                         PaginationMixin, FilterView):
     paginate_by = 20
     filterset_class = filters.InventoryItemFilter
-    template_name = os.path.join('inventory', 'item', 'consumable','list.html')
+    template_name = os.path.join(
+        'inventory', 'item', 'consumable', 'list.html')
     extra_context = {
         'title': 'Consumable List',
         "new_link": reverse_lazy("inventory:consumable-create"),
@@ -183,7 +183,7 @@ class ConsumableListView( ContextMixin,
                 'label': 'Import Items from Excel',
                 'icon': 'file-excel',
                 'link': reverse_lazy('inventory:import-items-from-excel')
-            },{
+            }, {
                 'label': 'Purchase',
                 'icon': 'cart-arrow-down',
                 'link': reverse_lazy(
@@ -196,8 +196,8 @@ class ConsumableListView( ContextMixin,
         return models.InventoryItem.objects.filter(type=2, active=True).order_by('pk')
 
 
-class ConsumableCreateView( ContextMixin, 
-        CreateView):
+class ConsumableCreateView(ContextMixin,
+                           CreateView):
     form_class = forms.ConsumableForm
     template_name = os.path.join("common_data", "crispy_create_template.html")
     extra_context = {
@@ -206,34 +206,34 @@ class ConsumableCreateView( ContextMixin,
         'related_links': [{
             'name': 'Add Vendor',
             'url': '/inventory/supplier/create/'
-        },{
+        }, {
             'name': 'Add Unit',
             'url': '/inventory/unit-create/'
-        },{
+        }, {
             'name': 'Add Inventory Category',
             'url': '/inventory/category-create/'
         }],
         'box_array':  urllib.parse.quote(json.dumps([{
-                "model": "supplier",
-                "app": "inventory",
-                "id": "id_supplier",
-            },
+            "model": "supplier",
+            "app": "inventory",
+            "id": "id_supplier",
+        },
             {
                 "model": "unitofmeasure",
                 "app": "inventory",
                 "id": "id_unit",
-            },
+        },
             {
                 "model": "category",
                 "app": "inventory",
                 "id": "id_category",
-            }
-            ]))
         }
-    
+        ]))
+    }
+
     def get_initial(self):
         return {
-            'type': 2 #for consumables
+            'type': 2  # for consumables
         }
 
 
@@ -243,12 +243,12 @@ class ConsumableCreateView( ContextMixin,
 
 
 class EquipmentAPIView(ModelViewSet):
-    queryset = models.InventoryItem.objects.filter(type=1,active=True)
+    queryset = models.InventoryItem.objects.filter(type=1, active=True)
     serializer_class = serializers.InventoryItemSerializer
 
 
-class EquipmentUpdateView( ContextMixin, 
-        UpdateView):
+class EquipmentUpdateView(ContextMixin,
+                          UpdateView):
     form_class = forms.EquipmentForm
     model = models.InventoryItem
     template_name = os.path.join("common_data", "crispy_create_template.html")
@@ -268,14 +268,16 @@ class EquipmentUpdateView( ContextMixin,
                 'depreciation_period': asset.depreciation_period
             })
         return initial
-        
-class EquipmentDetailView( DetailView):
+
+
+class EquipmentDetailView(DetailView):
     model = models.InventoryItem
-    template_name = os.path.join("inventory", "item", 'equipment', "detail.html")
+    template_name = os.path.join(
+        "inventory", "item", 'equipment', "detail.html")
 
 
-class EquipmentListView( ContextMixin, 
-        PaginationMixin, FilterView):
+class EquipmentListView(ContextMixin,
+                        PaginationMixin, FilterView):
     paginate_by = 20
     filterset_class = filters.InventoryItemFilter
     template_name = os.path.join('inventory', 'item', 'equipment', 'list.html')
@@ -298,11 +300,11 @@ class EquipmentListView( ContextMixin,
     }
 
     def get_queryset(self):
-        return models.InventoryItem.objects.filter(type=1,active=True).order_by('pk')
+        return models.InventoryItem.objects.filter(type=1, active=True).order_by('pk')
 
 
-class EquipmentCreateView( ContextMixin, 
-        CreateView):
+class EquipmentCreateView(ContextMixin,
+                          CreateView):
     form_class = forms.EquipmentForm
     template_name = os.path.join("common_data", "crispy_create_template.html")
     extra_context = {
@@ -311,34 +313,34 @@ class EquipmentCreateView( ContextMixin,
         'related_links': [{
             'name': 'Add Vendor',
             'url': '/inventory/supplier/create/'
-        },{
+        }, {
             'name': 'Add Unit',
             'url': '/inventory/unit-create/'
-        },{
+        }, {
             'name': 'Add Inventory Category',
             'url': '/inventory/category-create/'
         }],
         'box_array':  urllib.parse.quote(json.dumps([{
-                "model": "supplier",
-                "app": "inventory",
-                "id": "id_supplier",
-            },
+            "model": "supplier",
+            "app": "inventory",
+            "id": "id_supplier",
+        },
             {
                 "model": "unitofmeasure",
                 "app": "inventory",
                 "id": "id_unit",
-            },
+        },
             {
                 "model": "category",
                 "app": "inventory",
                 "id": "id_category",
-            }
-            ]))
         }
+        ]))
+    }
 
     def get_initial(self):
         return {
-            'type': 1# for equipment
+            'type': 1  # for equipment
         }
 
 
@@ -379,10 +381,10 @@ class EquipmentandConsumablesPurchaseView(ContextMixin, CreateView):
             )
             BillLine.objects.create(
                 bill=self.object,
-                expense= exp
+                expense=exp
             )
 
-            #increment inventory and set purchase price
+            # increment inventory and set purchase price
             item_pk = line['item'].split('-')[0]
             item = models.InventoryItem.objects.get(pk=item_pk)
             item.unit_purchase_price = line['unit_price']
@@ -399,8 +401,7 @@ class EquipmentandConsumablesPurchaseView(ContextMixin, CreateView):
             )
             pmt.create_entry()
 
-
-        return resp 
+        return resp
 
 ####################################################
 #                Raw Material Views                #
@@ -412,25 +413,27 @@ class RawMaterialAPIView(ModelViewSet):
     serializer_class = serializers.InventoryItemSerializer
 
 
-class RawMaterialUpdateView( ContextMixin, 
-        UpdateView):
-    form_class = forms.ConsumableForm# TODO make a raw material form
+class RawMaterialUpdateView(ContextMixin,
+                            UpdateView):
+    form_class = forms.ConsumableForm  # TODO make a raw material form
     model = models.InventoryItem
     success_url = reverse_lazy('inventory:home')
     template_name = CREATE_TEMPLATE
     extra_context = {"title": "Update Existing Raw Materials Details"}
 
 
-class RawMaterialDetailView( DetailView):
+class RawMaterialDetailView(DetailView):
     model = models.InventoryItem
-    template_name = os.path.join("inventory", "item", 'raw_material', "detail.html")
+    template_name = os.path.join(
+        "inventory", "item", 'raw_material', "detail.html")
 
 
-class RawMaterialListView( ContextMixin, 
-        PaginationMixin, FilterView):
+class RawMaterialListView(ContextMixin,
+                          PaginationMixin, FilterView):
     paginate_by = 20
     filterset_class = filters.InventoryItemFilter
-    template_name = os.path.join('inventory', 'item', 'raw_material', 'list.html')
+    template_name = os.path.join(
+        'inventory', 'item', 'raw_material', 'list.html')
     extra_context = {
         'title': 'RawMaterial List',
         "new_link": reverse_lazy("inventory:raw-material-create")
@@ -440,8 +443,8 @@ class RawMaterialListView( ContextMixin,
         return models.InventoryItem.objects.all().order_by('pk')
 
 
-class RawMaterialCreateView( ContextMixin, 
-        CreateView):
+class RawMaterialCreateView(ContextMixin,
+                            CreateView):
     form_class = forms.ConsumableForm
     success_url = reverse_lazy('inventory:home')
     template_name = os.path.join("common_data", "crispy_create_template.html")
@@ -451,14 +454,14 @@ class RawMaterialCreateView( ContextMixin,
         'related_links': [{
             'name': 'Add Vendor',
             'url': '/inventory/supplier/create/'
-        },{
+        }, {
             'name': 'Add Unit',
             'url': '/inventory/unit-create/'
-        },{
+        }, {
             'name': 'Add Inventory Category',
             'url': '/inventory/category-create/'
         }],
-        }
+    }
 
 
 class ImportItemsView(ContextMixin, FormView):
@@ -473,7 +476,7 @@ class ImportItemsView(ContextMixin, FormView):
         resp = super().form_valid(form)
         file = form.cleaned_data['file']
         if file.name.endswith('.csv'):
-            #process csv 
+            # process csv
             pass
         else:
 
@@ -493,18 +496,17 @@ class ImportItemsView(ContextMixin, FormView):
 
             settings = SalesConfig.objects.first()
             for row in ws.iter_rows(min_row=form.cleaned_data['start_row'],
-                    max_row = form.cleaned_data['end_row'], 
-                    max_col=max(cols)):
-
+                                    max_row=form.cleaned_data['end_row'],
+                                    max_col=max(cols)):
 
                 qs = models.UnitOfMeasure.objects.filter(name=row[
-                    form.cleaned_data['unit'] -1].value)
+                    form.cleaned_data['unit'] - 1].value)
                 if qs.exists():
                     unit = qs.first()
                 else:
                     unit = models.UnitOfMeasure.objects.create(
-                        name=row[form.cleaned_data['unit'] -1].value)
-                
+                        name=row[form.cleaned_data['unit'] - 1].value)
+
                 type_mapping = ['product', 'equipment', 'consumable']
                 item = models.InventoryItem.objects.create(
                     name=row[form.cleaned_data['name'] - 1].value,
@@ -515,28 +517,28 @@ class ImportItemsView(ContextMixin, FormView):
                     unit_purchase_price=row[
                         form.cleaned_data['purchase_price'] - 1].value
                 )
-                
-                #record quantity
+
+                # record quantity
                 warehouse = form.cleaned_data['warehouse']
                 warehouse.add_item(item, row[
                     form.cleaned_data['quantity']-1].value)
-                #handle products equipment components
-                if row[form.cleaned_data['type'] -1].value == 'product':
-                    component =models.ProductComponent.objects.create(
+                # handle products equipment components
+                if row[form.cleaned_data['type'] - 1].value == 'product':
+                    component = models.ProductComponent.objects.create(
                         pricing_method=0,
                         tax=settings.sales_tax,
                         direct_price=row[
                             form.cleaned_data['sales_price']-1].value
                     )
-                    item.product_component=component
+                    item.product_component = component
                     item.save()
-                elif row[form.cleaned_data['type'] -1].value == 'equipment':
+                elif row[form.cleaned_data['type'] - 1].value == 'equipment':
                     component = models.EquipmentComponent.objects.create()
                     item.equipment_component = component
                     item.save()
 
-
         return resp
+
 
 class BulkCreateItemsView(ContextMixin, FormView):
     template_name = os.path.join('inventory', 'item', 'create_multiple.html')
@@ -546,33 +548,33 @@ class BulkCreateItemsView(ContextMixin, FormView):
     def form_valid(self, form):
         resp = super().form_valid(form)
         data = json.loads(urllib.parse.unquote(form.cleaned_data['data']))
-        
+
         settings = SalesConfig.objects.first()
-        
+
         for line in data:
             item = models.InventoryItem.objects.create(
-                    name=line['name'],
-                    type=line['type'],
-                    description=line['name'],
-                    unit_purchase_price=line['purchase_price']
-                )
-                
-            #record quantity
+                name=line['name'],
+                type=line['type'],
+                description=line['name'],
+                unit_purchase_price=line['purchase_price']
+            )
+
+            # record quantity
             warehouse = form.cleaned_data['warehouse']
             warehouse.add_item(item, line['quantity'])
-            #handle products equipment components
-            if line['type']== 0:
-                component =models.ProductComponent.objects.create(
+            # handle products equipment components
+            if line['type'] == 0:
+                component = models.ProductComponent.objects.create(
                     pricing_method=0,
                     tax=settings.sales_tax,
 
                     direct_price=line['sales_price']
                 )
-                item.product_component=component
+                item.product_component = component
                 item.save()
             elif line['type'] == 1:
                 component = models.EquipmentComponent.objects.create()
                 item.equipment_component = component
                 item.save()
-        
+
         return resp

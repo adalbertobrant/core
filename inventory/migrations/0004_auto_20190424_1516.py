@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='inventorycheck',
             name='adjusted_by',
-            field=models.ForeignKey(limit_choices_to=models.Q(user__isnull=False), null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryController'),
+            field=models.ForeignKey(limit_choices_to=models.Q(user__isnull=False), null=True,
+                                    on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryController'),
         ),
     ]

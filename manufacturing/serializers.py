@@ -1,10 +1,12 @@
 from rest_framework import serializers
-from manufacturing import models 
+from manufacturing import models
+
 
 class ShiftSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Shift
         fields = "__all__"
+
 
 class ProcessMachineSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,9 +19,8 @@ class ProcessProductSerializer(serializers.ModelSerializer):
         model = models.ProcessProduct
         fields = "__all__"
 
+
 class ProcessSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Process
         fields = "__all__"
-
-        

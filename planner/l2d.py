@@ -2,6 +2,7 @@ class List2D(list):
     def __init__(self, *args, **kwargs):
         super(List2D, self).__init__(*args, **kwargs)
         self.is_flattened = False
+
     def flatten(self):
         res = []
         if self.is_flattened:
@@ -11,7 +12,7 @@ class List2D(list):
                 res.append(i)
         self = res
         return res
-    
+
     def reshape(self, shape):
         i = 0
         res = []

@@ -1,47 +1,41 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import datetime
 from decimal import Decimal as D
-from functools import reduce
 
-import rest_framework
-from django.conf import settings
 from django.db import models
 from django.db.models import Q
 
-import inventory
 from accounting.models import Account, Journal, JournalEntry
-from common_data.models import SingletonModel, SoftDeletionModel
 
-from .warehouse_models import StorageMedia, WareHouseItem
-from django.shortcuts import reverse 
+from django.shortcuts import reverse
+
 
 class OrderPayment(models.Model):
     date = models.DateField()
-    amount = models.DecimalField(max_digits=16,decimal_places=2)
-    order = models.ForeignKey('inventory.order', on_delete=models.SET_NULL, 
-        null=True)
+    amount = models.DecimalField(max_digits=16, decimal_places=2)
+    order = models.ForeignKey('inventory.order', on_delete=models.SET_NULL,
+                              null=True)
     comments = models.TextField()
-    entry = models.ForeignKey('accounting.JournalEntry', 
-        on_delete=models.SET_NULL,
-        blank=True, null=True)
+    entry = models.ForeignKey('accounting.JournalEntry',
+                              on_delete=models.SET_NULL,
+                              blank=True, null=True)
 
     def create_entry(self, comments=""):
         if self.entry:
             return
         j = JournalEntry.objects.create(
-                memo= 'Auto generated journal entry from order payment.' \
-                    if comments == "" else comments,
-                date=self.date,
-                journal =Journal.objects.get(pk=4),
-                recorded_by = self.order.issuing_inventory_controller.employee,
-                draft=False
-            )
-        
+            memo='Auto generated journal entry from order payment.'
+            if comments == "" else comments,
+            date=self.date,
+            journal=Journal.objects.get(pk=4),
+            recorded_by=self.order.issuing_inventory_controller.employee,
+            draft=False
+        )
+
         j.simple_entry(
             self.amount,
-            Account.objects.get(pk=1000),#cash in checking account
+            Account.objects.get(pk=1000),  # cash in checking account
             self.order.supplier.account,
         )
 
@@ -49,7 +43,9 @@ class OrderPayment(models.Model):
             self.entry = j
             self.save()
 
-#Note as currently designed it cannot be known when exactly an item entered inventory
+# Note as currently designed it cannot be known when exactly an item entered inventory
+
+
 class StockReceipt(models.Model):
     '''
     Part of the inventory ordering workflow.
@@ -59,17 +55,17 @@ class StockReceipt(models.Model):
 
     methods
     ---------
-    
+
     '''
-    order = models.ForeignKey('inventory.Order', on_delete=models.SET_NULL, 
-        null=True)
-    received_by = models.ForeignKey('inventory.InventoryController', 
-        on_delete=models.SET_NULL,
-        limit_choices_to=Q(active=True),
-        null=True,
-        default=1)
+    order = models.ForeignKey('inventory.Order', on_delete=models.SET_NULL,
+                              null=True)
+    received_by = models.ForeignKey('inventory.InventoryController',
+                                    on_delete=models.SET_NULL,
+                                    limit_choices_to=Q(active=True),
+                                    null=True,
+                                    default=1)
     receive_date = models.DateField()
-    note =models.TextField(blank=True, default="")
+    note = models.TextField(blank=True, default="")
     fully_received = models.BooleanField(default=False)
 
     def __str__(self):
@@ -83,30 +79,30 @@ class StockReceipt(models.Model):
     def get_absolute_url(self):
         return reverse('inventory:goods-received', kwargs={"pk": self.pk})
 
+
 class StockReceiptLine(models.Model):
     receipt = models.ForeignKey('inventory.StockReceipt',
-        on_delete=models.CASCADE)
+                                on_delete=models.CASCADE)
     line = models.ForeignKey('inventory.OrderItem', on_delete=models.CASCADE)
     quantity = models.FloatField(default=0.0)
 
 
-#might need to rename
+# might need to rename
 class InventoryCheck(models.Model):
     date = models.DateField()
-    adjusted_by = models.ForeignKey('inventory.InventoryController', 
-        on_delete=models.SET_NULL, 
-        limit_choices_to=Q(active=True),
-        null=True )
-    warehouse = models.ForeignKey('inventory.WareHouse', 
-        on_delete=models.SET_NULL, 
-        null=True )
+    adjusted_by = models.ForeignKey('inventory.InventoryController',
+                                    on_delete=models.SET_NULL,
+                                    limit_choices_to=Q(active=True),
+                                    null=True)
+    warehouse = models.ForeignKey('inventory.WareHouse',
+                                  on_delete=models.SET_NULL,
+                                  null=True)
     comments = models.TextField()
 
     def get_absolute_url(self):
         return reverse("inventory:inventory-check-summary", kwargs={"pk": self.pk})
-    
-    
-    @property 
+
+    @property
     def adjustments(self):
         return self.stockadjustment_set.all()
 
@@ -119,13 +115,14 @@ class InventoryCheck(models.Model):
         super().save(*args, **kwargs)
         self.warehouse.last_inventory_check_date = self.date
 
+
 class StockAdjustment(models.Model):
-    warehouse_item = models.ForeignKey('inventory.WareHouseItem', 
-        on_delete=models.SET_NULL, null=True)
+    warehouse_item = models.ForeignKey('inventory.WareHouseItem',
+                                       on_delete=models.SET_NULL, null=True)
     adjustment = models.FloatField()
     note = models.TextField()
-    inventory_check = models.ForeignKey('inventory.InventoryCheck', 
-        on_delete=models.SET_NULL, null=True)
+    inventory_check = models.ForeignKey('inventory.InventoryCheck',
+                                        on_delete=models.SET_NULL, null=True)
 
     @property
     def adjustment_value(self):
@@ -140,29 +137,30 @@ class StockAdjustment(models.Model):
         self.warehouse_item.last_check_date = self.inventory_check.date
         self.warehouse_item.save()
 
-    
 
 class TransferOrder(models.Model):
     date = models.DateField()
     expected_completion_date = models.DateField()
     issuing_inventory_controller = models.ForeignKey('inventory.InventoryController',
-        related_name='issuing_inventory_controller',
-        limit_choices_to=Q(active=True),
-        on_delete=models.SET_NULL, 
-        null=True)
-    receiving_inventory_controller = models.ForeignKey('inventory.InventoryController', 
-        on_delete=models.SET_NULL, 
-        limit_choices_to=Q(active=True),
-        null=True)
-    actual_completion_date =models.DateField(null=True)#provided later
+                                                     related_name='issuing_inventory_controller',
+                                                     limit_choices_to=Q(
+                                                         active=True),
+                                                     on_delete=models.SET_NULL,
+                                                     null=True)
+    receiving_inventory_controller = models.ForeignKey('inventory.InventoryController',
+                                                       on_delete=models.SET_NULL,
+                                                       limit_choices_to=Q(
+                                                           active=True),
+                                                       null=True)
+    actual_completion_date = models.DateField(null=True)  # provided later
     source_warehouse = models.ForeignKey('inventory.WareHouse',
-        related_name='source_warehouse', on_delete=models.SET_NULL, null=True,)
-    receiving_warehouse = models.ForeignKey('inventory.WareHouse', 
-        on_delete=models.SET_NULL, null=True,)
+                                         related_name='source_warehouse', on_delete=models.SET_NULL, null=True,)
+    receiving_warehouse = models.ForeignKey('inventory.WareHouse',
+                                            on_delete=models.SET_NULL, null=True,)
     order_issuing_notes = models.TextField(blank=True)
     receive_notes = models.TextField(blank=True)
     completed = models.BooleanField(default=False)
-    
+
     def complete(self):
         '''move all the outstanding items at the same time.'''
         for line in self.transferorderline_set.filter(moved_quantity=0):
@@ -180,13 +178,14 @@ class TransferOrder(models.Model):
         self.completed = completed
         self.save()
 
+
 class TransferOrderLine(models.Model):
-    item = models.ForeignKey('inventory.inventoryitem', 
-        on_delete=models.SET_NULL, 
-        null=True)
+    item = models.ForeignKey('inventory.inventoryitem',
+                             on_delete=models.SET_NULL,
+                             null=True)
     quantity = models.FloatField()
-    transfer_order = models.ForeignKey('inventory.TransferOrder', 
-        on_delete=models.SET_NULL, null=True)
+    transfer_order = models.ForeignKey('inventory.TransferOrder',
+                                       on_delete=models.SET_NULL, null=True)
     moved_quantity = models.FloatField(default=0.0)
 
     def move(self, quantity, location=None):
@@ -195,50 +194,53 @@ class TransferOrderLine(models.Model):
             self.item, quantity)
         self.transfer_order.receiving_warehouse.add_item(
             self.item, quantity, location=location)
-        self.moved=quantity
+        self.moved = quantity
         self.save()
         self.transfer_order.update_completed_status()
+
 
 class InventoryScrappingRecord(models.Model):
     date = models.DateField()
     controller = models.ForeignKey('inventory.InventoryController',
-        limit_choices_to=Q(active=True),
-        on_delete=models.SET_NULL, 
-        null=True)
-    warehouse = models.ForeignKey('inventory.WareHouse', on_delete=models.SET_NULL, null=True)
+                                   limit_choices_to=Q(active=True),
+                                   on_delete=models.SET_NULL,
+                                   null=True)
+    warehouse = models.ForeignKey(
+        'inventory.WareHouse', on_delete=models.SET_NULL, null=True)
     comments = models.TextField(blank=True)
 
     @property
     def scrapping_value(self):
         return sum(
-            [i.scrapped_value \
-                for i in self.inventoryscrappingrecordline_set.all()], 
-                0)
+            [i.scrapped_value
+                for i in self.inventoryscrappingrecordline_set.all()],
+            0)
 
     @property
     def scrapped_items(self):
         return self.inventoryscrappingrecordline_set.all()
 
     def scrap(self):
-        #must be called after all the lines are created
+        # must be called after all the lines are created
         for item in self.scrapped_items:
             self.warehouse.decrement_item(item.item, item.quantity)
 
     def get_absolute_url(self):
         return reverse("inventory:scrapping-report", kwargs={"pk": self.pk})
-    
+
 
 class InventoryScrappingRecordLine(models.Model):
-    item = models.ForeignKey('inventory.inventoryitem', 
-        on_delete=models.SET_NULL, 
-        null=True)
+    item = models.ForeignKey('inventory.inventoryitem',
+                             on_delete=models.SET_NULL,
+                             null=True)
     quantity = models.FloatField()
     note = models.TextField(blank=True)
-    scrapping_record = models.ForeignKey('inventory.InventoryScrappingRecord', on_delete=models.SET_NULL, null=True)
+    scrapping_record = models.ForeignKey(
+        'inventory.InventoryScrappingRecord', on_delete=models.SET_NULL, null=True)
 
     @property
     def scrapped_value(self):
-        #TODO fix 
+        # TODO fix
         if self.item.product_component:
             return self.item.product_component.unit_sales_price * \
                 D(self.quantity)

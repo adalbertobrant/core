@@ -1,5 +1,5 @@
 
-from .models import ( 
+from .models import (
     NotificationTests,
     ChatTests,
     BubbleTests,

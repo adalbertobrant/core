@@ -23,82 +23,98 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='servicelinecomponent',
             name='service',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='services.Service'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='services.Service'),
         ),
         migrations.AddField(
             model_name='salesrepresentative',
             name='employee',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee'),
+            field=models.OneToOneField(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee'),
         ),
         migrations.AddField(
             model_name='salesconfig',
             name='sales_tax',
-            field=models.ForeignKey(blank='True', null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Tax'),
+            field=models.ForeignKey(
+                blank='True', null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Tax'),
         ),
         migrations.AddField(
             model_name='productlinecomponent',
             name='product',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryItem'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.InventoryItem'),
         ),
         migrations.AddField(
             model_name='payment',
             name='invoice',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.Invoice'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.Invoice'),
         ),
         migrations.AddField(
             model_name='payment',
             name='sales_rep',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.SalesRepresentative'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.SalesRepresentative'),
         ),
         migrations.AddField(
             model_name='invoiceline',
             name='expense',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.ExpenseLineComponent'),
+            field=models.OneToOneField(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.ExpenseLineComponent'),
         ),
         migrations.AddField(
             model_name='invoiceline',
             name='invoice',
-            field=models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.Invoice'),
+            field=models.ForeignKey(
+                default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.Invoice'),
         ),
         migrations.AddField(
             model_name='invoiceline',
             name='product',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.ProductLineComponent'),
+            field=models.OneToOneField(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.ProductLineComponent'),
         ),
         migrations.AddField(
             model_name='invoiceline',
             name='service',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.ServiceLineComponent'),
+            field=models.OneToOneField(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.ServiceLineComponent'),
         ),
         migrations.AddField(
             model_name='invoiceline',
             name='tax',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Tax'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Tax'),
         ),
         migrations.AddField(
             model_name='invoice',
             name='customer',
-            field=models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.Customer'),
+            field=models.ForeignKey(
+                default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.Customer'),
         ),
         migrations.AddField(
             model_name='invoice',
             name='entry',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.JournalEntry'),
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.JournalEntry'),
         ),
         migrations.AddField(
             model_name='invoice',
             name='invoice_validated_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='invoice',
             name='salesperson',
-            field=models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.SalesRepresentative'),
+            field=models.ForeignKey(
+                default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.SalesRepresentative'),
         ),
         migrations.AddField(
             model_name='invoice',
             name='ship_from',
-            field=models.ForeignKey(default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.WareHouse'),
+            field=models.ForeignKey(
+                default=1, null=True, on_delete=django.db.models.deletion.SET_NULL, to='inventory.WareHouse'),
         ),
         migrations.AddField(
             model_name='invoice',
@@ -108,36 +124,43 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='expenselinecomponent',
             name='expense',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Expense'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounting.Expense'),
         ),
         migrations.AddField(
             model_name='customer',
             name='account',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='accounting.Account'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.CASCADE, to='accounting.Account'),
         ),
         migrations.AddField(
             model_name='customer',
             name='individual',
-            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='common_data.Individual'),
+            field=models.OneToOneField(
+                blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='common_data.Individual'),
         ),
         migrations.AddField(
             model_name='customer',
             name='organization',
-            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='common_data.Organization'),
+            field=models.OneToOneField(
+                blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='common_data.Organization'),
         ),
         migrations.AddField(
             model_name='creditnoteline',
             name='line',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.InvoiceLine'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.InvoiceLine'),
         ),
         migrations.AddField(
             model_name='creditnoteline',
             name='note',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.CreditNote'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.CreditNote'),
         ),
         migrations.AddField(
             model_name='creditnote',
             name='invoice',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.Invoice'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.Invoice'),
         ),
     ]

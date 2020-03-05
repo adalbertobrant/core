@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='globalconfig',
             name='logo_aspect_ratio',
-            field=models.PositiveSmallIntegerField(choices=[(1, '3:2 (Medium rectangle)'), (2, '1:1 (Square)'), (3, '4:3 (Narrower Rectangle)'), (0, ':16:9 (Wide Rectangle)')], default=0),
+            field=models.PositiveSmallIntegerField(choices=[(1, '3:2 (Medium rectangle)'), (
+                2, '1:1 (Square)'), (3, '4:3 (Narrower Rectangle)'), (0, ':16:9 (Wide Rectangle)')], default=0),
         ),
     ]

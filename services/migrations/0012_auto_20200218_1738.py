@@ -15,11 +15,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='WorkOrderTask',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('description', models.TextField()),
                 ('due', models.DateField(blank=True)),
                 ('completed', models.BooleanField(default=False)),
-                ('assigned', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee')),
+                ('assigned', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee')),
             ],
         ),
         migrations.RemoveField(
@@ -33,6 +35,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='workordertask',
             name='work_order',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='services.ServiceWorkOrder'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to='services.ServiceWorkOrder'),
         ),
     ]

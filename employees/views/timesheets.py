@@ -1,23 +1,18 @@
 import datetime
-import decimal
 import json
 import os
 import urllib
 
 
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic import DetailView, TemplateView
 from django.views.generic.edit import (CreateView, DeleteView, FormView,
                                        UpdateView)
 from django_filters.views import FilterView
 from rest_framework import viewsets
 
-from accounting.models import Tax
-from common_data.utilities import ContextMixin, apply_style
+from common_data.utilities import ContextMixin
 from common_data.views import PaginationMixin
 
 from employees import filters, forms, models, serializers
@@ -29,15 +24,16 @@ class TimeSheetMixin(object):
     def post(self, request, *args, **kwargs):
         resp = super().post(request, *args, **kwargs)
         update_flag = isinstance(self, UpdateView)
-        
+
         def get_time(time_string):
             if '.' in time_string:
-                time_string = time_string.split('.')[0] # removes seconds component
+                time_string = time_string.split(
+                    '.')[0]  # removes seconds component
             try:
                 return datetime.datetime.strptime(time_string, '%H:%M').time()
             except:
                 return datetime.datetime.strptime(time_string, '%H:%M:%S').time()
-                
+
         def get_duration(time_string):
             try:
                 hr, min = time_string.split(":")
@@ -55,58 +51,65 @@ class TimeSheetMixin(object):
             for i in self.object.attendanceline_set.all():
                 i.delete()
 
-        
         for line in line_data:
             if '-' in line['date']:
                 date = datetime.datetime.strptime(
                     line['date'], '%Y-%m-%d')
             else:
-                date =datetime.date(
-                        self.object.year, 
-                        self.object.month,
-                        int(line['date']))
-            
+                date = datetime.date(
+                    self.object.year,
+                    self.object.month,
+                    int(line['date']))
+
             models.AttendanceLine.objects.create(
                 timesheet=self.object,
                 date=date,
                 time_in=get_time(line['timeIn']),
-                time_out= get_time(line['timeOut']),
+                time_out=get_time(line['timeOut']),
                 lunch_duration=get_duration(line['breaksTaken']))
-        
+
         return resp
 
-class CreateTimeSheetView( TimeSheetMixin, CreateView):
-    template_name = os.path.join('employees', 'timesheet', 'create_update.html')
+
+class CreateTimeSheetView(TimeSheetMixin, CreateView):
+    template_name = os.path.join(
+        'employees', 'timesheet', 'create_update.html')
     form_class = forms.TimesheetForm
 
+
 class ListTimeSheetView(ContextMixin,  PaginationMixin, FilterView):
-    template_name = os.path.join('employees', 'timesheet','list.html')
+    template_name = os.path.join('employees', 'timesheet', 'list.html')
     filterset_class = filters.TimeSheetFilter
     paginate_by = 20
-    extra_context ={
+    extra_context = {
         'title': 'Time Sheets',
         'new_link': reverse_lazy('employees:timesheet-create')
     }
     def get_queryset(self):
-        
-        return models.EmployeeTimeSheet.objects.all().order_by('pk').reverse()
-    
 
-class TimeSheetDetailView( DetailView):
+        return models.EmployeeTimeSheet.objects.all().order_by('pk').reverse()
+
+
+class TimeSheetDetailView(DetailView):
     model = models.EmployeeTimeSheet
-    template_name = os.path.join('employees', 'timesheet','detail.html')
+    template_name = os.path.join('employees', 'timesheet', 'detail.html')
+
 
 class TimeSheetUpdateView(TimeSheetMixin,  UpdateView):
-    template_name = os.path.join('employees', 'timesheet','create_update.html')
+    template_name = os.path.join(
+        'employees', 'timesheet', 'create_update.html')
     form_class = forms.TimesheetForm
     queryset = models.EmployeeTimeSheet.objects.all()
+
 
 class TimeSheetViewset(viewsets.ModelViewSet):
     queryset = models.EmployeeTimeSheet.objects.all()
     serializer_class = serializers.TimeSheetSerializer
 
+
 class TimeLoggerView(ContextMixin, FormView):
-    template_name = CREATE_TEMPLATE#os.path.join('employees', 'timesheet', 'logger.html')
+    # os.path.join('employees', 'timesheet', 'logger.html')
+    template_name = CREATE_TEMPLATE
     extra_context = {
         'title': 'Log Time In/Out',
         'icon': 'hourglass-half'
@@ -120,10 +123,10 @@ class TimeLoggerView(ContextMixin, FormView):
         employee = models.Employee.objects.get(
             pk=form.cleaned_data['employee_number'])
         messages.info(
-            self.request, 
-            f"{employee} logged {in_out} " 
+            self.request,
+            f"{employee} logged {in_out} "
             f"successfully at {datetime.datetime.now().time()}")
-        
+
         return resp
 
 
@@ -134,7 +137,7 @@ class TimeLoggerWithEmployeeView(ContextMixin, FormView):
         'icon': 'hourglass-half'
     }
     form_class = forms.TimeLoggerFormWithEmployee
-    
+
     def get_success_url(self):
         return f"/employees/time-logger-success/{self.kwargs['pk']}"
 
@@ -144,13 +147,15 @@ class TimeLoggerWithEmployeeView(ContextMixin, FormView):
             'employee_number': employee.employee_number
         }
 
+
 class TimeLoggerSuccessView(TemplateView):
-    template_name = os.path.join('employees', 'portal', 'timesheet_success.html')
+    template_name = os.path.join(
+        'employees', 'portal', 'timesheet_success.html')
 
     def get_context_data(self, **kwargs):
-        context =  super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         employee = models.Employee.objects.get(pk=self.kwargs['pk'])
-        context['name']  = employee.full_name
+        context['name'] = employee.full_name
         context['time'] = datetime.datetime.now().time().strftime('%H:%M:%S')
 
         return context

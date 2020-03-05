@@ -2,9 +2,7 @@
 from __future__ import unicode_literals
 
 import datetime
-import decimal
 import json
-import os
 import urllib
 
 from django.shortcuts import reverse
@@ -13,17 +11,18 @@ from django.test.client import RequestFactory
 from accounting.models import *
 from common_data.tests import create_account_models, create_test_user, create_test_common_entities
 from inventory.tests import create_test_inventory_models
-from latrom import settings
-from employees.models import Employee 
+from employees.models import Employee
 from employees.tests.models import create_test_employees_models
 from django.contrib.auth.models import User
-from accounting import views 
+from accounting import views
 
 TODAY = datetime.date.today()
 
+
 class CommonViewTests(TestCase):
-    fixtures = ['common.json', 'accounts.json', 'employees.json', 'journals.json', 'settings.json']
-    
+    fixtures = ['common.json', 'accounts.json',
+                'employees.json', 'journals.json', 'settings.json']
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -36,14 +35,14 @@ class CommonViewTests(TestCase):
         create_account_models(cls)
         create_test_inventory_models(cls)
         cls.PAYMENT_DATA = {
-               'date':TODAY,
-               'paid_to': cls.supplier.pk,
-               'account_paid_from': cls.account_c.pk,
-               'method': 'cash',
-               'amount': 100,
-               'reference': 'DPMT',
-               'notes': 'Some Note'
-            }
+            'date': TODAY,
+            'paid_to': cls.supplier.pk,
+            'account_paid_from': cls.account_c.pk,
+            'method': 'cash',
+            'amount': 100,
+            'reference': 'DPMT',
+            'notes': 'Some Note'
+        }
         cls.tax = Tax.objects.create(
             name="TEst",
             rate=10
@@ -58,42 +57,39 @@ class CommonViewTests(TestCase):
         )
 
         cls.employee = Employee.objects.create(first_name='first',
-            last_name='last',
-            user=cls.user)
-        
+                                               last_name='last',
+                                               user=cls.user)
 
     def setUp(self):
-        #wont work in setUpClass
+        # wont work in setUpClass
         self.client.login(username='Testuser', password='123')
 
     def test_get_dashboard(self):
         resp = self.client.get(reverse('accounting:dashboard'))
-        self.assertTrue(resp.status_code==302)
+        self.assertTrue(resp.status_code == 302)
         config = AccountingSettings.objects.first()
-        config.is_configured=True
+        config.is_configured = True
         config.save()
         resp = self.client.get(reverse('accounting:dashboard'))
-        self.assertTrue(resp.status_code==200) 
-        config.is_configured=False
+        self.assertTrue(resp.status_code == 200)
+        config.is_configured = False
         config.save()
 
     def test_accounting_async_dashboard(self):
         resp = self.client.get(reverse('accounting:async-dashboard'))
         self.assertTrue(resp.status_code, 200)
 
-
     def test_get_transfer_form(self):
         resp = self.client.get(reverse('accounting:transfer'))
         self.assertTrue(resp.status_code == 200)
 
-
     def test_get_create_tax(self):
         resp = self.client.get(reverse('accounting:create-tax'))
-        self.assertTrue(resp.status_code==200) 
+        self.assertTrue(resp.status_code == 200)
 
     def test_get_tax_list_page(self):
         resp = self.client.get(reverse('accounting:tax-list'))
-        self.assertTrue(resp.status_code==200) 
+        self.assertTrue(resp.status_code == 200)
 
     def test_get_tax_update_page(self):
         resp = self.client.get(reverse('accounting:update-tax', kwargs={
@@ -112,7 +108,7 @@ class CommonViewTests(TestCase):
             'name': 'Income tax',
             'rate': 15
         })
-        self.assertTrue(resp.status_code==302) 
+        self.assertTrue(resp.status_code == 302)
 
     def test_get_config_page(self):
         resp = self.client.get(reverse('accounting:config', kwargs={'pk': 1}))
@@ -120,46 +116,46 @@ class CommonViewTests(TestCase):
 
     def test_post_config_page(self):
         resp = self.client.post(reverse('accounting:config', kwargs={'pk': 1}),
-            data={
-                # 'start_of_financial_year': TODAY,
-                'currency_exchange_table': self.currency_table.pk,
-                'default_accounting_period': 0,
-                'active_currency': 1,
-                'equipment_capitalization_limit': 200
-            })
+                                data={
+            # 'start_of_financial_year': TODAY,
+            'currency_exchange_table': self.currency_table.pk,
+            'default_accounting_period': 0,
+            'active_currency': 1,
+            'equipment_capitalization_limit': 200
+        })
         self.assertEqual(resp.status_code, 302)
-        
+
     def test_get_direct_payment_page(self):
         resp = self.client.get(reverse('accounting:direct-payment'))
         self.assertEqual(resp.status_code, 200)
 
     def test_post_direct_payment_page(self):
         resp = self.client.post(reverse('accounting:direct-payment'),
-            data=self.PAYMENT_DATA)
+                                data=self.PAYMENT_DATA)
         self.assertEqual(resp.status_code, 302)
 
     def test_get_supplier_direct_payment_page(self):
         resp = self.client.get(reverse('accounting:direct-payment-supplier',
-            kwargs={
-                'supplier': 1
-            }
-        ))
+                                       kwargs={
+                                           'supplier': 1
+                                       }
+                                       ))
         self.assertEqual(resp.status_code, 200)
-
 
     def test_post_direct_payment_supplier_page(self):
         return
-        #strange bug
+        # strange bug
         resp = self.client.post(reverse('accounting:direct-payment-supplier',
-            kwargs={
-                'supplier': 1
-            }),
-            data=self.PAYMENT_DATA)
+                                        kwargs={
+                                            'supplier': 1
+                                        }),
+                                data=self.PAYMENT_DATA)
 
 
 class JournalEntryViewTests(TestCase):
-    fixtures = ['common.json', 'accounts.json', 'employees.json','journals.json']
-    
+    fixtures = ['common.json', 'accounts.json',
+                'employees.json', 'journals.json']
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -172,57 +168,57 @@ class JournalEntryViewTests(TestCase):
         create_test_inventory_models(cls)
         create_test_common_entities(cls)
         create_test_employees_models(cls)
-    
+
         cls.ENTRY_DATA = {
             'reference': 'some test ref',
-            'memo':'record of test entry',
-            'date':TODAY,
-            'journal' :cls.journal.pk,
+            'memo': 'record of test entry',
+            'date': TODAY,
+            'journal': cls.journal.pk,
             'amount': 100,
             'debit': cls.account_d.pk,
             'credit': cls.account_c.pk,
             'recorded_by': cls.employee.pk
         }
         cls.JOURNAL_DATA = {
-                'name': 'Other Test Journal',
-                'start_period': TODAY,
-                'end_period': TODAY + datetime.timedelta(days=30),
-                'description': 'some test description'
-            }
+            'name': 'Other Test Journal',
+            'start_period': TODAY,
+            'end_period': TODAY + datetime.timedelta(days=30),
+            'description': 'some test description'
+        }
 
     def setUp(self):
-        #wont work in setUpClass
+        # wont work in setUpClass
         self.client.login(username='Testuser', password='123')
 
     def test_get_entry_form(self):
         resp = self.client.get(reverse('accounting:create-entry'))
-        self.assertTrue(resp.status_code==200)
+        self.assertTrue(resp.status_code == 200)
 
     def test_post_entry_form(self):
         resp = self.client.post(reverse('accounting:create-entry'),
-            data=self.ENTRY_DATA)
-        self.assertTrue(resp.status_code==302)
+                                data=self.ENTRY_DATA)
+        self.assertTrue(resp.status_code == 302)
 
     def test_get_compound_entry_form(self):
         resp = self.client.get(reverse('accounting:compound-entry'))
-        self.assertTrue(resp.status_code==200)
+        self.assertTrue(resp.status_code == 200)
 
     def test_post_compound_entry_form(self):
         COMPOUND_DATA = self.ENTRY_DATA
         n = JournalEntry.objects.all().count()
         COMPOUND_DATA['data'] = urllib.parse.quote(json.dumps([{
             'debit': 1,
-            'amount':100,
-            'account': "1000 - Account" 
-            }]))
+            'amount': 100,
+            'account': "1000 - Account"
+        }]))
         resp = self.client.post(reverse('accounting:compound-entry'),
-            data=COMPOUND_DATA)
-        self.assertEqual(resp.status_code,302)
+                                data=COMPOUND_DATA)
+        self.assertEqual(resp.status_code, 302)
 
     def test_get_entry_detail(self):
-        resp = self.client.get(reverse('accounting:entry-detail', 
-            kwargs={'pk': self.entry.pk}))
-        self.assertTrue(resp.status_code==200)
+        resp = self.client.get(reverse('accounting:entry-detail',
+                                       kwargs={'pk': self.entry.pk}))
+        self.assertTrue(resp.status_code == 200)
 
     def test_get_journal_form(self):
         resp = self.client.get(reverse('accounting:create-journal'))
@@ -230,26 +226,26 @@ class JournalEntryViewTests(TestCase):
 
     def test_post_journal_form(self):
         resp = self.client.post(reverse('accounting:create-journal'),
-            data=self.JOURNAL_DATA)
-        
+                                data=self.JOURNAL_DATA)
+
         self.assertTrue(resp.status_code == 302)
 
     def test_get_journal_list(self):
         resp = self.client.get(reverse('accounting:journal-list'))
         self.assertTrue(resp.status_code == 200)
-    
+
     def test_get_journal_detail(self):
         resp = self.client.get(reverse('accounting:journal-detail',
-            kwargs={
-                'pk': self.journal.pk
-            }))
+                                       kwargs={
+                                           'pk': self.journal.pk
+                                       }))
         self.assertEqual(resp.status_code, 200)
 
     def test_get_journal_entries_list(self):
         resp = self.client.get(reverse('accounting:journal-entries',
-            kwargs={
-                'pk': self.journal.pk
-            }))
+                                       kwargs={
+                                           'pk': self.journal.pk
+                                       }))
         self.assertEqual(resp.status_code, 200)
 
     def test_verify_journal_entry(self):
@@ -264,7 +260,7 @@ class JournalEntryViewTests(TestCase):
         }))
         self.assertEqual(resp.status_code, 200)
 
-    def test_get_journal_report_view(self):        
+    def test_get_journal_report_view(self):
         resp = self.client.get(reverse('accounting:journal-report'), data={
             'default_periods': 3,
             'start_period': "",
@@ -286,16 +282,15 @@ class JournalEntryViewTests(TestCase):
 
         self.assertEqual(resp.status_code, 200)
 
-        
 
 class AccountViewTests(TestCase):
-    fixtures = ['common.json','accounts.json','employees.json', 'journals.json']
-    
+    fixtures = ['common.json', 'accounts.json',
+                'employees.json', 'journals.json']
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.client = Client()
-        
 
     @classmethod
     def setUpTestData(cls):
@@ -303,75 +298,74 @@ class AccountViewTests(TestCase):
         create_account_models(cls)
         create_test_inventory_models(cls)
         create_test_common_entities(cls)
-    
+
         cls.ACCOUNT_DATA = {
-                'name': 'Other Test Account',
-                'balance': 100,
-                'type': 'asset',
-                'description': 'Test Description',
-                'balance_sheet_category': 'non-current-assets'
-            }
+            'name': 'Other Test Account',
+            'balance': 100,
+            'type': 'asset',
+            'description': 'Test Description',
+            'balance_sheet_category': 'non-current-assets'
+        }
 
         cls.end = datetime.date.today()
         cls.start = cls.end - datetime.timedelta(days=30)
 
     def setUp(self):
-        #wont work in setUpClass
+        # wont work in setUpClass
         self.client.login(username='Testuser', password='123')
-
 
     def test_get_account_form(self):
         resp = self.client.get(reverse('accounting:create-account'))
-        self.assertTrue(resp.status_code==200)
+        self.assertTrue(resp.status_code == 200)
 
     def test_post_account_form(self):
         resp = self.client.post(reverse('accounting:create-account'),
-            data=self.ACCOUNT_DATA)
-        self.assertTrue(resp.status_code==302)
+                                data=self.ACCOUNT_DATA)
+        self.assertTrue(resp.status_code == 302)
 
     def test_get_account_update_form(self):
         resp = self.client.get(reverse('accounting:account-update',
-            kwargs={
-                'pk': self.account_c.pk
-            }),
-            )
-        self.assertTrue(resp.status_code==200)
-    
+                                       kwargs={
+                                           'pk': self.account_c.pk
+                                       }),
+                               )
+        self.assertTrue(resp.status_code == 200)
+
     def test_post_account_update_form(self):
         resp = self.client.post(reverse('accounting:account-update',
-            kwargs={
-                'pk': self.account_c.pk
-            }),
-            data=self.ACCOUNT_DATA)
-        self.assertTrue(resp.status_code==302)
+                                        kwargs={
+                                            'pk': self.account_c.pk
+                                        }),
+                                data=self.ACCOUNT_DATA)
+        self.assertTrue(resp.status_code == 302)
 
     def test_get_account_list(self):
         resp = self.client.get(reverse('accounting:account-list'))
-        self.assertTrue(resp.status_code==200)
+        self.assertTrue(resp.status_code == 200)
 
     def test_get_account_detail(self):
         resp = self.client.get(reverse('accounting:account-detail',
-            kwargs={
-                'pk': self.account_c.pk
-            }))
-        self.assertTrue(resp.status_code==200)
+                                       kwargs={
+                                           'pk': self.account_c.pk
+                                       }))
+        self.assertTrue(resp.status_code == 200)
 
     def test_get_account_update(self):
         resp = self.client.get(reverse('accounting:account-update',
-            kwargs={
-                'pk': self.account_c.pk
-            }))
-        self.assertTrue(resp.status_code==200)
+                                       kwargs={
+                                           'pk': self.account_c.pk
+                                       }))
+        self.assertTrue(resp.status_code == 200)
 
     def test_get_account_entry_list_credit(self):
-        resp = self.client.get(reverse('accounting:account-credits', 
-            kwargs={'pk': 1000}))
-        self.assertTrue(resp.status_code==200)
+        resp = self.client.get(reverse('accounting:account-credits',
+                                       kwargs={'pk': 1000}))
+        self.assertTrue(resp.status_code == 200)
 
     def test_get_account_entry_list_debits(self):
-        resp = self.client.get(reverse('accounting:account-debits', 
-            kwargs={'pk': 1000}))
-        self.assertTrue(resp.status_code==200)
+        resp = self.client.get(reverse('accounting:account-debits',
+                                       kwargs={'pk': 1000}))
+        self.assertTrue(resp.status_code == 200)
 
     def test_get_account_report_form(self):
         resp = self.client.get(reverse('accounting:account-report-form', kwargs={
@@ -379,7 +373,7 @@ class AccountViewTests(TestCase):
         }))
         self.assertEqual(resp.status_code, 200)
 
-    def test_get_account_report_view(self):        
+    def test_get_account_report_view(self):
         resp = self.client.get(reverse('accounting:account-report'), data={
             'default_periods': 3,
             'start_period': "",
@@ -392,34 +386,33 @@ class AccountViewTests(TestCase):
     def test_account_pdf_view(self):
         start = urllib.parse.quote(self.start.strftime("%d %B %Y"))
         end = urllib.parse.quote(self.end.strftime("%d %B %Y"))
-        
-        kwargs={
+
+        kwargs = {
             'start': start,
             'end': end,
             'account': 1000
         }
-        req = RequestFactory().get(reverse('accounting:account-report-pdf', 
-            kwargs=kwargs))
+        req = RequestFactory().get(reverse('accounting:account-report-pdf',
+                                           kwargs=kwargs))
         resp = views.AccountReportPDFView.as_view()(req, **kwargs)
         self.assertEqual(resp.status_code, 200)
 
 
 class TestReportViews(TestCase):
-    fixtures = ['accounts.json', 'employees.json','journals.json', 
-        'common.json', 'inventory.json','invoicing.json']
+    fixtures = ['accounts.json', 'employees.json', 'journals.json',
+                'common.json', 'inventory.json', 'invoicing.json']
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        
+
         cls.client = Client()
         cls.statement_period = {
-                'default_periods': 0,
-              'start_period': (TODAY - datetime.timedelta(days=30)).strftime(
-                  '%m/%d/%Y'),
-              'end_period': TODAY.strftime('%m/%d/%Y'),  
-            }
-
+            'default_periods': 0,
+            'start_period': (TODAY - datetime.timedelta(days=30)).strftime(
+                '%m/%d/%Y'),
+            'end_period': TODAY.strftime('%m/%d/%Y'),
+        }
 
     @classmethod
     def setUpTestData(cls):
@@ -431,7 +424,7 @@ class TestReportViews(TestCase):
         cls.start = cls.end - datetime.timedelta(days=30)
 
     def setUp(self):
-        #wont work in setUpClass
+        # wont work in setUpClass
         self.client.login(username='Testuser', password='123')
 
     def test_get_balance_sheet_page(self):
@@ -445,7 +438,7 @@ class TestReportViews(TestCase):
 
     def test_get_income_statement_page(self):
         resp = self.client.get(reverse('accounting:profit-and-loss'),
-            data=self.statement_period)
+                               data=self.statement_period)
         self.assertEqual(resp.status_code, 200)
 
     def test_get_income_statement_form_page(self):
@@ -461,18 +454,17 @@ class TestReportViews(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_get_profit_and_loss_csv(self):
-        
-        
+
         resp = self.client.get(reverse('accounting:profit-and-loss-csv', kwargs={
             'start': urllib.parse.quote(self.start.strftime("%d %B %Y")),
-            'end':urllib.parse.quote(self.end.strftime("%d %B %Y"))
+            'end': urllib.parse.quote(self.end.strftime("%d %B %Y"))
         }))
         self.assertEqual(resp.status_code, 200)
 
     def test_account_csv(self):
         resp = self.client.get(reverse('accounting:account-report-csv', kwargs={
             'start': urllib.parse.quote(self.start.strftime("%d %B %Y")),
-            'end':urllib.parse.quote(self.end.strftime("%d %B %Y")),
+            'end': urllib.parse.quote(self.end.strftime("%d %B %Y")),
             'account': 1000
         }))
         self.assertEqual(resp.status_code, 200)
@@ -480,7 +472,7 @@ class TestReportViews(TestCase):
     def test_journal_csv_report(self):
         resp = self.client.get(reverse('accounting:journal-report-csv', kwargs={
             'start': urllib.parse.quote(self.start.strftime("%d %B %Y")),
-            'end':urllib.parse.quote(self.end.strftime("%d %B %Y")),
+            'end': urllib.parse.quote(self.end.strftime("%d %B %Y")),
             'journal': 1
         }))
         self.assertEqual(resp.status_code, 200)
@@ -492,18 +484,18 @@ class TestReportViews(TestCase):
     def test_get_trial_balance_pdf(self):
         req = RequestFactory().get(reverse('accounting:trial-balance-pdf'))
         resp = views.TrialBalancePDFView.as_view()(req)
-        
+
         self.assertEqual(resp.status_code, 200)
 
     def test_profit_and_loss_pdf(self):
         kwargs = {
-            'start': (datetime.date.today() \
-                - datetime.timedelta(days=365)).strftime('%d %B %Y'),
+            'start': (datetime.date.today()
+                      - datetime.timedelta(days=365)).strftime('%d %B %Y'),
             'end': datetime.date.today().strftime('%d %B %Y')
         }
         req = RequestFactory().get(reverse('accounting:profit-and-loss-pdf', kwargs=kwargs))
         resp = views.ProfitAndLossReportPDFView.as_view()(req, **kwargs)
-        
+
         self.assertEqual(resp.status_code, 200)
 
 
@@ -512,9 +504,8 @@ class TestCurrencyViews(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        
-        cls.client = Client()
 
+        cls.client = Client()
 
     @classmethod
     def setUpTestData(cls):
@@ -536,7 +527,7 @@ class TestCurrencyViews(TestCase):
         create_test_common_entities(cls)
 
     def setUp(self):
-        #wont work in setUpClass
+        # wont work in setUpClass
         self.client.login(username='Testuser', password='123')
 
     def test_currency_converter_view(self):
@@ -545,11 +536,11 @@ class TestCurrencyViews(TestCase):
 
     def test_post_create_currency_exchange_table(self):
         # no get
-        resp = self.client.post(reverse('accounting:create-exchange-table'),    
-            data={
-                'name': 'Test',
-                'reference_currency': self.currency.pk
-            })
+        resp = self.client.post(reverse('accounting:create-exchange-table'),
+                                data={
+            'name': 'Test',
+            'reference_currency': self.currency.pk
+        })
 
         self.assertEqual(resp.status_code, 302)
 
@@ -559,28 +550,28 @@ class TestCurrencyViews(TestCase):
 
     def test_post_create_currency(self):
         resp = self.client.post(reverse('accounting:create-currency'),
-            data={
-                'name': 'Test',
-                'symbol': '$'
-            })
+                                data={
+            'name': 'Test',
+            'symbol': '$'
+        })
         self.assertEqual(resp.status_code, 302)
 
     def test_update_currency(self):
         resp = self.client.get(reverse('accounting:update-currency',
-            kwargs={
-                'pk': self.currency.pk
-            }))
+                                       kwargs={
+                                           'pk': self.currency.pk
+                                       }))
         self.assertEqual(resp.status_code, 200)
 
     def test_post_update_currency(self):
         resp = self.client.post(reverse('accounting:update-currency',
-            kwargs={
-                'pk': self.currency.pk
-            }),
-            data={
-                'name': 'Test',
-                'symbol': '$'
-            })
+                                        kwargs={
+                                            'pk': self.currency.pk
+                                        }),
+                                data={
+            'name': 'Test',
+            'symbol': '$'
+        })
         self.assertEqual(resp.status_code, 302)
 
     def test_currency_conversion_line_create_get(self):
@@ -594,14 +585,13 @@ class TestCurrencyViews(TestCase):
             data={
                 'currency': self.currency.pk,
                 'exchange_rate': 1,
-                'conversion_table': self.currency_table.pk 
-            })
+                'conversion_table': self.currency_table.pk
+        })
         self.assertEqual(resp.status_code, 302)
-
 
     def test_currency_conversion_line_update_get(self):
         resp = self.client.get(reverse(
-            'accounting:update-currency-conversion-line', 
+            'accounting:update-currency-conversion-line',
             kwargs={
                 'pk': self.currency_table_line.pk
             }))
@@ -609,17 +599,16 @@ class TestCurrencyViews(TestCase):
 
     def test_currency_conversion_line_update_post(self):
         resp = self.client.post(reverse(
-            'accounting:update-currency-conversion-line', 
+            'accounting:update-currency-conversion-line',
             kwargs={
                 'pk': self.currency_table_line.pk
             }),
             data={
                 'currency': self.currency.pk,
                 'exchange_rate': 1,
-                'conversion_table': self.currency_table.pk 
-            })
+                'conversion_table': self.currency_table.pk
+        })
         self.assertEqual(resp.status_code, 302)
-
 
     def test_update_reference_currency_functional_view(self):
         currency_two = Currency.objects.create(
@@ -629,26 +618,25 @@ class TestCurrencyViews(TestCase):
         resp = self.client.get('/accounting/api/update-reference-currency/%d/%d' % (
             self.currency_table.pk,
             currency_two.pk
-            )
+        )
         )
         self.assertEqual(json.loads(resp.content)['status'], 'ok')
 
-
     def test_create_exchange_table_conversion_line_function(self):
         resp = self.client.post('/accounting/create-conversion-line',
-            data={
-                'table_id': self.currency_table.pk,
-                'currency_id': self.currency.pk,
-                'rate': 1.5
-            })
+                                data={
+                                    'table_id': self.currency_table.pk,
+                                    'currency_id': self.currency.pk,
+                                    'rate': 1.5
+                                })
 
     def test_exchange_rate(self):
 
         resp = self.client.post(
-            '/accounting/api/update-exchange-rate/%d' % 
-                self.currency_table_line.pk, data={
-                   'rate': 2.5 
-                })
+            '/accounting/api/update-exchange-rate/%d' %
+            self.currency_table_line.pk, data={
+                'rate': 2.5
+            })
 
         self.assertEqual(json.loads(resp.content)['status'], 'ok')
 
@@ -678,7 +666,8 @@ class TestCurrencyViews(TestCase):
 
 
 class AccountingWizardTests(TestCase):
-    fixtures = ['accounts.json', 'settings.json', 'journals.json', 'common.json', 'employees.json']
+    fixtures = ['accounts.json', 'settings.json',
+                'journals.json', 'common.json', 'employees.json']
 
     @classmethod
     def setUpClass(cls):
@@ -728,18 +717,21 @@ class AccountingWizardTests(TestCase):
 
         for step, data in enumerate(data_list, 1):
             try:
-                resp = self.client.post(reverse('accounting:config-wizard'), data=data)
+                resp = self.client.post(
+                    reverse('accounting:config-wizard'), data=data)
                 if step == len(data_list):
                     self.assertEqual(resp.status_code, 302)
-                    
+
                 else:
                     self.assertEqual(resp.status_code, 200)
 
             except ValueError:
                 pass
 
+
 class AssetViewTests(TestCase):
-    fixtures = ['common.json', 'settings.json', 'accounts.json', 'journals.json']
+    fixtures = ['common.json', 'settings.json',
+                'accounts.json', 'journals.json']
 
     @classmethod
     def setUpClass(cls):
@@ -754,20 +746,20 @@ class AssetViewTests(TestCase):
         cls.asset = Asset.objects.create(
             name='Test Asset',
             description='Test description',
-            category = 0,
-            initial_value = 100,
-            credit_account = Account.objects.get(pk=1000),
-            depreciation_period = 5,
-            init_date = datetime.date.today(),
-            depreciation_method = 0,
-            salvage_value = 20,
+            category=0,
+            initial_value=100,
+            credit_account=Account.objects.get(pk=1000),
+            depreciation_period=5,
+            init_date=datetime.date.today(),
+            depreciation_method=0,
+            salvage_value=20,
         )
         cls.data = {
             'name': 'name',
             'description': 'description',
             'category': 0,
             'initial_value': 100,
-            'credit_account':1000,
+            'credit_account': 1000,
             'depreciation_period': 5,
             'init_date': datetime.date.today(),
             'depreciation_method': 0,
@@ -783,17 +775,18 @@ class AssetViewTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_post_asset_create_view(self):
-        resp = self.client.post(reverse('accounting:asset-create'), data=self.data)
+        resp = self.client.post(
+            reverse('accounting:asset-create'), data=self.data)
         self.assertEqual(resp.status_code, 302)
 
     def test_get_asset_update_view(self):
         resp = self.client.get(reverse('accounting:asset-update',
-            kwargs={'pk': 1}))
+                                       kwargs={'pk': 1}))
         self.assertEqual(resp.status_code, 200)
 
     def test_post_asset_update_view(self):
         resp = self.client.post(reverse('accounting:asset-update',
-            kwargs={'pk': 1}),data=self.data)
+                                        kwargs={'pk': 1}), data=self.data)
         self.assertEqual(resp.status_code, 302)
 
     def test_get_asset_list(self):
@@ -806,34 +799,34 @@ class AssetViewTests(TestCase):
         }))
         self.assertEqual(resp.status_code, 200)
 
+
 class ExpesnseViewTests(TestCase):
-    fixtures = ['common.json', 'accounts.json', 'journals.json', 'settings.json']
+    fixtures = ['common.json', 'accounts.json',
+                'journals.json', 'settings.json']
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.client=Client()
-
+        cls.client = Client()
 
     @classmethod
     def setUpTestData(cls):
-        cls.user = User.objects.create_superuser('Testuser', 'test@gmail.com', '123')
+        cls.user = User.objects.create_superuser(
+            'Testuser', 'test@gmail.com', '123')
         create_account_models(cls)
         cls.recurring = RecurringExpense.objects.create(
             cycle=7,
             expiration_date=datetime.date.today(),
             start_date=datetime.date.today(),
-            description = 'Test Description',
+            description='Test Description',
             category=0,
             amount=100,
             debit_account=cls.account_d
         )
-    
 
     def setUp(self):
         self.client.login(username="Testuser", password='123')
 
-    
     def test_get_expense_create_view(self):
         resp = self.client.get(reverse('accounting:expense-create'))
         self.assertEqual(resp.status_code, 200)
@@ -864,12 +857,12 @@ class ExpesnseViewTests(TestCase):
             'pk': self.expense.pk
         }))
         self.assertEqual(resp.status_code, 200)
-    
+
     def test_post_expense_delete_view(self):
 
         exp = Expense.objects.create(
             date=datetime.date.today(),
-            description = 'Test Description',
+            description='Test Description',
             category=0,
             amount=100,
             billable=False,
@@ -890,7 +883,7 @@ class ExpesnseViewTests(TestCase):
             'start_date': datetime.date.today(),
             'expiration_date': datetime.date.today(),
             'category': 1,
-            'cycle':1,
+            'cycle': 1,
             'amount': 10,
             'debit_account': 1000,
             'recorded_by': self.user.pk
@@ -904,15 +897,15 @@ class ExpesnseViewTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_post_recurring_expense_update_view(self):
-        resp = self.client.post(reverse('accounting:recurring-expense-update', 
-            kwargs={
-            'pk': self.recurring.pk
-        }), data={
+        resp = self.client.post(reverse('accounting:recurring-expense-update',
+                                        kwargs={
+                                            'pk': self.recurring.pk
+                                        }), data={
             'description': 'description',
             'start_date': datetime.date.today(),
             'expiration_date': datetime.date.today(),
             'category': 1,
-            'cycle':1,
+            'cycle': 1,
             'amount': 10,
             'debit_account': 1000,
             'recorded_by': self.user.pk
@@ -935,14 +928,14 @@ class ExpesnseViewTests(TestCase):
             'pk': self.expense.pk
         }))
         self.assertEqual(resp.status_code, 200)
-    
+
     def test_post_recurring_expense_delete_view(self):
 
         exp = RecurringExpense.objects.create(
             cycle=7,
             expiration_date=datetime.date.today(),
             start_date=datetime.date.today(),
-            description = 'Test Description',
+            description='Test Description',
             category=0,
             amount=100,
             debit_account=self.account_d

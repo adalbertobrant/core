@@ -13,16 +13,19 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='account',
             name='balance_sheet_category',
-            field=models.CharField(choices=[('current-assets', 'Current Assets'), ('non-current-assets', 'Long Term Assets'), ('current-liabilites', 'Current Liabilites'), ('long-term-liabilites', 'Long Term Liabilites'), ('equity', 'Equity'), ('not-included', 'Not Included')], default='current-assets', max_length=32),
+            field=models.CharField(choices=[('current-assets', 'Current Assets'), ('non-current-assets', 'Long Term Assets'), ('current-liabilites', 'Current Liabilites'),
+                                            ('long-term-liabilites', 'Long Term Liabilites'), ('equity', 'Equity'), ('not-included', 'Not Included')], default='current-assets', max_length=32),
         ),
         migrations.AlterField(
             model_name='asset',
             name='depreciation_method',
-            field=models.IntegerField(choices=[(0, 'Straight Line')], default=0),
+            field=models.IntegerField(
+                choices=[(0, 'Straight Line')], default=0),
         ),
         migrations.AlterField(
             model_name='interestbearingaccount',
             name='balance_sheet_category',
-            field=models.CharField(choices=[('current-assets', 'Current Assets'), ('non-current-assets', 'Long Term Assets'), ('current-liabilites', 'Current Liabilites'), ('long-term-liabilites', 'Long Term Liabilites'), ('equity', 'Equity'), ('not-included', 'Not Included')], default='current-assets', max_length=32),
+            field=models.CharField(choices=[('current-assets', 'Current Assets'), ('non-current-assets', 'Long Term Assets'), ('current-liabilites', 'Current Liabilites'),
+                                            ('long-term-liabilites', 'Long Term Liabilites'), ('equity', 'Equity'), ('not-included', 'Not Included')], default='current-assets', max_length=32),
         ),
     ]

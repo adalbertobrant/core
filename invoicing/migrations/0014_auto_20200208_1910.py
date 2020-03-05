@@ -14,11 +14,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='salesteam',
             name='leader',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='leader', to='invoicing.SalesRepresentative'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                    related_name='leader', to='invoicing.SalesRepresentative'),
         ),
         migrations.AddField(
             model_name='task',
             name='assigned',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.SalesRepresentative'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='invoicing.SalesRepresentative'),
         ),
     ]

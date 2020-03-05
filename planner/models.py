@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 import datetime
-from dateutil.relativedelta import relativedelta
 
 from django.db import models
 
@@ -13,11 +12,11 @@ import inventory
 from django.shortcuts import reverse
 
 
-
 class PlannerConfig(SingletonModel):
     number_of_agenda_items = models.PositiveIntegerField(default=10)
-    autogenerate_events_from_models = models.BooleanField(default=False, 
-        blank=True)
+    autogenerate_events_from_models = models.BooleanField(default=False,
+                                                          blank=True)
+
 
 class Event(models.Model):
     REMINDER_CHOICES = [
@@ -32,9 +31,9 @@ class Event(models.Model):
         (datetime.timedelta(days=14), '2 weeks before'),
         (datetime.timedelta(days=30), '1 month before')
     ]
-    
-    TIME_CHOICES = time_choices('06:00:00','18:00:00','00:30:00')
-    
+
+    TIME_CHOICES = time_choices('06:00:00', '18:00:00', '00:30:00')
+
     PRIORITY_CHOICES = [
         ('normal', 'Normal'),
         ('high', 'High'),
@@ -58,26 +57,27 @@ class Event(models.Model):
     ]
 
     date = models.DateField()
-    reminder = models.DurationField(choices=REMINDER_CHOICES, 
-        default=datetime.timedelta(seconds=0))
+    reminder = models.DurationField(choices=REMINDER_CHOICES,
+                                    default=datetime.timedelta(seconds=0))
     completed = models.BooleanField(default=False, blank=True)
     completion_time = models.DateTimeField(null=True, blank=True)
     start_time = models.TimeField(choices=TIME_CHOICES, default="08:00:00")
     end_time = models.TimeField(choices=TIME_CHOICES, default="09:00:00")
-    priority = models.CharField(max_length=8, choices=PRIORITY_CHOICES, 
-        default='normal')
+    priority = models.CharField(max_length=8, choices=PRIORITY_CHOICES,
+                                default='normal')
     description = models.TextField(blank=True)
-    repeat = models.PositiveSmallIntegerField(default=0, choices=REPEAT_CHOICES)
+    repeat = models.PositiveSmallIntegerField(
+        default=0, choices=REPEAT_CHOICES)
     repeat_active = models.BooleanField(default=False, blank=True)
-    label = models.CharField(max_length=32, blank=True) 
+    label = models.CharField(max_length=32, blank=True)
     icon = models.CharField(max_length=32, blank=True, choices=ICON_CHOICES)
-    owner = models.ForeignKey('employees.employee', on_delete=models.SET_NULL, null=True)
-    reminder_notification = models.ForeignKey('messaging.notification', 
-        blank=True, null=True, on_delete=models.SET_NULL)
+    owner = models.ForeignKey('employees.employee',
+                              on_delete=models.SET_NULL, null=True)
+    reminder_notification = models.ForeignKey('messaging.notification',
+                                              blank=True, null=True, on_delete=models.SET_NULL)
 
     def get_absolute_url(self):
         return reverse("planner:event-detail", kwargs={"pk": self.pk})
-    
 
     @property
     def participants(self):
@@ -90,25 +90,25 @@ class Event(models.Model):
             'customer': 1
         }
         evt_type = evt_mapping[evt_type]
-        participant = None 
+        participant = None
         if evt_type == 0:
             participant = EventParticipant.objects.create(
                 event=self,
-                participant_type = evt_type,
+                participant_type=evt_type,
                 employee=Employee.objects.get(pk=pk)
             )
         elif evt_type == 1:
             from invoicing.models import Customer
-            
+
             participant = EventParticipant.objects.create(
                 event=self,
-                participant_type = evt_type,
+                participant_type=evt_type,
                 customer=Customer.objects.get(pk=pk)
             )
         elif evt_type == 2:
             participant = EventParticipant.objects.create(
                 event=self,
-                participant_type = evt_type,
+                participant_type=evt_type,
                 supplier=inventory.models.Supplier.objects.get(pk=pk)
             )
         else:
@@ -116,7 +116,6 @@ class Event(models.Model):
 
         return participant
 
-    
     def complete(self):
         self.completed = True
         self.completion_time = datetime.datetime.now()
@@ -130,7 +129,7 @@ class Event(models.Model):
     def repeat_on_date(self, date):
         # eliminate past dates at the begining
         if self.date > date:
-            return False 
+            return False
 
         if self.repeat == 0:
             return False
@@ -167,16 +166,15 @@ class EventParticipant(models.Model):
     ]
     participant_type = models.PositiveSmallIntegerField(
         choices=PARTICIPANT_TYPES
-        )
-    employee = models.ForeignKey('employees.Employee', 
-        on_delete=models.SET_NULL, null=True, blank=True)
-    customer = models.ForeignKey('invoicing.Customer', 
-        on_delete=models.SET_NULL, null=True, blank=True)
-    supplier = models.ForeignKey('inventory.Supplier', 
-        on_delete=models.SET_NULL, null=True,  blank=True)
-    event = models.ForeignKey('planner.event', on_delete=models.SET_NULL, 
-        null=True)
-
+    )
+    employee = models.ForeignKey('employees.Employee',
+                                 on_delete=models.SET_NULL, null=True, blank=True)
+    customer = models.ForeignKey('invoicing.Customer',
+                                 on_delete=models.SET_NULL, null=True, blank=True)
+    supplier = models.ForeignKey('inventory.Supplier',
+                                 on_delete=models.SET_NULL, null=True,  blank=True)
+    event = models.ForeignKey('planner.event', on_delete=models.SET_NULL,
+                              null=True)
 
     def __str__(self):
         if self.participant_type == 0:
@@ -198,9 +196,9 @@ class EventParticipant(models.Model):
     @property
     def link(self):
         if self.participant_type == 0:
-            return reverse('employees:employee-detail', kwargs={'pk':self.employee.pk})
+            return reverse('employees:employee-detail', kwargs={'pk': self.employee.pk})
         if self.participant_type == 1:
-            return reverse('invoicing:customer-details', kwargs={'pk':self.customer.pk})
+            return reverse('invoicing:customer-details', kwargs={'pk': self.customer.pk})
 
         if self.participant_type == 2:
-            return reverse('inventory:supplier-detail', kwargs={'pk':self.supplier.pk})
+            return reverse('inventory:supplier-detail', kwargs={'pk': self.supplier.pk})

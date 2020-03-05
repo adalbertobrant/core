@@ -1,24 +1,28 @@
 import datetime
 import urllib
 
+
 def apply_style(context):
     styles = {
-            1: "simple",
-            2: "blue",
-            3: "steel",
-            4: "verdant",
-            5: "warm"
-            }
+        1: "simple",
+        2: "blue",
+        3: "steel",
+        4: "verdant",
+        5: "warm"
+    }
     context['style'] = styles[context["document_theme"]]
-    return context 
+    return context
+
 
 class PeriodSelectionException(Exception):
     pass
+
 
 def encode_period(start, end):
     start = start.strftime("%d %B %Y")
     end = end.strftime("%d %B %Y")
     return start, end
+
 
 def extract_encoded_period(kwargs):
     start = datetime.datetime.strptime(urllib.parse.unquote(
@@ -28,22 +32,24 @@ def extract_encoded_period(kwargs):
 
     return start, end
 
+
 def extract_period(kwargs):
     n = kwargs.get('default_periods', None)
     if n and n != '0':
         deltas = {
-                '1': 7,
-                '2': 30,
-                '3': 90,
-                '4': 180,
-                '5': 365
-            }
+            '1': 7,
+            '2': 30,
+            '3': 90,
+            '4': 180,
+            '5': 365
+        }
         end = datetime.date.today()
         start = end - datetime.timedelta(
-                days=deltas[n])
+            days=deltas[n])
     else:
         if kwargs['start_period'] == "" or kwargs['end_period'] == "":
-            raise PeriodSelectionException('The form requires either a the first field be filled or the last two.')
+            raise PeriodSelectionException(
+                'The form requires either a the first field be filled or the last two.')
         if '-' in kwargs['start_period']:
             start = datetime.datetime.strptime(
                 kwargs['start_period'], "%Y-%m-%d")
@@ -56,6 +62,7 @@ def extract_period(kwargs):
                 kwargs['end_period'], "%m/%d/%Y")
 
     return (start, end)
+
 
 def time_choices(start, stop, interval, delta=False):
     """
@@ -89,13 +96,13 @@ def time_choices(start, stop, interval, delta=False):
     while current_time < _stop:
         if delta:
             times.append((datetime.timedelta(hours=current_time.hour,
-                                            minutes=current_time.minute),
-                                                current_time.strftime("%H:%M")))
+                                             minutes=current_time.minute),
+                          current_time.strftime("%H:%M")))
         else:
-            times.append((current_time ,current_time.strftime("%H:%M")))
-        
-        current_time = (datetime.datetime.combine(datetime.date.today(), current_time) \
-                        + datetime.timedelta(hours = _interval.hour,
-                                            minutes=_interval.minute,
-                                            seconds=_interval.second)).time()
+            times.append((current_time, current_time.strftime("%H:%M")))
+
+        current_time = (datetime.datetime.combine(datetime.date.today(), current_time)
+                        + datetime.timedelta(hours=_interval.hour,
+                                             minutes=_interval.minute,
+                                             seconds=_interval.second)).time()
     return times

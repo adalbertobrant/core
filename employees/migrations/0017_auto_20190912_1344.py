@@ -22,11 +22,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='contract',
             name='employee',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee'),
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Employee'),
         ),
         migrations.AddField(
             model_name='termination',
             name='contract',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Contract'),
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='employees.Contract'),
         ),
     ]

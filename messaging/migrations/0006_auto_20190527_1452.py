@@ -16,7 +16,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Email',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('subject', models.CharField(blank=True, max_length=255)),
                 ('body', models.TextField()),
                 ('sent', models.BooleanField(default=False)),
@@ -26,23 +27,27 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='EmailAddress',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('address', models.CharField(max_length=255)),
             ],
         ),
         migrations.AddField(
             model_name='email',
             name='copy',
-            field=models.ManyToManyField(blank=True, related_name='copy_email', to='messaging.EmailAddress'),
+            field=models.ManyToManyField(
+                blank=True, related_name='copy_email', to='messaging.EmailAddress'),
         ),
         migrations.AddField(
             model_name='email',
             name='sender',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='email_author', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                    related_name='email_author', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='email',
             name='to',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='to', to='messaging.EmailAddress'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                    related_name='to', to='messaging.EmailAddress'),
         ),
     ]

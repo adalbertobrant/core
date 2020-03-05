@@ -15,8 +15,8 @@ class SalesConfig(SingletonModel):
     default_quotation_comments = models.TextField(blank=True)
     default_credit_note_comments = models.TextField(blank=True)
     default_terms = models.TextField(blank=True)
-    sales_tax = models.ForeignKey('accounting.Tax', on_delete=models.SET_NULL,  
-        null=True, blank="True")
+    sales_tax = models.ForeignKey('accounting.Tax', on_delete=models.SET_NULL,
+                                  null=True, blank="True")
     include_shipping_address = models.BooleanField(default=False)
     include_tax_in_invoice = models.BooleanField(default=True)
     include_units_in_sales_invoice = models.BooleanField(default=True)
@@ -27,13 +27,11 @@ class SalesConfig(SingletonModel):
     use_bill_invoice = models.BooleanField(default=True)
     use_combined_invoice = models.BooleanField(default=True)
     is_configured = models.BooleanField(default=False)
-    default_warehouse = models.ForeignKey('inventory.warehouse', default=1, on_delete=models.SET_DEFAULT)
-
+    default_warehouse = models.ForeignKey(
+        'inventory.warehouse', default=1, on_delete=models.SET_DEFAULT)
 
     @classmethod
     def get_config_dict(cls):
         d = cls.objects.first().__dict__
         del d['_state']
         return d
-
-    

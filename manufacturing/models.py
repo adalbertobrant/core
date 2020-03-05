@@ -59,35 +59,38 @@ multistage process
     - strapping 
 '''
 
+
 class ProductionOrder(models.Model):
     date = models.DateField()
     due = models.DateField()
-    customer = models.ForeignKey('invoicing.Customer', on_delete=models.SET_NULL, 
-        blank=True, null=True)
-    product = models.ForeignKey('inventory.InventoryItem', on_delete=models.SET_NULL, null=True)
-    process = models.ForeignKey('manufacturing.Process', on_delete=models.SET_NULL, null=True)
+    customer = models.ForeignKey('invoicing.Customer', on_delete=models.SET_NULL,
+                                 blank=True, null=True)
+    product = models.ForeignKey(
+        'inventory.InventoryItem', on_delete=models.SET_NULL, null=True)
+    process = models.ForeignKey(
+        'manufacturing.Process', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.customer + ", due: " + self.due
 
+
 class Process(models.Model):
- #property 
-    parent_process = models.ForeignKey('manufacturing.Process', 
-        on_delete=models.SET_NULL, null=True, blank=True) 
-    process_equipment = models.ForeignKey('manufacturing.ProcessMachineGroup', 
-        on_delete=models.SET_NULL, null=True, blank=True)
-    name = models.CharField(max_length = 255)
+ # property
+    parent_process = models.ForeignKey('manufacturing.Process',
+                                       on_delete=models.SET_NULL, null=True, blank=True)
+    process_equipment = models.ForeignKey('manufacturing.ProcessMachineGroup',
+                                          on_delete=models.SET_NULL, null=True, blank=True)
+    name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    bill_of_materials = models.ForeignKey('manufacturing.BillOfMaterials', 
-        on_delete=models.SET_NULL, null=True, blank=True)
-    type = models.PositiveSmallIntegerField(choices = [
-        (0, 'Line'),(1, 'Batch')])#line or batch
-    duration = models.DurationField(blank=True, null=True) #batch
+    bill_of_materials = models.ForeignKey('manufacturing.BillOfMaterials',
+                                          on_delete=models.SET_NULL, null=True, blank=True)
+    type = models.PositiveSmallIntegerField(choices=[
+        (0, 'Line'), (1, 'Batch')])  # line or batch
+    duration = models.DurationField(blank=True, null=True)  # batch
     rate = models.ForeignKey(
         'manufacturing.ProcessRate', on_delete=models.SET_NULL, null=True, blank=True)
-    product_list = models.ForeignKey('manufacturing.ProductList', 
-        on_delete=models.SET_NULL, null=True, blank=True)
-
+    product_list = models.ForeignKey('manufacturing.ProductList',
+                                     on_delete=models.SET_NULL, null=True, blank=True)
 
     @property
     def process_type_string(self):
@@ -108,13 +111,15 @@ class Process(models.Model):
     def __str__(self):
         return self.name
 
+
 class ProcessRate(models.Model):
     UNIT_TIME_CHOICES = [
-            (0, 'per second'),
-            (1, 'per minute'),
-            (2, 'per hour'),
-        ]
-    unit = models.ForeignKey('inventory.UnitOfMeasure', on_delete=models.SET_NULL, null=True)
+        (0, 'per second'),
+        (1, 'per minute'),
+        (2, 'per hour'),
+    ]
+    unit = models.ForeignKey('inventory.UnitOfMeasure',
+                             on_delete=models.SET_NULL, null=True)
     unit_time = models.PositiveSmallIntegerField(
         choices=UNIT_TIME_CHOICES
     )
@@ -122,12 +127,12 @@ class ProcessRate(models.Model):
 
     def __str__(self):
         return str(self.unit) + '/' + self.unit_time_string
-        
 
-    @property 
+    @property
     def unit_time_string(self):
         mapping = dict(self.UNIT_TIME_CHOICES)
         return mapping[self.unit_time]
+
 
 class ProductList(models.Model):
     name = models.CharField(max_length=255)
@@ -138,7 +143,7 @@ class ProductList(models.Model):
 
     def products(self):
         return ProcessProduct.objects.filter(product_list=self)
-        
+
 
 class ProcessProduct(models.Model):
     PRODUCT_TYPES = [
@@ -149,55 +154,68 @@ class ProcessProduct(models.Model):
     ]
     name = models.CharField(max_length=255)
     description = models.TextField()
-    type = models.PositiveSmallIntegerField(choices=PRODUCT_TYPES)# main product, byproduct, waste,  wip
-    unit = models.ForeignKey('inventory.UnitOfMeasure', on_delete=models.SET_NULL, null=True)
-    finished_goods= models.BooleanField(default=False)
-    inventory_product = models.ForeignKey('inventory.InventoryItem', on_delete=models.SET_NULL, null=True)
-    product_list = models.ForeignKey('manufacturing.ProductList', on_delete=models.SET_NULL, 
-        blank=True, 
-        null=True)
+    # main product, byproduct, waste,  wip
+    type = models.PositiveSmallIntegerField(choices=PRODUCT_TYPES)
+    unit = models.ForeignKey('inventory.UnitOfMeasure',
+                             on_delete=models.SET_NULL, null=True)
+    finished_goods = models.BooleanField(default=False)
+    inventory_product = models.ForeignKey(
+        'inventory.InventoryItem', on_delete=models.SET_NULL, null=True)
+    product_list = models.ForeignKey('manufacturing.ProductList', on_delete=models.SET_NULL,
+                                     blank=True,
+                                     null=True)
 
     def __str__(self):
         return self.name
-        
+
     def type_string(self):
         return dict(self.PRODUCT_TYPES)[self.type]
 
+
 class WasteGenerationReport(models.Model):
-    product = models.ForeignKey('manufacturing.ProcessProduct', on_delete=models.SET_NULL, null=True)
-    unit = models.ForeignKey('inventory.UnitOfMeasure', on_delete=models.SET_NULL, null=True)
+    product = models.ForeignKey(
+        'manufacturing.ProcessProduct', on_delete=models.SET_NULL, null=True)
+    unit = models.ForeignKey('inventory.UnitOfMeasure',
+                             on_delete=models.SET_NULL, null=True)
     quantity = models.FloatField()
     comments = models.TextField()
-    recorded_by = models.ForeignKey('employees.Employee', on_delete=models.SET_NULL, null=True)
+    recorded_by = models.ForeignKey(
+        'employees.Employee', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return str(self.product)
-        
+
+
 class BillOfMaterials(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
 
     def __str__(self):
         return self.name
-        
+
+
 class BillOfMaterialsLine(models.Model):
-    bill = models.ForeignKey('manufacturing.BillOfMaterials', on_delete=models.SET_NULL, null=True)
+    bill = models.ForeignKey(
+        'manufacturing.BillOfMaterials', on_delete=models.SET_NULL, null=True)
     type = models.PositiveSmallIntegerField(choices=[
         (0, 'Raw Material'),
         (1, 'Process Product')
-    ]) # integer 
-    raw_material = models.ForeignKey('inventory.InventoryItem', on_delete=models.SET_NULL, null=True, blank=True)
-    product = models.ForeignKey('manufacturing.ProcessProduct', on_delete=models.SET_NULL, null=True, blank=True)
+    ])  # integer
+    raw_material = models.ForeignKey(
+        'inventory.InventoryItem', on_delete=models.SET_NULL, null=True, blank=True)
+    product = models.ForeignKey(
+        'manufacturing.ProcessProduct', on_delete=models.SET_NULL, null=True, blank=True)
     quantity = models.FloatField()
-    unit =  models.ForeignKey('inventory.UnitOfMeasure', on_delete=models.SET_NULL, null=True)
+    unit = models.ForeignKey('inventory.UnitOfMeasure',
+                             on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         if self.raw_material is not None:
             return str(self.raw_material)
         else:
             return str(self.product)
-        
-    
+
+
 class ProcessMachineGroup(models.Model):
     name = models.CharField(max_length=255)
     description = models. TextField()
@@ -209,20 +227,23 @@ class ProcessMachineGroup(models.Model):
     def machines(self):
         return ProcessMachine.objects.filter(machine_group=self)
 
+
 class ProcessMachine(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     date_commissioned = models.DateField()
-    asset_data = models.ForeignKey('accounting.Asset', on_delete=models.SET_NULL, null=True)
+    asset_data = models.ForeignKey(
+        'accounting.Asset', on_delete=models.SET_NULL, null=True)
     machine_group = models.ForeignKey(
-        'manufacturing.ProcessMachineGroup', 
-        on_delete=models.SET_NULL,  
-        blank=True, 
+        'manufacturing.ProcessMachineGroup',
+        on_delete=models.SET_NULL,
+        blank=True,
         null=True)
 
     def __str__(self):
         return self.name
-        
+
+
 '''
 class MachineComponent(models.Model):
     name = 
@@ -234,27 +255,27 @@ class MachineComponent(models.Model):
     level = 
 '''
 
-class Shift(models.Model):
-    name = models.CharField(max_length =255)
-    team = models.ForeignKey('services.ServiceTeam', 
-        on_delete=models.SET_NULL,
-        blank=True, 
-        null=True)
-    supervisor = models.ForeignKey('employees.Employee', 
-        on_delete=models.SET_NULL, null=True,
-        related_name='supervisor')
-    employees = models.ManyToManyField('employees.Employee')
-    machine = models.ForeignKey('manufacturing.ProcessMachine', on_delete=models.SET_NULL, null=True, default=1)
 
+class Shift(models.Model):
+    name = models.CharField(max_length=255)
+    team = models.ForeignKey('services.ServiceTeam',
+                             on_delete=models.SET_NULL,
+                             blank=True,
+                             null=True)
+    supervisor = models.ForeignKey('employees.Employee',
+                                   on_delete=models.SET_NULL, null=True,
+                                   related_name='supervisor')
+    employees = models.ManyToManyField('employees.Employee')
+    machine = models.ForeignKey(
+        'manufacturing.ProcessMachine', on_delete=models.SET_NULL, null=True, default=1)
 
     def __str__(self):
         return self.name
 
-        
+
 # engineering shift, bm shift etc
 class ShiftSchedule(models.Model):
     name = models.CharField(max_length=255)
-    
 
     def __str__(self):
         return self.name
@@ -263,24 +284,25 @@ class ShiftSchedule(models.Model):
     def shifts(self):
         return ShiftScheduleLine.objects.filter(schedule=self)
 
+
 class ShiftScheduleLine(models.Model):
-    schedule = models.ForeignKey('manufacturing.ShiftSchedule', on_delete=models.SET_NULL, null=True)
+    schedule = models.ForeignKey(
+        'manufacturing.ShiftSchedule', on_delete=models.SET_NULL, null=True)
     start_time = models.TimeField()
     end_time = models.TimeField()
-    monday = models.BooleanField(default= True)
-    tuesday = models.BooleanField(default= True)
-    wednesday = models.BooleanField(default= True)
-    thursday = models.BooleanField(default= True)
-    friday = models.BooleanField(default= True)
-    saturday = models.BooleanField(default= False)
-    sunday = models.BooleanField(default= False)
-    shift = models.ForeignKey('manufacturing.Shift', on_delete=models.SET_NULL, null=True)
-
+    monday = models.BooleanField(default=True)
+    tuesday = models.BooleanField(default=True)
+    wednesday = models.BooleanField(default=True)
+    thursday = models.BooleanField(default=True)
+    friday = models.BooleanField(default=True)
+    saturday = models.BooleanField(default=False)
+    sunday = models.BooleanField(default=False)
+    shift = models.ForeignKey('manufacturing.Shift',
+                              on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return str(self.schedule) + ' ' + str(self.shift)
 
-    
 
 '''
 ====================================================
@@ -292,18 +314,23 @@ class ShiftScheduleLine(models.Model):
 -----------------------------------------------------
 '''
 
+
 class ManufacturingAssociate(models.Model):
-    employee = models.ForeignKey('employees.Employee', on_delete=models.SET_NULL, null=True)
+    employee = models.ForeignKey(
+        'employees.Employee', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return str(self.employee)
 
+
 class ProductionSchedule(models.Model):
-    machine = models.ForeignKey('manufacturing.ProcessMachine', on_delete=models.SET_NULL, null=True)
+    machine = models.ForeignKey(
+        'manufacturing.ProcessMachine', on_delete=models.SET_NULL, null=True)
 
 
-class ProductionScheduleLine(models.Model):#rename event 
-    order = models.ForeignKey('manufacturing.ProductionOrder', on_delete=models.SET_NULL, null=True)
+class ProductionScheduleLine(models.Model):  # rename event
+    order = models.ForeignKey(
+        'manufacturing.ProductionOrder', on_delete=models.SET_NULL, null=True)
     date = models.DateField()
     start_time = models.TimeField()
     duration = models.DurationField()
@@ -311,5 +338,6 @@ class ProductionScheduleLine(models.Model):#rename event
     @property
     def shift(self):
         raise NotImplementedError()
+
 
 '''Work in progress must be part of manufacturing because the it is not ordered from suppliers or sold so it does not fit in with the rest of the inventory system.'''

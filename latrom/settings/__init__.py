@@ -9,4 +9,3 @@ if PRODUCTION:
 
 else:
     from latrom.settings.development import *
-    

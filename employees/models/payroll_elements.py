@@ -1,30 +1,24 @@
 
-import random
-import datetime
 from decimal import Decimal as D
-from functools import reduce
 from django.db import models
-from django.db.models import Q
-from django.utils import timezone
 
-from common_data.models import Person, SingletonModel, SoftDeletionModel
-import planner
-import accounting
-import invoicing
+from common_data.models import SingletonModel, SoftDeletionModel
 from django.shortcuts import reverse
+
 
 class Allowance(SoftDeletionModel):
     '''simple object that tracks a fixed benefit or allowance granted as 
     part of a pay grade'''
-    name = models.CharField(max_length = 32)
+    name = models.CharField(max_length=32)
     amount = models.FloatField()
     taxable = models.BooleanField(default=True)
+
     def __str__(self):
         return self.name
-    
+
     def get_absolute_url(self):
         return reverse("employees:allowance-details", kwargs={"pk": self.pk})
-    
+
 
 class Deduction(SoftDeletionModel):
     '''
@@ -55,17 +49,18 @@ class Deduction(SoftDeletionModel):
     payroll_taxes = models.ManyToManyField('employees.payrolltax', blank=True)
     rate = models.FloatField(default=0)
     fixed_amount = models.FloatField(default=0)
-    employer_contribution = models.FloatField(default=0.0)#percentage of deduction total
+    employer_contribution = models.FloatField(
+        default=0.0)  # percentage of deduction total
     liability_account = models.ForeignKey(
         'accounting.account',
         on_delete=models.SET_DEFAULT,
         default=2010,
-        related_name='liability_account')# salaries 
+        related_name='liability_account')  # salaries
     account_paid_into = models.ForeignKey(
         'accounting.account',
         on_delete=models.SET_DEFAULT,
         default=5008,
-        related_name='expense_account')# salaries 
+        related_name='expense_account')  # salaries
 
     def __str__(self):
         return self.name
@@ -82,11 +77,10 @@ class Deduction(SoftDeletionModel):
         if self.deduction_method == 0:
             tax_total = 0
             income = 0
-            #to avoid infinite recursion add all income that is taxable
+            # to avoid infinite recursion add all income that is taxable
             taxable = 0
             taxable += payslip.paygrade_['salary'] + payslip.overtime_pay \
                 + payslip.normal_pay
-            
 
             if self.basic_income:
                 income += payslip.paygrade_['salary']
@@ -99,13 +93,12 @@ class Deduction(SoftDeletionModel):
                     income += payslip.commission_pay
                     taxable += payslip.commission_pay
 
-            #all the above are taxable
-            
+            # all the above are taxable
+
             for benefit in self.benefits.all():
                 if benefit.pk in payslip.paygrade_['allowances']:
                     income += benefit.amount
-                    
-                
+
             for pk in payslip.paygrade_['allowances']:
                 benefit = Allowance.objects.get(pk=pk)
                 if benefit.taxable:
@@ -113,14 +106,14 @@ class Deduction(SoftDeletionModel):
 
             if self.payroll_taxes.all().count() > 0:
                 for pk in payslip.paygrade_['payroll_taxes']:
-                    #skip  taxes not in pay slip
+                    # skip  taxes not in pay slip
                     if not int(pk) in [i.pk for i in self.payroll_taxes.all()]:
                         continue
                     tax = PayrollTax.objects.get(pk=pk)
                     tax_total += tax.tax(taxable)
-            
+
             deduction = (income + float(tax_total)) * (self.rate / 100.0)
-            
+
         else:
             deduction = self.fixed_amount
 
@@ -128,6 +121,7 @@ class Deduction(SoftDeletionModel):
 
     def get_absolute_url(self):
         return reverse("employees:deduction-detail", kwargs={"pk": self.pk})
+
 
 class CommissionRule(SoftDeletionModel):
     '''simple model for giving sales representatives commission based on 
@@ -146,11 +140,11 @@ class CommissionRule(SoftDeletionModel):
 
 class PayrollTax(models.Model):
     name = models.CharField(max_length=64)
-    paid_by = models.IntegerField(choices=[(0, 'Employees'), (1, 'Employer'), (2, 'Both')])
+    paid_by = models.IntegerField(
+        choices=[(0, 'Employees'), (1, 'Employer'), (2, 'Both')])
 
     def get_absolute_url(self):
         return reverse("employees:payroll-tax", kwargs={"pk": self.pk})
-    
 
     @property
     def paid_by_string(self):
@@ -159,7 +153,7 @@ class PayrollTax(models.Model):
     def tax(self, gross):
         bracket = self.get_bracket(gross)
         if bracket:
-            return (D(gross) * (bracket.rate / D(100.0))) - bracket.deduction 
+            return (D(gross) * (bracket.rate / D(100.0))) - bracket.deduction
         return 0
 
     def get_bracket(self, gross):
@@ -169,29 +163,27 @@ class PayrollTax(models.Model):
                 return bracket
         return None
 
-
     def __str__(self):
-        return self.name 
-        
-    def add_bracket(self, lower, upper, rate, deduction):
-        #insert code to prevent overlap
-        TaxBracket.objects.create(payroll_tax=self,
-            lower_boundary=lower, 
-            upper_boundary=upper,
-            rate=rate,
-            deduction=deduction)
+        return self.name
 
+    def add_bracket(self, lower, upper, rate, deduction):
+        # insert code to prevent overlap
+        TaxBracket.objects.create(payroll_tax=self,
+                                  lower_boundary=lower,
+                                  upper_boundary=upper,
+                                  rate=rate,
+                                  deduction=deduction)
 
     @property
     def list_brackets(self):
-        return TaxBracket.objects.filter(payroll_tax =self).order_by('upper_boundary')
+        return TaxBracket.objects.filter(payroll_tax=self).order_by('upper_boundary')
 
-    #no detail view
+    # no detail view
 
 
 class TaxBracket(models.Model):
-    payroll_tax = models.ForeignKey('employees.PayrollTax', 
-        on_delete=models.SET_NULL, null=True)
+    payroll_tax = models.ForeignKey('employees.PayrollTax',
+                                    on_delete=models.SET_NULL, null=True)
     lower_boundary = models.DecimalField(max_digits=16, decimal_places=2)
     upper_boundary = models.DecimalField(max_digits=16, decimal_places=2)
     rate = models.DecimalField(max_digits=16, decimal_places=2)
@@ -206,18 +198,18 @@ class PayrollSchedule(SingletonModel):
 class PayrollDate(models.Model):
     '''Represents a date in the month when payroll is run. On each such date all employees in the relevant grades, departments or employee list have paychecks created.'''
     PAYROLL_DATE_CHOICES = [(i, i) for i in range(1, 29)]
-    
-    date = models.PositiveSmallIntegerField(choices = PAYROLL_DATE_CHOICES)
+
+    date = models.PositiveSmallIntegerField(choices=PAYROLL_DATE_CHOICES)
     employees = models.ManyToManyField('employees.employee')
     departments = models.ManyToManyField('employees.department')
     pay_grades = models.ManyToManyField('employees.paygrade')
-    schedule = models.ForeignKey('employees.payrollschedule', default=1, 
-        on_delete=models.SET_DEFAULT)
+    schedule = models.ForeignKey('employees.payrollschedule', default=1,
+                                 on_delete=models.SET_DEFAULT)
 
     def __str__(self):
         return f"{self.schedule.name}: {self.date}"
 
-    @property 
+    @property
     def number_of_employees(self):
         return len(self.all_employees)
 
@@ -226,20 +218,19 @@ class PayrollDate(models.Model):
         employees = list(self.employees.all())
 
         for department in self.departments.all():
-            employees += [employee for employee in department.employees.all() \
-                if employee not in employees]
+            employees += [employee for employee in department.employees.all()
+                          if employee not in employees]
 
         for grade in self.pay_grades.all():
-            employees += [employee for employee in grade.employee_set.all() \
-                if employee not in employees]
+            employees += [employee for employee in grade.employee_set.all()
+                          if employee not in employees]
 
         return employees
 
     @property
     def date_suffix(self):
         suffices = ['st', 'nd', 'rd'] + ['th' for i in range(3, 29)]
-        return suffices[self.date -1]
+        return suffices[self.date - 1]
 
     def get_absolute_url(self):
         return reverse("employees:payroll-date-detail", kwargs={"pk": self.pk})
-    

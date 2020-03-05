@@ -1,22 +1,16 @@
-from django.views.generic import TemplateView, DetailView, ListView
 
 from rest_framework.response import Response
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import reverse, get_object_or_404
-from django.contrib.auth.mixins import LoginRequiredMixin
 
-from rest_framework.generics import RetrieveAPIView, ListAPIView
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-import datetime
 from messaging import models, forms, serializers
 from django.db.models import Q
 from django.contrib.auth.models import User
 from latrom.settings import MEDIA_ROOT
-from common_data.utilities.mixins import ContextMixin
 import os
 import json
-import urllib
 from messaging.email_api.email import EmailSMTP
 from draftjs_exporter.html import HTML as exporterHTML
 from rest_framework.pagination import PageNumberPagination
@@ -27,6 +21,7 @@ class MessagingPaginator(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'page_size'
     max_page_size = 10
+
 
 class BubbleAPIViewset(ModelViewSet):
     queryset = models.Bubble.objects.all()
@@ -48,9 +43,11 @@ class GroupAPIViewset(ModelViewSet):
     queryset = models.Group.objects.all()
     serializer_class = serializers.GroupSerializer
 
+
 class ChatAPIViewset(ModelViewSet):
     queryset = models.Chat.objects.all()
     serializer_class = serializers.ChatSerializer
+
 
 class EmailAddressAPIViewset(ModelViewSet):
     queryset = models.EmailAddress.objects.all()
@@ -60,7 +57,7 @@ class EmailAddressAPIViewset(ModelViewSet):
 class EmailAPIViewset(ModelViewSet):
     queryset = models.Email.objects.all().order_by('-created_timestamp')
     pagination_class = MessagingPaginator
-    
+
     def get_serializer_class(self):
         if self.request.method in ['GET']:
             return serializers.EmailRetrieveSerializer
@@ -68,10 +65,9 @@ class EmailAPIViewset(ModelViewSet):
         return serializers.EmailSerializer
 
 
-
 def close_chat(request, pk=None):
     chat = get_object_or_404(models.Chat, pk=pk)
-    chat.archived=True
+    chat.archived = True
     chat.save()
 
     return HttpResponseRedirect(reverse('messaging:chat-list'))
@@ -79,18 +75,20 @@ def close_chat(request, pk=None):
 
 def close_group(request, pk=None):
     group = get_object_or_404(models.Group, pk=pk)
-    group.active=False
+    group.active = False
     group.save()
 
     return HttpResponseRedirect(reverse('messaging:group-list'))
+
 
 class EmailFolderAPIViewset(ModelViewSet):
     queryset = models.EmailFolder.objects.all()
     serializer_class = serializers.EmailFolderSerializer
 
+
 class FolderAPIView(APIView):
-    def get(self, request,folder=None):
-        #maybe try to sync latest emails here?
+    def get(self, request, folder=None):
+        # maybe try to sync latest emails here?
         folder = models.EmailFolder.objects.get(pk=folder)
         emails = folder.emails
         paginator = MessagingPaginator()
@@ -98,46 +96,45 @@ class FolderAPIView(APIView):
         data = serializers.EmailRetrieveSerializer(qs, many=True, context={
             'request': request
         }).data
-        
+
         return Response(data)
 
 
 def reply_email(request, pk=None):
     email = get_object_or_404(models.Email, pk=pk)
-    
+
     profile = models.UserProfile.objects.get(user=email.owner)
     g = EmailSMTP(profile)
 
-    #set up 
+    # set up
     config = {}
     exporter = exporterHTML(config)
     form = forms.AxiosEmailForm(request.POST, request.FILES)
 
     if form.is_valid():
         body = exporter.render(
-                json.loads(form.cleaned_data['body'])
-            )
+            json.loads(form.cleaned_data['body'])
+        )
         if form.cleaned_data['attachment']:
-            g.send_email_with_attachment(email.subject, 
-                                            email.to.address, 
-                                            body, 
-                                            form.cleaned_data['attachment'],
-                                            html=True)
+            g.send_email_with_attachment(email.subject,
+                                         email.to.address,
+                                         body,
+                                         form.cleaned_data['attachment'],
+                                         html=True)
         else:
             g.send_html_email(email.subject, email.to.address, body)
 
-
-        msg =models.Email.objects.create(
-        to=email.sent_from,
-        sent_from = email.to,
-        subject =email.subject,
-        owner=request.user,
-        attachment=form.cleaned_data['attachment'],
-        sent=True,
-        folder='sent',
-    )
+        msg = models.Email.objects.create(
+            to=email.sent_from,
+            sent_from=email.to,
+            subject=email.subject,
+            owner=request.user,
+            attachment=form.cleaned_data['attachment'],
+            sent=True,
+            folder='sent',
+        )
         msg.write_body(body)
-        
+
         return JsonResponse({'status': 'ok'})
 
     else:
@@ -145,49 +142,52 @@ def reply_email(request, pk=None):
 
 
 def notification_service(request):
-        try:        
-            unread = models.Notification.objects.filter(read=False, 
-                user=request.user)    
-        except:        
-            return JsonResponse({'latest': {}, 'unread': 0})    
-            
-        if unread.count() == 0:        
-            return JsonResponse({'latest': {}, 'unread': 0})    
-        
-        latest = unread.latest('timestamp')    
-        data = {        
-            'latest': {            
-                'title': latest.title,
-                'message': latest.message,
-                'action': latest.action,
-                'id': latest.pk,            
-                'stamp': latest.timestamp.strftime("%d, %B, %Y")        },      'unread': unread.count()
-                    }    
-        
-        return JsonResponse(data)
-        
+    try:
+        unread = models.Notification.objects.filter(read=False,
+                                                    user=request.user)
+    except:
+        return JsonResponse({'latest': {}, 'unread': 0})
+
+    if unread.count() == 0:
+        return JsonResponse({'latest': {}, 'unread': 0})
+
+    latest = unread.latest('timestamp')
+    data = {
+        'latest': {
+            'title': latest.title,
+            'message': latest.message,
+            'action': latest.action,
+            'id': latest.pk,
+            'stamp': latest.timestamp.strftime("%d, %B, %Y")},      'unread': unread.count()
+    }
+
+    return JsonResponse(data)
+
+
 def mark_notification_read(request, pk=None):
-    notification = get_object_or_404(models.Notification, pk=pk)  
+    notification = get_object_or_404(models.Notification, pk=pk)
     notification.read = True
     notification.save()
     return JsonResponse({'status': 'ok'})
 
+
 def send_draft(request, pk=None):
     email = get_object_or_404(models.Email, pk=pk)
     profile = models.UserProfile.objects.get(user=request.user)
-    
+
     g = EmailSMTP(profile)
     g.send_html_email(
-                email.subject,
-                email.to.address,
-                [i.address for i in email.copy.all()],
-                [i.address for i in email.blind_copy.all()],
-                email.body
-                )
+        email.subject,
+        email.to.address,
+        [i.address for i in email.copy.all()],
+        [i.address for i in email.blind_copy.all()],
+        email.body
+    )
     email.folder = 'sent'
     email.save()
 
     return JsonResponse({'status': 'ok'})
+
 
 def get_latest_chat_messages(request, chat=None):
     discussion = get_object_or_404(models.Chat, pk=chat)
@@ -197,11 +197,12 @@ def get_latest_chat_messages(request, chat=None):
     elif discussion.messages.count() > 0:
         messages = discussion.messages
     else:
-        messages= []
+        messages = []
 
     data = serializers.BubbleReadSerializer(messages, many=True).data
-    
+
     return JsonResponse({'messages': data})
+
 
 def get_latest_group_messages(request, group=None):
     discussion = get_object_or_404(models.Group, pk=group)
@@ -211,10 +212,11 @@ def get_latest_group_messages(request, group=None):
     elif discussion.messages.count() > 0:
         messages = discussion.messages
     else:
-        messages= []
+        messages = []
 
-    data =  serializers.BubbleReadSerializer(messages, many=True).data
+    data = serializers.BubbleReadSerializer(messages, many=True).data
     return JsonResponse({'messages': data})
+
 
 def delete_messages(request):
     ids = json.loads(request.body.decode('utf-8'))['message_ids']
@@ -223,8 +225,9 @@ def delete_messages(request):
 
     return JsonResponse({'status': 'ok'})
 
+
 def forward_messages(request, user=None):
-    #TODO support forwarding while crediting the originator
+    # TODO support forwarding while crediting the originator
     user = get_object_or_404(User, pk=user)
     filters = Q(
         Q(
@@ -244,8 +247,8 @@ def forward_messages(request, user=None):
         chat = models.Chat.objects.create(
             sender=request.user,
             receiver=user
-            )
-    
+        )
+
     ids = json.loads(request.body.decode('utf-8'))['message_ids']
     for id in ids:
         bubble = models.Bubble.objects.get(pk=id)
@@ -267,10 +270,10 @@ def forward_email_messages(request, pk=None):
     data = json.loads(request.body.decode('utf-8'))
 
     to = models.EmailAddress.objects.get(pk=data['to'].split('-')[0])
-    copy = [models.EmailAddress.objects.get(pk=addr.split('-')[0]) \
-                for addr in data['copy']]
-    blind_copy = [models.EmailAddress.objects.get(pk=addr.split('-')[0]) \
-                for addr in data['blind_copy']]
+    copy = [models.EmailAddress.objects.get(pk=addr.split('-')[0])
+            for addr in data['copy']]
+    blind_copy = [models.EmailAddress.objects.get(pk=addr.split('-')[0])
+                  for addr in data['blind_copy']]
 
     profile = models.UserProfile.objects.get(user=request.user)
     msg = models.Email.objects.create(
@@ -290,28 +293,29 @@ def forward_email_messages(request, pk=None):
 
     g = EmailSMTP(profile)
 
-    if(data.get('attachment', None)):# and os.path.exists(path):
+    if(data.get('attachment', None)):  # and os.path.exists(path):
         path = os.path.join(
-            MEDIA_ROOT, 
-            'messaging', 
+            MEDIA_ROOT,
+            'messaging',
             email.attachment.filename)
-        
+
         g.send_email_with_attachment(
-            email.subject, 
+            email.subject,
             to.address,
             [i.address for i in copy],
             [i.address for i in blind_copy],
-            email.body, 
+            email.body,
             email.attachment, html=True)
     else:
         g.send_html_email(
-            email.subject, 
-            to.address, 
+            email.subject,
+            to.address,
             [i.address for i in copy],
             [i.address for i in blind_copy],
             email.body)
-    
+
     return JsonResponse({'status': 'ok'})
+
 
 def add_participant(request, grp=None, id=None):
     group = models.Group.objects.get(pk=grp)
@@ -320,7 +324,8 @@ def add_participant(request, grp=None, id=None):
     group.save()
 
     return JsonResponse(UserSerializer(group.participants, many=True).data,
-        safe=False)
+                        safe=False)
+
 
 def remove_participant(request, grp=None, id=None):
     group = models.Group.objects.get(pk=grp)
@@ -329,7 +334,8 @@ def remove_participant(request, grp=None, id=None):
     group.save()
 
     return JsonResponse(UserSerializer(group.participants, many=True).data,
-        safe=False)
+                        safe=False)
+
 
 def sync_folders(request, profile_id=None):
     profile = models.UserProfile.objects.get(pk=profile_id)
@@ -340,6 +346,7 @@ def sync_folders(request, profile_id=None):
         'status': 'ok',
         'emails': 0
     })
+
 
 def get_user_icon(request):
     profile = models.UserProfile.objects.get(user=request.user)

@@ -2,10 +2,9 @@ from django import forms
 from .models import *
 from common_data.forms import BootstrapMixin
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Fieldset, Layout, Submit, HTML, Row, Column
+from crispy_forms.layout import HTML, Layout, Submit
 from crispy_forms.bootstrap import Tab, TabHolder
 from django.contrib.auth.models import User
-from draftjs_exporter.dom import DOM
 from draftjs_exporter.html import HTML as exporterHTML
 import json
 import urllib
@@ -15,17 +14,18 @@ from cryptography.fernet import Fernet
 class EmailForm(BootstrapMixin, forms.ModelForm):
     body = forms.CharField(widget=forms.HiddenInput, required=True)
     folder = forms.ModelChoiceField(EmailFolder.objects.all(),
-        widget=forms.HiddenInput)
-    owner = forms.ModelChoiceField(User.objects.all(),
                                     widget=forms.HiddenInput)
+    owner = forms.ModelChoiceField(User.objects.all(),
+                                   widget=forms.HiddenInput)
     save_as_draft = forms.BooleanField(required=False)
+
     class Meta:
-        fields = ['save_as_draft', 
-                'folder', 'subject', 'body', 'owner', 'attachment']
+        fields = ['save_as_draft',
+                  'folder', 'subject', 'body', 'owner', 'attachment']
         model = Email
 
     def clean(self):
-        
+
         cleaned_data = super().clean()
 
         config = {}
@@ -36,7 +36,7 @@ class EmailForm(BootstrapMixin, forms.ModelForm):
             ))
         except json.decoder.JSONDecodeError:
             raise forms.ValidationError('The message must have content')
-            
+
         if cleaned_data['attachment'] and \
                 cleaned_data['attachment'].size > 5000000:
             raise forms.ValidationError('The uploaded file exceeds 5MB')
@@ -44,15 +44,19 @@ class EmailForm(BootstrapMixin, forms.ModelForm):
         cleaned_data['body'] = msg
         return cleaned_data
 
+
 class PrePopulatedEmailForm(EmailForm):
     attachment_path = forms.CharField(widget=forms.HiddenInput)
     attachment = forms.FileField(widget=forms.HiddenInput, required=False)
+
     class Meta:
         fields = ['attachment_path',
-                    'save_as_draft', 
-                'folder', 'subject', 'body', 'owner', 'attachment'
+                  'save_as_draft',
+                  'folder', 'subject', 'body', 'owner', 'attachment'
                   ]
         model = Email
+
+
 class GroupForm(forms.ModelForm):
     admin = forms.ModelChoiceField(
         User.objects.all(), widget=forms.HiddenInput)
@@ -80,21 +84,22 @@ class GroupForm(forms.ModelForm):
 
 class UserProfileForm(forms.ModelForm):
     user = forms.ModelChoiceField(User.objects.all(), widget=forms.HiddenInput)
-    
+
     class Meta:
         fields = "__all__"
         model = UserProfile
-        widgets ={
+        widgets = {
             'email_password': forms.PasswordInput(render_value=True)
         }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
             TabHolder(
                 Tab('Basic',
-                    'user', 
-                    # 'avatar', 
+                    'user',
+                    # 'avatar',
                     'email_address',
                     'email_password',
                     # Row(
@@ -105,13 +110,13 @@ class UserProfileForm(forms.ModelForm):
                     #         <div id="avatar-preview"></div>
                     #     """), css_class='form-group col-md-6 col-sm-12'),
                     # )
-                ),
+                    ),
                 Tab('Advanced',
                     'outgoing_server',
                     'outgoing_port',
                     'incoming_host',
                     'incoming_port'
-                )
+                    )
             )
         )
         self.helper.add_input(Submit('submit', 'Submit'))
@@ -120,12 +125,15 @@ class UserProfileForm(forms.ModelForm):
         cleaned_data = super().clean()
         password = cleaned_data['email_password'].encode()
         crypt = Fernet(get_secret_key())
-        cleaned_data['email_password'] = crypt.encrypt(password).decode() 
+        cleaned_data['email_password'] = crypt.encrypt(password).decode()
 
         return cleaned_data
+
+
 class AxiosEmailForm(forms.Form):
     attachment = forms.FileField(required=False)
     body = forms.CharField()
+
 
 class EmailAddressForm(BootstrapMixin, forms.ModelForm):
     class Meta:

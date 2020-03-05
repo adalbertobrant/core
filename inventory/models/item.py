@@ -3,17 +3,13 @@ from __future__ import unicode_literals
 
 import datetime
 from decimal import Decimal as D
-from functools import reduce
 
-import rest_framework
-from django.conf import settings
 from django.db import models
 from django.db.models import Q
 
 import inventory
 import invoicing
-from accounting.models import Account, Journal, JournalEntry
-from common_data.models import SingletonModel, SoftDeletionModel
+from common_data.models import SoftDeletionModel
 from django.shortcuts import reverse
 
 
@@ -22,58 +18,56 @@ class InventoryItem(SoftDeletionModel):
         (0, 'Product'),
         (1, 'Equipment'),
         (2, 'Consumables'),
-        (3, 'Raw Material'),]
+        (3, 'Raw Material'), ]
 
-    name = models.CharField(max_length = 64)
+    name = models.CharField(max_length=64)
     type = models.PositiveSmallIntegerField(choices=INVENTORY_TYPES)
-    category = models.ForeignKey('inventory.Category', 
-        on_delete=models.SET_NULL, null=True,default=1)
+    category = models.ForeignKey('inventory.Category',
+                                 on_delete=models.SET_NULL, null=True, default=1)
     length = models.FloatField(default=0.0)
     width = models.FloatField(default=0.0)
     height = models.FloatField(default=0.0)
     image = models.FileField(blank=True, null=True)
     description = models.TextField(blank=True, default="")
-    unit = models.ForeignKey('inventory.UnitOfMeasure', 
-        on_delete=models.SET_NULL, 
-        null=True,
-        blank=True, 
-        default=1)
-    unit_purchase_price = models.DecimalField(max_digits=16, 
-        decimal_places=2, 
-        default=0.0)
-    supplier = models.ForeignKey("inventory.Supplier", 
-        on_delete=models.SET_NULL,
-        blank=True, 
-        null=True)
-    minimum_order_level = models.IntegerField( default=0)
+    unit = models.ForeignKey('inventory.UnitOfMeasure',
+                             on_delete=models.SET_NULL,
+                             null=True,
+                             blank=True,
+                             default=1)
+    unit_purchase_price = models.DecimalField(max_digits=16,
+                                              decimal_places=2,
+                                              default=0.0)
+    supplier = models.ForeignKey("inventory.Supplier",
+                                 on_delete=models.SET_NULL,
+                                 blank=True,
+                                 null=True)
+    minimum_order_level = models.IntegerField(default=0)
     maximum_stock_level = models.IntegerField(default=0)
-    #components
-    equipment_component = models.OneToOneField('inventory.EquipmentComponent', 
-        on_delete=models.SET_NULL,
-        null=True)
+    # components
+    equipment_component = models.OneToOneField('inventory.EquipmentComponent',
+                                               on_delete=models.SET_NULL,
+                                               null=True)
     product_component = models.OneToOneField('inventory.ProductComponent',
-        on_delete=models.SET_NULL,
-        null=True)
-
+                                             on_delete=models.SET_NULL,
+                                             null=True)
 
     def save(self, *args, **kwargs):
-        #Strange bug where active is defaulting to false
+        # Strange bug where active is defaulting to false
         # TODO fix
-        self.active =True
-        
+        self.active = True
+
         return super().save(*args, **kwargs)
 
     def __getattribute__(self, name):
         try:
             return super().__getattribute__(name)
         except AttributeError:
-            if self.equipment_component and hasattr(self.equipment_component, 
-                    name):
+            if self.equipment_component and hasattr(self.equipment_component,
+                                                    name):
                 return getattr(self.equipment_component, name)
-            elif self.product_component and hasattr(self.product_component, 
-                    name):
+            elif self.product_component and hasattr(self.product_component,
+                                                    name):
                 return getattr(self.product_component, name)
-
 
         raise AttributeError(f'{type(self)} has no attribute {name}')
 
@@ -85,15 +79,14 @@ class InventoryItem(SoftDeletionModel):
             return reverse("inventory:equipment-detail", kwargs={"pk": self.pk})
         else:
             return reverse("inventory:consumable-detail", kwargs={"pk": self.pk})
-            
+
     def get_absolute_url(self):
         return self.url
-            
-   
+
     @property
     def consumable_unit_value(self):
-        #consumables are valued using the last purchase price
-        #TODO measure consumable requisitions based on date purchased
+        # consumables are valued using the last purchase price
+        # TODO measure consumable requisitions based on date purchased
         return self.unit_purchase_price
 
     def __str__(self):
@@ -105,7 +98,7 @@ class InventoryItem(SoftDeletionModel):
 
     @property
     def quantity(self):
-        #returns quantity from all warehouses
+        # returns quantity from all warehouses
         items = inventory.models.WareHouseItem.objects.filter(item=self)
         return sum([i.quantity for i in items])
 
@@ -114,7 +107,7 @@ class InventoryItem(SoftDeletionModel):
         return inventory.models.WareHouseItem.objects.filter(
             Q(item=self),
             Q(quantity__gt=0)
-            )
+        )
 
     @property
     def unit_sales_price(self):
@@ -132,20 +125,18 @@ class InventoryItem(SoftDeletionModel):
 
 class ProductComponent(models.Model):
     PRICING_CHOICES = [
-    (0, 'Manual'),
-    (1, 'Margin'),
-    (2, 'Markup')
-]
+        (0, 'Manual'),
+        (1, 'Margin'),
+        (2, 'Markup')
+    ]
     pricing_method = models.IntegerField(choices=PRICING_CHOICES, default=0)
     direct_price = models.DecimalField(max_digits=16, decimal_places=2)
     margin = models.DecimalField(max_digits=16, decimal_places=2, default=0)
     markup = models.DecimalField(max_digits=16, decimal_places=2, default=0)
     sku = models.CharField(max_length=16, blank=True)
-    tax = models.ForeignKey('accounting.tax', 
-        default=1, 
-        on_delete=models.SET_DEFAULT)
-    
-
+    tax = models.ForeignKey('accounting.tax',
+                            default=1,
+                            on_delete=models.SET_DEFAULT)
 
     def quantity_on_date(self, date):
         '''
@@ -180,12 +171,11 @@ class ProductComponent(models.Model):
         )
 
         sold_quantity = sum(
-            [(i.product.quantity - D(i.product.returned_quantity)) \
+            [(i.product.quantity - D(i.product.returned_quantity))
                 for i in total_sales])
 
-
         return D(current_quantity) + sold_quantity - D(ordered_quantity)
-    
+
     @property
     def parent(self):
         return InventoryItem.objects.get(product_component=self)
@@ -199,11 +189,10 @@ class ProductComponent(models.Model):
         else:
             return D(self.parent.unit_purchase_price * D(1 + self.markup))
 
-
-    @property 
+    @property
     def unit_value(self):
         '''the value of inventory on a per item basis'''
-        if self.inventoryitem.quantity  == 0 or self.stock_value == 0:
+        if self.inventoryitem.quantity == 0 or self.stock_value == 0:
             return self.inventoryitem.unit_purchase_price
         return self.stock_value / D(self.inventoryitem.quantity)
 
@@ -212,7 +201,7 @@ class ProductComponent(models.Model):
         '''.
         averaging- calculating the overall stock value on the average of all
         the values for the quantity in stock.
-        '''  
+        '''
         current_quantity = self.parent.quantity
         cummulative_quantity = 0
         orders_with_items_in_stock = []
@@ -220,11 +209,11 @@ class ProductComponent(models.Model):
         if current_quantity == 0:
             return 0
 
-        #getting the latest orderitems in order of date ordered
+        # getting the latest orderitems in order of date ordered
         order_items = inventory.models.OrderItem.objects.filter(
-            Q(item=self.parent) & 
+            Q(item=self.parent) &
             Q(
-                Q(order__status="order") | 
+                Q(order__status="order") |
                 Q(order__status="received-partially") |
                 Q(order__status="received")
             )).order_by("order__date").reverse()
@@ -232,14 +221,13 @@ class ProductComponent(models.Model):
         if order_items.count() == 0:
             return D(current_quantity) * self.parent.unit_purchase_price
 
-        #iterate over items
+        # iterate over items
         for item in order_items:
             # orders for which cumulative ordered quantities are less than
             # inventory in hand are considered
             if (item.quantity + cummulative_quantity) < current_quantity:
                 orders_with_items_in_stock.append(item)
                 cummulative_quantity += item.quantity
-                
 
             else:
                 if cummulative_quantity < current_quantity:
@@ -248,7 +236,6 @@ class ProductComponent(models.Model):
 
                 else:
                     break
-
 
         cumulative_value = D(0)
         if not partial_orders:
@@ -262,9 +249,8 @@ class ProductComponent(models.Model):
             remainder = current_quantity - cummulative_quantity
             cumulative_value += D(remainder) * \
                 orders_with_items_in_stock[-1].order_price
-        
-        return cumulative_value
 
+        return cumulative_value
 
     @property
     def sales_to_date(self):
@@ -273,7 +259,7 @@ class ProductComponent(models.Model):
         total_sales = sum(
             [(item.invoiceline.subtotal - item.invoiceline.tax_) for item in items])
         return total_sales
-    
+
 
 class EquipmentComponent(models.Model):
     CONDITION_CHOICES = [
@@ -282,8 +268,8 @@ class EquipmentComponent(models.Model):
         ('poor', 'Poor'),
         ('broken', 'Not Functioning')
     ]
-    condition = models.CharField(max_length=16, 
-        choices=CONDITION_CHOICES, default='excellent')
-    asset_data = models.ForeignKey('accounting.Asset', 
-        on_delete=models.SET_NULL,
-        null=True, blank=True)
+    condition = models.CharField(max_length=16,
+                                 choices=CONDITION_CHOICES, default='excellent')
+    asset_data = models.ForeignKey('accounting.Asset',
+                                   on_delete=models.SET_NULL,
+                                   null=True, blank=True)

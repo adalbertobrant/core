@@ -1,17 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import json
 import os
-import urllib
 
-from django.contrib.auth.decorators import login_required
-from inventory.views.util import InventoryConfigMixin 
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from inventory.views.util import InventoryConfigMixin
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic import DetailView, ListView
 from django.views.generic.edit import (CreateView, DeleteView, FormView,
                                        UpdateView)
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -19,16 +14,14 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.pagination import PageNumberPagination
 
 
-from common_data.models import GlobalConfig
 from common_data.utilities import *
-from inventory import filters, forms, models, serializers
-from invoicing.models import SalesConfig
+from inventory import forms, models, serializers
 
 from .common import CREATE_TEMPLATE
 
 
 class WareHouseCreateView(ContextMixin, CreateView):
-    template_name = os.path.join('common_data','crispy_create_template.html')
+    template_name = os.path.join('common_data', 'crispy_create_template.html')
     form_class = forms.WareHouseForm
     extra_context = {
         'title': 'Create  Warehouse',
@@ -44,14 +37,16 @@ class WareHouseUpdateView(ContextMixin, UpdateView):
         'title': 'Update Warehouse Location Details'
     }
 
+
 class WareHouseItemListView(ListView):
     template_name = os.path.join('inventory', 'warehouse', 'item_list.html')
     paginate_by = 12
+
     def get_queryset(self):
         return models.WareHouseItem.objects.filter(
             warehouse=models.WareHouse.objects.get(pk=self.kwargs['pk']),
             item__active=True
-            )
+        )
 
 
 class WareHouseDetailView(InventoryConfigMixin, DetailView):
@@ -85,22 +80,23 @@ class WareHousePaginator(PageNumberPagination):
     max_page_size = 10
     page_size_query_description = 'page_size'
 
+
 class WareHouseItemListAPIView(ListAPIView):
     serializer_class = serializers.WareHouseItemSerializer
     pagination_class = WareHousePaginator
-    
+
     def get_queryset(self):
         w_pk = self.kwargs['warehouse']
         warehouse = get_object_or_404(models.WareHouse, pk=w_pk)
         return models.WareHouseItem.objects.filter(
             warehouse=warehouse,
             item__active=True
-            )
+        )
 
 
 class UnpaginatedWareHouseItemListAPIView(ListAPIView):
     serializer_class = serializers.WareHouseItemSerializer
-    
+
     def get_queryset(self):
         w_pk = self.kwargs['warehouse']
         warehouse = get_object_or_404(models.WareHouse, pk=w_pk)

@@ -1,32 +1,29 @@
 import datetime
-from decimal import Decimal as D
-from functools import reduce
 
 from django.db import models
 from django.db.models import Q
-from django.utils import timezone
 import accounting
 from django.shortcuts import reverse
 
 
 expense_choices = [
-    'Advertising', 
-    'Bank Service Charges', 
-    'Dues and Subscriptions', 
-    'Equipment Rental', 
-    'Telephone', 
-    'Vehicles', 
+    'Advertising',
+    'Bank Service Charges',
+    'Dues and Subscriptions',
+    'Equipment Rental',
+    'Telephone',
+    'Vehicles',
     'Travel and Expenses',
     'Supplies',
     'Salaries and Wages',
-    'Rent', 
-    'Payroll Taxes', 
+    'Rent',
+    'Payroll Taxes',
     'Legal and Accounting',
-    'Insurance', 
+    'Insurance',
     'Office Expenses',
-    'Carriage Outwards', 
-    'Training', 
-    'Vendor Services', 
+    'Carriage Outwards',
+    'Training',
+    'Vendor Services',
     'Other']
 
 EXPENSE_CHOICES = [(expense_choices.index(i), i) for i in expense_choices]
@@ -43,24 +40,24 @@ class AbstractExpense(models.Model):
         on_delete=models.SET_NULL)'''
     category = models.PositiveSmallIntegerField(choices=EXPENSE_CHOICES)
     amount = models.DecimalField(max_digits=16, decimal_places=2)
-    debit_account = models.ForeignKey('accounting.Account', 
-        on_delete=models.SET_NULL, null=True, limit_choices_to=Q(type="asset"))
-    recorded_by = models.ForeignKey('employees.employee', default=1, 
-        on_delete=models.SET_DEFAULT, limit_choices_to=Q(active=True))
+    debit_account = models.ForeignKey('accounting.Account',
+                                      on_delete=models.SET_NULL, null=True, limit_choices_to=Q(type="asset"))
+    recorded_by = models.ForeignKey('employees.employee', default=1,
+                                    on_delete=models.SET_DEFAULT, limit_choices_to=Q(active=True))
     attachment = models.ImageField(null=True, blank=True, upload_to='expenses')
     reference = models.CharField(max_length=32, blank=True, default="")
-    entry= models.ForeignKey('accounting.journalentry', 
-        on_delete=models.SET_NULL,
-        blank=True, 
-        null=True)
-    
+    entry = models.ForeignKey('accounting.journalentry',
+                              on_delete=models.SET_NULL,
+                              blank=True,
+                              null=True)
+
     class Meta:
         abstract = True
 
     @property
     def category_string(self):
         return dict(EXPENSE_CHOICES)[self.category]
-   
+
     @property
     def expense_account(self):
         mapping = {
@@ -82,26 +79,24 @@ class AbstractExpense(models.Model):
             15: 5023,
             16: 5024,
             17: 5015,
-       }
+        }
         return accounting.models.accounts.Account.objects.get(
             pk=mapping[self.category])
-
-    
 
 
 class Expense(AbstractExpense):
     date = models.DateField()
     billable = models.BooleanField(default=False)
-    customer = models.ForeignKey('invoicing.Customer', 
-        on_delete=models.SET_NULL, null=True,
-        blank=True)
-    
+    customer = models.ForeignKey('invoicing.Customer',
+                                 on_delete=models.SET_NULL, null=True,
+                                 blank=True)
+
     def __str__(self):
         return f"{self.date}: {self.reference}"
 
-    @property 
+    @property
     def source(self):
-        #returns the person the expense was generated for
+        # returns the person the expense was generated for
         if self.billable:
             return self.customer
 
@@ -114,26 +109,26 @@ class Expense(AbstractExpense):
         if self.entry:
             return
         j = accounting.models.transactions.JournalEntry.objects.create(
-            date = self.date,
-            memo =  "Expense recorded. Category: %s." % self.category,
-            journal = accounting.models.books.Journal.objects.get(pk=2),# cash disbursements
+            date=self.date,
+            memo="Expense recorded. Category: %s." % self.category,
+            journal=accounting.models.books.Journal.objects.get(
+                pk=2),  # cash disbursements
             recorded_by=self.recorded_by,
-            draft= False
+            draft=False
         )
-        #credit cash and debit expense account
-        j.credit(self.amount,accounting.models.accounts.Account.objects.get(pk=1000))
-        j.debit(self.amount,self.expense_account)
-        
-        #only create accounts payable after billing the customer
+        # credit cash and debit expense account
+        j.credit(self.amount, accounting.models.accounts.Account.objects.get(pk=1000))
+        j.debit(self.amount, self.expense_account)
+
+        # only create accounts payable after billing the customer
         self.entry = j
         self.save()
-       
 
     def save(self, *args, **kwargs):
         flag = self.pk
         if self.billable and self.customer == None:
             raise ValueError('A billable expense needs a customer')
-        
+
         super(Expense, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
@@ -141,14 +136,15 @@ class Expense(AbstractExpense):
         j = accounting.models.transactions.JournalEntry.objects.create(
             date=self.date,
             memo=f"Reversing transaction for expense with id {self.pk}",
-            journal=accounting.models.books.Journal.objects.get(pk=2),# cash disbursements
+            journal=accounting.models.books.Journal.objects.get(
+                pk=2),  # cash disbursements
             recorded_by=self.recorded_by,
-            draft= False
+            draft=False
         )
 
         j.credit(self.amount, self.expense_account)
-        j.debit(self.amount, 
-            accounting.models.accounts.Account.objects.get(pk=1000))
+        j.debit(self.amount,
+                accounting.models.accounts.Account.objects.get(pk=1000))
 
         super().delete(*args, **kwargs)
 
@@ -158,12 +154,12 @@ class Expense(AbstractExpense):
 
 class RecurringExpense(AbstractExpense):
     EXPENSE_CYCLE_CHOICES = [
-        (1, 'Daily'), 
-        (7, 'Weekly'), 
-        (14, 'Bi- Monthly'), 
-        (30, 'Monthly'), 
-        (90, 'Quarterly'), 
-        (182, 'Bi-Annually'), 
+        (1, 'Daily'),
+        (7, 'Weekly'),
+        (14, 'Bi- Monthly'),
+        (30, 'Monthly'),
+        (90, 'Quarterly'),
+        (182, 'Bi-Annually'),
         (365, 'Annually')]
     cycle = models.IntegerField(choices=EXPENSE_CYCLE_CHOICES, default=30)
     expiration_date = models.DateField(null=True)
@@ -173,7 +169,7 @@ class RecurringExpense(AbstractExpense):
     @property
     def cycle_string(self):
         return dict(self.EXPENSE_CYCLE_CHOICES)[self.cycle]
-    
+
     @property
     def is_current(self):
         return datetime.date.today() < self.expiration_date
@@ -191,7 +187,7 @@ class RecurringExpense(AbstractExpense):
             debit_account=self.debit_account,
             recorded_by=self.recorded_by
         )
-        
+
     @property
     def related_payments(self):
         return Expense.objects.filter(reference=self.pk)
@@ -201,23 +197,23 @@ class RecurringExpense(AbstractExpense):
 
     def get_absolute_url(self):
         return reverse("accounting:recurring-expense-detail", kwargs={"pk": self.pk})
-    
+
 
 class Bill(models.Model):
-    vendor = models.ForeignKey('inventory.supplier', 
-        on_delete=models.SET_NULL, null=True)
+    vendor = models.ForeignKey('inventory.supplier',
+                               on_delete=models.SET_NULL, null=True)
     date = models.DateField()
     reference = models.CharField(max_length=255, blank=True)
     due = models.DateField()
     memo = models.TextField(blank=True)
-    entry= models.ForeignKey('accounting.journalentry', 
-        on_delete=models.SET_NULL,
-        blank=True, 
-        null=True)
+    entry = models.ForeignKey('accounting.journalentry',
+                              on_delete=models.SET_NULL,
+                              blank=True,
+                              null=True)
 
     def get_absolute_url(self):
         return reverse("accounting:bill-details", kwargs={"pk": self.pk})
-    
+
     @property
     def total(self):
         return sum([i.expense.amount for i in self.billline_set.all()])
@@ -233,19 +229,20 @@ class Bill(models.Model):
     def create_entry(self):
         settings = accounting.models.AccountingSettings.objects.first()
         j = accounting.models.transactions.JournalEntry.objects.create(
-            date = self.date,
-            memo =  "Bill for %s" % self.vendor,
-            journal = accounting.models.books.Journal.objects.get(pk=2),# cash disbursements
+            date=self.date,
+            memo="Bill for %s" % self.vendor,
+            journal=accounting.models.books.Journal.objects.get(
+                pk=2),  # cash disbursements
             recorded_by=settings.default_bookkeeper.employee,
-            draft= False
+            draft=False
         )
-        #credit vendor and debit expense account
+        # credit vendor and debit expense account
         j.credit(self.total, self.vendor.account)
-        
+
         for line in self.billline_set.all():
-            j.debit(line.expense.amount, 
-                line.expense.expense_account)
-        
+            j.debit(line.expense.amount,
+                    line.expense.expense_account)
+
         self.entry = j
         self.save()
 
@@ -254,32 +251,34 @@ class BillLine(models.Model):
     bill = models.ForeignKey('accounting.bill', on_delete=models.CASCADE)
     expense = models.ForeignKey('accounting.expense', on_delete=models.CASCADE)
 
+
 class BillPayment(models.Model):
     date = models.DateField()
-    account = models.ForeignKey('accounting.account', 
-        limit_choices_to=Q(type='asset'), 
-        on_delete=models.SET_NULL,
-        null=True)
-    bill = models.ForeignKey('accounting.bill', 
-        on_delete=models.SET_NULL, null=True)
+    account = models.ForeignKey('accounting.account',
+                                limit_choices_to=Q(type='asset'),
+                                on_delete=models.SET_NULL,
+                                null=True)
+    bill = models.ForeignKey('accounting.bill',
+                             on_delete=models.SET_NULL, null=True)
     amount = models.DecimalField(max_digits=16, decimal_places=2)
     memo = models.TextField(blank=True)
-    entry= models.ForeignKey('accounting.journalentry', 
-        on_delete=models.SET_NULL,
-        blank=True, 
-        null=True)
+    entry = models.ForeignKey('accounting.journalentry',
+                              on_delete=models.SET_NULL,
+                              blank=True,
+                              null=True)
 
     def get_absolute_url(self):
         return reverse("accounting:bill-details", kwargs={"pk": self.bill.pk})
-    
+
     def create_entry(self):
         settings = accounting.models.AccountingSettings.objects.first()
         j = accounting.models.transactions.JournalEntry.objects.create(
-            date = self.date,
-            memo =  "Bill payment for  Bill #%s" % self.bill.pk,
-            journal = accounting.models.books.Journal.objects.get(pk=2),# cash disbursements
+            date=self.date,
+            memo="Bill payment for  Bill #%s" % self.bill.pk,
+            journal=accounting.models.books.Journal.objects.get(
+                pk=2),  # cash disbursements
             recorded_by=settings.default_bookkeeper.employee,
-            draft= False
+            draft=False
         )
 
         j.debit(self.amount, self.bill.vendor.account)

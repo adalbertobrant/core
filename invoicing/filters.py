@@ -11,8 +11,9 @@ class CustomerFilter(django_filters.FilterSet):
         fields = {
             'organization__legal_name': ['icontains'],
             'individual__last_name': ['icontains'],
-            
+
         }
+
 
 class SalesRepFilter(django_filters.FilterSet):
     class Meta:
@@ -48,6 +49,7 @@ class LeadFilter(django_filters.FilterSet):
             'title': ['icontains']
         }
 
+
 class TaskFilter(django_filters.FilterSet):
     class Meta:
         model = models.Task
@@ -57,6 +59,7 @@ class TaskFilter(django_filters.FilterSet):
             'assigned': ['exact'],
             'due': ['exact']
         }
+
 
 class InteractionTypeFilters(django_filters.FilterSet):
     class Meta:
@@ -73,12 +76,14 @@ class LeadSourcesFilters(django_filters.FilterSet):
             'name': ['icontains']
         }
 
+
 class SalesTeamFilters(django_filters.FilterSet):
     class Meta:
         model = models.SalesTeam
         fields = {
             'name': ['icontains']
         }
+
 
 class InteractionFilters(django_filters.FilterSet):
     class Meta:

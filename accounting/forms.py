@@ -1,13 +1,12 @@
 from crispy_forms.bootstrap import Tab, TabHolder
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import (Fieldset, 
-                                Layout, 
-                                Submit, 
-                                HTML,
-                                Row,
-                                Column)
+from crispy_forms.layout import (Fieldset,
+                                 Layout,
+                                 Submit,
+                                 HTML,
+                                 Row,
+                                 Column)
 from django import forms
-from django.contrib.auth.models import User
 from django_select2.forms import Select2Widget
 from invoicing.models import Customer
 
@@ -26,7 +25,8 @@ class ConfigForm(forms.ModelForm, BootstrapMixin):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Submit'))
-        
+
+
 class AssetForm(forms.ModelForm, BootstrapMixin):
     class Meta:
         fields = "__all__"
@@ -35,8 +35,9 @@ class AssetForm(forms.ModelForm, BootstrapMixin):
             'credit_account': Select2Widget(attrs={'data-width': '20rem'})
         }
 
-    init_date =forms.DateField(label="Date purchased")
-    depreciation_period = forms.CharField(widget=forms.NumberInput, label="Depreciation Period(years)")
+    init_date = forms.DateField(label="Date purchased")
+    depreciation_period = forms.CharField(
+        widget=forms.NumberInput, label="Depreciation Period(years)")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -46,60 +47,70 @@ class AssetForm(forms.ModelForm, BootstrapMixin):
                 Tab('basic',
                     Row(
                         Column('name', css_class='form-group col-md-6 col-sm-12'),
-                        Column('initialized_by', css_class='form-group col-md-6 col-sm-12'),
+                        Column('initialized_by',
+                               css_class='form-group col-md-6 col-sm-12'),
                     ),
                     Row(
-                        Column('initial_value', css_class='form-group col-md-6 col-sm-12'),
-                        Column('salvage_value', css_class='form-group col-md-6 col-sm-12'),
+                        Column('initial_value',
+                               css_class='form-group col-md-6 col-sm-12'),
+                        Column('salvage_value',
+                               css_class='form-group col-md-6 col-sm-12'),
                     ),
                     Row(
-                        Column('depreciation_period', css_class='form-group col-md-6 col-sm-12'),
-                        Column('depreciation_method', css_class='form-group col-md-6 col-sm-12'),                        
+                        Column('depreciation_period',
+                               css_class='form-group col-md-6 col-sm-12'),
+                        Column('depreciation_method',
+                               css_class='form-group col-md-6 col-sm-12'),
                     ),
                     'init_date',
                     'category',
-                ),
+                    ),
                 Tab('description',
                     'description',
                     'credit_account',
-                    
-                ),
+
+                    ),
             )
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
+
 class ExpenseForm(forms.ModelForm, BootstrapMixin):
-    customer = forms.ModelChoiceField(queryset=Customer.objects.all(), 
-        widget=Select2Widget(attrs={'data-width': '20rem'}), required=False)
+    customer = forms.ModelChoiceField(queryset=Customer.objects.all(),
+                                      widget=Select2Widget(attrs={'data-width': '20rem'}), required=False)
+
     class Meta:
         exclude = "entry", 'debit_account',
         model = models.Expense
 
         widgets = {
-            'description':forms.Textarea(attrs={'rows':4, 'cols':15}),           
+            'description': forms.Textarea(attrs={'rows': 4, 'cols': 15}),
         }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
             TabHolder(
                 Tab('Basic',
-                    
+
                     Row(
                         Column('amount', css_class='form-group col-md-6 col-sm-12'),
-                        Column('date', css_class='form-group col-md-6 col-sm-12'),                        
+                        Column('date', css_class='form-group col-md-6 col-sm-12'),
                     ),
                     'description',
                     'category',
                     Row(
-                        Column('recorded_by', css_class='form-group col-md-6 col-sm-12'),                        
-                        Column('reference', css_class='form-group col-md-6 col-sm-12'),                        
+                        Column('recorded_by',
+                               css_class='form-group col-md-6 col-sm-12'),
+                        Column('reference',
+                               css_class='form-group col-md-6 col-sm-12'),
                     )
-                ),
+                    ),
                 Tab('Billing',
                     'billable',
                     'customer',
-                ),
+                    ),
                 Tab('Attachment',
                     'attachment',
                     HTML("""
@@ -129,10 +140,11 @@ class ExpenseForm(forms.ModelForm, BootstrapMixin):
                          
                          </script>
                     """)
-                ),
+                    ),
             )
         )
         self.helper.add_input(Submit('submit', 'Submit'))
+
 
 class RecurringExpenseForm(forms.ModelForm, BootstrapMixin):
     class Meta:
@@ -151,8 +163,10 @@ class RecurringExpenseForm(forms.ModelForm, BootstrapMixin):
             TabHolder(
                 Tab('basic',
                     Row(
-                        Column('start_date', css_class='form-group col-md-6 col-sm-12'),
-                        Column('expiration_date', css_class='form-group col-md-6 col-sm-12'),
+                        Column('start_date',
+                               css_class='form-group col-md-6 col-sm-12'),
+                        Column('expiration_date',
+                               css_class='form-group col-md-6 col-sm-12'),
                     ),
                     Row(
                         Column('amount', css_class='form-group col-md-6 col-sm-12'),
@@ -160,21 +174,24 @@ class RecurringExpenseForm(forms.ModelForm, BootstrapMixin):
                     ),
                     'description',
                     Row(
-                        Column('category', css_class='form-group col-md-6 col-sm-12'),
-                        Column('recorded_by', css_class='form-group col-md-6 col-sm-12'),
+                        Column(
+                            'category', css_class='form-group col-md-6 col-sm-12'),
+                        Column('recorded_by',
+                               css_class='form-group col-md-6 col-sm-12'),
                     ),
                     'reference'
-                ),
+                    ),
             )
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
+
 class DirectPaymentForm(BootstrapMixin, forms.Form):
     date = forms.DateField()
     paid_to = forms.ModelChoiceField(Supplier.objects.all(),
-        widget=Select2Widget)
+                                     widget=Select2Widget)
     account_paid_from = forms.ModelChoiceField(models.Account.objects.all(),
-        widget=Select2Widget)
+                                               widget=Select2Widget)
     method = forms.ChoiceField(choices=[
         ('cash', 'Cash'),
         ('transfer', 'Transfer'),
@@ -187,24 +204,27 @@ class DirectPaymentForm(BootstrapMixin, forms.Form):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-                    'date',
-                    Row(
-                        Column('paid_to', css_class='form-group col-md-6 col-sm-12'),
-                        Column('account_paid_from', css_class='form-group col-md-6 col-sm-12'),
-                        ),
-                    Row(
-                        Column('method', css_class='form-group col-md-6 col-sm-12'),
-                        Column('amount', css_class='form-group col-md-6 col-sm-12'),                
-                        ),
-                        'reference',
-                        'notes'
-                )
-        
+            'date',
+            Row(
+                Column(
+                    'paid_to', css_class='form-group col-md-6 col-sm-12'),
+                Column('account_paid_from',
+                       css_class='form-group col-md-6 col-sm-12'),
+            ),
+            Row(
+                Column('method', css_class='form-group col-md-6 col-sm-12'),
+                Column('amount', css_class='form-group col-md-6 col-sm-12'),
+            ),
+            'reference',
+            'notes'
+        )
+
         self.helper.add_input(Submit('submit', 'Submit'))
+
 
 class TaxForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        fields ='__all__'
+        fields = '__all__'
         model = models.Tax
 
     def __init__(self, *args, **kwargs):
@@ -212,17 +232,20 @@ class TaxForm(forms.ModelForm, BootstrapMixin):
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Submit'))
 
+
 class TaxUpdateForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        fields ='name',
+        fields = 'name',
         model = models.Tax
+
 
 class SimpleJournalEntryForm(forms.ModelForm, BootstrapMixin):
     amount = forms.DecimalField()
-    credit = forms.ModelChoiceField(models.Account.objects.all(), 
-        widget=Select2Widget)
+    credit = forms.ModelChoiceField(models.Account.objects.all(),
+                                    widget=Select2Widget)
     debit = forms.ModelChoiceField(models.Account.objects.all(),
-        widget=Select2Widget)
+                                   widget=Select2Widget)
+
     class Meta:
         exclude = "draft", "posted_to_ledger", "adjusted"
         model = models.JournalEntry
@@ -235,7 +258,7 @@ class SimpleJournalEntryForm(forms.ModelForm, BootstrapMixin):
             self.cleaned_data['debit']
         )
         return obj
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -255,14 +278,16 @@ class SimpleJournalEntryForm(forms.ModelForm, BootstrapMixin):
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
+
 class ComplexEntryForm(forms.ModelForm, BootstrapMixin):
     data = forms.CharField(required=True, widget=forms.HiddenInput)
+
     class Meta:
-        exclude="posted_to_ledger", "adjusted"
+        exclude = "posted_to_ledger", "adjusted"
         model = models.JournalEntry
 
         widgets = {
-            'memo':forms.Textarea(attrs={'rows':6, 'cols':15}),           
+            'memo': forms.Textarea(attrs={'rows': 6, 'cols': 15}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -270,11 +295,11 @@ class ComplexEntryForm(forms.ModelForm, BootstrapMixin):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-                Column('date','journal', 'recorded_by',
-                    css_class='form group col-md-6 col-sm-12'),
-                Column('draft','memo', css_class='form group col-md-6 col-sm-12'),
+                Column('date', 'journal', 'recorded_by',
+                       css_class='form group col-md-6 col-sm-12'),
+                Column('draft', 'memo', css_class='form group col-md-6 col-sm-12'),
             ),
-            'data',         
+            'data',
             HTML(
                 """
                 <div id="transaction-table">
@@ -288,14 +313,15 @@ class ComplexEntryForm(forms.ModelForm, BootstrapMixin):
 class AccountForm(forms.ModelForm, BootstrapMixin):
     #account_code = forms.IntegerField(required=False)
     class Meta:
-        exclude="active",
+        exclude = "active",
         model = models.Account
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
             'parent_account': Select2Widget(attrs={'data-width': '14rem'})
 
         }
-    def __init__(self,*args, **kwargs):
+
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -303,23 +329,26 @@ class AccountForm(forms.ModelForm, BootstrapMixin):
                 Tab('general',
                     'name',
                     'balance',
-                    
+
                     Row(
-                        Column('balance_sheet_category', css_class='form-group col-md-6 col-sm-12'),
+                        Column('balance_sheet_category',
+                               css_class='form-group col-md-6 col-sm-12'),
                         Column('type', css_class='form-group col-md-6 col-sm-12'),
                     ),
                     'description',
-                ),
+                    ),
                 Tab('account',
-                    #'account_code',
+                    # 'account_code',
                     'bank_account_number',
                     'parent_account',
                     'pk',
                     Row(
-                        Column('control_account', css_class='form-group col-md-6 col-sm-12'),
-                        Column('bank_account', css_class='form-group col-md-6 col-sm-12'),
+                        Column('control_account',
+                               css_class='form-group col-md-6 col-sm-12'),
+                        Column('bank_account',
+                               css_class='form-group col-md-6 col-sm-12'),
                     ),
-                ),
+                    ),
             )
         )
         self.helper.add_input(Submit('submit', 'Submit'))
@@ -327,22 +356,23 @@ class AccountForm(forms.ModelForm, BootstrapMixin):
 
 class AccountUpdateForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        exclude="active", "balance"
+        exclude = "active", "balance"
         model = models.Account
 
 
 class LedgerForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        fields="__all__"
+        fields = "__all__"
         model = models.Ledger
 
 
 class JournalForm(forms.ModelForm, BootstrapMixin):
     class Meta:
-        exclude="active",
+        exclude = "active",
         model = models.Journal
 
-class NonInvoicedSaleForm(BootstrapMixin,forms.Form):
+
+class NonInvoicedSaleForm(BootstrapMixin, forms.Form):
     date = forms.DateField()
     sold_from = forms.ModelChoiceField(WareHouse.objects.all())
     comments = forms.CharField(widget=forms.Textarea)
@@ -368,16 +398,20 @@ class ExchangeTableForm(forms.ModelForm):
         fields = 'reference_currency', 'name',
         model = models.CurrencyConversionTable
 
+
 class JournalReportForm(PeriodReportForm):
-    journal = forms.ModelChoiceField(models.Journal.objects.all(), 
-        widget=forms.HiddenInput)
+    journal = forms.ModelChoiceField(models.Journal.objects.all(),
+                                     widget=forms.HiddenInput)
+
 
 class AccountReportForm(PeriodReportForm):
-    account = forms.ModelChoiceField(models.Account.objects.all(), 
-        widget=forms.HiddenInput)
+    account = forms.ModelChoiceField(models.Account.objects.all(),
+                                     widget=forms.HiddenInput)
+
 
 class BillForm(BootstrapMixin, forms.ModelForm):
     data = forms.CharField(widget=forms.HiddenInput)
+
     class Meta:
         fields = '__all__'
         model = models.Bill
@@ -399,6 +433,7 @@ class BillForm(BootstrapMixin, forms.ModelForm):
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
+
 class BillPaymentForm(BootstrapMixin, forms.ModelForm):
     class Meta:
         fields = '__all__'
@@ -415,7 +450,8 @@ class BillPaymentForm(BootstrapMixin, forms.ModelForm):
         self.helper.layout = Layout(
             'bill',
             Row(
-                Column('date', 'account', 'amount', css_class='col-md-6 col-sm-12'),
+                Column('date', 'account', 'amount',
+                       css_class='col-md-6 col-sm-12'),
                 Column('memo', css_class='col-md-6 col-sm-12'),
             ),
             HTML("<div id='bill-table'></div>")
@@ -460,7 +496,8 @@ class AccountImportForm(forms.Form):
                 Column('balance', css_class='col-md-2 col-sm-12'),
                 Column('code', css_class='col-md-2 col-sm-12'),
                 Column('type', css_class='col-md-2 col-sm-12'),
-                Column('balance_sheet_category', css_class='col-md-2 col-sm-12'),
+                Column('balance_sheet_category',
+                       css_class='col-md-2 col-sm-12'),
             ),
             HTML("""
             <h4>Rows:</h4>
@@ -472,10 +509,11 @@ class AccountImportForm(forms.Form):
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
+
 class BulkAccountsForm(forms.Form):
     data = forms.CharField(widget=forms.HiddenInput)
 
-    def __init__(self, *args,**kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -484,11 +522,12 @@ class BulkAccountsForm(forms.Form):
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
+
 class ImportJournalEntryForm(BootstrapMixin, forms.Form):
     date = forms.IntegerField()
     memo = forms.IntegerField()
     file = forms.FileField()
-    sheet_name = forms.CharField(max_length = 256)
+    sheet_name = forms.CharField(max_length=256)
     start_row = forms.IntegerField()
     end_row = forms.IntegerField()
     credit = forms.IntegerField()
@@ -516,7 +555,7 @@ class ImportJournalEntryForm(BootstrapMixin, forms.Form):
                 <li>Debit - amount debited the account</li>
                 <li>Account - the code of the account affected</li>
             </ul>"""),
-             Row(
+            Row(
                 Column('date', css_class='col-md-2 col-sm-12'),
                 Column('entry_id', css_class='col-md-2 col-sm-12'),
                 Column('memo', css_class='col-md-2 col-sm-12'),
@@ -531,14 +570,14 @@ class ImportJournalEntryForm(BootstrapMixin, forms.Form):
                 Column('start_row', css_class='col-md-6 col-sm-12'),
                 Column('end_row', css_class='col-md-6 col-sm-12'),
             ),
-            )
+        )
         self.helper.add_input(Submit('submit', 'Submit'))
 
 
 class MultipleEntriesForm(forms.Form):
     data = forms.CharField(widget=forms.HiddenInput)
 
-    def __init__(self, *args,**kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -550,14 +589,14 @@ class MultipleEntriesForm(forms.Form):
 
 class ImportExpensesForm(BootstrapMixin, forms.Form):
     file = forms.FileField()
-    sheet_name = forms.CharField(max_length = 256)
+    sheet_name = forms.CharField(max_length=256)
     start_row = forms.IntegerField()
     end_row = forms.IntegerField()
     amount = forms.IntegerField()
     description = forms.IntegerField()
     category = forms.IntegerField()
     date = forms.IntegerField()
-    account_paid_from  = forms.ModelChoiceField(
+    account_paid_from = forms.ModelChoiceField(
         models.Account.objects.filter(type='asset'), widget=Select2Widget)
 
     def __init__(self, *args, **kwargs):
@@ -579,7 +618,7 @@ class ImportExpensesForm(BootstrapMixin, forms.Form):
                 <li>Category - The type of expense one of: Advertising, Bank And Service Charges, Dues and Subscriptions, Equipment Rental, Telephone, Vehicles, Travel and Expenses, Supplies, Salaries and Wages, Rent, Payroll Taxes, Legal and Accounting, Insurance, Office Expenses, Carriage Outwards, Training and Vendor Services. NB: Categories are case-sensitive and will default to other if not among those listed.</li>
                 <li>Amount - amount expensed</li>
             </ul>"""),
-             Row(
+            Row(
                 Column('date', css_class='col-3'),
                 Column('description', css_class='col-3'),
                 Column('category', css_class='col-3'),
@@ -592,16 +631,16 @@ class ImportExpensesForm(BootstrapMixin, forms.Form):
                 Column('start_row', css_class='col-md-6 col-sm-12'),
                 Column('end_row', css_class='col-md-6 col-sm-12'),
             ),
-            )
+        )
         self.helper.add_input(Submit('submit', 'Submit'))
 
 
 class MultipleExpensesForm(forms.Form):
     data = forms.CharField(widget=forms.HiddenInput)
-    account_paid_from  = forms.ModelChoiceField(
+    account_paid_from = forms.ModelChoiceField(
         models.Account.objects.filter(type='asset'), widget=Select2Widget)
 
-    def __init__(self, *args,**kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(

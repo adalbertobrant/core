@@ -8,18 +8,19 @@ from employees.models import Employee
 from inventory.models import InventoryItem, UnitOfMeasure
 import inventory
 from accounting.models import Expense, Account
-from invoicing.models import (Invoice, 
-                                InvoiceLine, 
-                                Customer, 
-                                ServiceLineComponent)
+from invoicing.models import (Invoice,
+                              InvoiceLine,
+                              Customer,
+                              ServiceLineComponent)
 from services.models import Service, ServiceCategory, TimeLog
 from employees.models import Employee
 
 TODAY = datetime.date.today()
 
+
 class ServiceModelTests(TestCase):
-    fixtures = ['common.json','inventory.json', 
-        'accounts.json', 'employees.json', 'invoicing.json']
+    fixtures = ['common.json', 'inventory.json',
+                'accounts.json', 'employees.json', 'invoicing.json']
 
     @classmethod
     def setUpTestData(cls):
@@ -64,17 +65,16 @@ class ServiceModelTests(TestCase):
 
         cls.line = InvoiceLine.objects.create(
             invoice=cls.inv,
-            service = slc,
-            line_type = 2
+            service=slc,
+            line_type=2
         )
 
         cls.service_person = ServicePerson.objects.create(
             employee=cls.employee,
-            is_manager = True,
-            can_authorize_equipment_requisitions = False,
-            can_authorize_consumables_requisitions = True
+            is_manager=True,
+            can_authorize_equipment_requisitions=False,
+            can_authorize_consumables_requisitions=True
         )
-
 
     def test_create_service(self):
         obj = Service.objects.create(
@@ -98,27 +98,25 @@ class ServiceModelTests(TestCase):
         self.assertIsInstance(obj, ServiceCategory)
         self.assertEqual(obj.service_count, 0)
 
-
     def test_create_service_person(self):
         employee = Employee.objects.create(
-            first_name = 'First',
-            last_name = 'Last',
-            address = 'Model test address',
-            email = 'test@mail.com',
-            phone = '1234535234',
-            pay_grade = self.grade
+            first_name='First',
+            last_name='Last',
+            address='Model test address',
+            email='test@mail.com',
+            phone='1234535234',
+            pay_grade=self.grade
         )
 
         obj = ServicePerson.objects.create(
             employee=employee,
-            is_manager = True,
-            can_authorize_equipment_requisitions = False,
-            can_authorize_consumables_requisitions = True
+            is_manager=True,
+            can_authorize_equipment_requisitions=False,
+            can_authorize_consumables_requisitions=True
         )
 
         self.assertIsInstance(obj, ServicePerson)
         self.assertIsInstance(str(obj), str)
-
 
     def test_create_service_team(self):
         obj = ServiceTeam.objects.create(
@@ -130,8 +128,6 @@ class ServiceModelTests(TestCase):
         self.assertIsInstance(obj, ServiceTeam)
         self.assertIsInstance(str(obj), str)
 
-    
-
     def test_create_equipment_requisition(self):
         obj = EquipmentRequisition.objects.create(
             date=TODAY,
@@ -140,7 +136,6 @@ class ServiceModelTests(TestCase):
         )
         self.assertIsInstance(obj, EquipmentRequisition)
         self.assertIsInstance(str(obj), str)
-        
 
         obj_2 = EquipmentRequisitionLine.objects.create(
             equipment=InventoryItem.objects.filter(type=1).first(),
@@ -173,7 +168,6 @@ class ServiceModelTests(TestCase):
         self.assertIsInstance(obj_2, ConsumablesRequisitionLine)
         self.assertIsInstance(str(obj_2), str)
 
-
     def test_create_service_procedure(self):
         obj = ServiceProcedure.objects.create(
             as_checklist=True,
@@ -185,7 +179,6 @@ class ServiceModelTests(TestCase):
         self.assertIsInstance(obj, ServiceProcedure)
         self.assertIsInstance(str(obj), str)
 
-
         obj_2 = Task.objects.create(
             procedure=obj,
             description="Something"
@@ -193,19 +186,18 @@ class ServiceModelTests(TestCase):
 
         self.assertIsInstance(obj_2, Task)
         self.assertIsInstance(str(obj_2), str)
-        
+
         self.assertEqual(obj.steps.count(), 1)
 
 
 class WorkOrderModelTests(TestCase):
-    fixtures = ['common.json','inventory.json', 
-        'accounts.json', 'employees.json', 'invoicing.json']
+    fixtures = ['common.json', 'inventory.json',
+                'accounts.json', 'employees.json', 'invoicing.json']
 
     @classmethod
     def setUpTestData(cls):
         create_test_employees_models(cls)
         inventory.tests.models.create_test_inventory_models(cls)
-
 
         cls.category = ServiceCategory.objects.create(
             name="category",
@@ -240,7 +232,7 @@ class WorkOrderModelTests(TestCase):
         cls.cat = ServiceCategory.objects.create(
             name="name"
         )
-        
+
         slc = ServiceLineComponent.objects.create(
             service=cls.service,
             hours=0,
@@ -250,15 +242,15 @@ class WorkOrderModelTests(TestCase):
 
         cls.line = InvoiceLine.objects.create(
             invoice=cls.inv,
-            service = slc,
-            line_type = 2
+            service=slc,
+            line_type=2
         )
 
         cls.service_person = ServicePerson.objects.create(
             employee=cls.employee,
-            is_manager = True,
-            can_authorize_equipment_requisitions = False,
-            can_authorize_consumables_requisitions = True
+            is_manager=True,
+            can_authorize_equipment_requisitions=False,
+            can_authorize_consumables_requisitions=True
         )
 
         cls.wr = WorkOrderRequest.objects.create(
@@ -272,7 +264,7 @@ class WorkOrderModelTests(TestCase):
             description="desc",
             completed=datetime.datetime.now(),
             expected_duration=datetime.timedelta(seconds=3600),
-            works_request = cls.wr
+            works_request=cls.wr
         )
         cls.wo.service_people.add(cls.service_person)
         cls.wo.save()
@@ -299,14 +291,14 @@ class WorkOrderModelTests(TestCase):
         )
 
     def test_create_service_work_order(self):
-        
+
         obj = ServiceWorkOrder.objects.create(
             date=str(TODAY),
             time="17:00",
             description="desc",
             completed=datetime.datetime.now(),
             expected_duration=datetime.timedelta(seconds=3600),
-            works_request = self.wr
+            works_request=self.wr
         )
         self.assertIsInstance(obj, ServiceWorkOrder)
         self.assertIsInstance(str(obj), str)
@@ -352,11 +344,10 @@ class WorkOrderModelTests(TestCase):
 
     def test_work_order_request_update_status(self):
         self.assertEqual(self.wr.status, "in-progress")
-        self.wo.status= "completed"
+        self.wo.status = "completed"
         self.wo.save()
         self.wr.update_status()
         self.assertEqual(self.wr.status, "completed")
-
 
     def test_work_order_request_invoice(self):
         self.assertIsInstance(self.wr.invoice, Invoice)
@@ -385,10 +376,10 @@ class WorkOrderModelTests(TestCase):
         self.employee.uses_timesheet = False
         self.employee.save()
 
-  
     def test_work_order_normal_hours(self):
-        self.assertEqual(self.wo.total_normal_time, datetime.timedelta(seconds=3600))
+        self.assertEqual(self.wo.total_normal_time,
+                         datetime.timedelta(seconds=3600))
 
     def test_work_order_total_overtime(self):
-        self.assertEqual(self.wo.total_overtime, datetime.timedelta(seconds=3600))
-        
+        self.assertEqual(self.wo.total_overtime,
+                         datetime.timedelta(seconds=3600))

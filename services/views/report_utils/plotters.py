@@ -1,5 +1,4 @@
 import pygal
-from pygal.style import DefaultStyle
 from common_data.utilities.plotting import CustomStyle
 
 
@@ -14,19 +13,21 @@ def plot_expense_breakdown(work_order):
 
     return chart.render(is_unicode=True)
 
+
 def plot_time_budget(work_order):
     chart = pygal.SolidGauge(inner_radius=0.7,
-        margin=0,
-        spacing=0,
-        half_pie=True, 
-        style=pygal.style.styles['default'](value_font_size=72),
-        show_legend=False)
-    hr_formatter = lambda x: '{:.10g}Hrs'.format(x)
+                             margin=0,
+                             spacing=0,
+                             half_pie=True,
+                             style=pygal.style.styles['default'](
+                                 value_font_size=72),
+                             show_legend=False)
+
+    def hr_formatter(x): return '{:.10g}Hrs'.format(x)
     chart.add('Time Budget', [{
-        'value': work_order.total_time.seconds /3600.0,
+        'value': work_order.total_time.seconds / 3600.0,
         'max_value': work_order.expected_duration.seconds / 3600.0
-        }], 
+    }],
         formatter=hr_formatter)
 
     return chart.render(is_unicode=True)
-    

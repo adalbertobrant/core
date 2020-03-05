@@ -1,4 +1,3 @@
-from functools import reduce
 
 from django.db import models
 from decimal import Decimal as D
@@ -11,43 +10,42 @@ class CreditNote(models.Model):
     """A document sent by a seller to a customer notifying them
     that a credit has been made to their account against goods returned
     by the buyer. Linked to invoices. Stores a list of products returned.
-    
+
     properties
     -----------
     returned_products - returns a queryset of all returned products for an invoice
     returned_total - returns the numerical value of the products returned.
-    
+
     methods
     -----------
     create_entry - creates a journal entry in the accounting system where
         the customer account is credited and sales returns is debitted. NB 
         futher transactions will have to be made if the returned goods 
         are to be written off."""
-    
+
     date = models.DateField()
-    invoice = models.ForeignKey('invoicing.Invoice', 
-            on_delete=models.SET_NULL, null=True)
-    comments = models.TextField()#never allow blank comments
+    invoice = models.ForeignKey('invoicing.Invoice',
+                                on_delete=models.SET_NULL, null=True)
+    comments = models.TextField()  # never allow blank comments
     entry = models.ForeignKey("accounting.JournalEntry", null=True,
-        on_delete=models.SET_NULL)
+                              on_delete=models.SET_NULL)
 
     def get_absolute_url(self):
         return reverse("invoicing:credit-note-detail", kwargs={"pk": self.pk})
-    
 
     @property
     def returned_products(self):
         return self.creditnoteline_set.all()
-        
+
     @property
     def returned_total(self):
         return sum([i.returned_value for i in self.returned_products])
 
     @property
     def tax_credit(self):
-        return sum([(i.line.tax_ *( D(i.quantity )/ i.line.product.quantity)) \
-            for i in self.creditnoteline_set.all() if i.line and i.line.tax] ,0)
-        
+        return sum([(i.line.tax_ * (D(i.quantity) / i.line.product.quantity))
+                    for i in self.creditnoteline_set.all() if i.line and i.line.tax], 0)
+
     @property
     def returned_total_with_tax(self):
         return D(self.returned_total) + D(self.tax_credit)
@@ -70,25 +68,26 @@ class CreditNote(models.Model):
             date=self.date,
             journal=Journal.objects.get(pk=3),
             draft=False,
-            recorded_by = self.invoice.salesperson.employee
+            recorded_by=self.invoice.salesperson.employee
         )
 
-            
         j.credit(self.returned_total_with_tax, self.invoice.customer.account)
-        # sales returns 
+        # sales returns
         j.debit(self.returned_total, Account.objects.get(pk=4002))
-        # tax account 
+        # tax account
         j.debit(self.tax_credit, Account.objects.get(pk=2001))
-        
+
         self.entry = j
         self.save()
 
-#TODO test
+# TODO test
+
+
 class CreditNoteLine(models.Model):
-    note = models.ForeignKey('invoicing.CreditNote', null=True, 
-            on_delete=models.SET_NULL)
+    note = models.ForeignKey('invoicing.CreditNote', null=True,
+                             on_delete=models.SET_NULL)
     line = models.ForeignKey('invoicing.InvoiceLine', null=True,
-            on_delete=models.SET_NULL)
+                             on_delete=models.SET_NULL)
     quantity = models.FloatField()
 
     def __str__(self):
@@ -99,7 +98,7 @@ class CreditNoteLine(models.Model):
         '''Factors for line by line discount'''
         # support other kinds of objects
         if self.line and self.line.product:
-            discount =  self.line.product.unit_price * \
+            discount = self.line.product.unit_price * \
                 (self.line.discount / D(100))
             discounted_price = self.line.product.unit_price - discount
             return D(self.quantity) * discounted_price

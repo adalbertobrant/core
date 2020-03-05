@@ -24,38 +24,39 @@ class AccountingSettings(SingletonModel):
     default_accounting_period = models.PositiveSmallIntegerField(
         choices=ACCOUNTING_PERIODS, default=1)
     currency_exchange_table = models.ForeignKey(
-        'accounting.CurrencyConversionTable', 
-        on_delete=models.SET_NULL, 
+        'accounting.CurrencyConversionTable',
+        on_delete=models.SET_NULL,
         null=True)
-    default_bookkeeper = models.ForeignKey('accounting.Bookkeeper', null=True,  
-        limit_choices_to=Q(active=True),
-        blank=True, 
-        on_delete=models.SET_NULL)
-    equipment_capitalization_limit = models.DecimalField(max_digits=12, 
-        decimal_places=2,default=0.0)
+    default_bookkeeper = models.ForeignKey('accounting.Bookkeeper', null=True,
+                                           limit_choices_to=Q(active=True),
+                                           blank=True,
+                                           on_delete=models.SET_NULL)
+    equipment_capitalization_limit = models.DecimalField(max_digits=12,
+                                                         decimal_places=2, default=0.0)
     is_configured = models.BooleanField(default=False)
     service_hash = models.CharField(max_length=255, default="", blank=True)
-    active_currency = models.ForeignKey('accounting.currency', 
-        on_delete=models.SET_NULL, null=True)
+    active_currency = models.ForeignKey('accounting.currency',
+                                        on_delete=models.SET_NULL, null=True)
 
-   
+
 class Bookkeeper(SoftDeletionModel):
     '''
     mutable
     Model that gives employees access to the bookkeeping function of the 
     software such as order creation and the like.'''
-    employee = models.OneToOneField('employees.Employee', 
-        on_delete=models.CASCADE, null=True, default=1, limit_choices_to=Q(user__isnull=False))
+    employee = models.OneToOneField('employees.Employee',
+                                    on_delete=models.CASCADE, null=True, default=1, limit_choices_to=Q(user__isnull=False))
     can_create_journals = models.BooleanField(default=False, blank=True)
-    can_create_orders_and_invoices = models.BooleanField(default=False, blank=True)
+    can_create_orders_and_invoices = models.BooleanField(
+        default=False, blank=True)
     can_record_expenses = models.BooleanField(default=False, blank=True)
     can_record_assets = models.BooleanField(default=False, blank=True)
-
 
     def __str__(self):
         if self.employee:
             return self.employee.full_name
         return ''
+
 
 class Tax(SoftDeletionModel):
     '''

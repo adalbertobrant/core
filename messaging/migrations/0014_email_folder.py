@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='email',
             name='folder',
-            field=models.CharField(choices=[('inbox', 'Inbox'), ('sent', 'Sent'), ('drafts', 'Drafts')], default='inbox', max_length=16),
+            field=models.CharField(choices=[('inbox', 'Inbox'), ('sent', 'Sent'), (
+                'drafts', 'Drafts')], default='inbox', max_length=16),
         ),
     ]

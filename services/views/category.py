@@ -8,7 +8,8 @@ from services import forms
 
 CREATE_TEMPLATE = os.path.join('common_data', 'create_template.html')
 
-class ServiceCategoryCreateView( ContextMixin, CreateView):
+
+class ServiceCategoryCreateView(ContextMixin, CreateView):
     template_name = CREATE_TEMPLATE
     form_class = forms.ServiceCategoryForm
     success_url = reverse_lazy('services:category-list')
@@ -16,7 +17,8 @@ class ServiceCategoryCreateView( ContextMixin, CreateView):
         'title': 'Create New Service Category'
     }
 
-class ServiceCategoryUpdateView( ContextMixin, UpdateView):
+
+class ServiceCategoryUpdateView(ContextMixin, UpdateView):
     template_name = CREATE_TEMPLATE
     form_class = forms.ServiceCategoryForm
     model = ServiceCategory
@@ -25,11 +27,13 @@ class ServiceCategoryUpdateView( ContextMixin, UpdateView):
         'title': 'Update Service Category'
     }
 
-class ServiceCategoryDetailView( DetailView):
+
+class ServiceCategoryDetailView(DetailView):
     template_name = os.path.join('services', 'category', 'detail.html')
     model = ServiceCategory
 
-class ServiceCategoryListView( ContextMixin, ListView):
+
+class ServiceCategoryListView(ContextMixin, ListView):
     template_name = os.path.join('services', 'category', 'list.html')
     model = ServiceCategory
     extra_context = {
