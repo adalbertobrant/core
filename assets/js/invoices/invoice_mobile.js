@@ -219,7 +219,7 @@ const EntryContainer = (props) =>{
         <div className={styles.content}>
             <div className={styles.contentHeader}>
                 <h4>Add Item</h4>
-                <button class='btn btn-danger ' onClick={props.dismiss}><i class="fas fa-times" aria-hidden="true"></i></button>
+                <button className='btn btn-danger ' onClick={props.dismiss}><i className="fas fa-times" aria-hidden="true"></i></button>
             </div>
             <div>
                 <EntryWidget

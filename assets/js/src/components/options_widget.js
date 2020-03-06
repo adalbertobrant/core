@@ -5,14 +5,31 @@ class OptionsWidget extends Component{
     openPopup = () =>{
         let modal = document.getElementById('id-my-modal');
         let popup = document.getElementById('popup-frame');
+        let newURL = this.props.newLink;
+        let frame = document.getElementById('loading-iframe');
 
-        popup.setAttribute('src', this.props.newLink);
+        
+        popup.setAttribute('src', newURL);
+        popup.addEventListener('load',function(){
+            var currURL= document.getElementById("popup-frame").contentWindow.location.href;
+            currURL = '/' + currURL.replace(/^(?:\/\/|[^\/]+)*\//, "");
+            
+            if(['', '/about:blank'].indexOf(currURL) == -1 && currURL != newURL && modal.style.display=='block'){
+                popup.classList.add('iframe-hidden');
+                popup.setAttribute('src', '');
+                modal.style.display = 'none';
+                return;
+            
+            }
+            if(['', '/about:blank'].indexOf(currURL) == -1){
+                //event listener for when the iframe is removed
+                popup.classList.remove('iframe-hidden')
+                frame.classList.add('iframe-loaded')
+            }
+            
+        })
         modal.style.display = 'block';
-        modal.addEventListener()
     }
-
-
-
     
     render(){
         let rendered;

@@ -1,4 +1,5 @@
 {% extends "window.html" %} 
+{% load static %}
 {% block heading %}
 <i class=" fas fa-toolbox"></i> Services
 {% endblock heading %}
@@ -74,7 +75,12 @@
             </nav>
         </div>
         <div class="col-sm-12 col-md-9">
+        <div class="dash-loading">
+                <img src="{% static 'common_data/images/spinner.gif' %}" alt="">
+            </div>
             <iframe src="/services/async-dashboard/" class='dash-frame' frameborder="0" ></iframe>
+
+            <script src="{% static 'common_data/js/dash_script.js' %}"></script>
         </div>
     </div>
 </div>

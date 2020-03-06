@@ -68,13 +68,13 @@ const KeypadStateIndicator =(props) =>{
                 active={props.mode =='price'}
                 setKeypadMode={props.changeMode}
                 mode='price'>
-                <i class="fas fa-dollar-sign    "></i>
+                <i className="fas fa-dollar-sign    "></i>
             </KeypadState>
             <KeypadState 
                 active={props.mode =='quantity'}
                 setKeypadMode={props.changeMode}
                 mode='quantity'>
-                <i class="fas fa-sort-numeric-up    "></i>
+                <i className="fas fa-sort-numeric-up    "></i>
             </KeypadState>
         </React.Fragment>
     )

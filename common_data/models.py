@@ -226,7 +226,6 @@ class GlobalConfig(SingletonModel):
             del fields['hardware_id']
             del fields['last_automated_service_run']
             del fields['_state']
-            print(fields)
             json.dump(fields, fil)
 
     @property

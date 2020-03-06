@@ -5,7 +5,7 @@
             <th>Quantity</th>
             <th  class='mobile'>Min Quantity</th>
             <th  class='mobile'>Max Quantity </th>
-            <th>Last Verified </th>
+            {% comment %} <th>Last Verified </th> {% endcomment %}
         </tr>
 {% endblock %}
 {% block list_content %}
@@ -16,7 +16,7 @@
                 {{i.quantity}}</td>
             <td  class='mobile'>{{i.item.minimum_order_level}}</td>
             <td  class='mobile'>{{i.item.maximum_stock_level}}</td>
-            <td style='color:white;background-color:{{i.check_color}};'>{{i.last_check_date}}</td>
+            {% comment %} <td style='color:white;background-color:{{i.check_color}};'>{{i.last_check_date}}</td> {% endcomment %}
         </tr>
         {% endfor %}
     

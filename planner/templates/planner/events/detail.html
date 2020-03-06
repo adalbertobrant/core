@@ -16,48 +16,41 @@ Event Details
 <br>
 <div class="container">
     <div class="row">
-        <div class="col-sm-4">
-            <div class="card shadow" >
+        <div class="col-sm-12">
+            <div class="card shadow accent-left-lg" >
                 <div class="card-body">
-                    <h4 class="card-title">{{object.label}}</h4>
-                    <p>{{object.date}}</p>
-                    <p>Author: {{object.owner}}</p>
-                    <p>{% if object.completed %} Completed on {{object.completion_time}} {% else %} In Progress {% endif %}</p>
-                    <p>Priority:{{object.priority}}</p>
-                    <p>Start: {{object.start_time}}</p>
-                    <p>End: {{object.end_time}}</p>
-                    {% if object.repeat_active %}
-                        <p>Repeat: {{object.repeat_string}}</p>
-                    {% endif %}
-                    
-                    
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 col-sm-12">
-            <div class="card bg-info text-white">
-                <div class="card-body" style='display:flex;flex-direction:row'>
-                    <i class="fas fa-file fa-3x" aria-hidden="true"></i>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <h4 class="card-title">{{object.label}}</h4>
+                            <p> <i class="fas fa-calendar-alt    "></i> {{object.date}}</p>
+                            <p><i class="fas fa-user    "></i> {{object.owner}}</p>
+                            <p>{% if object.completed %} <i class="fas fa-flag-checkered    "></i> Completed on {{object.completion_time}} {% else %} <i class="fas fa-flag    "></i> In Progress {% endif %}</p>
+                            <p> <i class="fas fa-exclamation-circle    "></i> {{object.priority}}</p>
+                            <p><i class="fas fa-clock    "></i> {{object.start_time}} <i class="fas fa-arrow-right    "></i> {{object.end_time}} </p>
+                            {% if object.repeat_active %}
+                                <p>Repeat: {{object.repeat_string}}</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-sm-12 col-md-6 accent-left-md">
+                            <i class="fas fa-users fa-3x   "></i>
+                            <ul >
+                                {% if object.participants.all.count == 0 %}
+                                <li>No participants for this event</li>
+                                {% endif %}
+                                {% for p in object.participants.all %}
+                                <li><a href="{{p.link}}">{{p}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <hr class="my-2">
                     <p class="card-text" style='margin:5px;'>
                             {{object.description}}
                     </p>
+                    
                 </div>
             </div>
-            <hr />
-            <div class="card">
-                <div class="card-body" style='display:flex;flex-direction:row'>
-                    <i class="fas fa-user fa-3x   "></i>
-                    <ul >
-                        {% if object.participants.all.count == 0 %}
-                        <li>No participants for this event</li>
-                        {% endif %}
-                        {% for p in object.participants.all %}
-                        <li><a href="{{p.link}}">{{p}}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>        
         </div>
-        <div class="col-sm-2"></div>
     </div>
     {% endblock content %}

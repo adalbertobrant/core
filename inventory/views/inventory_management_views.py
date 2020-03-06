@@ -55,6 +55,7 @@ class InventoryCheckCreateView(CreateView):
             delta = float(adj['quantity']) - float(adj['measured'])
             if delta != 0:
                 wh_item = models.WareHouseItem.objects.get(pk=pk)
+                
                 adj = models.StockAdjustment.objects.create(
                     warehouse_item=wh_item,
                     inventory_check=self.object,
@@ -243,7 +244,6 @@ class StockReceiptCreateView(CreateView):
             n = line['quantity_to_move']
             if n == 0:
                 break
-            print('location: ', line['receiving_location'])
             if line['receiving_location'] != "":
                 medium = line['receiving_location'].split('-')[0]
                 item = models.OrderItem.objects.get(pk=pk)

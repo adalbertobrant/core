@@ -29,7 +29,7 @@ class CustomersPage extends Component{
                     phone_1: this.state.phone,
                     email: this.state.email
                 })}).then(resp => {
-            axios.get('/base/models/get-latest/invoicing/customer')
+            axios.get('/base/models/get-latest/customer')
                 .then(res =>{
                     this.props.selectHandler(res.data.data[0] + ' - ' + res.data.data[1])
                 })

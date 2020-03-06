@@ -102,8 +102,8 @@ $(document).ready(function () {
         })
 
     //notification polling
-    updateNotifications();
-    setInterval(updateNotifications, 60000)
+    // updateNotifications();
+    // setInterval(updateNotifications, 60000)
     
     } catch (error) {
         console.log(error)

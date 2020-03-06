@@ -37,22 +37,27 @@ class SalesConfigForm(forms.ModelForm, BootstrapMixin):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             TabHolder(
-                Tab('Document Fields',
-                    'default_invoice_comments',
-                    'default_credit_note_comments',
-                    'default_quotation_comments',
-                    'default_terms',
+                Tab('Invoices and quotations',
+                    Row(
+                        Column('default_invoice_comments', css_class='col-md-6 col-sm-12'),
+                        Column('default_credit_note_comments', css_class='col-md-6 col-sm-12')
                     ),
-                Tab('Page Layout',
-                    'sales_tax',
-                    'include_tax_in_invoice',
+                    Row(
+                        Column('default_quotation_comments', css_class='col-md-6 col-sm-12'),
+                        Column('default_terms', css_class='col-md-6 col-sm-12')
+                    ),
                     'next_invoice_number',
                     'next_quotation_number',
-                    'include_units_in_sales_invoice',
-                    'include_shipping_address',
                     ),
+                # Tab('Page Layout',
+                #     # 'sales_tax',
+                #     # 'include_tax_in_invoice',
+                #     # 'include_units_in_sales_invoice',
+                #     # 'include_shipping_address',
+                #     ),
                 Tab('POS Settings',
                     'default_warehouse',
+                    
                     )
             ))
 
@@ -489,7 +494,8 @@ class InteractionForm(forms.ModelForm):
         model = models.Interaction
         widgets = {
             'lead': forms.HiddenInput,
-            'contact': Select2Widget
+            'contact': Select2Widget,
+            'type': forms.Select(attrs={'id': 'interactiontype'})
         }
 
     def __init__(self, *args, **kwargs):

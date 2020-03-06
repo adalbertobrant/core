@@ -1,4 +1,5 @@
 {% extends "window.html" %}
+{% load static %}
 {% block heading %}
 <i class="fas fa-users    "></i> Employees
 {% endblock heading %}
@@ -12,7 +13,7 @@
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:list-pay-slips' %}"> Pay Slips</a>
                     </li>
-                    
+
                     <li class="list-group-item hvr-grow"><a href="{% url 'employees:list-pay-grades' %}"> Pay Grades</a>
                     </li>
                     <li class="list-group-item hvr-grow"><a href="{% url 'employees:payroll-tax-list' %}"> Payroll
@@ -34,12 +35,12 @@
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:contract-list' %}">Contracts</a>
                     </li>
-                    
-                    
-                    
 
-                    {% comment %} 
-                    
+
+
+
+                    {% comment %}
+
                     <li class="list-group-item hvr-grow"><a href="{% url 'employees:payroll-report-form' %}">Payroll
                             Report</a></li>
                     <li class="list-group-item hvr-grow"><a href="{% url 'employees:zimra-p2-report-form' %}">Zimra P2
@@ -56,7 +57,7 @@
                     </li>
                     <li class="list-group-item hvr-grow">
                         <a href="{{calendar_url}}">Leave Calendar</a>
-                    </li> 
+                    </li>
                     <li class="nav-item"><i class="fas fa-chart-bar"></i> Reports</li>
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:leave-report' %}">Leave Schedule Report</a>
@@ -77,15 +78,15 @@
                             Bookkeepers </a></li>
                     <li class="list-group-item hvr-grow"><a href="{% url 'services:service-person-list' %}">
                             Service Employees </a></li>
-                    
+
                     <li class="list-group-item hvr-grow"><a href="{% url 'employees:payroll-officer-list' %}">
-                            HR Officers </a></li> 
-                    {% comment %} 
+                            HR Officers </a></li>
+                    {% comment %}
                     <li class="nav-item"><i class="fas fa-sliders-h"></i> Configuration</li>
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:config' pk=1 %}">Settings</a>
                     </li>
-                     <li class="list-group-item hvr-grow">
+                    <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:payroll-date-list' %}">Manage Payroll Schedule</a>
                     </li>
                     <li class="list-group-item hvr-grow">
@@ -97,7 +98,12 @@
             </nav>
         </div>
         <div class="col-md-9 col-sm-12">
+            <div class="dash-loading">
+                <img src="{% static 'common_data/images/spinner.gif' %}" alt="">
+            </div>
             <iframe src="/employees/async-dashboard/" class='dash-frame' frameborder="0"></iframe>
+
+            <script src="{% static 'common_data/js/dash_script.js' %}"></script>
         </div>
     </div>
 </div>

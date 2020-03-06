@@ -270,7 +270,6 @@ class EmployeeForm(forms.ModelForm, BootstrapMixin):
         super().__init__(*args, **kwargs)
         user_string = ''
         if models.Employee.objects.filter(active=True).count() == 0:
-            print('called')
             user_string = 'Please note that the employee created with this form is linked with the superuser account.'
 
         self.helper = FormHelper()

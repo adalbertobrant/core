@@ -19,7 +19,7 @@ from . import models
 class ConfigForm(forms.ModelForm, BootstrapMixin):
     class Meta:
         model = models.AccountingSettings
-        exclude = "is_configured", 'service_hash'
+        exclude = "is_configured", 'service_hash','currency_exchange_table'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

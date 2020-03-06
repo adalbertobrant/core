@@ -13,7 +13,7 @@ class PricingWidget extends Component{
         const URL = window.location.href;
         const URLelments = URL.split("/");
         const tail = URLelments[URLelments.length -1];
-        if(tail !== "product-create"){
+        if(URL.indexOf("product-create") == -1){
             axios({
                 "method": "GET",
                 "url": "/inventory/api/inventory-item/" + tail

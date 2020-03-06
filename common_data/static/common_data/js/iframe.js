@@ -10,7 +10,9 @@ $(window).on('load', function(){
 
 function resetModal(){
     //reset the src attribute for the iframe so that multiple items can be created
-    
+    if($('#popup-frame').length > 0){
+        $('#popup-frame').addClass('iframe-hidden')
+    }
     $('.frame-style').each(function(i, el){
         if(!$(el).hasClass('iframe-hidden')){
             var src = $(el).data('initial')

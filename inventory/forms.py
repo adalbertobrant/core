@@ -61,7 +61,8 @@ class ConfigForm(forms.ModelForm, BootstrapMixin):
                     'use_product_inventory',
                     'use_equipment_inventory',
                     'use_consumables_inventory',
-                    'use_raw_materials_inventory')
+                    # 'use_raw_materials_inventory'
+                    )
             )
         )
 

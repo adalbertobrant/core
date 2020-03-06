@@ -155,7 +155,6 @@ class ProductComponent(models.Model):
         ).exclude(order__status="draft")
 
         ordered_quantity = sum([i.received for i in total_orders])
-        print(ordered_quantity)
 
         # will eventually replace with dispatch data
         total_sales = invoicing.models.InvoiceLine.objects.filter(

@@ -16,6 +16,14 @@
         }
     },
     {
+        "model": "accounting.Currency",
+        "pk": "3",
+        "fields": {
+            "name": "South African Rand",
+            "symbol": "R"
+        }
+    },
+    {
         "model": "accounting.CurrencyConversionTable",
         "pk": "1",
         "fields": {

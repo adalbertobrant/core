@@ -8,7 +8,7 @@ from django.db import models
 from django.db.models import Q
 
 from django.shortcuts import reverse
-
+from inventory.models.item_management import InventoryCheck
 
 class WarehouseExeption(Exception):
     pass
@@ -50,10 +50,7 @@ class WareHouse(models.Model):
         '''Takes an item and decrements it from the appropriate warehouse item'''
         # safety checks handled elsewhere
         retrieved_item = self.get_item(item)
-        print("###")
-        print(self)
-        print(item)
-        print(WareHouseItem.objects.all())
+        
 
         if retrieved_item:
             retrieved_item.decrement(quantity)
@@ -143,6 +140,7 @@ class WareHouseItem(models.Model):
     verified = models.BooleanField(default=False)
     last_check_date = models.DateField(blank=True, null=True)
     # verification expires after the next inventory check date
+
 
     @property
     def quantity_color(self):

@@ -117,7 +117,8 @@ th.bordered, td.bordered {
     margin: 30px auto;
     padding: 0.5in;
     width: 21cm;
-    height: 29.7cm;
+    /* height: 29.7cm; */
+    height: fit-content;
     box-shadow: 5px 5px 20px #ccc;
     background-color: white;
 }
@@ -137,9 +138,7 @@ th.bordered, td.bordered {
     margin: 0;
 }
 
-.page-container .eop{
-    margin-bottom: 10cm;
-}
+
 
 .eop {
     page-break-before: always;
@@ -196,9 +195,6 @@ th.bordered, td.bordered {
         width: 100%;
     }
 
-    .eop {
-        page-break-before: always;
-    }
 
     .bg-primary.text-white {
         border-bottom: 2px solid black;

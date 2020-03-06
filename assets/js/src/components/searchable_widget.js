@@ -72,7 +72,7 @@ class SearchableWidget extends Component {
         }
         axios({
             'method': 'GET',
-            url: '/base/models/get-latest/' + this.props.app+ '/' + this.props.model
+            url: '/base/models/get-latest/' + this.props.model // + this.props.app+ '/'
         }).then((resp) =>{
             if(!(resp.data.data === -1)){
                 const pk = resp.data.data[0];

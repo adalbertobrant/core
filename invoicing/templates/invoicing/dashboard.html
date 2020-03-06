@@ -1,4 +1,5 @@
 {% extends "window.html" %}
+{% load static %}
 {% block heading %}
 <i class=" fas fa-cash-register "></i> Sales 
 
@@ -79,7 +80,12 @@
             </nav>
         </div>
         <div class="col-md-9 col-sm-12">
+        <div class="dash-loading">
+                <img src="{% static 'common_data/images/spinner.gif' %}" alt="">
+            </div>
             <iframe  class='dash-frame' src="/invoicing/async-dashboard/" frameborder="0"></iframe>
+
+            <script src="{% static 'common_data/js/dash_script.js' %}"></script>
         </div>
     </div>
 </div>

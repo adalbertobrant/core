@@ -30,7 +30,7 @@ const head =(props) =>{
          wide ? 
             <div className={styles.head_container}>
                 <div className={styles.logo}>
-                    <a className='text-white' href="/invoicing/"><h4 className='logo' style={{textAlign:'left'}}>Bentsch</h4></a>
+                    <h4 className='logo text-white' style={{textAlign:'left'}}>Bentsch</h4>
                 </div>
             <HeadStats {...props}/>
         </div>
