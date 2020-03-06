@@ -3,9 +3,9 @@
 {% load accounting %}
 
 <script>
-var url = "/invoicing/sales-report-pdf/{{start|urlencode}}/{{end|urlencode}}";
+{% comment %} var url = "/invoicing/sales-report-pdf/{{start|urlencode}}/{{end|urlencode}}";
 var el = window.parent.document.getElementById('pdf-button');
-el.href = url;
+el.href = url; {% endcomment %}
 var actions = window.parent.document.getElementById('action-dropdown-items')
 var printBtn = window.parent.document.createElement('button')
 

@@ -5,9 +5,9 @@
 {% block pre_page %}
 
 <script>
-var url = "{% url 'services:reports-job-profitability-pdf' start=start end=end %}";
+{% comment %} var url = "{% url 'services:reports-job-profitability-pdf' start=start end=end %}";
 var el = window.parent.document.getElementById('pdf-button');
-el.href = url;
+el.href = url; {% endcomment %}
 var actions = window.parent.document.getElementById('action-dropdown-items')
 var printBtn = window.parent.document.createElement('button')
 

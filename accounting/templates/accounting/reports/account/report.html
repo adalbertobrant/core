@@ -2,9 +2,9 @@
 
 {% block pre_page %}
 <script>
-var url = "/accounting/pdf/account-report/{{account.pk}}/{{start|urlencode}}/{{end|urlencode}}/";
+{% comment %} var url = "/accounting/pdf/account-report/{{account.pk}}/{{start|urlencode}}/{{end|urlencode}}/";
 var el = window.parent.document.getElementById('pdf-button');
-el.href = url;
+el.href = url; {% endcomment %}
 var actions =  window.parent.document.getElementById('action-dropdown-items')
 node = window.parent.document.createElement("a")
 node.href = "/accounting/csv/account-report/{{account.pk}}/{{start|urlencode}}/{{end|urlencode}}/"

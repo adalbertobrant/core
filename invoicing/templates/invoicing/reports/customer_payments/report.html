@@ -2,9 +2,9 @@
 
 {% block page_contents %}
 <script>
-var url = "{% url 'invoicing:customer-payments-pdf' start=start end=end %}";
+{% comment %} var url = "{% url 'invoicing:customer-payments-pdf' start=start end=end %}";
 var el = window.parent.document.getElementById('pdf-button');
-el.href = url;
+el.href = url; {% endcomment %}
 var actions = window.parent.document.getElementById('action-dropdown-items')
 var printBtn = window.parent.document.createElement('button')
 

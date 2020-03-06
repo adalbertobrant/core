@@ -3,9 +3,9 @@
 
 {% block pre_page %}
 <script>
-var url = "/services/reports/time-logs-report-pdf/{{start|urlencode}}/{{end|urlencode}}";
+{% comment %} var url = "/services/reports/time-logs-report-pdf/{{start|urlencode}}/{{end|urlencode}}";
 var el = window.parent.document.getElementById('pdf-button');
-el.href = url;
+el.href = url; {% endcomment %}
 var actions = window.parent.document.getElementById('action-dropdown-items')
 var printBtn = window.parent.document.createElement('button')
 

@@ -2,9 +2,9 @@
 {% block page_contents %}
 {% load accounting %}
 <script>
-var url = "/invoicing/customer-statement-pdf/{{start}}/{{end}}/{{customer.pk}}";
+{% comment %} var url = "/invoicing/customer-statement-pdf/{{start}}/{{end}}/{{customer.pk}}";
 var el = window.parent.document.getElementById('pdf-button');
-el.href = url;
+el.href = url; {% endcomment %}
 var actions = window.parent.document.getElementById('action-dropdown-items')
 var printBtn = window.parent.document.createElement('button')
 
