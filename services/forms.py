@@ -380,3 +380,15 @@ class WorkOrderRequestForm(BootstrapMixin, forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4})
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'created', 
+            'created_by', 
+            'description', 
+            'service', 
+            'status'
+        )
+        self.helper.add_input(Submit('submit', 'Submit'))

@@ -32,7 +32,7 @@ class Event(models.Model):
         (datetime.timedelta(days=30), '1 month before')
     ]
 
-    TIME_CHOICES = time_choices('06:00:00', '18:00:00', '00:30:00')
+    TIME_CHOICES = time_choices('00:00:00', '23:30:00', '00:30:00')
 
     PRIORITY_CHOICES = [
         ('normal', 'Normal'),

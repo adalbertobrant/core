@@ -38,12 +38,7 @@ class QuotationCreateView(ContextMixin,
     template_name = os.path.join("invoicing", "quotation", "create.html")
     form_class = forms.QuotationForm
     extra_context = {
-        'box_array':
-            urllib.parse.quote(json.dumps([{
-                "model": "customer",
-                "app": "invoicing",
-                "id": "id_customer"
-            }]))
+        
 
     }
 

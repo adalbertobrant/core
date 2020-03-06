@@ -152,30 +152,7 @@ class PayGradeCreateView(ContextMixin, CreateView):
     extra_context = {
         'title': 'Add Pay Grade',
         'description': 'Use pay grades to group employees on the same income level. Apply commission rules, benefits, deductions and taxes to each unique grade.',
-        'related_links': [
-            {
-                'name': 'Add Commission Rule',
-                'url': '/employees/create-commission/'
-            },
-            {
-                'name': 'Add Allowance',
-                'url': '/employees/create-allowance/'
-            },
-            {
-                'name': 'Add Deduction',
-                'url': '/employees/create-deduction/'
-            },
-            {
-                'name': 'Add Tax',
-                'url': '/employees/create-payroll-tax/'
-            }
-        ],
-        'box_array':
-            urllib.parse.quote(json.dumps([{
-                "model": "commissionrule",
-                "app": "employees",
-                "id": "id_commission",
-            }]))
+        
     }
 
 

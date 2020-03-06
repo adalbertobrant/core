@@ -273,6 +273,11 @@ class ProductForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
             'supplier': Select2Widget(attrs={'data-width': '24rem'})
         }
 
+    def clean(self, *args, **kwargs):
+        cleaned_data = super().clean(*args, **kwargs)
+        if float(cleaned_data['margin']) >= 1:
+            raise forms.ValidationError('Margin can never be greater than 100%')
+
     def save(self, *args, **kwargs):
         instance = super().save(*args, **kwargs)
 

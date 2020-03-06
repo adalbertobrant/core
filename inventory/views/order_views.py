@@ -101,23 +101,7 @@ class OrderCreateView(ContextMixin,
     extra_context = {
         "title": "Create Purchase Order",
         "description": "Use this form to order inventory for sale from suppliers. Equipment and Consumables are purchased under 'Manage Equipment' or 'Manage Consumables' Forms.",
-        "related_links": [
-            {
-                'name': 'Add Vendor',
-                'url': '/inventory/supplier/create'
-            }, {
-                'name': 'Add Product',
-                'url': '/inventory/product-create/'
-            },
-
-        ],
-        'box_array': urllib.parse.quote(json.dumps(
-            [{
-                'model': 'supplier',
-                'app': 'inventory',
-                'id': 'id_supplier'
-            }
-            ]))
+        
     }
 
     def get_initial(self):

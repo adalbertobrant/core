@@ -111,32 +111,8 @@ class ProductCreateView(ContextMixin,
     extra_context = {
         "title": "Create New Product",
         'description': 'Cycle  through the tabs to enter information regarding product description, quantity, dimensions and pricing. ',
-        'related_links': [{
-            'name': 'Add Vendor',
-            'url': '/inventory/supplier/create/'
-        }, {
-            'name': 'Add Unit',
-            'url': '/inventory/unit-create/'
-        }, {
-            'name': 'Add Inventory Category',
-            'url': '/inventory/category-create/'
-        }, ],
-        'box_array':  urllib.parse.quote(json.dumps([{
-            "model": "supplier",
-            "app": "inventory",
-            "id": "id_supplier",
-        },
-            {
-                "model": "unitofmeasure",
-                "app": "inventory",
-                "id": "id_unit",
-        },
-            {
-                "model": "category",
-                "app": "inventory",
-                "id": "id_category",
-        }
-        ]))
+        
+
     }
 
     def get_initial(self):
@@ -203,32 +179,7 @@ class ConsumableCreateView(ContextMixin,
     extra_context = {
         "title": "Create New Consumable",
         'description': 'Cycle  through the tabs to enter information regarding consumable description, quantity, dimensions and pricing. ',
-        'related_links': [{
-            'name': 'Add Vendor',
-            'url': '/inventory/supplier/create/'
-        }, {
-            'name': 'Add Unit',
-            'url': '/inventory/unit-create/'
-        }, {
-            'name': 'Add Inventory Category',
-            'url': '/inventory/category-create/'
-        }],
-        'box_array':  urllib.parse.quote(json.dumps([{
-            "model": "supplier",
-            "app": "inventory",
-            "id": "id_supplier",
-        },
-            {
-                "model": "unitofmeasure",
-                "app": "inventory",
-                "id": "id_unit",
-        },
-            {
-                "model": "category",
-                "app": "inventory",
-                "id": "id_category",
-        }
-        ]))
+       
     }
 
     def get_initial(self):
@@ -310,32 +261,7 @@ class EquipmentCreateView(ContextMixin,
     extra_context = {
         "title": "Add New Equipment",
         'description': 'Cycle  through the tabs to enter information regarding equipment description, quantity, dimensions and pricing. ',
-        'related_links': [{
-            'name': 'Add Vendor',
-            'url': '/inventory/supplier/create/'
-        }, {
-            'name': 'Add Unit',
-            'url': '/inventory/unit-create/'
-        }, {
-            'name': 'Add Inventory Category',
-            'url': '/inventory/category-create/'
-        }],
-        'box_array':  urllib.parse.quote(json.dumps([{
-            "model": "supplier",
-            "app": "inventory",
-            "id": "id_supplier",
-        },
-            {
-                "model": "unitofmeasure",
-                "app": "inventory",
-                "id": "id_unit",
-        },
-            {
-                "model": "category",
-                "app": "inventory",
-                "id": "id_category",
-        }
-        ]))
+        
     }
 
     def get_initial(self):

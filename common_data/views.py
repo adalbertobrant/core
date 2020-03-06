@@ -90,7 +90,7 @@ CRISPY_TEMPLATE = os.path.join('common_data', 'crispy_create_template.html')
 
 
 class OrganizationCreateView(ContextMixin, LoginRequiredMixin, CreateView):
-    template_name = CREATE_TEMPLATE
+    template_name = CRISPY_TEMPLATE
     form_class = forms.OrganizationForm
     extra_context = {
         'title': 'Add Organization'
@@ -98,7 +98,7 @@ class OrganizationCreateView(ContextMixin, LoginRequiredMixin, CreateView):
 
 
 class OrganizationUpdateView(ContextMixin, LoginRequiredMixin, UpdateView):
-    template_name = CREATE_TEMPLATE
+    template_name = CRISPY_TEMPLATE
     form_class = forms.OrganizationForm
     model = models.Organization
     extra_context = {

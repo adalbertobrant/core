@@ -31,25 +31,7 @@ class ServiceCreateView(ContextMixin, CreateView):
     extra_context = {
         'title': 'Create Service',
         'description': 'Make service listings, including features like the procedure, cost and frequency.',
-        'related_links': [{
-            'name': 'Create Procedure',
-            'url': '/services/create-procedure'
-        }, {
-            'name': 'Create Service Category',
-            'url': '/services/create-category/'
-        }],
-        'box_array': urllib.parse.quote(json.dumps(
-            [{
-                'model': 'serviceprocedure',
-                'app': 'services',
-                'id': 'id_procedure'
-            },
-                {
-                'model': 'servicecategory',
-                'app': 'services',
-                'id': 'id_category'
-            }
-            ]))
+        
     }
 
     def get_initial(self):
@@ -68,25 +50,7 @@ class ServiceUpdateView(ContextMixin, UpdateView):
     extra_context = {
         'title': 'Update Service',
         'description': 'Make service listings, including features like the procedure, cost and frequency.',
-        'related_links': [{
-            'name': 'Create Procedure',
-            'url': '/services/create-procedure'
-        }, {
-            'name': 'Create Service Category',
-            'url': '/services/create-category/'
-        }],
-        'box_array': urllib.parse.quote(json.dumps(
-            [{
-                'model': 'serviceprocedure',
-                'app': 'services',
-                'id': 'id_procedure'
-            },
-                {
-                'model': 'servicecategory',
-                'app': 'services',
-                'id': 'id_category'
-            }
-            ]))
+        
     }
 
 
