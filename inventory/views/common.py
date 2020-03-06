@@ -41,15 +41,7 @@ class InventoryControllerCreateView(ContextMixin, CreateView):
     extra_context = {
         'title': 'Create Inventory Controller',
         'description': 'Assign an existing employee to the role of inventory controller and provide the permissions for their role.',
-        'related_links': [{
-            'name': 'Create Employee',
-            'url': '/employees/create-employee/'
-        }],
-        'box_array':  urllib.parse.quote(json.dumps([{
-            "model": "employee",
-            "app": "employees",
-            "id": "id_employee",
-        }]))
+        
     }
 
 

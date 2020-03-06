@@ -71,7 +71,7 @@ class ServiceWorkOrder(models.Model):
     ]
     date = models.DateField()
     time = models.TimeField(choices=time_choices(
-        '06:00:00', '18:30:00', '00:30:00'
+        '00:00:00', '23:30:00', '00:30:00'
     ))
     # for services done within the organization
     internal = models.BooleanField(default=False)
@@ -82,7 +82,7 @@ class ServiceWorkOrder(models.Model):
     description = models.TextField(blank=True, default="")
     completed = models.DateTimeField(null=True, blank=True)
     expected_duration = models.DurationField(choices=time_choices(
-        '00:00:00', '08:00:00', '00:30:00', delta=True
+        '00:00:00', '23:30:00', '00:30:00', delta=True
     ), null=True, blank=True)
     service_people = models.ManyToManyField('services.ServicePerson',
                                             limit_choices_to=Q(active=True),

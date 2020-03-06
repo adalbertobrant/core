@@ -46,7 +46,8 @@ class LeadFilter(django_filters.FilterSet):
     class Meta:
         model = models.Lead
         fields = {
-            'title': ['icontains']
+            'title': ['icontains'],
+            'status': ['exact'],
         }
 
 

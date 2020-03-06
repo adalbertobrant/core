@@ -59,6 +59,30 @@ class OrganizationForm(forms.ModelForm, BootstrapMixin):
     class Meta:
         fields = "__all__"
         model = models.Organization
+        widgets = {
+            'business_address': forms.Textarea(attrs={'rows': 4})
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            TabHolder(
+                Tab(
+            'Main',
+            'legal_name',
+            'email',
+            'phone',
+        ), Tab(
+            'Detail',
+            'business_address',
+            'website',
+            'logo',
+            'bp_number',
+        ))
+        )
+
+        self.helper.add_input(Submit('submit', 'Submit'))
 
 
 class IndividualForm(forms.ModelForm, BootstrapMixin):
