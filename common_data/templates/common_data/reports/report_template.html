@@ -10,7 +10,7 @@ Report Form
 {% endblock actions %} 
 
 {% block content %}
-
+{% load static %}
 <div class="container">
 
     <div class="row">
@@ -19,12 +19,17 @@ Report Form
                 <form method="GET" action="{{action}}" target="report_frame" class='report-form'>
                 {% csrf_token %}
                 {{form.as_p}}
-                    <button class="btn btn-primary">Generate Report</button>
+                    <button class="btn btn-primary" onclick='generateReport()'>Generate Report</button>
                 </form>
             </div>
         </div>
-        <div class="col-sm-12 col-md-9" id='frame-container' >
+        <div class="col-sm-12 col-md-9" id='frame-container'>
+                <div class="dash-loading dash-loaded">
+                    <img src="{% static 'common_data/images/spinner.gif' %}" alt="">
+                </div>
                 <iframe class='report-frame' src="/base/blank-report" name="report_frame" id='id-report-frame' frameborder="0"></iframe>
+                <script src="{% static 'common_data/js/report_script.js' %}"></script>
+
         </div>
 
     </div>

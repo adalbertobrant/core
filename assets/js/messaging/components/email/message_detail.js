@@ -125,13 +125,13 @@ class MessageDetail extends Component {
             {this.props.draft ? (
               <Aux>
                 <button className="btn btn-primary" onClick={this.sendDraft}>
-                  <i class="fas fa-envelope-open" /> Send
+                  <i className="fas fa-envelope-open" /> Send
                 </button>
                 <a
                   className="btn btn-primary"
                   href={"/messaging/email/update-draft/" + this.props.messageID}
                 >
-                  <i class="fas fa-edit" /> Edit Draft
+                  <i className="fas fa-edit" /> Edit Draft
                 </a>
               </Aux>
             ) : (

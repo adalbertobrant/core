@@ -4,7 +4,6 @@ import {Keypad} from '../components/keypad'
 import ActionGrid from '../components/actions'
 import Modal from 'react-modal';
 import {HashRouter as Router, Route, Switch} from 'react-router-dom';
-import {createBrowserHistory} from 'history'
 import PriceCheckPage from './products'
 import CheckoutPage from './payment'
 import ManualAddProduct from './add_product'
@@ -143,7 +142,7 @@ class MainPage extends Component{
                     products: [...prevState.products],
                     customer: prevState.currentCustomer
                 },
-                customer: null, 
+                currentCustomer: null, 
                 products: []
             }))
             alert('Sale Suspended Successfully')
@@ -154,12 +153,13 @@ class MainPage extends Component{
         }else if((this.state.suspendedSale && this.state.products.length == 0)
                     || this.state.isQuote){
             this.setState(prevState => ({
-                suspendSale: null,
+                suspendedSale: null,
                 products: prevState.suspendedSale.products,
-                customer: prevState.customer
+                currentCustomer: prevState.suspendedSale.customer
             }))
+          alert('Sale restored')
+
         }
-        alert('Sale restored')
     }
 
     executeAction = (name) =>{
@@ -329,7 +329,6 @@ class MainPage extends Component{
         })
 
         const handler = (evt) =>{
-            console.log(evt.key)
             if(["0","1","2","3","4","5","6","7","8","9","."].includes(evt.key)
               && !this.state.modalOpen){
                 this.setState({keypadText: this.state.keypadText + evt.key})
@@ -340,6 +339,9 @@ class MainPage extends Component{
                 this.setState({keypadText: newText})
             }else if(!("undefined" === typeof(this.state.keyMapping[evt.key]))){
                 //for action buttons
+                if(this.state.modalOpen){
+                    return
+                }
                 this.executeAction(this.state.keyMapping[evt.key])
             }
                 document.addEventListener('keydown', handler, {once:true})
@@ -481,7 +483,7 @@ class MainPage extends Component{
                                         })}
                                         voidAction={() =>this.setState({
                                             products: [], 
-                                            customer: null,
+                                            currentCustomer: null,
                                             modalOpen: false
                                         })}/>
                                 </Route>

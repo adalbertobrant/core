@@ -561,6 +561,7 @@ def get_models_latest(request):
         'procedure': '/services/create-procedure',
         'service': '/services/create-service',
         'contacts': '/base/individual/create',
+        'interactiontype': '/invoicing/create-interaction-type',
     }
 
     payload = {}

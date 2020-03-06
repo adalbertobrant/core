@@ -1,4 +1,5 @@
 {% extends "window.html" %}
+{% load static %}
 {% block heading %}
 <i class="fas fa-warehouse    "></i> Inventory
 
@@ -114,7 +115,12 @@
 
         </div>
         <div class="col-md-9 col-sm-12">
+            <div class="dash-loading">
+                <img src="{% static 'common_data/images/spinner.gif' %}" alt="">
+            </div>
             <iframe src="/inventory/async-dashboard/" class='dash-frame' frameborder="0"></iframe>
+
+            <script src="{% static 'common_data/js/dash_script.js' %}"></script>
         </div>
     </div>
 

@@ -1,0 +1,75 @@
+[
+    {
+        "model": "invoicing.LeadSource",
+        "pk": 1,
+        "fields": {
+            "name": "Email",
+            "description": "Response to targeted email."    
+        }
+    },
+    {
+        "model": "invoicing.LeadSource",
+        "pk": 2,
+        "fields": {
+            "name": "Social Media",
+            "description": "Leads generated based on interest in your business's social media presence."    
+        }
+    },
+    {
+        "model": "invoicing.LeadSource",
+        "pk": 3,
+        "fields": {
+            "name": "SMS",
+            "description": "Leads generated as a result of sms marketing campaigns."    
+        }
+    },
+    {
+        "model": "invoicing.LeadSource",
+        "pk": 4,
+        "fields": {
+            "name": "Upsell",
+            "description": "Leads from customers who have already purchased some product who have demonstrated interest in anther product offered."    
+        }
+    },
+    {
+        "model": "invoicing.LeadSource",
+        "pk": 5,
+        "fields": {
+            "name": "Website",
+            "description": "Leads from visitors to your website."    
+        }
+    },
+    {
+        "model": "invoicing.InteractionType",
+        "pk": 1,
+        "fields": {
+            "name": "Email"    ,
+            "description": "Electronic mail sent directly to client"  
+        }
+    },
+    {
+        "model": "invoicing.InteractionType",
+        "pk": 2,
+        "fields": {
+            "name": "Phone Call"    ,
+            "description": "Communication via carrier networks or VOIP"  
+        }
+    },
+    {
+        "model": "invoicing.InteractionType",
+        "pk": 3,
+        "fields": {
+            "name": "SMS"    ,
+            "description": "Interaction based on carrier network SMS"  
+        }
+    },
+    {
+        "model": "invoicing.InteractionType",
+        "pk": 4,
+        "fields": {
+            "name": "Social"    ,
+            "description": "Interactions over public social media platforms"  
+        }
+    }
+
+]

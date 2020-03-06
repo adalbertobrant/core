@@ -70,7 +70,7 @@ const ProductList = (props) =>{
                  style={{display: wide ? 'none': 'flex'}}>
                 <input type="number" className='form-input'/>
                 <button 
-                    class='btn btn-primary'
+                    className='btn btn-primary'
                     onClick={props.handleEnter}> 
                     <i className="fas fa-caret-up fa-3x" aria-hidden="true"></i> </button>
             </div>

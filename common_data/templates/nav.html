@@ -48,10 +48,17 @@ $(document).ready(function(){
             {% endif %} {% endcomment %}
             
             {% if request.user.is_superuser or request.user.employee.is_sales_rep %}
-            <li class="nav-item" id='sales'>
-                <a class="nav-link" href="{% url 'invoicing:home' %}">
+            <li class="nav-item dropdown" id='sales'>
+                <div style='display:flex;flex-direction:row;width:100%;'>
+                    <a style='padding-right:10px;' class="nav-link" href="{% url 'invoicing:home' %}">
                     <i class="fas fa-cash-register"></i>Sales
                 </a>
+                <a class="nav-link  " data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style='padding:10px;'> <i class="fas fa-caret-down    "></i> </a>
+                <div class="dropdown-menu">
+                <a class="dropdown-item" href="/invoicing/pos/">POS</a>
+                <a class="dropdown-item" href="{% url 'invoicing:crm-dashboard' %}">CRM</a>
+                </div>
+                </div>
             </li>
             {% endif %}
             

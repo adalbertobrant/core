@@ -2,7 +2,6 @@ function updateLastest(el){
     var name = el.id.replace('id_', '')
   
     $.get('/base/models/get-latest/' + name, function(data){
-        console.log(data)
         if(data.data == -1){
             return
         }
@@ -37,6 +36,7 @@ function createNew(btn){
         modal.style.display = 'block';
         $('#' + target).removeClass('iframe-hidden');
         $('#loading-iframe').addClass('iframe-loaded');
+        console.log('target loaded')
     }
 }
 
@@ -135,7 +135,6 @@ $(document).ready(function(){
                     console.log('unloading')
                 })
                 frame.on('load', function(){
-                    console.log('loading')
                     var currURL= document.getElementById( key + "-frame").contentWindow.location.href;
                     currURL = '/' + currURL.replace(/^(?:\/\/|[^\/]+)*\//, "");
                     

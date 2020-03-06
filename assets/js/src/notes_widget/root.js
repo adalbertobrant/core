@@ -97,7 +97,7 @@ class NotesWidget extends Component{
                 <button onClick={this.submitHandler}
                 type="button" 
                 className="btn">
-            <i class="fas fa-paper-plane    "></i> </button>
+            <i className="fas fa-paper-plane    "></i> </button>
             </div>
         </div>)
     }

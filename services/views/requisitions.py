@@ -49,7 +49,6 @@ class EquipmentRequisitionCreateView(EquipmentRequisitionMixin, CreateView):
     def form_valid(self, form):
         resp = super().form_valid(form)
         qs = InventoryController.objects.filter(active=True)
-        print(qs)
         if qs.exists():
             usr = qs.first().employee.user
             Notification.objects.create(

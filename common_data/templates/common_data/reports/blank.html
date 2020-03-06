@@ -13,12 +13,22 @@
             font-weight: 600;
             text-align: center;
             color: #bbb;
+        }
 
+        .blank-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     </style>
     
-    <center>
-        <i class="fas fa-file-alt" id="file-icon"></i>
-    </center>
-    <h1>No Data</h1>
+    <div class='blank-container'>
+        <div>
+            <i class="fas fa-file-alt" id="file-icon"></i>
+        <h1>No Data</h1>
+        </div>
+    </div>
+        
 {% endblock %}

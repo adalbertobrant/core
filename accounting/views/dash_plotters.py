@@ -64,9 +64,9 @@ def revenue_vs_expense_plot():
     for i in range(len(revenue)):
         profit.append(revenue[i] - expenses[i])
 
-    chart = pygal.Bar(x_title="Week Ending",
+    chart = pygal.Bar(x_title="Week",
                       x_label_rotation=15, style=CustomStyle, height=400)
-    chart.x_labels = dates
+    chart.x_labels = [f'Week {i + 1}' for i, value in enumerate(dates)]
     chart.add("Revenue", revenue)
     chart.add("Expenses", expenses)
     chart.add("Profit", profit)
