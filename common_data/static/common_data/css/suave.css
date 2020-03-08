@@ -663,7 +663,7 @@ table .form-control, table .search-widget {
 
 .timePicker {
     margin: 5px 0px;
-    height: 100%;
+    /* height: 100%; */
 }
 
 span.important {

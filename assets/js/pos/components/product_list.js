@@ -68,7 +68,10 @@ const ProductList = (props) =>{
             
             <div className={styles.productInput} 
                  style={{display: wide ? 'none': 'flex'}}>
-                <input type="number" className='form-input'/>
+                <input 
+                    type="number" 
+                    className='form-input'
+                    value ={props.inputText}/>
                 <button 
                     className='btn btn-primary'
                     onClick={props.handleEnter}> 

@@ -18,8 +18,10 @@
 
 .hiddenEventsList {
     width: 30vw;
+    min-width: 200px !important;
     position: fixed;
     left: 30vw;
+    z-index: 100;
     top:20vh;
     padding: 12px;
     background-color: white;

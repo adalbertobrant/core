@@ -104,7 +104,7 @@ const HoverableEventList = (props) =>{
                     <button className='btn' onClick={()=>setShowEvents(false)}><i className="fa fa-times" aria-hidden="true"></i></button>
                 </div>
                 {props.events.map((event) =>(
-                <a href={"/planner/event-detail/" + event.id}>
+                <a key={event.id} href={"/planner/event-detail/" + event.id}>
                         <div className={styles.eventBox} style={{
                             marginBottom: '5px',
                             backgroundColor: context.primary

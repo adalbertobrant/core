@@ -45,6 +45,7 @@ class PlannerConfigUpdateView(LoginRequiredMixin, UpdateView):
 class EventParticipantMixin():
     def get_initial(self):
         initial = super().get_initial()
+        
 
         if isinstance(self, UpdateView):
             participant_mapping = {
@@ -59,6 +60,7 @@ class EventParticipantMixin():
                     'name': str(i)
                 } for i in self.object.participants.all()])
             )
+        
 
         return initial
 
@@ -73,7 +75,7 @@ class EventParticipantMixin():
                 request.POST['json_participants']))
         except json.JSONDecodeError:
             messages.info(
-                request, 'This event has no participants, please provide at least one')
+                request, 'There is an error in the participants data')
             return resp
 
         if isinstance(self, UpdateView):
@@ -100,7 +102,8 @@ class EventCreateView(LoginRequiredMixin, EventParticipantMixin, CreateView):
 
     def get_initial(self):
         return {
-            'owner': self.request.user.employee
+            'owner': self.request.user.employee,
+            'date': datetime.date.today()
         }
 
 

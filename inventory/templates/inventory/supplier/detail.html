@@ -33,7 +33,7 @@ Vendor Details
                     <p class="card-text">Type: {% if object.is_organization %} Organization {% else %} Individual
                         {% endif %} </p>
                         <hr>
-                    <p class="card-text"><i class="fa fa-at" aria-hidden="true"></i> <a href="{% url 'messaging:create-message' %}">{{object.email}}</a></p>
+                    <p class="card-text"><i class="fa fa-at" aria-hidden="true"></i> {{object.email}}</p>
                     <p class="card-text"><i class="fa fa-home" aria-hidden="true"></i> {{object.address}}</p>
                     <h4 class="card-title">Account</h4>
                     <p class="card-text">
@@ -134,7 +134,7 @@ Vendor Details
                                         <td><a href="{% url 'base:individual-detail' pk=m.pk %}"
                                                 >{{m.full_name}}</a></td>
                                         <td>{{m.phone}}</td>
-                                        <td><a href="{% url 'messaging:create-message' %}">{{m.email}}</a></td>
+                                        <td>{{m.email}}</td>
                                         
                                     </tr>
                                     {% endfor %}

@@ -1,14 +1,21 @@
 {% extends "window.html" %}
 {% block content %}
 
-<div class="jumbotron">
-    <div class="container">
-        <h1 class="display-3">Delete {{object}}! </h1>
-        <p>Are you sure you want to continue?</p>
-        <form method="post">{% csrf_token %}
-            <input class="btn btn-danger" type="submit" value="Submit" />
-        </form>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card accent-lg shadow">
+                <div class="card-body">
+                    <i class="fas fa-trash-alt fa-7x   " style='color:#c82333;'></i>
+                    <h1 class="display-3">Delete {{object}}! </h1>
+                    <p>Are you sure you want to continue?</p>            
+                    <form method="post">{% csrf_token %}
+                        <input class="btn btn-danger" type="submit" value="Submit" />
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
 {% endblock %}
