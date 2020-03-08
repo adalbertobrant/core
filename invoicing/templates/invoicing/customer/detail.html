@@ -98,7 +98,7 @@ Customer
                                         <a href="{% url 'base:individual-detail' pk=m.pk %}" class='btn btn-primary btn-sm' >{{m.full_name}}</a>
                                     </td>
                                     <td>{{m.phone}}</td>
-                                    <td><a href="{% url 'messaging:create-message' %}">{{m.email}}</a></td>
+                                    <td>{{m.email}}</td>
                                     
                                 </tr>
                                 {% endfor %}

@@ -42,6 +42,7 @@ const event = (props) =>{
                 <a className={[styles.event, 'hvr-grow'].join(' ')}
                 style={{
                     zIndex: props.index,
+                    
                     left: props.view === "month" ? "0px" :`${40 + startX}px`,
                     top: `${startY}px`,
                     width: props.view === "day" 
@@ -56,7 +57,10 @@ const event = (props) =>{
                     ':hover': {
                         color: context.primary,
                         backgroundColor: 'white',
-                        border: `1px solid ${context.primary}`
+                        border: `1px solid ${context.primary}`,
+                        height: 'fit-content',
+                        transform: 'scale(1.125)',
+                        
                     }
                     }} className={styles.eventBox}>
                     <div>

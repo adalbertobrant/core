@@ -28,9 +28,13 @@ const taskList =(props) =>{
     ,[])
     return(
         <div>
-            {taskList.map(task =>{
+            {taskList.map((task, index) =>{
                 return(
-                    <Task data={task} key={task.id} employeeList={employees} />
+                    <Task data={task} key={task.id} employeeList={employees} remove={() =>{
+                        let newTaskList = [...taskList]
+                        newTaskList.splice(index, 1)
+                        setTaskList(newTaskList)
+                    }} />
                 )
             })}
             <div>
@@ -68,18 +72,38 @@ const Task =(props) =>{
     const [editing, setEditing] = useState(false)
     const [employeeString, setEmployeeString] = useState('')
     useEffect(() =>{
-        if(props.data.assigned == null){
+        if(assigned == null){
             return
         } 
-        axios({
-            method: 'GET',
-            url: '/employees/api/employee/' + assigned
-        }).then(res => setEmployeeString(res.data.first_name + ' ' + res.data.last_name))
+        props.employeeList.forEach(emp =>{
+            if(emp.employee_number == assigned){
+                setEmployeeString(`${emp.first_name} ${emp.last_name}`)
+            }
+        })
     }, [assigned])
 
     return(
         <div className={`card ${editing ? "active-card" : ""}`}>
             <div className="card-body">
+                <button
+                    style={{
+                        position: 'absolute',
+                        right: '12px',
+                        top: '12px',
+                        zIndex: '1'
+                    }} 
+                    onClick={evt =>{
+                        
+                        if(confirm('Are you sure you want to delete this task?')){
+                            let pk 
+                            axios.delete('/services/api/work-order-task/' + props.data.id)
+                                .then(() =>{props.remove()})
+                                .catch(() =>alert('error deleting task'))
+                                
+                        }
+                        evt.stopPropagation()
+                        
+                        }} className='btn btn-sm btn-danger'> <i className="fas fa-times    "></i> </button>
                 <div className="row">
                     <div className="col-2">
                         <input type="checkbox" checked={completed}
@@ -122,12 +146,14 @@ const Task =(props) =>{
 
 const TaskForm =(props) => {
     const [due, setDue] = useState(props.initial.due)
-    const [description, setDescription] = useState(props.initial.description)
+    const initialDescription = props.new ? "" : props.initial.description
+    const [description, setDescription] = useState(initialDescription)
     const [assigned, setAssigned] = useState(props.initial.assigned)
     return(
         <React.Fragment>
             <label htmlFor="">Due:</label>
             <input type="date"  className='form-control' 
+            style={{maxWidth: '200px'}}
                 value={due}
                 onChange={evt => setDue(evt.target.value)} 
                 />
@@ -142,8 +168,12 @@ const TaskForm =(props) => {
                 
             </textarea>
             <label htmlFor="">Assigned:</label>
-            <select name="employee" id="" className='form-control' value={assigned}
-                onChange={(evt) => setAssigned(evt.target.value)}>
+            <select name="employee"
+                     id="" 
+                     className='form-control' 
+                     value={assigned}
+                    style={{maxWidth: '200px'}}
+                    onChange={(evt) => setAssigned(evt.target.value)}>
                 <option value="">----------</option>
                 {props.employeeList.map(emp => <option  
                                                     value={emp.employee_number}
@@ -153,6 +183,12 @@ const TaskForm =(props) => {
             <button className='btn btn-primary'
                 type='button'
                 onClick={() =>{
+                        if( description == ""){
+                            return
+                        }else if(due == ""){
+                            alert('A valid date must be set')
+                            return
+                        }
                         props.toggleEdit(false)
                         if(props.new){
                             axios({
@@ -171,8 +207,10 @@ const TaskForm =(props) => {
                                     "assigned": assigned,
                                     "description": description,
                                     "due": due,
+                                    "id": res.data.id
                                 })
                                 props.appendTasks(newTasks)
+                                setDescription("")
                             })
                                 .catch(err => console.log(err.response))
                         }else{

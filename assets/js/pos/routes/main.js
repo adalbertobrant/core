@@ -379,6 +379,8 @@ class MainPage extends Component{
                         {...this.state}
                         handleEnter={this.handleEnterButtonPress}
                         mode={this.state.keypadState}
+                        inputText={this.state.keypadText}
+                        
                             changeMode={(mode) =>{
                                 this.setState({keypadState: mode})}}
                         setActive={(index) =>{

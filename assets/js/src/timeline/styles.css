@@ -58,6 +58,7 @@
                 0px 2px 4px #999;
     margin: 1%;
     height: 100px;
+    overflow-y: hidden;
     min-height: 100px;
     width: 98%;
     display: flex;

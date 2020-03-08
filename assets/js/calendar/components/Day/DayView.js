@@ -64,7 +64,8 @@ class DayView extends Component{
                 ))}
             </tbody>
         </table>);
-        const contentHeight = window.document.documentElement.offsetHeight - this.props.offsetTop
+        const sidebarHeight = window.screen.width < 575 ? document.getElementById('sidebar').offsetHeight :  0 
+        const contentHeight = window.screen.height - this.props.offsetTop - sidebarHeight
     
         const dayWrapper = {
             width: `${this.state.width}px`,
@@ -101,7 +102,7 @@ class DayView extends Component{
                 {this.state.events.map((event, i) =>(
                     <Event
                         index={1 + i}
-                        offset={250 * (i % 3)}
+                        offset={50 * (i % 3)}
                         width={this.state.width}
                         key={i} 
                         data={event}

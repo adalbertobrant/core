@@ -49,6 +49,7 @@ class UserTestMiddleware(object):
         if request.user.is_superuser or \
                 request.path.startswith("/login") or \
                 request.path.startswith("/base") or \
+                (request.path.startswith("/api") and not request.user.is_anonymous()) or \
                 request.path in exempted_urls:
             return self.get_response(request)
 

@@ -20,11 +20,12 @@ class EventForm(forms.ModelForm, BootstrapMixin):
         widget=forms.HiddenInput
     )
     json_participants = forms.CharField(
-        widget=forms.HiddenInput
+        widget=forms.HiddenInput,
+        required=False
     )
     label = forms.CharField(required=True)
     description = forms.CharField(
-        required=True, widget=forms.Textarea(attrs={'rows': 4, 'cols': 15}))
+        required=False, widget=forms.Textarea(attrs={'rows': 4, 'cols': 15}))
 
     class Meta:
         model = models.Event

@@ -48,7 +48,7 @@ export default class TransactionTable extends Component{
     }
 
     removeHandler =(index) =>{
-        let newContents = this.state.contents;
+        let newContents = [...this.state.contents];
         newContents.splice(index, 1);
         document.getElementById("item_" + (index + 1)).remove();
 

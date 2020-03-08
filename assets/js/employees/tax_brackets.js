@@ -26,7 +26,7 @@ export default class TaxBracketTable extends Component{
     }
 
     removeHandler(index){
-        let newBrackets = this.state.brackets;
+        let newBrackets = [...this.state.brackets];
         newBrackets.splice(index, 1);
         this.setState({brackets: newBrackets});
         this.updateForm();

@@ -198,7 +198,7 @@ export default class CalendarApp extends Component{
                                 prevHandler={this.prevHandler}/>
                         <div className={styles.renderedCalendar} >
         <h4 className={styles.monthText} 
-            style={{display: this.state.view == 'month' ? 'block': 'none'}}>{this.state.monthText}</h4>
+            style={{display: this.state.view == 'month' && window.screen.width < 575 ? 'block': 'none'}}>{this.state.monthText}</h4>
                             {/*App */}
                             {rendered}
                         </div>

@@ -27,10 +27,10 @@ Planner
                                     <li class="list-group-item hvr-grow">
                                         <a href="{% url 'planner:event-list' %}">Manage Events</a>
                                     </li>
-                    <li class="nav-item"><i class="fas fa-cogs    "></i>Configuration</li>
+                    {% comment %} <li class="nav-item"><i class="fas fa-cogs    "></i>Configuration</li>
                     <li class="list-group-item hvr-grow">
                                         <a href="{% url 'planner:config' pk=1 %}">Settings</a>
-                                    </li>
+                                    </li> {% endcomment %}
                 </ul>
             </nav>
         </div>

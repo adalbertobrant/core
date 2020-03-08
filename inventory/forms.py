@@ -516,6 +516,7 @@ class OrderForm(forms.ModelForm, BootstrapMixin):
     )
     make_payment = forms.BooleanField(initial=False, required=False)
     status = forms.CharField(widget=forms.HiddenInput)
+    active = forms.BooleanField(widget=forms.HiddenInput, required=False, initial=True)
     ship_to = forms.ModelChoiceField(
         models.WareHouse.objects.all(), label='Ship To Warehouse')
     notes = forms.CharField(widget=forms.Textarea(attrs={'rows': 6}),
@@ -535,6 +536,7 @@ class OrderForm(forms.ModelForm, BootstrapMixin):
                                css_class='form group col-md-6 col-sm-12'),
                     ),
                     'tax',
+                    'active'
                     ),
                 Tab('Shipping and Payment',
                     Row(

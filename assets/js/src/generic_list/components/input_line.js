@@ -193,23 +193,23 @@ class inputLine extends Component{
                 :
                 <div  className={styles.overlay} style={{display: this.props.active ? 'flex': 'none'}}>
                     <div className={styles.content}>
-                    <div className={styles.contentHeader}>
-                        <h4>Add Item</h4>
-                        <button className='btn btn-danger ' type='button' onClick={this.props.dismiss}><i className="fas fa-times" aria-hidden="true"></i></button>
-                    </div>
-                {this.props.fieldOrder.map((fieldName, i) =>(
-                    <React.Fragment>
-                        <label htmlFor="">{fieldName}</label>
-                        {this.fieldSelector(i)}
-                    </React.Fragment>
-                ))}
+                        <div className={styles.contentHeader}>
+                            <h4>Add Item</h4>
+                            <button className='btn btn-danger ' type='button' onClick={this.props.dismiss}><i className="fas fa-times" aria-hidden="true"></i></button>
+                        </div>
+                        {this.props.fieldOrder.map((fieldName, i) =>(
+                            <React.Fragment>
+                                <label htmlFor="">{fieldName}</label>
+                                {this.fieldSelector(i)}
+                            </React.Fragment>
+                        ))}
                 
-                    <button 
-                        style={{ margin: '5px'}}
-                        className="btn btn-sm btn-block"
-                        type="button"
-                        onClick={this.insertHandler}>Insert</button>
-                </div>
+                        <button 
+                            style={{ margin: '5px', marginTop: '12px'}}
+                            className="btn btn-sm btn-block"
+                            type="button"
+                            onClick={this.insertHandler}>Insert</button>
+                    </div>
                 </div>
 
         );

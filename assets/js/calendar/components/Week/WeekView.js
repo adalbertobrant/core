@@ -40,9 +40,9 @@ class WeekView extends Component{
         if(this.state.days.lenght === 0){
             return(<h3>Loading data...</h3>)
         }
-        const weekHeaderHeight = 42;
+        const weekHeaderHeight = window.screen.width < 575 ? document.getElementById('title').offsetHeight + 33 : 42;
         const titleHeight = document.getElementById('title').offsetHeight;
-        const windowHeight = document.documentElement.offsetHeight;
+        const windowHeight = window.screen.height;
         const height = windowHeight - weekHeaderHeight - titleHeight;
     
         return(

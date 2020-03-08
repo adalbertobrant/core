@@ -128,7 +128,7 @@ class OrderListView(ContextMixin,
                      "new_link": reverse_lazy("inventory:order-create")}
 
     def get_queryset(self):
-        return models.Order.objects.all().order_by('pk').reverse()
+        return models.Order.objects.filter(active=True).order_by('pk').reverse()
 
 
 class OrderStatusView(ContextMixin, DetailView):
