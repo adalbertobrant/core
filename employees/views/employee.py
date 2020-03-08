@@ -47,7 +47,6 @@ class EmployeeCreateView(ContextMixin, CreateView):
         num_employees = models.Employee.objects.filter(active=True).count()
         if not os.path.exists('license.json'):
             return HttpResponseRedirect('/base/license-check')
-
         with open('license.json', 'r') as f:
             license = json.load(f)
             if num_employees >= int(license['license']['number_employees']):
