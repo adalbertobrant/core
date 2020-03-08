@@ -117,7 +117,7 @@ th.bordered, td.bordered {
     margin: 30px auto;
     padding: 0.5in;
     width: 21cm;
-    /* height: 29.7cm; */
+    min-height: 29.7cm;
     height: fit-content;
     box-shadow: 5px 5px 20px #ccc;
     background-color: white;
@@ -143,6 +143,11 @@ th.bordered, td.bordered {
 .eop {
     page-break-before: always;
     break-before: always;
+    /* height: 2cm; */
+    background-color: #eee;
+    box-shadow: inset 0px 5px 5px #ccc;
+    margin: 2cm -0.56in;
+
 }
 
 #page-layout {
@@ -208,7 +213,8 @@ th.bordered, td.bordered {
         margin: 0;
         padding: 0!important;
         width: 90%;
-        height: fit-content!important;
+        min-height: 29.7cm;
+        height: fit-content;
     }
     #scroll-frame {
         height: fit-content!important;
@@ -218,6 +224,10 @@ th.bordered, td.bordered {
     .eop {
         page-break-before: always;
         break-before: always;
+        margin: 0px;
+        height:0px;
+        box-shadow: none;
+
     }
     body {
         font-family: sans-serif;
