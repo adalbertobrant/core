@@ -7,9 +7,10 @@ Lead Details
 {% block actions %}
 <a class="dropdown-item" href=" {% url 'invoicing:update-lead' pk=object.pk %} "> <i class="fas fa-edit "></i> Update</a>
 <a class="dropdown-item" href=" {% url 'invoicing:create-lead-task' pk=object.pk %} "> <i class="fas fa-plus    "></i> Add Task</a>
-<a class="dropdown-item" href=" {% url 'invoicing:create-interaction' pk=object.pk %} "> <i class="fas fa-plus    "></i>Record Interaction</a>
-<a class="dropdown-item" href=" {% url 'invoicing:create-contact' lead=object.pk %} "> <i class="fas fa-address-book    "></i>Add Contact</a>
-<a class="dropdown-item" href=" {% url 'invoicing:create-lead'%} "> <i class="fas fa-plus    "></i>Create New Lead</a>
+<a class="dropdown-item" href=" {% url 'invoicing:create-interaction' pk=object.pk %} "> <i class="fas fa-plus    "></i> Record Interaction</a>
+<a class="dropdown-item" href=" {% url 'invoicing:create-contact' lead=object.pk %} "> <i class="fas fa-address-book    "></i> Add Contact</a>
+<a class="dropdown-item" href=" {% url 'invoicing:create-lead'%} "> <i class="fas fa-plus    "></i> Create New Lead</a>
+<a class="dropdown-item" href=" {% url 'invoicing:list-leads'%} "> <i class="fas fa-list-ul    "></i> View all Leads</a>
 {% endblock actions %}
 
 {% block content %}
