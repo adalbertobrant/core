@@ -46,7 +46,10 @@ Individual Details
                             <tr>
                                 <th>Website</th>
                                 <td>
+                                    {% if object.organization.website %}
                                     <a href='http://{{object.organization.website}}' >{{object.organization.website}}</a>
+                                    
+                                    {% endif %}
                                 </td>
                             </tr>
                         </tbody>

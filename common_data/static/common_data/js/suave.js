@@ -41,11 +41,26 @@ function inIframe() {
 //     })
 // }
 
-
-function linkClickHandler(link){
+// do not use in pages with other links
+function linkClickHandler(link, reload){
    $('#popup-frame').attr('src', link);
    var modal = document.getElementById('id-my-modal');
     modal.style.display = 'block';
+    $('#popup-frame').on('load', function(){
+        var currURL= document.getElementById("popup-frame").contentWindow.location.href;
+        currURL = '/' + currURL.replace(/^(?:\/\/|[^\/]+)*\//, "");
+        if(currURL == link){
+            $('#loading-iframe').addClass('iframe-loaded')
+            $('#popup-frame').removeClass('iframe-hidden')
+        }else{
+            modal.style.display = 'none'
+            $('#popup-frame').attr('src', link);
+            if(reload != undefined && reload){
+                window.location.reload()
+            }
+        }
+        
+    })
     
 }
 
@@ -123,7 +138,6 @@ if(window.screen.width > 575){
         });
 }else{
     $('.ui-date-picker').each(function(i, el){
-        console.log(el)
         $(el).attr('type', 'date')
     })
 }

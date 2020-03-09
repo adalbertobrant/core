@@ -4,7 +4,7 @@
 Employee Portal
 {% endblock heading %}
 {% block actions %}
-<a  onclick="linkClickHandler('/employees/time-logger/{{object.pk}}')" target="popup" class="dropdown-item">Login/Logout Timesheet</a>
+<a  href='/employees/time-logger/{{object.pk}}' class="dropdown-item">Login/Logout Timesheet</a>
 {% endblock actions %}
 {% block content %}
 

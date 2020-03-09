@@ -11,16 +11,7 @@
     <div class="container">
         <h1 class="display-3">Create Multiple Employees</h1>
         <p class="lead">Use this form to add multiple employees in one form.</p>
-        {% if related_links %}
-        <p>Actions</p>
-            <div class="btn btn-group">
-                    {% for item in related_links %}
-                        <a class="btn btn-primary text-white"  onclick="linkClickHandler('{{item.url}}')" target="popup">{{item.name}}</a>
-                    {% endfor %}
-            </div>
-        <p class="lead">
         
-        {% endif %}
     </div>
 </div>
 
