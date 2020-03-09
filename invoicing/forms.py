@@ -431,7 +431,7 @@ class LeadForm(BootstrapMixin, forms.ModelForm):
         model = models.Lead
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
-            # 'organization': Select2Widget,
+            'organization': Select2Widget,
             'contacts': Select2MultipleWidget,
             'team': forms.Select(attrs={'id': 'salesteam'}),
             'source': forms.Select(attrs={'id': 'leadsource'})

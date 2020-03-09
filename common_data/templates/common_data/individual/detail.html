@@ -24,8 +24,8 @@ Individual Details
                     {% endif %}
                     </center>
                     <br>
-                    <p class="card-text">{{object.email}}</p>
-                    <p class="card-text"><a>{{object.phone}}</a></p>
+                    <p class="card-text"> <i class="fas fa-at    "></i> {{object.email}}</p>
+                    <p class="card-text"><a> <i class="fas fa-phone    "></i> {{object.phone}}</a></p>
                 </div>
             </div>
             <br>
@@ -33,27 +33,15 @@ Individual Details
             <div class="card shadow accent-md">
                 <div class="card-body">
                     <h4 class="card-title">Organization </h4>
-                    <table class="table table-sm">
-                        <tbody>
-                            <tr>
-                                <th>Legal Name</th>
-                                <td><a href="{% url 'base:organization-detail' pk=object.organization.pk %}" class="tertiary-link">{{object.organization.legal_name}}</a></td>
-                            </tr>
-                            <tr>
-                                <th>Address</th>
-                                <td>{{object.organization.business_address}}</td>
-                            </tr>
-                            <tr>
-                                <th>Website</th>
-                                <td>
-                                    {% if object.organization.website %}
-                                    <a href='http://{{object.organization.website}}' >{{object.organization.website}}</a>
+                    <p class="card-text"><a href="{% url 'base:organization-detail' pk=object.organization.pk %}" class="tertiary-link">{{object.organization.legal_name}}</a></p>
+                    <p class="card-text"> <i class="fas fa-home    "></i> {{object.organization.business_address}}</p>
+                    <p class="card-text">
+                        {% if object.organization.website %}
+                                    <a href='http://{{object.organization.website}}' > <i class="fas fa-network-wired    "></i> {{object.organization.website}}</a>
                                     
                                     {% endif %}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    </p>
+                    
                 </div>
             </div>
             {% endif %}
