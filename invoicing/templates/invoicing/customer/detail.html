@@ -81,7 +81,7 @@ Customer
             <br>
             <div class="card accent-left-md">
                 <div class="card-body">
-                    <h4 class="card-title"> <i class="fas fa-link    "></i> Contacts <button onclick="linkClickHandler('/invoicing/customer/add-member/{{object.organization.pk}}')" target='popup' class="btn btn-primary"><i class="fas fa-plus    "></i></button></h4>
+                    <h4 class="card-title"> <i class="fas fa-link    "></i> Contacts <button onclick="linkClickHandler('/invoicing/customer/add-member/{{object.organization.pk}}', true)" target='popup' class="btn btn-primary"><i class="fas fa-plus    "></i></button></h4>
                     {% if object.organization.members %}
                         <table class="table">
                             <thead>

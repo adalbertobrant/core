@@ -84,7 +84,7 @@ class ProductListView(ContextMixin, PaginationMixin, FilterView):
         "action_list": [
             {
                 'label': 'Order Products',
-                'icon': 'file-excel',
+                'icon': 'cart-arrow-down',
                 'link': reverse_lazy('inventory:order-create')
             },
             {
@@ -377,16 +377,7 @@ class RawMaterialCreateView(ContextMixin,
     extra_context = {
         "title": "Add New Raw Material",
         'description': 'Cycle  through the tabs to enter information regarding material description, quantity, dimensions and pricing. ',
-        'related_links': [{
-            'name': 'Add Vendor',
-            'url': '/inventory/supplier/create/'
-        }, {
-            'name': 'Add Unit',
-            'url': '/inventory/unit-create/'
-        }, {
-            'name': 'Add Inventory Category',
-            'url': '/inventory/category-create/'
-        }],
+       
     }
 
 

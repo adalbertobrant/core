@@ -265,7 +265,7 @@ class CustomerDetailView(DetailView):
             'credit_notes': CreditNote.objects.filter(
                 invoice__customer=self.object
             ),
-            'leads': Lead.objects.filter(organization=self.object.organization)
+            'leads': Lead.objects.filter(organization=self.object.organization),
         })
 
         return context

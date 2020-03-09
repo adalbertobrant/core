@@ -9,6 +9,7 @@ Lead Details
 <a class="dropdown-item" href=" {% url 'invoicing:create-lead-task' pk=object.pk %} "> <i class="fas fa-plus    "></i> Add Task</a>
 <a class="dropdown-item" href=" {% url 'invoicing:create-interaction' pk=object.pk %} "> <i class="fas fa-plus    "></i>Record Interaction</a>
 <a class="dropdown-item" href=" {% url 'invoicing:create-contact' lead=object.pk %} "> <i class="fas fa-address-book    "></i>Add Contact</a>
+<a class="dropdown-item" href=" {% url 'invoicing:create-lead'%} "> <i class="fas fa-plus    "></i>Create New Lead</a>
 {% endblock actions %}
 
 {% block content %}

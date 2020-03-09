@@ -3,11 +3,7 @@
 {% block heading %}
 Update Procedure
 {% endblock  %}
-{% block actions %}
-{% for item in related_links %}
-    <a class="dropdown-item"  onclick="linkClickHandler('{{item.url}}')" target="popup">{{item.name}}</a>
-{% endfor %}
-{% endblock actions %}
+
 {% block content %}
 {% load crispy_forms_tags %}
 

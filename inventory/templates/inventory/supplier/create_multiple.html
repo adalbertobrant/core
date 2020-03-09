@@ -11,13 +11,7 @@ Create Multiple Vendors
 {% endblock heading %}
 
 
-{% block actions %}
 
-{% for item in related_links %}
-    <a class="dropdown-item"  onclick="linkClickHandler('{{item.url}}')" target="popup">{{item.name}}</a>
-{% endfor %}
-
-{% endblock actions %}
 
 {% block content %}
 

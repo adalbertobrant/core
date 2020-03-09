@@ -45,15 +45,7 @@ class WorkOrderCreateView(WorkOrderCRUDMixin, ContextMixin,
                           CreateView):
     template_name = os.path.join('services', 'work_order', 'create.html')
     form_class = forms.ServiceWorkOrderForm
-    extra_context = {
-        'related_links': [
-            {
-                'name': 'Add Service Team',
-                'url': '/services/team-create/'
-            }
-        ]
-    }
-
+  
     def get_initial(self):
         return {
             'status': 'requested',
