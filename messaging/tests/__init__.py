@@ -7,4 +7,4 @@ from .models import (
     EmailTests)
 
 
-from .views import (ChatViewTests, EmailViewTests)
+#from .views import (ChatViewTests, EmailViewTests)

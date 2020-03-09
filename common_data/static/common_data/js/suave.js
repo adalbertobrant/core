@@ -113,14 +113,21 @@ $(document).ready(function () {
     $(".jumbotron").addClass('shrink')
 })
 
+if(window.screen.width > 575){
+    $(".ui-date-picker").datepicker({
+        changeYear: true,
+        changeMonth: true,
+        dateFormat: 'yy-mm-dd',
+        minDate: new Date(1955, 1,1),
+        yearRange: "1955:2035"
+        });
+}else{
+    $('.ui-date-picker').each(function(i, el){
+        console.log(el)
+        $(el).attr('type', 'date')
+    })
+}
 
-$(".ui-date-picker").datepicker({
-    changeYear: true,
-    changeMonth: true,
-    dateFormat: 'yy-mm-dd',
-    minDate: new Date(1955, 1,1),
-    yearRange: "1955:2035"
-    });
 
 
 function setNavbarActive(){
