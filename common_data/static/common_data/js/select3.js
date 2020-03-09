@@ -36,16 +36,21 @@ function createNew(btn){
         modal.style.display = 'block';
         $('#' + target).removeClass('iframe-hidden');
         $('#loading-iframe').addClass('iframe-loaded');
-        console.log('target loaded')
     }
 }
 
 
 $(document).ready(function(){
+    var inputList = []
+
+
     if($('input[name="csrfmiddlewaretoken"]').length < 1){
         return
+    }    
+    if(inIframe()){
+        return
     }
-    var inputList = []
+    //csrf setup
     var token = $('input[name="csrfmiddlewaretoken"]').val()
     function csrfSafeMethod(method) {
         // these HTTP methods do not require CSRF protection
@@ -58,15 +63,6 @@ $(document).ready(function(){
             }
         }
     });
-
-    if(inIframe()){
-        return
-    }
-    if($('input[name="csrfmiddlewaretoken"]').length < 1){
-        return
-    }
-    var inputList = []
-    var token = $('input[name="csrfmiddlewaretoken"]').val()
 
     $('select').each(function(i, el){
         //exclude certain inputs
@@ -85,10 +81,8 @@ $(document).ready(function(){
             return
         }
 
-
         //updates input every time it is opened
         if($(el).hasClass('django-select2')){
-            
             $('#' + el.id).on('select2:opening', function (e) {
                 updateLastest(e.target)
               });
@@ -97,10 +91,8 @@ $(document).ready(function(){
                 updateLastest(evt.target)
             })
         }
-        
 
-        //adds button to select
-        //only add for inputs with models
+        // use this instead of the name attribute because the id attribute can be changed
         var name = el.id.replace('id_', '')
         inputList.push(name)
     })
@@ -113,7 +105,6 @@ $(document).ready(function(){
         }, 
 
         success: function(data){
-            console.log(data)
             var frameContainer = $('#iframe-container')
             Object.keys(data).forEach(key => {
                 var select = $('select[name="'+ key +'"]')
@@ -132,7 +123,6 @@ $(document).ready(function(){
                 var frame = $('#'+ key + "-frame") 
                 frame.on('beforeunload', function(){
                     $('#loading-iframe').removeClass('iframe-loaded');
-                    console.log('unloading')
                 })
                 frame.on('load', function(){
                     var currURL= document.getElementById( key + "-frame").contentWindow.location.href;

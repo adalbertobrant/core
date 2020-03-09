@@ -11,16 +11,7 @@
     <div class="container">
         <h1 class="display-3">Create Multiple Journal Entries</h1>
         <p class="lead">Use this form to fill in the basic requirements to record multiple journal entries with the application.</p>
-        {% if related_links %}
-        <p>Actions</p>
-            <div class="btn btn-group">
-                    {% for item in related_links %}
-                        <a class="btn btn-primary text-white"  onclick="linkClickHandler('{{item.url}}')" target="popup">{{item.name}}</a>
-                    {% endfor %}
-            </div>
-        <p class="lead">
         
-        {% endif %}
     </div>
 </div>
 

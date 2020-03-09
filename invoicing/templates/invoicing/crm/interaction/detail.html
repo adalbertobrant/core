@@ -2,6 +2,9 @@
 {% block heading %}
 Interaction Details
 {% endblock heading %}
+{% block actions %}
+<a href=" {% url 'invoicing:lead-detail' pk=object.lead.pk %} " class="dropdown-item"> <i class="fas fa-file    "></i> View Lead </a>
+{% endblock actions %}
 
 {% block content %}
     <br>

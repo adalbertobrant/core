@@ -137,26 +137,6 @@ class ComplexEntryView(ContextMixin, CreateView):
 
         return resp
 
-    def post(self, request, *args, **kwargs):
-        resp = super().post(request, *args, **kwargs)
-        if not self.object:
-            return resp
-
-        for item in request.POST.getlist('items[]'):
-            item_data = json.loads(urllib.parse.unquote(item))
-            amount = decimal.Decimal(item_data['amount'])
-            # incase the name includes '-' character
-            pk, _ = item_data['account'].split("-")[:2]
-            account = models.Account.objects.get(
-                pk=int(pk))
-            # make sure
-            if int(item_data['debit']) == 1:
-                self.object.debit(amount, account)
-            else:
-                self.object.credit(amount, account)
-
-        return resp
-
 
 class JournalEntryDetailView(DetailView):
     template_name = os.path.join('accounting', 'transaction_detail.html')
@@ -635,12 +615,7 @@ class BillCreateView(ContextMixin, CreateView):
     extra_context = {
         'title': 'Create Bill',
         'description': 'Record money owed vendors for goods or services',
-        'related_links': [
-            {
-                'url': reverse_lazy('inventory:supplier-create'),
-                'name': 'Create Vendor',
-            }
-        ]
+       
     }
     form_class = forms.BillForm
 

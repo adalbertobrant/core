@@ -5,7 +5,9 @@ Task Details
 {% endblock heading %}
 
 {% block actions %}
-<a href=" {% url 'invoicing:lead-detail' pk=object.lead.pk %} " class="dropdown-item">View Lead</a>
+<a href=" {% url 'invoicing:lead-detail' pk=object.lead.pk %} " class="dropdown-item"> <i class="fas fa-file    "></i> View Lead</a>
+<a class="dropdown-item" href=" {% url 'invoicing:update-task' pk=object.pk %} "> <i class="fas fa-edit    "></i> Update</a>
+
 {% endblock actions %}
 
 {% block content %}
@@ -16,11 +18,21 @@ Task Details
         <div class="col-12">
             <div class="card shadow accent-left-lg">
                 <div class="card-body">
-                    <h4>{{object.title}}</h4>
-                    {{object.created}}
-                    <p class="card-text"><i class="fas fa-clock" aria-hidden="true"></i> {{object.due}}</p>
-                    <p class="card-text"><i class="fas fa-user" aria-hidden="true"></i> {{object.assigned}}</p>
-                    <a href=" {% url 'planner:event-detail' pk=object.event.pk %} " class="btn btn-sm btn-primary">View Event</a>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <h4>{{object.title}}</h4>
+                            {{object.created}}
+                            <p class="card-text"><i class="fas fa-clock" aria-hidden="true"></i> {{object.due}}</p>
+                            <p class="card-text"><i class="fas fa-user" aria-hidden="true"></i> {{object.assigned}}</p>
+                            <a href=" {% url 'planner:event-detail' pk=object.event.pk %} " class="btn btn-sm btn-primary">View Event</a>
+                        </div>
+                        <div class="col-sm-12 col-md-6 accent-left-md">
+                            <h5>Status:</h5>
+                            <h3>{{object.status}}</h3>
+                        </div>
+                    </div>
+                    <hr>
+                    {{object.description}}
                 </div>
             </div>
         </div>

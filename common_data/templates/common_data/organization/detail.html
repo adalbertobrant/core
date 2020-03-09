@@ -24,12 +24,13 @@ Organization Details
                         </center>
                         {% endif %}
                         <p class="card-text">
-                            {{object.business_address|linebreaks}}
+                           <i class="fas fa-home    "></i> {{object.business_address|linebreaks}}
                         </p>
                         <p class="card-text">
-                             <a href='http://{{object.website}}'>{{object.website}}</a>
+                             <a href='http://{{object.website}}'> <i class="fas fa-network-wired    "></i> {{object.website}}</a>
                         </p>
-                        <p class="card-text">{{object.email}}</p>
+                        <p class="card-text"> <i class="fas fa-at    "></i> {{object.email}}</p>
+                        <p class="card-text"> <i class="fas fa-phone    "></i> {{object.phone}}</p>
                                         
                                     
                     </div>

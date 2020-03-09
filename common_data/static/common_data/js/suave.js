@@ -41,11 +41,26 @@ function inIframe() {
 //     })
 // }
 
-
-function linkClickHandler(link){
+// do not use in pages with other links
+function linkClickHandler(link, reload){
    $('#popup-frame').attr('src', link);
    var modal = document.getElementById('id-my-modal');
     modal.style.display = 'block';
+    $('#popup-frame').on('load', function(){
+        var currURL= document.getElementById("popup-frame").contentWindow.location.href;
+        currURL = '/' + currURL.replace(/^(?:\/\/|[^\/]+)*\//, "");
+        if(currURL == link){
+            $('#loading-iframe').addClass('iframe-loaded')
+            $('#popup-frame').removeClass('iframe-hidden')
+        }else{
+            modal.style.display = 'none'
+            $('#popup-frame').attr('src', link);
+            if(reload != undefined && reload){
+                window.location.reload()
+            }
+        }
+        
+    })
     
 }
 
@@ -113,14 +128,20 @@ $(document).ready(function () {
     $(".jumbotron").addClass('shrink')
 })
 
+if(window.screen.width > 575){
+    $(".ui-date-picker").datepicker({
+        changeYear: true,
+        changeMonth: true,
+        dateFormat: 'yy-mm-dd',
+        minDate: new Date(1955, 1,1),
+        yearRange: "1955:2035"
+        });
+}else{
+    $('.ui-date-picker').each(function(i, el){
+        $(el).attr('type', 'date')
+    })
+}
 
-$(".ui-date-picker").datepicker({
-    changeYear: true,
-    changeMonth: true,
-    dateFormat: 'yy-mm-dd',
-    minDate: new Date(1955, 1,1),
-    yearRange: "1955:2035"
-    });
 
 
 function setNavbarActive(){

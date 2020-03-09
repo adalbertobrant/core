@@ -35,12 +35,7 @@ class EmployeeCreateView(ContextMixin, CreateView):
     extra_context = {
         'title': 'Create Employee',
         'description': 'Use this form to record employee data. Employee objects can be added to payroll, and have their vacation time managed. They can also be linked to users.',
-        'related_links': [
-            {
-                'name': 'Create Contract',
-                'url': '/employees/create-contract/'
-            }
-        ]
+       
     }
 
     def get(self, request, *args, **kwargs):
