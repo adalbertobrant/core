@@ -4,7 +4,7 @@ import subprocess
 import os
 from latrom import settings
 import datetime
-
+import shutil
 
 class DBBackupService(AutomatedServiceMixin):
     service_name = 'common'
@@ -22,7 +22,20 @@ class DBBackupService(AutomatedServiceMixin):
         if not self.should_backup_db:
             return
 
-        os.chdir(settings.BASE_DIR)
-        ret = subprocess.run(['python', 'manage.py', 'dbbackup'])
-        if ret.returncode != 0:
+        #just copy the sqlite file.
+        db_file = settings.DATABASES['default']['NAME']
+        filename = os.path.basename(db_file)
+        target = settings.DBBACKUP_STORAGE_OPTIONS['location']
+        ret = shutil.copy(db_file, target)
+
+        if not os.path.exists(target):
+            os.makedirs(target)
+
+        target_file = os.path.join(target, filename)
+        
+        if os.path.exists(target_file):
+            os.remove(target_file)
+
+
+        if ret != target:
             raise Exception('Failed to backup db')
