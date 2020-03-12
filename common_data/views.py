@@ -35,9 +35,11 @@ import json
 from common_data.schedules import backup_db
 from common_data.middleware.license import license_check
 import urllib
+from background_task.models import Task
 
 try:
-    backup_db(repeat=Task.DAILY)
+    if not Task.objects.filter(task_name="common_data.schedules.backup_db").exists():
+        backup_db(repeat=Task.DAILY)
 except:
     pass
 
