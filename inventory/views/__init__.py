@@ -8,3 +8,11 @@ from .scrapping_views import *
 from .storage_media_views import *
 from .reports import *
 from .item import *
+from background_task.models import Task
+from inventory.schedules import run_inventory_service
+
+try:
+    if not Task.objects.filter(task_name="inventory.schedules.run_inventory_service").exists():
+        run_inventory_service(repeat=Task.DAILY)
+except:
+    pass
