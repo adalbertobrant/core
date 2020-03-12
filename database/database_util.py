@@ -139,6 +139,7 @@ def create_new_database():
              '-o', 'data.json'])
     os.chdir(DBDIR)
 
+    #python manage.py dumpdata auth employees invoicing inventory planner services accounting common_data messaging --e=auth.permission --e=contenttypes -o data.json
 
     #change the current database for the particular command.
     conf = None

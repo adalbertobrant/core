@@ -62,16 +62,7 @@ class ProcedureCreateView(ProcedureCRUDMixin, ContextMixin,
     form_class = forms.ServiceProcedureForm
     template_name = os.path.join('services', 'procedure', 'create.html')
     extra_context = {
-        'related_links': [
-            {
-                'name': 'Add Equipment',
-                'url': '/inventory/equipment-create/'
-            },
-            {
-                'name': 'Add Consumable',
-                'url': '/inventory/consumable-create/'
-            }
-        ]
+       
     }
 
 

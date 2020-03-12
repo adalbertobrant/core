@@ -66,7 +66,7 @@ PROJECT_NAME = 'Smart business solutions'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_AGE = 600  # 10 minutes
+SESSION_COOKIE_AGE = 86400  #when page closes
 SESSION_SAVE_EVERY_REQUEST = True
 
 MIDDLEWARE = [

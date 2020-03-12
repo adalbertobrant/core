@@ -5,7 +5,6 @@ import os
 from latrom import settings
 import datetime
 import shutil
-
 class DBBackupService(AutomatedServiceMixin):
     service_name = 'common'
 
@@ -22,20 +21,19 @@ class DBBackupService(AutomatedServiceMixin):
         if not self.should_backup_db:
             return
 
-        #just copy the sqlite file.
-        db_file = settings.DATABASES['default']['NAME']
-        filename = os.path.basename(db_file)
-        target = settings.DBBACKUP_STORAGE_OPTIONS['location']
-        ret = shutil.copy(db_file, target)
-
-        if not os.path.exists(target):
-            os.makedirs(target)
-
-        target_file = os.path.join(target, filename)
-        
-        if os.path.exists(target_file):
-            os.remove(target_file)
-
-
-        if ret != target:
+        os.chdir(settings.BASE_DIR)
+        ret = subprocess.run('python manage.py dumpdata auth employees invoicing inventory planner services accounting common_data messaging --e=auth.permission --e=contenttypes -o data.json')
+        if ret.returncode != 0:
             raise Exception('Failed to backup db')
+
+        print('made backup')
+        temp = os.path.join('database', 'temp')
+        if not os.path.exists(temp):
+            os.makedirs(temp)
+
+        shutil.copy('data.json', temp)
+        filename = 'bkup_' + datetime.datetime.now().strftime('%Y%m%d%H%M')
+        shutil.make_archive(filename, 'zip', temp)
+        shutil.rmtree(temp)
+        os.remove('data.json')
+        shutil.copy(filename + '.zip', 'database/')

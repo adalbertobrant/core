@@ -8,7 +8,4 @@ def run_inventory_service():
     InventoryService().run()
 
 
-try:
-    run_inventory_service(repeat=Task.DAILY)
-except:
-    pass
+

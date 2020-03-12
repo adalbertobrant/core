@@ -48,6 +48,7 @@ class LeadFilter(django_filters.FilterSet):
         fields = {
             'title': ['icontains'],
             'status': ['exact'],
+            'owner': ['exact'],
         }
 
 
