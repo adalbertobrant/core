@@ -1,5 +1,5 @@
 {% extends 'common_data/page/framed_pdf_page.html' %}
-
+{% load accounting %}
 {% block pre_page %}
 <script>
 var url = "/accounting/pdf/account-report/{{account.pk}}/{{start|urlencode}}/{{end|urlencode}}/";
@@ -23,33 +23,12 @@ actions.appendChild(printBtn)
 
 {% block page_contents %}
 
-<style>
-  
-
-    table.report-table {
-        width: 100%;
-        border: 1px solid black;
-    }
-
-    .report-table td {
-        padding: 2px;
-        border-collapse: collapse;
-        border: 1px solid black;
-    }
-
-    th {
-        color: white;
-        background-color: black;
-        border-right: 1px solid white;
-        padding: 2px;
-    }
-</style>
 
 {% include "accounting/reports/account/header.html" %}
 </h5>
 
 {% for page in pages %}
-<table class="report-table">
+<table class="simple-content table">
     <thead>
         <tr>
             <th>Date</th>
@@ -77,8 +56,8 @@ actions.appendChild(printBtn)
         </tr>
         {% endfor %}
         <tr>
-            <td colspan="3">Remaining Balance</td>
-            <td>{{remaining_balance}}</td>
+            <td colspan="3"><b>Remaining Balance</b></td>
+            <td><b>{{remaining_balance|accounting| active_currency}}</b></td>
         </tr>
     </tbody>
 </table>

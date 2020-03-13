@@ -75,8 +75,8 @@ actions.appendChild(printBtn)
                         {% if not page.has_next %}
                         <tfoot>
                             <tr style="border-top: 1px solid #333;">
-                                <td colspan="4">Remaining Balance:</td>
-                                <td>{{balance_at_end_of_period | accounting}}</td>
+                                <td colspan="3">Remaining Balance:</td>
+                                <td colspan="3" style='text-align:right;'>{{balance_at_end_of_period | accounting |active_currency}}</td>
                             </tr>
                         </tfoot>
                         
@@ -101,7 +101,7 @@ actions.appendChild(printBtn)
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{customer.account.balance}}</td>
+                            <td>{{customer.account.balance |active_currency}}</td>
                             {% for age in customer.age_list %}
                                 <td>{{age |floatformat:2}}</td>
                             {% endfor %}

@@ -1,4 +1,5 @@
 {% extends 'common_data/common/document_header.html' %}
+{% load accounting %}
 
 {% block title %}
 
@@ -9,7 +10,7 @@ Account Statement
 {% block left_content %}
 <p>Account: {{account}}</p>
 <p>Period spanning: {{start}} - {{end}}</p>
-<p>Current Balance: {{account.balance}}</p>
+<p>Current Balance: <br>{{account.balance|accounting| active_currency}}</p>
 
 {% endblock left_content %}
 

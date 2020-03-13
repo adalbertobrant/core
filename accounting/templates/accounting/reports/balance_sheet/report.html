@@ -112,7 +112,7 @@
                         <tr style="border-top:4px double #23374d;">
                             <td><h4>Net Assets </h4></td>
                             
-                            <td ><h4>{{net_assets | accounting}}</h4></td>
+                            <td ><h4>{{net_assets | accounting |active_currency}}</h4></td>
                         </tr>
                         <tr>
                             <td style='height: 2rem;'></td>
@@ -143,7 +143,7 @@
                         <tr style="border-top:4px double black;">
                             <td><h4>Total Equity</h4></td>
                             
-                            <td ><h4>{{equity_total | accounting}}</h4></td>
+                            <td ><h4>{{equity_total | accounting | active_currency}}</h4></td>
                         </tr>
                     </tbody>
                 </table>

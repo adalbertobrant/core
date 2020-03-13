@@ -1,4 +1,4 @@
-
+{% load accounting %}
 <table class="table-sm" style="width:100%">
     <tbody>
         <tr>
@@ -42,7 +42,7 @@
                                 {% endfor %}
                                 <tr>
                                     <th colspan="4">Total</th>
-                                    <th style="text-align:right;">{{vendor.total}}</th>
+                                    <th style="text-align:right;">{{vendor.total |accounting|active_currency}}</th>
                                 </tr>
 
                             
