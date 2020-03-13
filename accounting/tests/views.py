@@ -129,6 +129,10 @@ class CommonViewTests(TestCase):
         resp = self.client.get(reverse('accounting:direct-payment'))
         self.assertEqual(resp.status_code, 200)
 
+    def test_get_direct_payment_list_page(self):
+        resp = self.client.get(reverse('accounting:direct-payment-list'))
+        self.assertEqual(resp.status_code, 200)
+
     def test_post_direct_payment_page(self):
         resp = self.client.post(reverse('accounting:direct-payment'),
                                 data=self.PAYMENT_DATA)
@@ -800,7 +804,7 @@ class AssetViewTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
 
-class ExpesnseViewTests(TestCase):
+class ExpenseViewTests(TestCase):
     fixtures = ['common.json', 'accounts.json',
                 'journals.json', 'settings.json']
 
@@ -944,3 +948,113 @@ class ExpesnseViewTests(TestCase):
             'pk': exp.pk
         }))
         self.assertEqual(resp.status_code, 302)
+
+
+class BillViewTests(TestCase):
+    fixtures = ['common.json', 'accounts.json',
+                'journals.json', 'settings.json']
+
+    form_data = {
+        'date': datetime.date.today(),
+        'due': datetime.date.today(),
+        'vendor': 1,
+        'data': urllib.parse.quote(json.dumps([
+            {
+                'category': 'Advertising',
+                'description': 'some billing',
+                'amount': 100
+            }
+        ]))
+    }
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.client = Client()
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_superuser(
+            'Testuser', 'test@gmail.com', '123')
+        Employee.objects.create(first_name='first', last_name='last')
+        create_account_models(cls)
+        create_test_inventory_models(cls)
+
+
+        cls.bill = Bill.objects.create(
+            vendor=cls.supplier,
+            date=datetime.date.today(),
+            due=datetime.date.today())
+        cls.billine = BillLine.objects.create(
+            bill=cls.bill, 
+            expense=cls.expense)
+
+        cls.bill_payment = BillPayment.objects.create(
+            date=datetime.date.today(),
+            account=Account.objects.get(pk=1000),
+            bill=cls.bill,
+            amount=100
+        )
+        
+
+    def setUp(self):
+        self.client.login(username="Testuser", password='123')
+
+    def test_get_bill_create_page(self):
+        resp = self.client.get(reverse('accounting:create-bill'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_bill_create_page(self):
+        resp = self.client.post(reverse('accounting:create-bill'), 
+            data=self.form_data)
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_bill_detail_page(self):
+        resp = self.client.get(reverse('accounting:bill-details', kwargs={
+            'pk': 1
+        }))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_bill_list_page(self):
+        resp = self.client.get(reverse('accounting:list-bills'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_bill_payments_details_page(self):
+        resp = self.client.get(reverse('accounting:bill-payments-details', 
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_bill_pdf_page(self):
+        kwargs={'pk': 1}
+        req = RequestFactory().get(reverse(
+            'accounting:bill-pdf', kwargs=kwargs))
+        resp = views.BillPDFView.as_view()(req, **kwargs)
+
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_bill_update_page(self):
+        resp = self.client.get(reverse('accounting:update-bill',
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_bill_update_page(self):
+        resp = self.client.post(reverse('accounting:update-bill', 
+            kwargs={'pk': 1}), data=self.form_data)
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_bill_create_payment_page(self):
+        resp = self.client.get(reverse('accounting:create-bill-payment',
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_bill_payment_page(self):
+        resp = self.client.post(reverse('accounting:create-bill-payment', 
+            kwargs={'pk':1}), data={
+                'date': datetime.date.today(),
+                'account': 1000,
+                'amount': 100,
+                'memo': 'some payment',
+                'bill': 1
+            })
+        self.assertEqual(resp.status_code, 302)
+        

@@ -631,6 +631,9 @@ class BillCreateView(ContextMixin, CreateView):
             category = {i[1]: i[0]
                         for i in models.EXPENSE_CHOICES}.get(cat_string)
             default_bookkeeper = models.AccountingSettings.objects.first().default_bookkeeper
+            recorded_by = Employee.objects.first()
+            if default_bookkeeper:
+                recorded_by = default_bookkeeper.employee
             models.BillLine.objects.create(
                 bill=self.object,
                 expense=models.Expense.objects.create(
@@ -639,7 +642,7 @@ class BillCreateView(ContextMixin, CreateView):
                     description=line['description'],
                     amount=line['amount'],
                     category=category,
-                    recorded_by=default_bookkeeper.employee
+                    recorded_by=recorded_by
                 )
             )
         self.object.create_entry()

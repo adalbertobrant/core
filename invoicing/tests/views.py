@@ -349,6 +349,23 @@ class CustomerViewsTests(TestCase):
         }))
         self.assertEqual(resp.status_code, 200)
 
+    def test_create_customer_note(self):
+        resp = self.client.post(reverse('invoicing:create-customer-note',
+            kwargs={'customer': 1}), data={
+                'note': 'some note'
+            })
+        self.assertEqual(resp.status_code, 200)
+
+
+    def test_create_customer_individual(self):
+        resp = self.client.post(reverse('invoicing:customer-member-add',
+            kwargs={'pk': 1}), data={
+                'first_name': 'some',
+                'last_name': 'name'
+            })
+        self.assertEqual(resp.status_code, 302)
+
+
 
 class SalesRepViewsTests(TestCase):
     fixtures = ['common.json', 'accounts.json', 'employees.json',  'inventory.json',
