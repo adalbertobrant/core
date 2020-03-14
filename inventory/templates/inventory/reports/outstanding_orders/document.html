@@ -1,4 +1,4 @@
-
+{% load accounting %}
 <table class=" table-sm" style="width:100%">
     <tbody>
         <tr>
@@ -26,7 +26,7 @@
                         <tr>
                             <td>{{order.supplier}}</td>
                             <td>{{order.pk | stringformat:"06d"}}</td>
-                            <td>{{order.total}}</td>
+                            <td>{{order.total|active_currency}}</td>
                             <td>{{order.expected_receipt_date}}</td>
                             <td>{{order.percent_received}}</td>
                         </tr>

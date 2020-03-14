@@ -376,11 +376,11 @@ class JournalListView(ContextMixin, PaginationMixin, FilterView):
                 'label': 'Import Entries from Excel',
                 'icon': 'file-excel'
             },
-            {
-                'link': reverse_lazy('accounting:create-multiple-entries'),
-                'label': 'Create Multiple Journal Entries ',
-                'icon': 'file-alt'
-            }
+            # {
+            #     'link': reverse_lazy('accounting:create-multiple-entries'),
+            #     'label': 'Create Multiple Journal Entries ',
+            #     'icon': 'file-alt'
+            # }
         ]}
 
     def get_queryset(self):
@@ -631,6 +631,9 @@ class BillCreateView(ContextMixin, CreateView):
             category = {i[1]: i[0]
                         for i in models.EXPENSE_CHOICES}.get(cat_string)
             default_bookkeeper = models.AccountingSettings.objects.first().default_bookkeeper
+            recorded_by = Employee.objects.first()
+            if default_bookkeeper:
+                recorded_by = default_bookkeeper.employee
             models.BillLine.objects.create(
                 bill=self.object,
                 expense=models.Expense.objects.create(
@@ -639,7 +642,7 @@ class BillCreateView(ContextMixin, CreateView):
                     description=line['description'],
                     amount=line['amount'],
                     category=category,
-                    recorded_by=default_bookkeeper.employee
+                    recorded_by=recorded_by
                 )
             )
         self.object.create_entry()
@@ -853,8 +856,9 @@ class ImportAccountsView(ContextMixin, FormView):
         resp = super().form_valid(form)
         file = form.cleaned_data['file']
         if file.name.endswith('.csv'):
-            # process csv
-            pass
+            messages.info(self.request, 
+                'Cannot process csv, please use xlsx files.')
+            return HttpResponseRedirect(self.success_url)
         else:
 
             cols = [
@@ -870,16 +874,76 @@ class ImportAccountsView(ContextMixin, FormView):
                 ws = wb.get_sheet_by_name(form.cleaned_data['sheet_name'])
             except:
                 ws = wb.active
+            first = int(form.cleaned_data['start_row'])
+            count = 0
             for row in ws.iter_rows(min_row=form.cleaned_data['start_row'],
                                     max_row=form.cleaned_data['end_row'],
                                     max_col=max(cols)):
+                count += 1
+                current = first + count
+                try:
+                    code = int(row[form.cleaned_data['code'] - 1].value)
+                except:
+                    messages.info(self.request, f'Account could not be added from data on row'
+                                  f'{current} because of: Invalid account' 
+                                  f'code format')
+                    continue
+                
+                if models.Account.objects.filter(id=code).exists():
+                    messages.info(self.request, 
+                                  f'Account could not be added from data on row'
+                                  f'{current} because of: Account ID in use,' 
+                                  f'use a different code')
+                    continue
+                try:
+                    balance = float(row[form.cleaned_data['balance'] - 1].value)
+                except:
+                    messages.info(self.request, 
+                                  f'Account could not be added from data on row'
+                                  f'{current} because of: Balance value invalid,')
+                    continue
+                acc_type = row[form.cleaned_data['type'] - 1].value
+                if acc_type not in ['expense', 'asset', 'income', 
+                        'cost_of_sales', 'liability', 'equity']:
+                    messages.info(self.request, 
+                                  f'Account could not be added from data on row'
+                                  f'{current} because of: Invalid account type')
+                    continue
+
+                
+                bs_category = row[form.cleaned_data[
+                    'balance_sheet_category']-1].value
+                name = row[form.cleaned_data['name']-1].value 
+                desc = row[form.cleaned_data['description'] - 1].value
+                if name == '' or not name:
+                    messages.info(self.request, 
+                                  f'Account could not be added from data on row'
+                                  f'{current} because of: Empty name value')
+                    continue
+
+                if desc == '' or not desc:
+                    messages.info(self.request, 
+                                  f'Account could not be added from data on row'
+                                  f'{current} because of: Empty description value')
+                    continue
+                
+                if bs_category not in ['current_assets', 'long-term-assets', 
+                                    'current-liabilities', 
+                                    'long_term-liabilities', 'equity', 
+                                    'not_included']:
+                    messages.info(self.request, 
+                                  f'Account could not be added from data on row'
+                                  f'{current} because of: Invalid balance sheet'
+                                  f' category')
+                    continue
+
                 models.Account.objects.create(
-                    name=row[form.cleaned_data['name'] - 1].value,
-                    balance=row[form.cleaned_data['balance'] - 1].value,
-                    description=row[form.cleaned_data['description'] - 1].value,
-                    id=row[form.cleaned_data['code'] - 1].value,
-                    type=row[form.cleaned_data['type'] - 1].value,
-                    balance_sheet_category=row[form.cleaned_data['balance_sheet_category']-1].value
+                    name=name,
+                    balance=balance,
+                    description=desc,
+                    id=code,
+                    type=acc_type,
+                    balance_sheet_category=bs_category
                 )
         return resp
 
@@ -893,6 +957,12 @@ class BulkAccountCreateView(FormView):
         resp = super().form_valid(form)
         data = json.loads(urllib.parse.unquote(form.cleaned_data['data']))
         for line in data:
+            if models.Account.objects.filter(pk=line['code']).exists():
+                messages.info(self.request, f'The code for the account'
+                    f'({line["code"]})'
+                    f' already exists so it will not be created')
+                continue
+            
             models.Account.objects.create(
                 name=line['name'],
                 description=line['description'],
@@ -928,8 +998,9 @@ class ImportTransactionView(ContextMixin, FormView):
 
         file = form.cleaned_data['file']
         if file.name.endswith('.csv'):
-            # process csv
-            pass
+            messages.info(self.request, 
+                'Cannot process csv, please use xlsx files.')
+            return HttpResponseRedirect(self.success_url)
         else:
 
             cols = fields.values()
@@ -938,48 +1009,106 @@ class ImportTransactionView(ContextMixin, FormView):
                 ws = wb.get_sheet_by_name(form.cleaned_data['sheet_name'])
             except:
                 ws = wb.active
+            start = form.cleaned_data['start_row']
+            count = 0
             for row in ws.iter_rows(min_row=form.cleaned_data['start_row'],
                                     max_row=form.cleaned_data['end_row'],
-                                    max_col=max(cols)+1):
+                                    max_col=max(cols)):
+                count += 1
+                current = count + start
+                try:
+                    id = int(row[fields['entry_id']].value)
+                except:
+                    messages.info(self.request, 'Cannot import entry on row {} '
+                    'because the entry id is invalid'.format(current))
+                    continue
+
+                try:
+                    date = datetime.datetime.strptime(row[fields['date']].value, 
+                        '%d/%m/%Y') 
+                except:
+                    messages.info(self.request, 'Cannot import entry on row {} '
+                    'because the date is invalid'.format(current))
+                    continue
+                
+                if not row[fields['memo']].value or row[fields['memo']].value == '':
+                    messages.info(self.request, 'Cannot import entry on row {} '
+                    'because the memo is invalid'.format(current))
+                    continue
+
+                credit =None
+                debit = None
+                if row[fields['credit']].value or \
+                        row[fields['credit']].value != '':
+                    print(row[fields['credit']].value)
+                    try:
+                        credit = float(row[fields['credit']].value)
+                    except:
+                        messages.info(self.request, 
+                        'Cannot import entry on row {} '
+                        'because the credit value is invalid'.format(current))
+                        continue
+
+                if row[fields['debit']].value :
+                    print(row[fields['debit']].value)
+                    
+                    try:
+                        debit = float(row[fields['debit']].value)
+                    except:
+                        messages.info(self.request, 
+                        'Cannot import entry on row {} '
+                        'because the debit value is invalid'.format(current))
+                        continue
+
+                if not credit and not debit:
+                    messages.info(self.request, 
+                        'Cannot import entry on row {} '
+                        'because the neither a credit nor debit value are supplied'.format(current))
+                    continue
+
+                if credit and debit:
+                    messages.info(self.request, 
+                        'Cannot import entry on row {} '
+                        'because the both a credit and debit value are supplied.'.format(current))
+                    continue
+
+                try:
+                    acc = int(row[fields['acc']].value)
+                except:
+                    messages.info(self.request, 
+                        'Cannot import entry on row {} '
+                        'because the an invalid account value is supplied.'.format(current))
+                    continue
+                
                 entry = None
                 qs = models.JournalEntry.objects.filter(
-                    id=row[fields['entry_id']].value)
+                    id=id)
                 if qs.exists():
                     entry = qs.first()
                 else:
-                    date = None
-                    if isinstance(row[fields['date']].value, str):
-                        date = datetime.datetime.strptime(
-                            row[fields['date']].value,
-                            '%Y-%m-%d')
-                    else:
-                        date = row[fields['date']].value.strftime('%Y-%m-%d')
-
+                    
                     entry = models.JournalEntry.objects.create(
                         journal=models.Journal.objects.get(id=5),
                         memo=row[fields['memo']].value,
                         date=date,
-                        id=row[fields['entry_id']].value,
+                        id=id,
                     )
 
-                qs = models.Account.objects.filter(id=row[fields['acc']].value)
+                qs = models.Account.objects.filter(id=acc)
                 if not qs.exists():
                     messages.info(self.request,
-                                  f'Account with ID {row[fields["acc"]].value} does not exist, entry skipped')
+                                  f'Account with ID {acc} does not exist, entry skipped')
                     continue
                 acc = qs.first()
-                if row[fields['credit']].value and \
-                        row[fields['credit']].value > 0:
-
+                if credit:
                     models.Credit.objects.create(
-                        amount=row[fields['credit']].value,
+                        amount=credit,
                         account=acc,
                         entry=entry
                     )
-                if row[fields['debit']].value and \
-                        row[fields['debit']].value > 0:
+                if debit:
                     models.Credit.objects.create(
-                        amount=row[fields['debit']].value,
+                        amount=debit,
                         account=acc,
                         entry=entry
                     )
@@ -987,38 +1116,38 @@ class ImportTransactionView(ContextMixin, FormView):
         return resp
 
 
-class CreateMultipleEntriesView(FormView):
-    template_name = os.path.join('accounting', 'journal',
-                                 'multiple_create.html')
-    form_class = forms.MultipleEntriesForm
-    success_url = reverse_lazy('accounting:journal-list')
+# class CreateMultipleEntriesView(FormView):
+#     template_name = os.path.join('accounting', 'journal',
+#                                  'multiple_create.html')
+#     form_class = forms.MultipleEntriesForm
+#     success_url = reverse_lazy('accounting:journal-list')
 
-    def form_valid(self, form):
-        resp = super().form_valid(form)
+#     def form_valid(self, form):
+#         resp = super().form_valid(form)
 
-        data = json.loads(urllib.parse.unquote(form.cleaned_data['data']))
-        for line in data:
-            entry = models.JournalEntry.objects.create(
-                date=line['date'],
-                journal=models.Journal.objects.get(pk=5),
-                memo=line['memo'],
-            )
-            if float(line['credit']) > 0:
-                models.Credit.objects.create(
-                    entry=entry,
-                    amount=line['credit'],
-                    account=models.Account.objects.get(
-                        pk=line['account'].split('-')[0])
-                )
+#         data = json.loads(urllib.parse.unquote(form.cleaned_data['data']))
+#         for line in data:
+#             entry = models.JournalEntry.objects.create(
+#                 date=line['date'],
+#                 journal=models.Journal.objects.get(pk=5),
+#                 memo=line['memo'],
+#             )
+#             if float(line['credit']) > 0:
+#                 models.Credit.objects.create(
+#                     entry=entry,
+#                     amount=line['credit'],
+#                     account=models.Account.objects.get(
+#                         pk=line['account'].split('-')[0])
+#                 )
 
-            if float(line['debit']) > 0:
-                models.Debit.objects.create(
-                    entry=entry,
-                    amount=line['debit'],
-                    account=models.Account.objects.get(
-                        pk=line['account'].split('-')[0])
-                )
-        return resp
+#             if float(line['debit']) > 0:
+#                 models.Debit.objects.create(
+#                     entry=entry,
+#                     amount=line['debit'],
+#                     account=models.Account.objects.get(
+#                         pk=line['account'].split('-')[0])
+#                 )
+#         return resp
 
 
 class ImportExpensesView(ContextMixin, FormView):

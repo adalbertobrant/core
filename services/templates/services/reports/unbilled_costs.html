@@ -1,5 +1,5 @@
 {% extends 'common_data/page/framed_pdf_page.html' %}
-
+{% load accounting %}
 {% block pre_page %}
 <script>
 var url = "{% url 'services:reports-unbilled-costs-by-job-pdf' start=start end=end %}";
@@ -45,7 +45,7 @@ actions.appendChild(printBtn)
                         <td>{{exp.expense.date}}</td>
                         <td>{{exp.expense.description}}</td>
                         <td>{{exp.expense.expense_account}}</td>
-                        <td>{{exp.expense.amount}}</td>
+                        <td>{{exp.expense.amount|active_currency}}</td>
                     </tr>
                 {% endfor %}
             

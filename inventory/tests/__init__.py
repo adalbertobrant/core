@@ -13,4 +13,5 @@ from .views import (ConfigWizardTests,
                     OrderViewTests,
                     WarehouseViewTests,
                     ReportViewTests,
-                    TransferViewTests)
+                    TransferViewTests,
+                    InventoryPurchaseViewTests)

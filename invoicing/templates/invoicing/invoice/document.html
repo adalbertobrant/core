@@ -1,5 +1,4 @@
 {% load accounting %}
-
 <table id="page-layout">
     <tbody>
         <tr>
@@ -26,24 +25,24 @@
                         {% if not page.has_next %}
                         <tfoot>
                             <tr>
-                                <td colspan="5">
+                                <td colspan="4">
                                     <b>SubTotal:</b>
                                 </td>
-                                <td>{{object.subtotal | floatformat:2 }}</td>
+                                <td colspan='2'>{{object.subtotal | floatformat:2 }}</td>
                             </tr>
                             <tr>
-                                <td colspan="5">
+                                <td colspan="4">
                                     <b>Tax Due :</b>
                                 </td>
-                                <td>{{object.tax_amount | floatformat:2 }}</td>
+                                <td colspan='2'>{{object.tax_amount | floatformat:2 }}</td>
                             </tr>
 
                             <tr>
                                 
-                                <td colspan="5">
+                                <td colspan="4">
                                     <b>Total:</b>
                                 </td>
-                                <td>{{object.total | active_currency }}</td>
+                                <td colspan='2'>{{object.total | active_currency}}</td>
                             </tr>
                         </tfoot>
                         {% endif %}

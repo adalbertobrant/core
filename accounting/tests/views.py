@@ -15,6 +15,8 @@ from employees.models import Employee
 from employees.tests.models import create_test_employees_models
 from django.contrib.auth.models import User
 from accounting import views
+import os
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 TODAY = datetime.date.today()
 
@@ -127,6 +129,10 @@ class CommonViewTests(TestCase):
 
     def test_get_direct_payment_page(self):
         resp = self.client.get(reverse('accounting:direct-payment'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_direct_payment_list_page(self):
+        resp = self.client.get(reverse('accounting:direct-payment-list'))
         self.assertEqual(resp.status_code, 200)
 
     def test_post_direct_payment_page(self):
@@ -800,7 +806,7 @@ class AssetViewTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
 
-class ExpesnseViewTests(TestCase):
+class ExpenseViewTests(TestCase):
     fixtures = ['common.json', 'accounts.json',
                 'journals.json', 'settings.json']
 
@@ -944,3 +950,214 @@ class ExpesnseViewTests(TestCase):
             'pk': exp.pk
         }))
         self.assertEqual(resp.status_code, 302)
+
+
+class BillViewTests(TestCase):
+    fixtures = ['common.json', 'accounts.json',
+                'journals.json', 'settings.json']
+
+    form_data = {
+        'date': datetime.date.today(),
+        'due': datetime.date.today(),
+        'vendor': 1,
+        'data': urllib.parse.quote(json.dumps([
+            {
+                'category': 'Advertising',
+                'description': 'some billing',
+                'amount': 100
+            }
+        ]))
+    }
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.client = Client()
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_superuser(
+            'Testuser', 'test@gmail.com', '123')
+        Employee.objects.create(first_name='first', last_name='last')
+        create_account_models(cls)
+        create_test_inventory_models(cls)
+
+
+        cls.bill = Bill.objects.create(
+            vendor=cls.supplier,
+            date=datetime.date.today(),
+            due=datetime.date.today())
+        cls.billine = BillLine.objects.create(
+            bill=cls.bill, 
+            expense=cls.expense)
+
+        cls.bill_payment = BillPayment.objects.create(
+            date=datetime.date.today(),
+            account=Account.objects.get(pk=1000),
+            bill=cls.bill,
+            amount=100
+        )
+        
+
+    def setUp(self):
+        self.client.login(username="Testuser", password='123')
+
+    def test_get_bill_create_page(self):
+        resp = self.client.get(reverse('accounting:create-bill'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_bill_create_page(self):
+        resp = self.client.post(reverse('accounting:create-bill'), 
+            data=self.form_data)
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_bill_detail_page(self):
+        resp = self.client.get(reverse('accounting:bill-details', kwargs={
+            'pk': 1
+        }))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_bill_list_page(self):
+        resp = self.client.get(reverse('accounting:list-bills'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_bill_payments_details_page(self):
+        resp = self.client.get(reverse('accounting:bill-payments-details', 
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_bill_pdf_page(self):
+        kwargs={'pk': 1}
+        req = RequestFactory().get(reverse(
+            'accounting:bill-pdf', kwargs=kwargs))
+        resp = views.BillPDFView.as_view()(req, **kwargs)
+
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_bill_update_page(self):
+        resp = self.client.get(reverse('accounting:update-bill',
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_bill_update_page(self):
+        resp = self.client.post(reverse('accounting:update-bill', 
+            kwargs={'pk': 1}), data=self.form_data)
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_bill_create_payment_page(self):
+        resp = self.client.get(reverse('accounting:create-bill-payment',
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_bill_payment_page(self):
+        resp = self.client.post(reverse('accounting:create-bill-payment', 
+            kwargs={'pk':1}), data={
+                'date': datetime.date.today(),
+                'account': 1000,
+                'amount': 100,
+                'memo': 'some payment',
+                'bill': 1
+            })
+        self.assertEqual(resp.status_code, 302)
+        
+class AccountingImportViewTests(TestCase):
+    fixtures = ['common.json', 'accounts.json',
+                'employees.json', 'journals.json', 'settings.json']
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.client = Client()
+
+    @classmethod
+    def setUpTestData(cls):
+        create_test_common_entities(cls)
+        create_test_user(cls)
+        create_account_models(cls)
+        create_test_inventory_models(cls)
+        
+
+        cls.employee = Employee.objects.create(first_name='first',
+                                               last_name='last',
+                                               user=cls.user)
+
+    def setUp(self):
+        # wont work in setUpClass
+        self.client.login(username='Testuser', password='123')
+
+    def test_get_import_accounts_view(self):
+        resp=self.client.get(reverse('accounting:import-accounts-from-excel'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_import_accounts_view(self):
+        with open(
+                os.path.join('accounting', 
+                             'tests', 'accounts.xlsx'), 'rb') as f:
+            resp=self.client.post(reverse(
+                'accounting:import-accounts-from-excel'), data={
+                'sheet_name': 'Sheet1',
+                'file': f,
+                'name': 1,
+                'description': 2,
+                'balance': 3,
+                'code': 6,
+                'type':4,
+                'balance_sheet_category': 5,
+                'start_row': 2,
+                'end_row': 10
+            })
+        
+        self.assertEqual(resp.status_code, 302)
+        self.assertTrue(Account.objects.filter(id=5678).exists())
+
+    def test_get_create_multiple_accounts(self):
+        resp = self.client.get(reverse('accounting:bulk-create-accounts'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_create_multiple_accounts(self):
+        resp = self.client.post(reverse('accounting:bulk-create-accounts'),
+            data={
+                'data': urllib.parse.quote(json.dumps([{
+                    'name': 'Account',
+                    'description': 'description',
+                    'code': 12000,
+                    'type': 'asset',
+                    'balance': 0,
+                    'balance_sheet_category': 'current_assets'
+                },
+                {
+                    'name': 'Existing Account',
+                    'description': 'Existing Code',
+                    'code': 1000,
+                    'type': 'asset',
+                    'balance': 0,
+                    'balance_sheet_category': 'current_assets'
+                }
+                ]))
+            })
+        self.assertEqual(resp.status_code, 302)
+        
+    def test_get_import_journal_entries_view(self):
+        resp=self.client.get(reverse('accounting:import-entries-from-excel'))
+        self.assertEqual(resp.status_code, 200)
+
+    # def test_post_import_journal_entries_view(self):
+    #     with open(
+    #             os.path.join('accounting', 
+    #                          'tests', 'entries.xlsx'), 'rb') as f:
+    #         resp=self.client.post(reverse(
+    #             'accounting:import-entries-from-excel'), data={
+    #             'sheet_name': 'Sheet1',
+    #             'file': f,
+    #             'date': 1,
+    #             'entry_id': 2,
+    #             'memo': 3,
+    #             'credit': 4,
+    #             'debit':5,
+    #             'account': 6,
+    #             'start_row': 2,
+    #             'end_row': 12
+    #         })
+        
+    #     self.assertEqual(resp.status_code, 302)
+    #     self.assertTrue(JournalEntry.objects.filter(id=123).exists())

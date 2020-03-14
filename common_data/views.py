@@ -542,9 +542,6 @@ def get_model_latest(request, model_name=None):
     return JsonResponse({'data': [latest.pk, str(latest)]})
 
 def get_models_latest(request):
-    
-    
-
     mapping = {
         'organization': '/base/organization/create',
         'parent_account': '/accounting/create-account',

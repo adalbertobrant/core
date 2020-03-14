@@ -232,9 +232,9 @@ misc_urls = [
 entry_urls = [
     re_path(r'^create-entry/?$', views.JournalEntryCreateView.as_view(),
             name='create-entry'),
-    path('create-multiple-entries/',
-         views.CreateMultipleEntriesView.as_view(),
-         name='create-multiple-entries'),
+    # path('create-multiple-entries/',
+    #      views.CreateMultipleEntriesView.as_view(),
+    #      name='create-multiple-entries'),
     path('import-entries-from-excel/',
          views.ImportTransactionView.as_view(),
          name='import-entries-from-excel'),

@@ -587,6 +587,7 @@ section#title button{
     padding: 5px;
     background-color: var(--primary);
     transition: right 2.5s linear;
+    overflow-y: auto;
 }
 
 .visible-notification-window {

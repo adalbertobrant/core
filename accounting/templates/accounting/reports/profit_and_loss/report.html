@@ -33,13 +33,6 @@ actions.appendChild(printBtn)
         <tr>
             <td colspan="2">
                 <table class='table table-sm' style="width:100%;">
-                    <thead>
-                        <tr>
-                            <td></td>
-                            <td>$</td>
-                            <td>$</td>
-                        </tr>
-                    </thead>
                     <tbody>
                         <tr>
                             <td>Revenue</td>
@@ -111,7 +104,7 @@ actions.appendChild(printBtn)
                         <tr>
                             <td>Net Profit</td>
                             <td></td>
-                            <td>{{net_profit | accounting}}</td>
+                            <td>{{net_profit | accounting | active_currency }}</td>
                         </tr>
                     </tbody>
                 </table>

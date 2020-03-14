@@ -1,5 +1,5 @@
 {% extends 'common_data/common/document_header.html' %}
-
+{% load accounting %}
 {% block title %}
 Customer Statement
 {% endblock title %}
@@ -10,7 +10,7 @@ Customer Statement
     <tbody>
         <tr>
             <th>Current Balance</th>
-            <td>{{customer.account.balance}}</td>
+            <td>{{customer.account.balance |active_currency}}</td>
         </tr>
         <tr>
             <th>Start Period</th>

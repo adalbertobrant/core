@@ -28,10 +28,11 @@ actions.appendChild(printBtn)
                 <p>Average daily sales: {{average_sales | active_currency}}</p>
             {% autoescape off %}
             </div>
+            <h4>Sales Over Time</h4>
             <div class="no-break">
                 {{bar_graph}}
             </div>
-            
+            <h4>Sales By Customer</h4>
             <div class="no-break">
                 {{pie_chart}}
             </div>
@@ -60,7 +61,7 @@ actions.appendChild(printBtn)
                         {% endfor %}
                         <tr>
                             <th colspan='2'>Total</th>
-                            <th>{{customer.total | floatformat:2}}</th>
+                            <th>{{customer.total | active_currency}}</th>
                         </tr>
 
                     </tbody>
@@ -68,6 +69,7 @@ actions.appendChild(printBtn)
             </table>
 
             {% autoescape off %}
+            <h4>Sales By Product Pie Chart</h4>
             <div class="no-break">
             {{pie_chart_2}}
             </div>

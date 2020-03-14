@@ -1,5 +1,5 @@
 {% extends "common_data/page/pdf_page.html" %}
-
+{% load accounting %}
 {% block pre_page %}
 <section id='title'>
     <div id='title-text'>Debit Note</div>
@@ -57,18 +57,18 @@
                     <tfoot>
                         <tr >
                             <th colspan="2"></th>
-                            <th class='bordered'>SubTotal:</th>
-                            <td class='bordered'>{{object.returned_subtotal}}</td>
+                            <th >SubTotal:</th>
+                            <td >{{object.returned_subtotal}}</td>
                         </tr>
                         <tr>
                             <th colspan="2"></th>
-                            <th class='bordered'>Tax:</th>
-                            <td class='bordered'>{{object.returned_tax}}</td>
+                            <th >Tax:</th>
+                            <td >{{object.returned_tax}}</td>
                         </tr>
                         <tr>
                             <th colspan="2"></th>
-                            <th class='bordered'>Total:</th>
-                            <td class='bordered'>{{object.returned_total}}</td>
+                            <th >Total:</th>
+                            <td >{{object.returned_total |active_currency}}</td>
                         </tr>
                     </tfoot>
                     {% endif %}

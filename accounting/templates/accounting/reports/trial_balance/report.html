@@ -58,8 +58,8 @@
                     <tfoot>
                         <tr>
                             <th style='text-align:left;' colspan="2">Total</th>
-                            <th style='text-align:left;'>{{total_debit | accounting}}</th>
-                            <th>{{total_credit | accounting}}</th>
+                            <th style='text-align:left;'>{{total_debit | accounting |active_currency}}</th>
+                            <th>{{total_credit | accounting |active_currency}}</th>
                         </tr>
                     </tfoot>
                     {% endif %}

@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Q
 import accounting
 from django.shortcuts import reverse
+from employees.models import Employee
 
 
 expense_choices = [
@@ -228,12 +229,16 @@ class Bill(models.Model):
 
     def create_entry(self):
         settings = accounting.models.AccountingSettings.objects.first()
+        recorded_by = Employee.objects.first()
+        if settings.default_bookkeeper:
+            recorded_by = settings.default_bookkeeper.employee
+
         j = accounting.models.transactions.JournalEntry.objects.create(
             date=self.date,
             memo="Bill for %s" % self.vendor,
             journal=accounting.models.books.Journal.objects.get(
                 pk=2),  # cash disbursements
-            recorded_by=settings.default_bookkeeper.employee,
+            recorded_by=recorded_by,
             draft=False
         )
         # credit vendor and debit expense account
@@ -272,14 +277,20 @@ class BillPayment(models.Model):
 
     def create_entry(self):
         settings = accounting.models.AccountingSettings.objects.first()
+        recorded_by = Employee.objects.first()
+        if settings.default_bookkeeper:
+            recorded_by = settings.default_bookkeeper.employee
+        
         j = accounting.models.transactions.JournalEntry.objects.create(
             date=self.date,
             memo="Bill payment for  Bill #%s" % self.bill.pk,
             journal=accounting.models.books.Journal.objects.get(
                 pk=2),  # cash disbursements
-            recorded_by=settings.default_bookkeeper.employee,
+            recorded_by=recorded_by,
             draft=False
         )
 
         j.debit(self.amount, self.bill.vendor.account)
         j.credit(self.amount, self.account)
+
+        return j
