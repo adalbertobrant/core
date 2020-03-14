@@ -12,6 +12,7 @@ from invoicing.models import (SalesRepresentative,
                               )
 from inventory.models import InventoryItem, UnitOfMeasure, ProductComponent
 TODAY = datetime.date.today()
+from planner.models import Event
 
 
 def create_test_employees_models(cls):
@@ -210,6 +211,54 @@ class EmployeeModelTests(TestCase):
         self.assertFalse(self.employee.is_sales_rep)
         self.assertFalse(self.employee.is_inventory_controller)
         self.assertFalse(self.employee.is_bookkeeper)
+
+    def test_short_name(self):
+        self.assertIsInstance(self.employee.short_name, str)
+
+    def test_latest_timesheet(self):
+        today = datetime.date.today()
+        timesheet = EmployeeTimeSheet.objects.create(
+            employee=self.employee,
+            month=today.month,
+            year=today.year,
+            recorded_by=self.employee,
+            complete=True
+        )
+
+        self.assertIsInstance(self.employee.latest_timesheet, int)
+        
+    def test_earnings_for_month(self):
+        start = datetime.date(TODAY.year, TODAY.month, 1)
+        earnings = self.employee.get_earnings_for_month(start)
+        self.assertTrue(earnings > 0)
+
+    def test_missed_events(self):
+        yest = TODAY - datetime.timedelta(days=1)
+        Event.objects.create(
+            date=yest,
+            owner=self.employee,
+            label='test event')
+        
+        self.assertEqual(self.employee.missed_events, 1)
+
+    def test_attendance(self):
+        today = datetime.date.today()
+        timesheet = EmployeeTimeSheet.objects.create(
+            employee=self.employee,
+            month=today.month,
+            year=today.year,
+            recorded_by=self.employee,
+            complete=True
+        )
+        line = AttendanceLine.objects.create(
+            timesheet=timesheet,
+            date=datetime.date.today(),
+            time_in=datetime.datetime(2018, 1, 1, 8, 0).time(),
+            time_out=datetime.datetime(2018, 1, 1, 17, 0).time(),
+        )
+
+        self.assertIsInstance(self.employee.attendance, list)
+        self.assertTrue(0 in self.employee.attendance)
 
 
 class AllowanceModelTest(TestCase):

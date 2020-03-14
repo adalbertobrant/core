@@ -20,6 +20,8 @@ from invoicing.views import (CustomerStatementPDFView,
                              AccountsReceivableReportPDFView,
                              InvoiceAgingPDFView)
 from common_data.tests import create_test_common_entities
+from inventory.tests.model_util import InventoryModelCreator
+
 import copy
 from messaging.models import UserProfile
 from employees.models import Employee
@@ -292,6 +294,19 @@ class CustomerViewsTests(TestCase):
                         'pk': self.customer_org.pk
                     }), data=self.CUSTOMER_DATA,
         )
+        self.assertEqual(resp.status_code, 302)
+
+    def test_post_update_customer_ind_no_change_page(self):
+        resp = self.client.post(
+            reverse('invoicing:update-customer',
+                    kwargs={
+                        'pk': self.customer_ind.pk
+                    }), data={
+            'name': 'Org man',
+            'billing_address': 'Test Address',
+            'banking_details': 'Test Details',
+            'customer_type': 'individual'
+        })
         self.assertEqual(resp.status_code, 302)
 
     def test_post_customer_update_page_switch_to_org(self):
@@ -793,8 +808,6 @@ class ConfigWizardTests(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        from django.contrib.auth.models import User
-
         cls.user = User.objects.create_superuser(
             username="Testuser", email="admin@test.com", password="123")
 
@@ -846,3 +859,410 @@ class ConfigWizardTests(TestCase):
                             print(resp.context['form'].errors)
             except ValueError:
                 pass
+
+
+class CRMViewTests(TestCase):
+    fixtures = ['common.json', 'accounts.json', 'journals.json',
+                'employees.json', 'inventory.json', 'invoicing.json', 'settings.json']
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        cls.client = Client()
+
+    @classmethod
+    def setUpTestData(cls):
+        invmc = InventoryModelCreator(cls)
+        invmc.create_warehouse_item()
+        invmc.create_orderitem()
+        create_test_user(cls)
+        cls.imc = InvoicingModelCreator(cls)
+        cls.imc.create_all()
+        accounting.tests.model_util.AccountingModelCreator(cls).create_tax()
+        create_test_common_entities(cls)
+        cls.ls = LeadSource.objects.create(
+            name='email',
+            description='source'
+        )
+        cls.interaction_type = InteractionType.objects.create(
+            name='type',
+            description='of interaction'
+        )
+
+        cls.sales_team = SalesTeam.objects.create(
+            name='team',
+            description='focused on sales',
+            leader=cls.sales_representative,
+        )
+        cls.lead = Lead.objects.create(
+            title='title',
+            description='description',
+            owner=cls.sales_representative,
+            team=cls.sales_team,
+            created=datetime.date.today(),
+            source=cls.ls,
+        )
+        cls.interaction = Interaction.objects.create(
+            lead=cls.lead,
+            contact=cls.individual,
+            sales_representative=cls.sales_representative,
+            type=cls.interaction_type
+        )
+        cls.task = Task.objects.create(
+            title='do something',
+            description='description',
+            due=datetime.date.today(),
+            lead=cls.lead,
+            assigned=cls.sales_representative
+        )
+
+    def setUp(self):
+        self.client.login(username='Testuser', password='123')
+
+    def test_get_crm_dashboard(self):
+        resp = self.client.get(reverse('invoicing:crm-dashboard'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_crm_async_dashboard(self):
+        resp = self.client.get(reverse('invoicing:crm-async-dashboard'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_create_contact(self):
+        resp = self.client.get(reverse('invoicing:create-contact',
+            kwargs={'lead': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_create_contact(self):
+        resp = self.client.post(reverse('invoicing:create-contact',
+            kwargs={'lead': 1}), data={
+                'first_name': 'first',
+                'last_name': 'last'
+            })
+        
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_create_lead(self):
+        resp = self.client.get(reverse('invoicing:create-lead'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_create_lead(self):
+        resp = self.client.post(reverse('invoicing:create-lead'),
+            data={
+                'title': 'title',
+                'owner': 1,
+                'contacts': [1],
+                'source': 1,
+                'opportunity': 1000,
+                'probability_of_sale': 50,
+                'status': 'lead'
+                })
+        
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_update_lead(self):
+        resp = self.client.get(reverse('invoicing:update-lead',
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_update_lead(self):
+        resp = self.client.post(reverse('invoicing:update-lead',
+            kwargs={'pk': 1}), data={
+                'title': 'title',
+                'owner': 1,
+                'contacts': [1],
+                'opportunity': 1000,
+                'probability_of_sale': 50,
+                'status': 'lead',
+                'source': 1
+                })
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_list_leads(self):
+        resp = self.client.get(reverse('invoicing:list-leads'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_lead_detail(self):
+        resp = self.client.get(reverse('invoicing:lead-detail',
+            kwargs={'pk':1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_create_task(self):
+        resp = self.client.get(reverse('invoicing:create-task'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_create_task(self):
+        resp = self.client.post(reverse('invoicing:create-task'),
+            data={
+                'title': 'title',
+                'description': 'desc',
+                'due': datetime.date.today(),
+                'lead': 1,
+                'status': 'planned',
+                'assigned': 1
+            })
+        
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_create_lead_task(self):
+        resp = self.client.get(reverse('invoicing:create-lead-task',
+            kwargs={'pk':1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_create_lead_task(self):
+        resp = self.client.post(reverse('invoicing:create-lead-task', kwargs={'pk':1}),
+            data={
+                'title': 'title',
+                'description': 'desc',
+                'due': datetime.date.today(),
+                'lead': 1,
+                'status': 'planned',
+                'assigned': 1
+            })
+        
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_update_task(self):
+        resp = self.client.get(reverse('invoicing:update-task',
+            kwargs={'pk':1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_update_task(self):
+        resp = self.client.post(reverse('invoicing:update-task',
+            kwargs={'pk':1}), data={
+                'title': 'title',
+                'description': 'desc',
+                'due': datetime.date.today(),
+                'lead': 1,
+                'status': 'planned',
+                'assigned': 1
+            })
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_list_tasks(self):
+        resp = self.client.get(reverse('invoicing:list-tasks'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_task_detail(self):
+        resp = self.client.get(reverse('invoicing:task-detail',
+            kwargs={'pk':1}))
+        self.assertEqual(resp.status_code, 200)
+
+    #task complete link
+
+    def test_get_create_sales_team(self):
+        resp = self.client.get(reverse('invoicing:create-sales-team'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_create_sales_team(self):
+        resp = self.client.post(reverse('invoicing:create-sales-team'),
+            data={
+                'name': 'team',
+                'description': 'for sales',
+                'leader': 1,
+                'members': [1]
+            })
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_update_sales_team(self):
+        resp = self.client.get(reverse('invoicing:update-sales-team',
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_update_sales_team(self):
+        resp = self.client.post(reverse('invoicing:update-sales-team',
+            kwargs={'pk': 1}), data={
+                'name': 'team',
+                'description': 'for sales',
+                'leader': 1,
+                'members': [1]
+            })
+        self.assertEqual(resp.status_code, 302)
+
+    def test_list_sales_team(self):
+        resp = self.client.get(reverse('invoicing:list-sales-teams'))
+        self.assertEqual(resp.status_code, 200)
+
+    #sales team detail
+
+    def test_get_create_lead_source(self):
+        resp = self.client.get(reverse('invoicing:create-lead-source'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_create_lead_source(self):
+        resp = self.client.post(reverse('invoicing:create-lead-source'), 
+            data={
+                'name': 'name',
+                'description': 'some description'
+            })
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_update_lead_source(self):
+        resp = self.client.get(reverse('invoicing:update-lead-source',
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_update_lead_source(self):
+        resp = self.client.post(reverse('invoicing:update-lead-source',
+            kwargs={'pk': 1}), data={
+                'name': 'name',
+                'description': 'some description'
+            })
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_lead_source_list(self):
+        resp = self.client.get(reverse('invoicing:list-lead-sources'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_create_interaction_type(self):
+        resp = self.client.get(reverse('invoicing:create-interaction-type'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_create_interaction_type(self):
+        resp = self.client.post(reverse('invoicing:create-interaction-type'),
+            data={
+                'name': 'name',
+                'description': 'some description'
+            })
+        self.assertEqual(resp.status_code, 302)
+
+    def test_update_interaction_type_get(self):
+        resp = self.client.get(reverse('invoicing:update-interaction-type',
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_interaction_type(self):
+        resp = self.client.post(reverse('invoicing:update-interaction-type',
+            kwargs={'pk': 1}), data={
+                'name': 'name',
+                'description': 'some description'
+            })
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_interaction_type_list(self):
+        resp = self.client.get(reverse('invoicing:list-interaction-types'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_contact_list(self):
+        resp = self.client.get(reverse('invoicing:list-contacts'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_create_interaction(self):
+        resp = self.client.get(reverse('invoicing:create-interaction',
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_create_interaction(self):
+        resp = self.client.post(reverse('invoicing:create-interaction',
+            kwargs={'pk': 1}), data={
+                'contact': 1,
+                'sales_representative': 1,
+                'type': 1,
+                'description': 'something said',
+                'lead': 1
+            })
+        
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_update_interaction(self):
+        resp = self.client.get(reverse('invoicing:update-interaction',
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_update_interaction(self):
+        resp = self.client.post(reverse('invoicing:update-interaction',
+            kwargs={'pk': 1}), data={
+                'contact': 1,
+                'sales_representative': 1,
+                'type': 1,
+                'description': 'something said',
+                'lead': 1
+            })
+        
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_interaction_detail(self):
+        resp = self.client.get(reverse('invoicing:interaction-detail',
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_list_interactions(self):
+        resp = self.client.get(reverse('invoicing:list-interactions'))
+        self.assertEqual(resp.status_code, 200)
+
+
+class POSViewTests(TestCase):
+    fixtures = ['common.json', 'accounts.json', 'journals.json',
+                'employees.json', 'inventory.json', 'invoicing.json', 'settings.json']
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        cls.client = Client()
+
+    def setUp(self):
+        self.client.login(username='Testuser', password='123')
+
+    @classmethod
+    def setUpTestData(cls):
+        invmc = InventoryModelCreator(cls)
+        invmc.create_warehouse_item()
+        invmc.create_orderitem()
+        create_test_user(cls)
+        cls.imc = InvoicingModelCreator(cls)
+        cls.imc.create_all()
+        accounting.tests.model_util.AccountingModelCreator(cls).create_tax()
+        create_test_common_entities(cls)
+        cls.session = POSSession.objects.create(
+            start = datetime.datetime.now(),
+            sales_person = cls.employee
+        )
+
+    def test_pos_start_session(self):
+        resp = self.client.post('/invoicing/pos/start-session/', content_type='application/json',
+         data={
+            'sales_person': '1 -employee',
+            'timestamp': datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.123213')
+        })
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(json.loads(resp.content).get('id', None))
+
+    def test_pos_end_session(self):
+        resp = self.client.post('/invoicing/pos/end-session/', content_type='application/json', data={
+            'id': self.session.pk,
+            'timestamp': datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.123213')
+        })
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(json.loads(resp.content).get('status', None), 'OK')
+
+    def test_pos_process_sale(self):
+        resp = self.client.post('/invoicing/pos/process-sale/', content_type='application/json', data={
+            'session': self.session.pk,
+            'invoice': {
+                'customer': '1 -customer',
+                'sales_person': '1 - sales rep',
+                'lines': [
+                    {
+                        'id': 1,#check product
+                        'price': 100,
+                        'quantity': 1,
+                        'tax': {
+                            'id': 1
+                        }
+                    }
+                ]
+            },
+            'payments': [
+                {
+                    'tendered': 100,
+                    'method': 'transfer'
+                }
+            ],
+            'timestamp': datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.123213')
+        })
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(json.loads(resp.content).get('sale_id', None))

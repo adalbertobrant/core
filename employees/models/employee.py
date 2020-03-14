@@ -57,6 +57,8 @@ class Employee(ContactsMixin, Person, SoftDeletionModel):
     @property
     def latest_timesheet(self):
         qs = EmployeeTimeSheet.objects.filter(employee=self)
+        if not qs.exists():
+            return None
 
         return EmployeeTimeSheet.objects.filter(employee=self).latest('pk').pk
 

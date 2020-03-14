@@ -265,6 +265,16 @@ class EmployeePageTests(TestCase):
     def setUpTestData(cls):
         create_test_employees_models(cls)
         common_data.tests.test_models.create_test_common_entities(cls)
+        cls.contract = Contract.objects.create(
+            start_date=datetime.date.today(),
+            employee=cls.employee,
+            end_of_probation=datetime.date.today(),
+            employee_category='Temporary'
+        )
+        # cls.termination = Termination.objects.create(
+        #     date=datetime.date.today(),
+        #     contract=cls.contract
+        # )
 
     def setUp(self):
         # wont work in setUpClass
@@ -367,6 +377,20 @@ class EmployeePageTests(TestCase):
                                 })
         self.assertEqual(resp.status_code, 302)
 
+    def test_employees_get_change_password_page(self):
+        resp = self.client.get('/employees/employee/user/change-password/1')
+        self.assertEqual(resp.status_code, 200)
+
+    def test_employees_change_password_page_post(self):
+        resp = self.client.post('/employees/employee/user/change-password/1',
+                                data={
+                                    'employee': 1,
+                                    'old_password': 'password',
+                                    'new_password': 'new_password',
+                                    'confirm_new_password': 'new_password'
+                                })
+        self.assertEqual(resp.status_code, 302)
+
     def test_employees_delete_user_post(self):
         resp = self.client.get('/employees/employee/delete-user/1')
         self.assertEqual(resp.status_code, 302)
@@ -374,6 +398,64 @@ class EmployeePageTests(TestCase):
     def test_get_employee_payslips(self):
         resp = self.client.get('/employees/list-employee-pay-slips/1')
         self.assertEqual(resp.status_code, 200)
+
+    def test_get_create_contract(self):
+        resp = self.client.get(reverse('employees:create-contract'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_create_contract(self):
+        resp = self.client.post(reverse('employees:create-contract'),
+            data={
+                'start_date': datetime.date.today(),
+                'end_of_probation': datetime.date.today(),
+                'termination_date': datetime.date.today() + datetime.timedelta(days=3),
+                'employee': 1,
+                'job_position': 'Manager',
+                'employee_category': 'Temporary',
+                'nature_of_employment': 'N'
+            })
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_update_contract(self):
+        resp = self.client.get(reverse('employees:update-contract', 
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_update_contract(self):
+        resp = self.client.post(reverse('employees:update-contract', 
+            kwargs={'pk': 1}), data={
+                'start_date': datetime.date.today(),
+                'end_of_probation': datetime.date.today(),
+                'termination_date': datetime.date.today() + datetime.timedelta(days=3),
+                'employee': 1,
+                'job_position': 'Manager',
+                'employee_category': 'Temporary',
+                'nature_of_employment': 'N'
+            })
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_contract_detail(self):
+        resp = self.client.get(reverse('employees:contract-details',
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_contract_list(self):
+        resp = self.client.get(reverse('employees:contract-list'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_terminate_contract(self):
+        resp = self.client.get(reverse('employees:terminate-contract', 
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_terminate_contract(self):
+        resp = self.client.post(reverse('employees:terminate-contract', 
+            kwargs={'pk': 1}), data={
+                'date': datetime.date.today(),
+                'reason_for_termination': 'R',
+                'contract': 1
+            })
+        self.assertEqual(resp.status_code, 302)
 
 
 class BenefitsPageTests(TestCase):

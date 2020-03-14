@@ -306,8 +306,6 @@ class MainPage extends Component{
 
         }).then(res =>{
             //returns a receipt number 
-            console.log('axios')
-            console.log(res)
             this.setState({
                 modalOpen: true,
                 checkoutState: checkoutState,

@@ -169,7 +169,7 @@ class TaskUpdateView(UpdateView):
 
     def form_valid(self, form):
         resp = super().form_valid(form)
-        if self.object.event.date != self.object.due:
+        if not self.object.event or self.object.event.date != self.object.due:
             evt = Event.objects.create(
                 date=self.object.due,
                 description=self.object.description,

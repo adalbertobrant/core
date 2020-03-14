@@ -5,11 +5,16 @@ from .models import (
     SalesRepModelTests,
     CreditNoteModelTests,
     ProductInvoiceTests,
-    InvoiceModelTests)
+    InvoiceModelTests,
+    CRMModelTests
+    )
 from .views import (ConfigWizardTests,
                     CommonViewsTests,
                     ReportViewsTests,
                     CustomerViewsTests,
                     SalesRepViewsTests,
                     InvoiceViewTests,
-                    QuotationViewTests)
+                    QuotationViewTests,
+                    CRMViewTests,
+                    POSViewTests
+                    )

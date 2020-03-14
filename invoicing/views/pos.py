@@ -13,13 +13,17 @@ def process_sale(request):
     timestamp = datetime.datetime.strptime(data['timestamp'].split('.')[0],
                                            '%Y-%m-%dT%H:%M:%S')
     session = models.POSSession.objects.get(pk=data['session'])
+    
     sales_person = models.SalesRepresentative.objects.get(
         pk=data['invoice']['sales_person'].split('-')[0]
     )
+
+
     # support having a generic customer
     customer = models.Customer.objects.get(
         pk=data['invoice']['customer'].split('-')[0]
     )
+
     invoice = models.Invoice.objects.create(
         date=timestamp.date(),
         due=timestamp.date(),
@@ -29,6 +33,7 @@ def process_sale(request):
         status='paid',
         ship_from=SalesConfig.objects.first().default_warehouse
     )
+
     for line in data['invoice']['lines']:
         product = InventoryItem.objects.get(pk=line['id'])
         component = ProductLineComponent.objects.create(
@@ -39,7 +44,7 @@ def process_sale(request):
         )
         tax = None
         if line['tax']:
-            tax = Tax.objects.get(line['tax']['id'])
+            tax = Tax.objects.get(pk=line['tax']['id'])
 
         models.InvoiceLine.objects.create(
             invoice=invoice,
@@ -63,6 +68,8 @@ def process_sale(request):
             timestamp=timestamp,
             method=payment['method']
         )
+
+    
 
     # update inventory
     invoice.update_inventory()
