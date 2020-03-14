@@ -504,6 +504,51 @@ class TestReportViews(TestCase):
 
         self.assertEqual(resp.status_code, 200)
 
+    def test_get_general_ledger_form(self):
+        resp = self.client.get(reverse('accounting:general-ledger-form'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_general_ledger(self):
+        resp = self.client.get(reverse('accounting:general-ledger'), data={
+            'start_period': (datetime.date.today()
+                      - datetime.timedelta(days=365)).strftime('%d %B %Y'),
+            'end_period': datetime.date.today().strftime('%d %B %Y')
+        })
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_general_ledger_pdf(self):
+        kwargs = {
+            'start': (datetime.date.today()
+                      - datetime.timedelta(days=365)).strftime('%d %B %Y'),
+            'end': datetime.date.today().strftime('%d %B %Y')
+        }
+        req = RequestFactory().get(reverse('accounting:general-ledger-pdf', kwargs=kwargs))
+        resp = views.GeneralLedgerPDFView.as_view()(req, **kwargs)
+
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_expense_summary_form(self):
+        resp = self.client.get(reverse('accounting:expense-summary-form'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_expense_summary(self):
+        resp = self.client.get(reverse('accounting:expense-summary'), data={
+            'start_period': (datetime.date.today()
+                      - datetime.timedelta(days=365)).strftime('%d %B %Y'),
+            'end_period': datetime.date.today().strftime('%d %B %Y')
+        })
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_expense_summary_pdf(self):
+        kwargs = {
+            'start': (datetime.date.today()
+                      - datetime.timedelta(days=365)).strftime('%d %B %Y'),
+            'end': datetime.date.today().strftime('%d %B %Y')
+        }
+        req = RequestFactory().get(reverse('accounting:expense-summary-pdf', kwargs=kwargs))
+        resp = views.ExpenseReportPDFView.as_view()(req, **kwargs)
+
+        self.assertEqual(resp.status_code, 200)
 
 class TestCurrencyViews(TestCase):
     fixtures = ['common.json']

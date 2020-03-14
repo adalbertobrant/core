@@ -11,6 +11,7 @@ from common_data.tests import create_test_common_entities
 from common_data.models import Organization
 from inventory.models import Supplier
 from invoicing.models import Customer
+from django.shortcuts import reverse
 
 TODAY = datetime.date.today()
 
@@ -111,6 +112,11 @@ class PlannerViewTests(TestCase):
         resp = self.client.get('/planner/dashboard')
         self.assertEqual(resp.status_code, 200)
 
+
+    def test_get_async_dashboard(self):
+        resp = self.client.get('/planner/async-dashboard/1')
+        self.assertEqual(resp.status_code, 200)
+
     def test_get_planner_config_page(self):
         resp = self.client.get('/planner/config/1')
         self.assertEqual(resp.status_code, 200)
@@ -163,14 +169,14 @@ class PlannerViewTests(TestCase):
         self.assertEqual(resp.status_code, 302)
 
     def test_get_event_list(self):
-        resp = self.client.get('/planner/event/list')
+        resp = self.client.get('/planner/event-list')
         self.assertEqual(resp.status_code, 200)
 
-    def test_get_event_list(self):
+    def test_get_event_detail(self):
         resp = self.client.get('/planner/event-detail/1')
         self.assertEqual(resp.status_code, 200)
 
-    def test_get_event_list(self):
+    def test_get_agenda(self):
         resp = self.client.get('/planner/agenda/1')
         self.assertEqual(resp.status_code, 200)
 
@@ -189,3 +195,8 @@ class PlannerViewTests(TestCase):
     def test_get_event_complete_view(self):
         resp = self.client.post('/planner/event-complete/1')
         self.assertEqual(resp.status_code, 302)
+
+    def test_get_week_events(self):
+        resp = self.client.post(f'/planner/api/calendar/week/{TODAY.year}'
+            f'/{TODAY.month}/{TODAY.day}')
+        self.assertEqual(resp.status_code, 200)

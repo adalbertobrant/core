@@ -12,7 +12,8 @@ from common_data.tests import create_test_common_entities, create_test_user
 from django.shortcuts import reverse
 from services.views import (JobProfitabilityPDFView,
                             ServicePersonUtilizationReportPDFView,
-                            UnbilledCostsByJobPDFView)
+                            UnbilledCostsByJobPDFView,
+                            TimeLogReportPDFView)
 
 
 TODAY = datetime.date.today()
@@ -822,4 +823,27 @@ class ServiceReportsTests(TestCase):
         req = RequestFactory().get(reverse(
             'services:reports-unbilled-costs-by-job-pdf', kwargs=kwargs))
         resp = UnbilledCostsByJobPDFView.as_view()(req, **kwargs)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_time_logs_form(self):
+        resp = self.client.get(reverse('services:reports-time-logs-form'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_time_logs_report(self):
+        resp = self.client.get(reverse('services:reports-time-logs'), data={
+            'start_period': (datetime.date.today()
+                      - datetime.timedelta(days=365)).strftime("%d %B %Y"),
+            'end_period': datetime.date.today().strftime("%d %B %Y")
+        })
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_time_logs_report_pdf(self):
+        kwargs = {
+            'start': (datetime.date.today()
+                      - datetime.timedelta(days=365)).strftime("%d %B %Y"),
+            'end': datetime.date.today().strftime("%d %B %Y")
+        }
+        req = RequestFactory().get(reverse(
+            'services:reports-time-logs-pdf', kwargs=kwargs))
+        resp = TimeLogReportPDFView.as_view()(req, **kwargs)
         self.assertEqual(resp.status_code, 200)
