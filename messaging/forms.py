@@ -9,6 +9,7 @@ from draftjs_exporter.html import HTML as exporterHTML
 import json
 import urllib
 from cryptography.fernet import Fernet
+from messaging.email_api.secrets import get_secret_key
 
 
 class EmailForm(BootstrapMixin, forms.ModelForm):
@@ -115,7 +116,8 @@ class UserProfileForm(forms.ModelForm):
                     'outgoing_server',
                     'outgoing_port',
                     'incoming_host',
-                    'incoming_port'
+                    'incoming_port',
+                    'max_email_age'
                     )
             )
         )

@@ -679,6 +679,36 @@ class InvoiceViewTests(TestCase):
         resp = self.client.get('/invoicing/invoice/shipping-costs/list/1')
         self.assertEqual(resp.status_code, 200)
 
+    def test_get_import_invoice_view(self):
+        resp=self.client.get(reverse('invoicing:import-invoice-from-excel'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_import_invoice_view(self):
+        with open(
+                os.path.join('invoicing', 
+                             'tests', 'invoice.xlsx'), 'rb') as f:
+            resp=self.client.post(reverse(
+                'invoicing:import-invoice-from-excel'), data={
+                'sheet_name': 'Sheet1',
+                'file': f,
+                'date': datetime.date.today(),
+                'due': datetime.date.today(),
+                'customer': 1,
+                'salesperson': 1,
+                'sales_tax': 1,
+                'invoice_number': 1000,
+                'description': 1,
+                'unit': 2,
+                'quantity': 3,
+                'unit_price': 4,
+                'subtotal': 5,
+                'start_row': 9,
+                'end_row': 16
+            })
+        
+        self.assertEqual(resp.status_code, 302)
+        self.assertTrue(Invoice.objects.filter(id=1000).exists())
+
 
 class QuotationViewTests(TestCase):
     fixtures = ['common.json', 'accounts.json', 'employees.json',  'inventory.json',

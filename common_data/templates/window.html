@@ -30,9 +30,16 @@
             </div>
             <div id='notifications-icon'>
                 <button id='notifications-button' class="btn btn-block primary"><i
-                        class="text-white fas fa-bell    "></i>
+                        class="text-white fas fa-bell {% if messages %}bell-active {% endif %}"></i>
                     {% if messages %}
-                    <span class="badge badge-danger">!</span>
+                    <audio id='chime' src='{% static "common_data/audio/chime.mp3" %}' autostart='false' width='0' height='0' enablejavascript='true' ></audio>
+                    <script>
+                        setTimeout(function(){
+                    var audio = document.getElementById('chime');
+                    audio.play()
+                }, 500)
+                    </script>
+                    <span id='notification-badge' class="badge badge-danger">!</span>
                     {% endif %}
                 </button>
             </div>

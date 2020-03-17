@@ -860,3 +860,20 @@ span.less {
 .dash-loaded {
     display: none;
 }
+
+.bell-active {  
+    animation: ring 1s linear 0s 3 forwards;
+}
+
+@keyframes ring{
+    0% {
+        transform: rotateZ(45deg);
+    }
+
+    50% {
+        transform: rotateZ(-45deg);
+    }
+
+    100% {
+        transform: rotateZ(45deg);
+    }

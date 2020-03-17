@@ -7,7 +7,7 @@ const ReplyWidget = (props) =>{
     
         return(
             <div>
-                <h5>attachment:</h5>
+                <h5>Attachment:</h5>
                 <FilePickerUI 
                     fieldID="attachment" 
                     fileHandler={props.attachmentHandler} />

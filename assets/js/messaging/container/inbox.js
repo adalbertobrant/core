@@ -4,7 +4,6 @@ import FolderList from '../components/email/folder';
 import MessageDetail from '../components/email/message_detail';
 import axios from 'axios';
 import {Aux} from '../../src/common';
-import ReactModal from 'react-modal';
 import Compose from '../components/email/compose'
 
 const FolderCard = (props) =>{
@@ -106,11 +105,9 @@ class InboxView extends Component{
                         <MessageDetail messageID={this.state.current} draft={true}/>
                     </div>
                 </div>
-                <ReactModal 
-                  isOpen={this.state.modalOpen}>
-                    {/* <Compose /> */}
-                    <iframe src='/messaging/create-message' style={{width:'100%', height:'100%'}} />
-                </ReactModal>
+                <Compose open={this.state.modalOpen}
+                    close={() => this.setState({modalOpen: false})}/>
+                
             </Aux>
         )
     }

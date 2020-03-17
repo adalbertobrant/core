@@ -370,18 +370,19 @@ class JournalListView(ContextMixin, PaginationMixin, FilterView):
     extra_context = {
         "title": "Accounting Journals",
         'new_link': reverse_lazy('accounting:create-journal'),
-        'action_list': [
-            {
-                'link': reverse_lazy('accounting:import-entries-from-excel'),
-                'label': 'Import Entries from Excel',
-                'icon': 'file-excel'
-            },
-            # {
-            #     'link': reverse_lazy('accounting:create-multiple-entries'),
-            #     'label': 'Create Multiple Journal Entries ',
-            #     'icon': 'file-alt'
-            # }
-        ]}
+        # 'action_list': [
+        #     {
+        #         'link': reverse_lazy('accounting:import-entries-from-excel'),
+        #         'label': 'Import Entries from Excel',
+        #         'icon': 'file-excel'
+        #     },
+        #     # {
+        #     #     'link': reverse_lazy('accounting:create-multiple-entries'),
+        #     #     'label': 'Create Multiple Journal Entries ',
+        #     #     'icon': 'file-alt'
+        #     # }
+        # ]
+        }
 
     def get_queryset(self):
         return models.Journal.objects.all().order_by('name')
@@ -975,145 +976,149 @@ class BulkAccountCreateView(FormView):
         return resp
 
 
-class ImportTransactionView(ContextMixin, FormView):
-    form_class = forms.ImportJournalEntryForm
-    template_name = os.path.join('common_data', 'crispy_create_template.html')
-    success_url = reverse_lazy('accounting:journal-list')
+# class ImportTransactionView(ContextMixin, FormView):
+#     form_class = forms.ImportJournalEntryForm
+#     template_name = os.path.join('common_data', 'crispy_create_template.html')
+#     success_url = reverse_lazy('accounting:journal-list')
 
-    extra_context = {
-        'title': 'Import Journal Entries View'
-    }
+#     extra_context = {
+#         'title': 'Import Journal Entries View'
+#     }
 
-    def form_valid(self, form):
-        resp = super().form_valid(self)
+#     def form_valid(self, form):
+#         resp = super().form_valid(self)
 
-        fields = {
-            'acc': form.cleaned_data['account'] - 1,
-            'date': form.cleaned_data['date'] - 1,
-            'memo': form.cleaned_data['memo'] - 1,
-            'entry_id': form.cleaned_data['entry_id'] - 1,
-            'credit': form.cleaned_data['credit'] - 1,
-            'debit': form.cleaned_data['debit'] - 1
-        }
+#         fields = {
+#             'acc': form.cleaned_data['account'] - 1,
+#             'date': form.cleaned_data['date'] - 1,
+#             'memo': form.cleaned_data['memo'] - 1,
+#             'entry_id': form.cleaned_data['entry_id'] - 1,
+#             'credit': form.cleaned_data['credit'] - 1,
+#             'debit': form.cleaned_data['debit'] - 1
+#         }
 
-        file = form.cleaned_data['file']
-        if file.name.endswith('.csv'):
-            messages.info(self.request, 
-                'Cannot process csv, please use xlsx files.')
-            return HttpResponseRedirect(self.success_url)
-        else:
+#         file = form.cleaned_data['file']
+#         if file.name.endswith('.csv'):
+#             messages.info(self.request, 
+#                 'Cannot process csv, please use xlsx files.')
+#             return HttpResponseRedirect(self.success_url)
+#         else:
 
-            cols = fields.values()
-            wb = openpyxl.load_workbook(file.file)
-            try:
-                ws = wb.get_sheet_by_name(form.cleaned_data['sheet_name'])
-            except:
-                ws = wb.active
-            start = form.cleaned_data['start_row']
-            count = 0
-            for row in ws.iter_rows(min_row=form.cleaned_data['start_row'],
-                                    max_row=form.cleaned_data['end_row'],
-                                    max_col=max(cols)):
-                count += 1
-                current = count + start
-                try:
-                    id = int(row[fields['entry_id']].value)
-                except:
-                    messages.info(self.request, 'Cannot import entry on row {} '
-                    'because the entry id is invalid'.format(current))
-                    continue
+#             cols = fields.values()
+#             wb = openpyxl.load_workbook(file.file)
+#             try:
+#                 ws = wb.get_sheet_by_name(form.cleaned_data['sheet_name'])
+#             except:
+#                 ws = wb.active
+#             start = form.cleaned_data['start_row']
+#             count = 0
+#             for row in ws.iter_rows(min_row=form.cleaned_data['start_row'],
+#                                     max_row=form.cleaned_data['end_row'],
+#                                     max_col=max(cols)):
+#                 count += 1
+#                 current = count + start
+#                 try:
+#                     id = int(row[fields['entry_id']].value)
+#                 except:
+#                     messages.info(self.request, 'Cannot import entry on row {} '
+#                     'because the entry id is invalid'.format(current))
+#                     continue
 
-                try:
-                    date = datetime.datetime.strptime(row[fields['date']].value, 
-                        '%d/%m/%Y') 
-                except:
-                    messages.info(self.request, 'Cannot import entry on row {} '
-                    'because the date is invalid'.format(current))
-                    continue
+#                 try:
+#                     date = datetime.datetime.strptime(row[fields['date']].value, 
+#                         '%d/%m/%Y') 
+#                 except:
+#                     messages.info(self.request, 'Cannot import entry on row {} '
+#                     'because the date is invalid'.format(current))
+#                     continue
                 
-                if not row[fields['memo']].value or row[fields['memo']].value == '':
-                    messages.info(self.request, 'Cannot import entry on row {} '
-                    'because the memo is invalid'.format(current))
-                    continue
+#                 if not row[fields['memo']].value or row[fields['memo']].value == '':
+#                     messages.info(self.request, 'Cannot import entry on row {} '
+#                     'because the memo is invalid'.format(current))
+#                     continue
 
-                credit =None
-                debit = None
-                if row[fields['credit']].value or \
-                        row[fields['credit']].value != '':
-                    print(row[fields['credit']].value)
-                    try:
-                        credit = float(row[fields['credit']].value)
-                    except:
-                        messages.info(self.request, 
-                        'Cannot import entry on row {} '
-                        'because the credit value is invalid'.format(current))
-                        continue
+#                 credit =None
+#                 debit = None
+#                 #if not credit, check debit
+#                 is_credit = row[fields['credit']].value and not row[fields['debit']].value
+#                 is_debit = row[fields['debit']].value and not row[fields['credit']].value
+#                 print('credit ', is_credit)
+#                 print('debit ', is_debit)
+#                 if row[fields['credit']].value and is_credit:
+#                     print(row[fields['credit']].value)
+#                     try:
+#                         credit = float(row[fields['credit']].value)
+#                     except:
+#                         messages.info(self.request, 
+#                         'Cannot import entry on row {} '
+#                         'because the credit value is invalid'.format(current))
+#                         continue
 
-                if row[fields['debit']].value :
-                    print(row[fields['debit']].value)
+#                 if row[fields['debit']].value and is_debit :
+#                     print(row[fields['debit']].value)
                     
-                    try:
-                        debit = float(row[fields['debit']].value)
-                    except:
-                        messages.info(self.request, 
-                        'Cannot import entry on row {} '
-                        'because the debit value is invalid'.format(current))
-                        continue
+#                     try:
+#                         debit = float(row[fields['debit']].value)
+#                     except:
+#                         messages.info(self.request, 
+#                         'Cannot import entry on row {} '
+#                         'because the debit value is invalid'.format(current))
+#                         continue
 
-                if not credit and not debit:
-                    messages.info(self.request, 
-                        'Cannot import entry on row {} '
-                        'because the neither a credit nor debit value are supplied'.format(current))
-                    continue
+#                 if not credit and not debit:
+#                     messages.info(self.request, 
+#                         'Cannot import entry on row {} '
+#                         'because the neither a credit nor debit value are supplied'.format(current))
+#                     continue
 
-                if credit and debit:
-                    messages.info(self.request, 
-                        'Cannot import entry on row {} '
-                        'because the both a credit and debit value are supplied.'.format(current))
-                    continue
+#                 if credit and debit:
+#                     messages.info(self.request, 
+#                         'Cannot import entry on row {} '
+#                         'because the both a credit and debit value are supplied.'.format(current))
+#                     continue
 
-                try:
-                    acc = int(row[fields['acc']].value)
-                except:
-                    messages.info(self.request, 
-                        'Cannot import entry on row {} '
-                        'because the an invalid account value is supplied.'.format(current))
-                    continue
+#                 try:
+#                     acc = int(row[fields['acc']].value)
+#                 except:
+#                     messages.info(self.request, 
+#                         'Cannot import entry on row {} '
+#                         'because the an invalid account value is supplied.'.format(current))
+#                     continue
                 
-                entry = None
-                qs = models.JournalEntry.objects.filter(
-                    id=id)
-                if qs.exists():
-                    entry = qs.first()
-                else:
+#                 entry = None
+#                 qs = models.JournalEntry.objects.filter(
+#                     id=id)
+#                 if qs.exists():
+#                     entry = qs.first()
+#                 else:
                     
-                    entry = models.JournalEntry.objects.create(
-                        journal=models.Journal.objects.get(id=5),
-                        memo=row[fields['memo']].value,
-                        date=date,
-                        id=id,
-                    )
+#                     entry = models.JournalEntry.objects.create(
+#                         journal=models.Journal.objects.get(id=5),
+#                         memo=row[fields['memo']].value,
+#                         date=date,
+#                         id=id,
+#                     )
 
-                qs = models.Account.objects.filter(id=acc)
-                if not qs.exists():
-                    messages.info(self.request,
-                                  f'Account with ID {acc} does not exist, entry skipped')
-                    continue
-                acc = qs.first()
-                if credit:
-                    models.Credit.objects.create(
-                        amount=credit,
-                        account=acc,
-                        entry=entry
-                    )
-                if debit:
-                    models.Credit.objects.create(
-                        amount=debit,
-                        account=acc,
-                        entry=entry
-                    )
+#                 qs = models.Account.objects.filter(id=acc)
+#                 if not qs.exists():
+#                     messages.info(self.request,
+#                                   f'Account with ID {acc} does not exist, entry skipped')
+#                     continue
+#                 acc = qs.first()
+#                 if credit:
+#                     models.Credit.objects.create(
+#                         amount=credit,
+#                         account=acc,
+#                         entry=entry
+#                     )
+#                 if debit:
+#                     models.Credit.objects.create(
+#                         amount=debit,
+#                         account=acc,
+#                         entry=entry
+#                     )
 
-        return resp
+#         return resp
 
 
 # class CreateMultipleEntriesView(FormView):

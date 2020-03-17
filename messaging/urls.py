@@ -59,6 +59,7 @@ email_urls = [
     path('config/', views.UserProfileView.as_view(), name='config'),
     path("api/folder/<int:folder>",
          views.FolderAPIView.as_view(), name="inbox-api"),
+    path("api/compose", views.send_email, name='send-api-email'),
     path("api/send-draft/<int:pk>/", views.send_draft, name='send-draft'),
     path("api/reply-email/<int:pk>/", views.reply_email, name='reply-email'),
     path("api/add-group-participant/<int:grp>/<int:id>", views.add_participant,

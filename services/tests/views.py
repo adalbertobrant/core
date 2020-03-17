@@ -832,8 +832,8 @@ class ServiceReportsTests(TestCase):
     def test_get_time_logs_report(self):
         resp = self.client.get(reverse('services:reports-time-logs'), data={
             'start_period': (datetime.date.today()
-                      - datetime.timedelta(days=365)).strftime("%d %B %Y"),
-            'end_period': datetime.date.today().strftime("%d %B %Y")
+                      - datetime.timedelta(days=365)).strftime("%m/%d/%Y"),
+            'end_period': datetime.date.today().strftime("%m/%d/%Y")
         })
         self.assertEqual(resp.status_code, 200)
 

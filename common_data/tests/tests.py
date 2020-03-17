@@ -173,9 +173,9 @@ class ViewTests(TestCase):
         resp = self.client.get('/base/individual/detail/' + '1')
         self.assertEqual(resp.status_code, 200)
 
-    def test_get_send_mail_page(self):
-        resp = self.client.get('/base/email')
-        self.assertEqual(resp.status_code, 200)
+    # def test_get_send_mail_page(self):
+    #     resp = self.client.get('/base/email')
+    #     self.assertEqual(resp.status_code, 200)
 
     def test_post_send_mail_page(self):
         # TODO simulate email do research

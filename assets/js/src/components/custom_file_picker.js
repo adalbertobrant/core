@@ -38,8 +38,7 @@ class FilePickerUI extends Component {
                         type="button"
                         className="btn btn-primary"
                         onClick={this.fileClearHandler}>
-                            {this.state.filename} 
-                            <i className="fas fa-times"></i>
+                            {this.state.filename} <i className="fas fa-times"></i>
                 </button>}
             
         </div>)

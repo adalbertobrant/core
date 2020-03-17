@@ -511,8 +511,8 @@ class TestReportViews(TestCase):
     def test_get_general_ledger(self):
         resp = self.client.get(reverse('accounting:general-ledger'), data={
             'start_period': (datetime.date.today()
-                      - datetime.timedelta(days=365)).strftime('%d %B %Y'),
-            'end_period': datetime.date.today().strftime('%d %B %Y')
+                      - datetime.timedelta(days=365)).strftime('%m/%d/%Y'),
+            'end_period': datetime.date.today().strftime('%m/%d/%Y')
         })
         self.assertEqual(resp.status_code, 200)
 
@@ -534,8 +534,8 @@ class TestReportViews(TestCase):
     def test_get_expense_summary(self):
         resp = self.client.get(reverse('accounting:expense-summary'), data={
             'start_period': (datetime.date.today()
-                      - datetime.timedelta(days=365)).strftime('%d %B %Y'),
-            'end_period': datetime.date.today().strftime('%d %B %Y')
+                      - datetime.timedelta(days=365)).strftime('%m/%d/%Y'),
+            'end_period': datetime.date.today().strftime('%m/%d/%Y')
         })
         self.assertEqual(resp.status_code, 200)
 
@@ -1182,9 +1182,9 @@ class AccountingImportViewTests(TestCase):
             })
         self.assertEqual(resp.status_code, 302)
         
-    def test_get_import_journal_entries_view(self):
-        resp=self.client.get(reverse('accounting:import-entries-from-excel'))
-        self.assertEqual(resp.status_code, 200)
+    # def test_get_import_journal_entries_view(self):
+    #     resp=self.client.get(reverse('accounting:import-entries-from-excel'))
+    #     self.assertEqual(resp.status_code, 200)
 
     # def test_post_import_journal_entries_view(self):
     #     with open(

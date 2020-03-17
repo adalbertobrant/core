@@ -11,7 +11,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from wkhtmltopdf.views import PDFTemplateView
 
 from common_data.utilities import ConfigMixin, ContextMixin, MultiPageDocument
-from common_data.views import EmailPlusPDFView
+# from common_data.views import EmailPlusPDFView
 from invoicing import forms
 from invoicing.models import *
 from invoicing.views.invoice_views.util import InvoiceCreateMixin
@@ -105,11 +105,11 @@ class QuotationPDFView(ConfigMixin, MultiPageDocument, PDFTemplateView):
         return context
 
 
-class QuotationEmailSendView(EmailPlusPDFView):
-    inv_class = Invoice
-    success_url = reverse_lazy('invoicing:invoice-list')
-    pdf_template_name = os.path.join("invoicing", "quotation",
-                                     'pdf.html')
+# class QuotationEmailSendView(EmailPlusPDFView):
+#     inv_class = Invoice
+#     success_url = reverse_lazy('invoicing:invoice-list')
+#     pdf_template_name = os.path.join("invoicing", "quotation",
+#                                      'pdf.html')
 
 
 def make_invoice_from_quotation(request, pk=None):

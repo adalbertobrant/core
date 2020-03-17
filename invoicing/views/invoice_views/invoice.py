@@ -13,7 +13,7 @@ from rest_framework import viewsets
 from wkhtmltopdf.views import PDFTemplateView
 
 from common_data.utilities import ConfigMixin, ContextMixin, MultiPageDocument
-from common_data.views import EmailPlusPDFView, PaginationMixin
+from common_data.views import PaginationMixin # EmailPlusPDFView,
 from invoicing import filters, forms, serializers
 from invoicing.models import *
 from invoicing.views.invoice_views.util import InvoiceCreateMixin
@@ -22,6 +22,7 @@ from inventory.forms import ShippingAndHandlingForm
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 import openpyxl
+from django.contrib import messages
 from services.models import Service
 from inventory.models import InventoryItem, ProductComponent, UnitOfMeasure
 
@@ -199,7 +200,7 @@ class InvoicePDFView(ConfigMixin, MultiPageDocument, PDFTemplateView):
         return context
 
 
-class InvoiceEmailSendView(ConfigMixin, EmailPlusPDFView):
+class InvoiceEmailSendView(ConfigMixin): #EmailPlusPDFView
     inv_class = Invoice
     success_url = reverse_lazy('invoicing:invoices-list')
     pdf_template_name = os.path.join("invoicing", "invoice",
@@ -345,29 +346,57 @@ class ImportInvoiceFromExcelView(ContextMixin, FormView):
                 due=form.cleaned_data['due'],
                 status='invoice',
                 invoice_number=form.cleaned_data['invoice_number'],
-                draft=False,
+                draft=True,
                 customer=form.cleaned_data['customer'],
                 salesperson=form.cleaned_data['salesperson'],
             )
-
+            start = int(form.cleaned_data['start_row'])
+            index = 0
             for row in ws.iter_rows(min_row=form.cleaned_data['start_row'],
                                     max_row=form.cleaned_data['end_row'],
                                     max_col=max(cols)):
+                index += 1
+                current = start + index
 
                 unit = None
-                line = None
+                quantity = None
+                unit_price = None
                 item = None
                 component = None
+
+                try: 
+                    quantity = float(row[form.cleaned_data['quantity']-1].value)
+                except:
+                    messages.info(self.request, 'Cannot process invoice line because of invalid'
+                        ' quantity on row {}'.format(current))
+                    continue
+
+                try: 
+                    unit_price = float(row[form.cleaned_data['unit_price']-1].value)
+                except:
+                    messages.info(self.request, 'Cannot process invoice line because of invalid'
+                        ' unit price on row {}'.format(current))
+                    continue
 
                 qs = UnitOfMeasure.objects.filter(name=null_buster(row[
                     form.cleaned_data['unit'] - 1].value))
                 if qs.exists():
                     unit = qs.first()
                 else:
+                    unit_string = null_buster(
+                            row[form.cleaned_data['unit'] - 1].value)
+                    if unit_string == '':
+                        messages.info(self.request, 'Cannot process invoice line because of invalid'
+                        ' unit on row {}'.format(current))
+                        continue
+
                     unit = UnitOfMeasure.objects.create(
-                        name=null_buster(
-                            row[form.cleaned_data['unit'] - 1].value))
+                        name=unit_string)
                 desc = row[form.cleaned_data['description'] - 1].value
+                if not desc:
+                    messages.info(self.request, 'Cannot process invoice line because of invalid'
+                        ' description on row {}'.format(current))
+                    continue
 
                 if desc.startswith('*'):
                     # if a sevice
@@ -379,16 +408,13 @@ class ImportInvoiceFromExcelView(ContextMixin, FormView):
                             name=desc,
                             description=desc,
                             hourly_rate=0.0,
-                            flat_fee=row[
-                                form.cleaned_data['unit_price']-1].value,
+                            flat_fee=unit_price,
                             is_listed=True)
 
                     component = ServiceLineComponent.objects.create(
                         service=service,
-                        hours=row[
-                            form.cleaned_data['quantity']-1].value,
-                        flat_fee=row[
-                            form.cleaned_data['unit_price']-1].value
+                        hours=quantity,
+                        flat_fee=unit_price
                     )
                     InvoiceLine.objects.create(
                         service=component,
@@ -408,15 +434,14 @@ class ImportInvoiceFromExcelView(ContextMixin, FormView):
                             unit=unit,
                             product_component=ProductComponent.objects.create(
                                 pricing_method=0,
-                                direct_price=row[
-                                    form.cleaned_data['unit_price']-1].value,
+                                direct_price=unit_price,
                                 tax=form.cleaned_data['sales_tax']
                             ))
 
                     component = ProductLineComponent.objects.create(
                         product=item,
-                        unit_price=row[form.cleaned_data['unit_price']-1].value,
-                        quantity=row[form.cleaned_data['quantity']-1].value,
+                        unit_price=unit_price,
+                        quantity=quantity,
                     )
                     InvoiceLine.objects.create(
                         product=component,
