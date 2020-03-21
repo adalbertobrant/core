@@ -51,11 +51,11 @@ class Lead(models.Model):
     opportunity = models.FloatField(default=0.0)
     probability_of_sale = models.FloatField(default=100.0)
     status = models.CharField(default='lead', max_length=16, choices=[
-        ('lead', 'Lead'),
-        ('quotation', ' Quotation'),
-        ('invoice', 'Invoice'),
-        ('sale', 'Sale'),
-        ('cold', 'Cold')])
+        ('new', 'New'),
+        ('qualified', 'Qualified'),
+        ('quotation', 'Quotation'),
+        ('won', 'Won'),
+        ('lost', 'Lost')])
 
 
 

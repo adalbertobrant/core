@@ -14,7 +14,6 @@ const Month = (props) => {
                 <table style={{
                     width: "200px",
                     position: "absolute",
-                    top: "40px"
                 }}>
                     <tbody>
                         {days.map((day, i) =>(
@@ -37,8 +36,10 @@ const Month = (props) => {
                 {props.data.map((leave, i) =>(
                     <Leave 
                         data={leave} 
+                        month={props.month}
                         key={i}
-                        offset={-20} />
+                        offset={-20}
+                        yOffset={0} />
                 ))}
             </div>
             
@@ -87,7 +88,7 @@ class YearView extends Component{
                     <tr>
                     {this.state.leave.map((month, i) =>(
                         <td>
-                            <Month data={month}/>
+                            <Month data={month} month={i+1}/>
                         </td>
                         ))}
                     </tr>
