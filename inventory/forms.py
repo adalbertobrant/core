@@ -369,6 +369,7 @@ class EquipmentForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                         Column('depreciation_period',
                                css_class="col-md-6 col-sm-12"),
                     ),
+                    'active'
                     )
             ),
             Submit('submit', 'Submit')
@@ -495,6 +496,7 @@ class ConsumableForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                         Column('image', css_class="form-group col-sm-6"),
                     ),
                     'type',
+                    'active'
                     )
             ),
             Submit('submit', 'Submit')
