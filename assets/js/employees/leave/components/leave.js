@@ -1,24 +1,30 @@
 import React from 'react';
 
-const leave = (props) =>{    
-    let startY = 90;
-    let height = 22;
+const leave = (props) =>{   
+    console.log(props.data) 
+    let startY = props.yOffset;
+    let height = 27;
     
     if(props.data.start_date){
             const start = parseInt(props.data.start_date);
             const end = parseInt(props.data.end_date);
+            
+            startY = props.yOffset + (start == 1 ? 0 : (start * 27));
 
-            startY = 90 + (start * 22);
             // for errors in recording the event times
             if(end > start){
-                height = (end - start) * 22;
+                height = (end - start) * 27;
+            }else if(start > end && props.data.start_month == props.month){
+                height = (31 - start) * 27
+            }else if(start > end && props.data.start_month != props.month){
+                height = end * 27
+                startY = props.yOffset
             }
     }
     
     let style = {
         margin: '2px',
         padding: '5px',
-        height: "100%",
         width: "100%",
         color: 'white',
         backgroundColor: '#07f',

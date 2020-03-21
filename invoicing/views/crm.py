@@ -70,7 +70,7 @@ class CRMAsyncDashboard(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['active_leads'] = \
-            models.Lead.objects.all().exclude(status='cold').count()
+            models.Lead.objects.all().exclude(status__in=['won', 'lost']).count()
         context['sales_mvp'] = ''
         max_leads = 0
         for rep in models.SalesRepresentative.objects.all():

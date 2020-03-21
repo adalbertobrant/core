@@ -87,15 +87,24 @@ def _month_data(year, month):
         upper_limit = datetime.date(year=year + 1, month=1, day=1)
 
     leave_data = models.Leave.objects.filter(
-        Q(start_date__gte=lower_limit) &
-        Q(start_date__lt=upper_limit) &
+        Q(
+            Q(
+                Q(start_date__gte=lower_limit) &
+                Q(start_date__lt=upper_limit)
+            ) | 
+            Q(
+                Q(end_date__gte=lower_limit) &
+                Q(end_date__lt=upper_limit)
+            )
+        ) &
         Q(status=1))
-    # design method for spanning multiple months
+    
 
     def data_dict(d):
         return ({
             'start_date': d.start_date.day,
             'end_date': d.end_date.day,
+            'start_month': d.start_date.month,
             'employee': d.employee.full_name,
             'id': d.pk
         })

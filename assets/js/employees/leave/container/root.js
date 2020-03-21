@@ -51,7 +51,7 @@ class LeaveCalendar extends Component{
         return(
             <Router >
                 <div className="row no-gutters" style={{marginTop: '-3px'}}>
-                    <div className={"col-sm-2 "+ styles.sideBar}>
+                    <div className={"col-md-2 col-sm-12 "+ styles.sideBar}>
                         <div className="btn-group">            
                             <Link className="btn btn-primary" 
                                 to={`/employees/leave-calendar/month/${this.state.year}/${this.state.month}`}> Month</Link>
@@ -83,7 +83,7 @@ class LeaveCalendar extends Component{
                     </div>
                 <div>
                     </div>
-                    <div className="col-sm-10" style={{
+                    <div className="col-md-10 col-sm-12" style={{
                         maxHeight: height + 'px',
                         overflowY: 'auto'
                     }}>
