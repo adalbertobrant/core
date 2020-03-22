@@ -9,6 +9,7 @@ from .time import timesheet_urls
 from .portal import portal_urls
 from .reports import report_urls
 from employees import views
+from .shift import shift_urls
 
 urlpatterns = [
     re_path(r'^config-wizard', views.ConfigWizard.as_view(),
@@ -24,4 +25,5 @@ urlpatterns = [
     leave_urls + \
     department_urls + \
     portal_urls + \
-    report_urls
+    report_urls + \
+    shift_urls

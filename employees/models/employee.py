@@ -209,7 +209,9 @@ class Employee(ContactsMixin, Person, SoftDeletionModel):
                 else:
                     if AttendanceLine.objects.filter(
                             date=date, timesheet=sheet).exists():
-                        attendance.append(0)
+                        line = AttendanceLine.objects.filter(
+                            date=date, timesheet=sheet).first()
+                        attendance.append(1 if line.late else 0)
                     else:
                         attendance.append(2)
 

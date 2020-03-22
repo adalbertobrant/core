@@ -61,7 +61,7 @@
 <h4 class="text-white roomy bg-primary">Revenue: <span
         style="float:right;">{{object.works_request.invoice_line.subtotal | active_currency}}</span>
 </h4>
-<div style="margin-left:2rem;">
+{% comment %} <div style="margin-left:2rem;">
     <h5 class="text-white roomy bg-primary">Direct Labour expenses*</h5>
     <p style="font-size: 0.6rem;"><b>*NB</b> Direct labour costs are only recorded for employees on
         wages whose payment depends on
@@ -95,7 +95,7 @@
             </tr>
         </tfoot>
     </table>
-</div>
+</div> {% endcomment %}
 <div style="margin-left:2rem;">
     <h5 class="bg-primary text-white roomy">Cost of revenue expenses</h5>
     <table class="table table-sm">

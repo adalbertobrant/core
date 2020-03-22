@@ -1,19 +1,19 @@
-{% extends 'common_data/page/pdf_page.html' %}
+{% extends 'common_data/page/framed_pdf_page.html' %}
 
 {% block pre_page %}
-<section id='title'>
-    <div id='title-text'>Employee Attendance Report</div>
-    <div id='action-icon dropdown'>
+<script>
+var url = "/employees/employee-attendance-pdf/{{date.month}}/{{date.year}}";
+var el = window.parent.document.getElementById('pdf-button');
+el.href = url;
+var actions =  window.parent.document.getElementById('action-dropdown-items')
 
-        <button class="btn btn-block primary " id="triggerId" data-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
 
-        <div class="dropdown-menu" aria-labelledby="triggerId">
-            <a class="dropdown-item" href="{% url 'employees:employee-attendance-pdf' %}"><i class="fas fa-file-pdf"></i> Generate PDF</a> 
-            <button onclick='window.print()' class="dropdown-item"><i class="fas fa-print    "></i> Print</button>
-        </div>
-    </div>
-</section>
+var printBtn = window.parent.document.createElement('button')
+printBtn.onclick = function(){window.print()}
+printBtn.classList.add('dropdown-item')
+printBtn.innerHTML = '<i class="fas fa-print    "></i> Print'
+actions.appendChild(printBtn)
+</script>
 {% endblock pre_page %}
 
 {% block page_contents %}

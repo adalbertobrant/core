@@ -1,9 +1,9 @@
 {% extends "window.html" %}
 {% block heading %}
-Works Request
+Works Order
 {% endblock heading %}
 {% block actions %}
-        <a class="dropdown-item" href="{% url 'services:work-order-create' pk=object.pk %}" role="button">Add Work Order</a>
+        <a class="dropdown-item" href="{% url 'services:work-order-create' pk=object.pk %}" role="button">Add Job</a>
 
 {% endblock actions %}
 {% block content %}
@@ -34,7 +34,7 @@ Works Request
                 </div>
                 <div class="card" style="min-width:66%;">
                     <div class="card-body">
-                        <h4 class="card-title">Work Orders</h4>
+                        <h4 class="card-title">Jobs</h4>
                         <table class="table table-sm">
                             <thead>
                                 <tr class="bg-primary">

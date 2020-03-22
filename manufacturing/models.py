@@ -256,64 +256,6 @@ class MachineComponent(models.Model):
 '''
 
 
-class Shift(models.Model):
-    name = models.CharField(max_length=255)
-    team = models.ForeignKey('services.ServiceTeam',
-                             on_delete=models.SET_NULL,
-                             blank=True,
-                             null=True)
-    supervisor = models.ForeignKey('employees.Employee',
-                                   on_delete=models.SET_NULL, null=True,
-                                   related_name='supervisor')
-    employees = models.ManyToManyField('employees.Employee')
-    machine = models.ForeignKey(
-        'manufacturing.ProcessMachine', on_delete=models.SET_NULL, null=True, default=1)
-
-    def __str__(self):
-        return self.name
-
-
-# engineering shift, bm shift etc
-class ShiftSchedule(models.Model):
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name
-
-    @property
-    def shifts(self):
-        return ShiftScheduleLine.objects.filter(schedule=self)
-
-
-class ShiftScheduleLine(models.Model):
-    schedule = models.ForeignKey(
-        'manufacturing.ShiftSchedule', on_delete=models.SET_NULL, null=True)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-    monday = models.BooleanField(default=True)
-    tuesday = models.BooleanField(default=True)
-    wednesday = models.BooleanField(default=True)
-    thursday = models.BooleanField(default=True)
-    friday = models.BooleanField(default=True)
-    saturday = models.BooleanField(default=False)
-    sunday = models.BooleanField(default=False)
-    shift = models.ForeignKey('manufacturing.Shift',
-                              on_delete=models.SET_NULL, null=True)
-
-    def __str__(self):
-        return str(self.schedule) + ' ' + str(self.shift)
-
-
-'''
-====================================================
-| Shift  | Start | End  | M | T | W | T | F | S | S |
-====================================================
-|Shift 1 | 00:00 |12:00 | x | x | x | x | x | / | / |
------------------------------------------------------
-|Shift 2 | 00:00 |12:00 | / | / | x | x | x | x | x |
------------------------------------------------------
-'''
-
 
 class ManufacturingAssociate(models.Model):
     employee = models.ForeignKey(

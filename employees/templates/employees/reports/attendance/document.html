@@ -14,10 +14,10 @@
             <td>Present</td>
             <td> <i class="fas fa-check    "></i></td>
         </tr>
-        {% comment %} <tr>
+        <tr>
             <td>Late</td>
             <td > <i class="fas fa-exclamation-circle    "></i> </td>
-        </tr> {% endcomment %}
+        </tr>
         <tr>
             <td>Absent</td>
             <td > <i class="fas fa-times    "></i></td>
@@ -38,19 +38,15 @@
         </tr>
     </thead>
     <tbody>
-        {% for employee in page %}
+        {% for ts in page %}
         <tr>
             <td class="day-content">
-                {% if employee.latest_timesheet %}
-                <a style="text-decoration:none;" href="{% url 'employees:timesheet-detail' pk=employee.latest_timesheet %}">
-                    {{employee.pk | stringformat:"04d"}}
+                <a style="text-decoration:none;" href="{% url 'employees:timesheet-detail' pk=ts.pk %}">
+                    {{ts.employee.pk | stringformat:"04d"}}
                 </a>
-                {% else %}
-                    {{employee.pk | stringformat:"04d"}}
-                {% endif %}
             </td>
-            {% for date in employee.attendance %}
-                <td class="day-content">{% if date == 0 %} <i class="fas fa-check    "></i> {% elif date == 1 %} <i class="fas fa-exclamation-circle    "></i>{% else %}<i class="fas fa-times    "></i>{% endif %}</td>
+            {% for line in ts.enumerate_ts %}
+                <td class="day-content">{% if line == 0 %} <i class="fas fa-check    "></i> {% elif line == 1 %} <i class="fas fa-exclamation-circle    "></i>{% else %}<i class="fas fa-times    "></i>{% endif %}</td>
             {% endfor %}
         </tr>
         {% endfor %}

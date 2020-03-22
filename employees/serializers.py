@@ -60,3 +60,21 @@ class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Department
         fields = "__all__"
+
+
+class ShiftSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Shift
+        fields = "__all__"
+
+class ShiftScheduleLineSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.ShiftScheduleLine
+        fields = "__all__"
+
+class ShiftScheduleSerializer(serializers.ModelSerializer):
+    shiftscheduleline_set = ShiftScheduleLineSerializer(many=True)
+    class Meta:
+        model = models.ShiftSchedule
+        fields = "__all__"

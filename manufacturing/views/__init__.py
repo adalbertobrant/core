@@ -1,5 +1,4 @@
 from manufacturing.views.process import *
-from manufacturing.views.shift import *
 from manufacturing.views.equipment import *
 import os
 

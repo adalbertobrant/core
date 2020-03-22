@@ -2,20 +2,20 @@ import React, {Component} from 'react';
 import TimeField from '../../../src/components/time_field';
 import AsyncSelect from '../../../src/components/async_select';
 
-
+const initialState = {
+    shift: "",
+    startTime: "",
+    endTime: "",
+    monday: false,
+    tuesday: false,
+    wednesday: false,
+    thursday: false,
+    friday: false,
+    saturday: false,
+    sunday: false
+}
 class ShiftEntry extends Component{
-    state = {
-        shift: "",
-        startTime: "",
-        endTime: "",
-        monday: false,
-        tuesday: false,
-        wednesday: false,
-        thursday: false,
-        friday: false,
-        saturday: false,
-        sunday: false
-    }
+    state = {...initialState}
     shiftHandler = (data) =>{
         this.setState({shift: data});
     }
@@ -37,10 +37,10 @@ class ShiftEntry extends Component{
     render(){
         return(
             <tfoot>
-                <tr className="bg-primary text-white">
+                <tr>
                     <td>
                         <AsyncSelect 
-                            dataURL="/manufacturing/api/shift"
+                            dataURL="/employees/api/shift"
                             resProcessor={(res) =>{
                                 return (res.data.map((shift, i) =>(
                                     {
@@ -113,20 +113,21 @@ class ShiftEntry extends Component{
                             onChange={this.dayHandler}
                             name="sunday" />
                     </td>
-                    <td></td>
-                </tr>
-            <tr className="bg-primary text-white">
-                <td colSpan={11}>
+                    <td>
                     <button 
-                        style={{
-                            float: 'right'
-                        }}
-                        onClick={() => this.props.insertHandler(this.state)}
-                        className="btn">
-                            Insert
-                    </button>
-                </td>
-            </tr>
+                    style={{
+                        float: 'right'
+                    }}
+                    onClick={() => {
+                        this.props.insertHandler(this.state)
+                        this.setState({...initialState})
+                    }}
+                    className="btn btn-primary">
+                        <i className="fas fa-plus    "></i>
+                </button>
+                    </td>
+                </tr>
+            
             </tfoot>
         )
     }

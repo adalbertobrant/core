@@ -2,6 +2,13 @@ import django_filters
 
 from . import models
 
+class ShiftFilter(django_filters.FilterSet):
+    class Meta:
+        model = models.Shift
+        fields = {
+            'name': ['icontains']
+        }
+
 
 class EmployeeFilter(django_filters.FilterSet):
     class Meta:

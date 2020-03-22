@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="{% static 'common_data/css/document-styles.css' %}">
 {% endblock head %}
 {% block heading %}
-Work Order Detail
+Job Detail
 {% endblock heading %}
 
 {% block actions %}
@@ -37,7 +37,7 @@ Work Order Detail
     <i class="fas fa-dollar-sign"></i> Record Work Related Expense
 </a>
 <a class="dropdown-item" href="{% url 'services:work-order-costing' pk=object.pk %}">
-    <i class="fas fa-receipt"></i> Costing
+    <i class="fas fa-receipt"></i> Profitability Analysis
 </a>
 {% endif %}
 {% endblock actions %}

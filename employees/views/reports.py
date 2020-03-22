@@ -4,7 +4,7 @@ import os
 from django.db.models import Q
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, FormView
-from employees.models import Employee, Leave, Payslip
+from employees.models import Employee, Leave, Payslip, EmployeeTimeSheet
 from common_data.utilities import (ConfigMixin,
                                    MultiPageDocument,
                                    ContextMixin,
@@ -17,6 +17,14 @@ from common_data.models import GlobalConfig
 from employees import forms
 
 
+class EmployeeAttendanceReportFormView(ContextMixin, FormView):
+    template_name = os.path.join('common_data', 'reports', 'report_template.html')
+    form_class = forms.EmployeeAttendanceReportForm
+    extra_context = {
+        'title': 'Employee Attendance Report',
+        'action': reverse_lazy('employees:employee-attendance')
+    }
+
 class EmployeeAttendanceReport(ConfigMixin, MultiPageDocument, TemplateView):
     template_name = os.path.join('employees',
                                  'reports',
@@ -26,18 +34,25 @@ class EmployeeAttendanceReport(ConfigMixin, MultiPageDocument, TemplateView):
     page_length = 30
 
     def get_multipage_queryset(self):
-        return Employee.objects.filter(uses_timesheet=True)
+        data = self.request.GET
+        return EmployeeTimeSheet.objects.filter(
+            year=int(data['year']), 
+            month=int(data['month'])
+            )
+
 
     @staticmethod
     def common_context():
         context = {}
-        context["date"] = datetime.date.today()
         context['days'] = list(range(1, 32))
-        context['month'] = datetime.date.today().strftime('%B')
         return context
 
     def get_context_data(self, **kwargs):
+        data = self.request.GET
         context = super().get_context_data(**kwargs)
+        context["date"] = datetime.date(int(data['year']), int(data['month']), 1)
+        context['month'] = context['date'].strftime('%B')
+
         context['pdf_link'] = True
         context.update(EmployeeAttendanceReport.common_context())
         return context
@@ -52,10 +67,17 @@ class EmployeeAttendanceReportPDFView(ConfigMixin,
     page_length = 30
 
     def get_multipage_queryset(self):
-        return Employee.objects.filter(uses_timesheet=True)
-
+        data = self.kwargs
+        return EmployeeTimeSheet.objects.filter(
+            year=int(data['year']), 
+            month=int(data['month'])
+            )
+        
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        data = self.kwargs
+        context["date"] = datetime.date(int(data['year']), int(data['month']), 1)
+        context['month'] = context['date'].strftime('%B')
         context.update(EmployeeAttendanceReport.common_context())
         return context
 

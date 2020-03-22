@@ -10,6 +10,9 @@ Procedure Detail
                 <a class="dropdown-item" href="{% url 'services:procedure-update' pk=object.pk %}">
                     <i class="fas fa-edit"></i> Update
                 </a>
+                <a class="dropdown-item" href="{% url 'services:procedure-document' pk=object.pk %}">
+                        <i class="fas fa-file"></i> View Document
+                    </a>
 {% endblock actions %}
 {% block content %}
 <br>

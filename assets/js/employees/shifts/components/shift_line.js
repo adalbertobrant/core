@@ -1,9 +1,23 @@
 import React from 'react';
+import axios from 'axios'
 import DeleteButton from '../../../src/components/delete_button';
 const shiftLine = (props) =>{
+    const [shift, setShift] = React.useState(props.data.shift)
+    React.useEffect(() =>{
+        console.log(shift)
+        if(shift && toString(shift).indexOf('-') > 0){
+            return
+        }
+        axios({
+            method: 'GET',
+            url: '/employees/api/shift/' + props.data.shift
+        }).then(res =>{
+            setShift(props.data.shift + ' - ' +res.data.name)
+        })
+    }, [props.data])
     return(
         <tr>
-            <td>{props.data.shift}</td>
+            <td>{shift}</td>
             <td>{props.data.startTime}</td>
             <td>{props.data.endTime}</td>
             <td><input 

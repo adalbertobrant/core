@@ -29,20 +29,6 @@ class ProductionOrderFilter(FilterSet):
         }
 
 
-class ShiftFilter(FilterSet):
-    class Meta:
-        model = models.Shift
-        fields = {
-            'name': ['icontains']
-        }
-
-
-class ShiftScheduleFilter(FilterSet):
-    class Meta:
-        model = models.ShiftSchedule
-        fields = {
-            'name': ['icontains']
-        }
 
 
 class ProcessMachineFilter(FilterSet):

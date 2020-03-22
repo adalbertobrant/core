@@ -795,3 +795,31 @@ class OutstandingPayslipsForm(forms.Form):
             raise ValidationError('The password supplied is incorrect')
 
         return cleaned_data
+
+
+class ShiftForm(forms.ModelForm, BootstrapMixin):
+    employees = forms.ModelMultipleChoiceField(
+        models.Employee.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+
+    class Meta:
+        model = models.Shift
+        fields = "__all__"
+
+
+class ShiftScheduleForm(forms.ModelForm, BootstrapMixin):
+    shift_lines = forms.CharField(widget=forms.HiddenInput)
+
+    class Meta:
+        model = models.ShiftSchedule
+        fields = "__all__"
+
+
+class EmployeeAttendanceReportForm(BootstrapMixin, forms.Form):
+    month = forms.ChoiceField(choices=[(i + 1, month) for i, month in enumerate([
+        'January', 'February', 'March', 'April', 'May', 'June', 'July',
+        'August', 'September', 'October', 'November', 'December'
+    ])])
+    year = forms.ChoiceField(choices=[(i, i) for i in range(2009, 2050)])
