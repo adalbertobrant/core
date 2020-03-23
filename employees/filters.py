@@ -9,6 +9,15 @@ class ShiftFilter(django_filters.FilterSet):
             'name': ['icontains']
         }
 
+class ShiftScheduleFilter(django_filters.FilterSet):
+    class Meta:
+        model = models.ShiftSchedule
+        fields = {
+            'name': ['icontains'],
+            'valid_from': ['gte'],
+            'valid_to': ['lte']
+        }
+
 
 class EmployeeFilter(django_filters.FilterSet):
     class Meta:

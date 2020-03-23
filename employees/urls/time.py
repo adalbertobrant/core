@@ -18,10 +18,6 @@ timesheet_urls = [
             views.TimeSheetDetailView.as_view(), name='timesheet-detail'),
     re_path(r'^time-logger/?$', views.TimeLoggerView.as_view(),
             name='time-logger'),
-    re_path(r'^time-logger/(?P<pk>[\d]+)/?$',
-            views.TimeLoggerWithEmployeeView.as_view(), name='time-logger-employee'),
-    path('time-logger-success/<int:pk>', views.TimeLoggerSuccessView.as_view(),
-         name='time-logger-success')
-
+    
 
 ] + timesheet_router.urls

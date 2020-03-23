@@ -169,19 +169,90 @@ class TimesheetTests(TestCase):
         self.assertEqual(self.line.working_time,
                          datetime.timedelta(hours=8))
 
-    def test_line_noraml_time(self):
+    def test_line_normal_time(self):
         self.assertEqual(self.line.normal_time, datetime.timedelta(hours=8))
 
     def test_line_overtime(self):
         self.assertEqual(self.line.overtime, datetime.timedelta(0))
 
+    def test_shift(self):
+        obj = Shift.objects.create(
+            name='shift',
+            supervisor=self.employee
+        )
+        self.assertIsInstance(obj, Shift)
 
+    def test_shift_schedule(self):
+        obj = ShiftSchedule.objects.create(
+            name='Schedule',
+            valid_from = datetime.date.today(),
+            valid_to = datetime.date.today() + datetime.timedelta(days=30)
+        )
+        self.assertIsInstance(obj, ShiftSchedule)
+
+    def test_shift_schedule_line(self):
+        sched = ShiftSchedule.objects.create(
+            name='Schedule',
+            valid_from = datetime.date.today(),
+            valid_to = datetime.date.today() + datetime.timedelta(days=30)
+        )
+        shift = Shift.objects.create(
+            name='shift 2',
+            supervisor=self.employee
+        )
+
+        obj = ShiftScheduleLine.objects.create(
+            schedule=sched,
+            start_time = datetime.time(8,0),
+            end_time=datetime.time(17, 0),
+            saturday=False,
+            sunday=False,
+            shift=shift
+        )
+        self.assertIsInstance(obj, ShiftScheduleLine)
+
+    def test_shift_schedule_line_date_on_shift(self):
+        sched = ShiftSchedule.objects.create(
+            name='Schedule',
+            valid_from = datetime.date.today(),
+            valid_to = datetime.date.today() + datetime.timedelta(days=30)
+        )
+        shift = Shift.objects.create(
+            name='shift 2',
+            supervisor=self.employee
+        )
+
+        obj = ShiftScheduleLine.objects.create(
+            schedule=sched,
+            start_time = datetime.time(8,0),
+            end_time=datetime.time(17, 0),
+            shift=shift,
+            saturday=True,
+            sunday=True
+        )
+
+        self.assertTrue(obj.date_on_shift(datetime.date.today()))
+        
 class EmployeeModelTests(TestCase):
     fixtures = ['accounts.json', 'employees.json']
 
     @classmethod
     def setUpTestData(cls):
         create_test_employees_models(cls)
+        today = datetime.date.today()
+        cls.timesheet = EmployeeTimeSheet.objects.create(
+            employee=cls.employee,
+            month=today.month,
+            year=today.year,
+            recorded_by=cls.employee,
+            complete=True
+        )
+        cls.line = AttendanceLine.objects.create(
+            timesheet=cls.timesheet,
+            date=datetime.date.today(),
+            time_in=datetime.time(8, 0),
+            time_out=datetime.time(17, 0)
+        )
 
     def test_create_employee(self):
         obj = Employee.objects.create(
@@ -241,24 +312,11 @@ class EmployeeModelTests(TestCase):
         
         self.assertEqual(self.employee.missed_events, 1)
 
-    def test_attendance(self):
-        today = datetime.date.today()
-        timesheet = EmployeeTimeSheet.objects.create(
-            employee=self.employee,
-            month=today.month,
-            year=today.year,
-            recorded_by=self.employee,
-            complete=True
-        )
-        line = AttendanceLine.objects.create(
-            timesheet=timesheet,
-            date=datetime.date.today(),
-            time_in=datetime.datetime(2018, 1, 1, 8, 0).time(),
-            time_out=datetime.datetime(2018, 1, 1, 17, 0).time(),
-        )
+    def test_logged_in(self):
+        self.assertTrue(self.employee.logged_in)
 
-        self.assertIsInstance(self.employee.attendance, list)
-        self.assertTrue(0 in self.employee.attendance)
+    def test_login_time(self):
+        self.assertEqual(self.employee.login_time, "08:00")
 
 
 class AllowanceModelTest(TestCase):

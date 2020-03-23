@@ -407,69 +407,6 @@ class PayrollOfficerUpdateForm(forms.ModelForm, BootstrapMixin):
         model = models.PayrollOfficer
 
 
-class TimeLoggerForm(BootstrapMixin, forms.Form):
-    employee_number = forms.IntegerField()
-    pin = forms.IntegerField()
-
-    def clean(self):
-        cleaned_data = super().clean()
-        e_num = cleaned_data['employee_number']
-        if not models.Employee.objects.filter(pk=e_num).exists():
-            raise forms.ValidationError(
-                'The selected Employee number is invalid')
-
-        employee = models.Employee.objects.get(pk=e_num)
-
-        if cleaned_data['pin'] != employee.pin:
-            raise forms.ValidationError('Incorrect pin used for employee')
-
-        # check if a timesheet for this employee for this month exists, if not
-        # create a new one. Check if today has a attendance line if not create a new
-        # one. Check if this line has been logged in, if so log out if not log in.
-        TODAY = datetime.date.today()
-        NOW = datetime.datetime.now().time()
-        sheet_filters = Q(Q(employee=employee) &
-                          Q(month=TODAY.month) &
-                          Q(year=TODAY.year))
-        if models.EmployeeTimeSheet.objects.filter(sheet_filters).exists():
-            curr_sheet = models.EmployeeTimeSheet.objects.get(sheet_filters)
-        else:
-            curr_sheet = models.EmployeeTimeSheet.objects.create(
-                employee=employee,
-                month=TODAY.month,
-                year=TODAY.year
-            )
-
-        if models.AttendanceLine.objects.filter(
-                Q(timesheet=curr_sheet) &
-                Q(date=TODAY)
-        ).exists():
-
-            curr_line = models.AttendanceLine.objects.get(
-                Q(timesheet=curr_sheet) &
-                Q(date=TODAY)
-            )
-        else:
-            curr_line = models.AttendanceLine.objects.create(
-                timesheet=curr_sheet,
-                date=TODAY
-            )
-
-        if curr_line.time_in is None:
-            cleaned_data['in_out'] = 'in'
-            curr_line.time_in = NOW
-            curr_line.save()
-
-        else:
-            cleaned_data['in_out'] = 'out'
-            curr_line.time_out = NOW
-            curr_line.save()
-
-        return cleaned_data
-
-
-class TimeLoggerFormWithEmployee(TimeLoggerForm):
-    employee_number = forms.IntegerField(widget=forms.HiddenInput)
 
 
 class PayrollForm(BootstrapMixin, forms.Form):

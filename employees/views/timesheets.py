@@ -3,7 +3,6 @@ import json
 import os
 import urllib
 
-
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, TemplateView
@@ -16,6 +15,8 @@ from common_data.utilities import ContextMixin
 from common_data.views import PaginationMixin
 
 from employees import filters, forms, models, serializers
+from django.http import JsonResponse
+from django.db.models import Q
 
 CREATE_TEMPLATE = os.path.join('common_data', 'create_template.html')
 
@@ -52,7 +53,7 @@ class TimeSheetMixin(object):
                 i.delete()
 
         for line in line_data:
-            if '-' in line['date']:
+            if isinstance(line['date'], str) and '-' in line['date']:
                 date = datetime.datetime.strptime(
                     line['date'], '%Y-%m-%d')
             else:
@@ -107,55 +108,80 @@ class TimeSheetViewset(viewsets.ModelViewSet):
     serializer_class = serializers.TimeSheetSerializer
 
 
-class TimeLoggerView(ContextMixin, FormView):
-    # os.path.join('employees', 'timesheet', 'logger.html')
-    template_name = CREATE_TEMPLATE
-    extra_context = {
-        'title': 'Log Time In/Out',
-        'icon': 'hourglass-half'
-    }
-    form_class = forms.TimeLoggerForm
-    success_url = reverse_lazy('employees:time-logger')
-
-    def form_valid(self, form):
-        resp = super().form_valid(form)
-        in_out = form.cleaned_data['in_out']
-        employee = models.Employee.objects.get(
-            pk=form.cleaned_data['employee_number'])
-        messages.info(
-            self.request,
-            f"{employee} logged {in_out} "
-            f"successfully at {datetime.datetime.now().time()}")
-
-        return resp
+class TimeLoggerView(ContextMixin, TemplateView):
+    template_name = os.path.join('employees', 'timesheet', 'logger.html')
 
 
-class TimeLoggerWithEmployeeView(ContextMixin, FormView):
-    template_name = CREATE_TEMPLATE
-    extra_context = {
-        'title': 'Log Time In/Out',
-        'icon': 'hourglass-half'
-    }
-    form_class = forms.TimeLoggerFormWithEmployee
+def get_current_shift_api(request):
+    
+    now  = datetime.datetime.now()
+    sched_qs = models.ShiftScheduleLine.objects.filter(
+        start_time__lte=now.time(),
+        end_time__gt=now.time(),
+        schedule__valid_from__lte=now.date(),
+        schedule__valid_to__gte=now.date()
+    )
+    shifts = []
+    for line in sched_qs:
+        if line.date_on_shift(now.date()):
+            shifts.append(line.shift)
 
-    def get_success_url(self):
-        return f"/employees/time-logger-success/{self.kwargs['pk']}"
+    shifts = [serializers.ShiftSerializer(shift, many=False).data for shift in shifts]
 
-    def get_initial(self):
-        employee = models.Employee.objects.get(pk=self.kwargs['pk'])
-        return {
-            'employee_number': employee.employee_number
-        }
+    return JsonResponse(shifts, safe=False)
 
+def timesheet_login(request):
+    data = json.loads(request.body)
+    e_num = data['employee']
+    employee = models.Employee.objects.get(pk=e_num)
 
-class TimeLoggerSuccessView(TemplateView):
-    template_name = os.path.join(
-        'employees', 'portal', 'timesheet_success.html')
+    if data['pin'] != str(employee.pin):
+        return JsonResponse({'status': 'incorrect pin'})
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        employee = models.Employee.objects.get(pk=self.kwargs['pk'])
-        context['name'] = employee.full_name
-        context['time'] = datetime.datetime.now().time().strftime('%H:%M:%S')
+    # check if a timesheet for this employee for this month exists, if not
+    # create a new one. Check if today has a attendance line if not create a new
+    # one. Check if this line has been logged in, if so log out if not log in.
+    NOW = datetime.datetime.now().time()
+    TODAY = datetime.date.today()
 
-        return context
+    sheet_filters = Q(Q(employee=employee) &
+                        Q(month=TODAY.month) &
+                        Q(year=TODAY.year))
+    ts_qs = models.EmployeeTimeSheet.objects.filter(sheet_filters)
+    if ts_qs.exists():
+        curr_sheet = ts_qs.first()
+    else:
+        curr_sheet = models.EmployeeTimeSheet.objects.create(
+            employee=employee,
+            month=TODAY.month,
+            year=TODAY.year
+        )
+
+    line_qs = models.AttendanceLine.objects.filter(
+            Q(timesheet=curr_sheet) &
+            Q(date=TODAY)
+    )
+    if line_qs.exists():
+        curr_line = line_qs.first()
+    
+    else:
+        curr_line = models.AttendanceLine.objects.create(
+            timesheet=curr_sheet,
+            date=TODAY
+        )
+
+    if curr_line.time_in is None:
+        curr_line.time_in = NOW
+        curr_line.save()
+        return JsonResponse({
+            'status': 'ok',
+            'value': 'in'
+            })
+
+    else:
+        curr_line.time_out = NOW
+        curr_line.save()
+        return JsonResponse({
+            'status': 'ok',
+            'value': 'out'
+            })

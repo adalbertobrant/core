@@ -187,38 +187,17 @@ class Employee(ContactsMixin, Person, SoftDeletionModel):
             filter).count()
 
     @property
-    def attendance(self):
-        TODAY = datetime.date.today()
+    def logged_in(self):
+        return AttendanceLine.objects.filter(date=datetime.date.today(), 
+            timesheet__employee=self).exists()
 
-        if EmployeeTimeSheet.objects.filter(
-                employee=self,
-                year=TODAY.year,
-                month=TODAY.month).exists():
-            sheet = EmployeeTimeSheet.objects.get(
-                employee=self,
-                year=TODAY.year,
-                month=TODAY.month)
-
-            attendance = []
-            for i in range(1, 32):
-                try:
-                    date = datetime.date(TODAY.year, TODAY.month, i)
-                except:
-                    attendance.append(2)
-                    continue
-                else:
-                    if AttendanceLine.objects.filter(
-                            date=date, timesheet=sheet).exists():
-                        line = AttendanceLine.objects.filter(
-                            date=date, timesheet=sheet).first()
-                        attendance.append(1 if line.late else 0)
-                    else:
-                        attendance.append(2)
-
-            return attendance
-
-        else:
-            return list(range(1, 32))
+    @property
+    def login_time(self):
+        qs = AttendanceLine.objects.filter(date=datetime.date.today(), 
+            timesheet__employee=self)
+        
+        if qs.first().time_in:
+            return qs.first().time_in.strftime('%H:%M')
 
 
 class Department(models.Model):

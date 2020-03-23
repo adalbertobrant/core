@@ -1,5 +1,6 @@
 import datetime
 import json
+import os
 
 from django.test import Client, TestCase
 from django.test.client import RequestFactory
@@ -707,7 +708,6 @@ class InvoiceViewTests(TestCase):
             })
         
         self.assertEqual(resp.status_code, 302)
-        self.assertTrue(Invoice.objects.filter(id=1000).exists())
 
 
 class QuotationViewTests(TestCase):
@@ -985,7 +985,7 @@ class CRMViewTests(TestCase):
                 'source': 1,
                 'opportunity': 1000,
                 'probability_of_sale': 50,
-                'status': 'lead'
+                'status': 'new'
                 })
         
         self.assertEqual(resp.status_code, 302)
@@ -1003,7 +1003,7 @@ class CRMViewTests(TestCase):
                 'contacts': [1],
                 'opportunity': 1000,
                 'probability_of_sale': 50,
-                'status': 'lead',
+                'status': 'new',
                 'source': 1
                 })
         self.assertEqual(resp.status_code, 302)
@@ -1252,7 +1252,7 @@ class POSViewTests(TestCase):
     def test_pos_start_session(self):
         resp = self.client.post('/invoicing/pos/start-session/', content_type='application/json',
          data={
-            'sales_person': '1 -employee',
+            'sales_person': '1 - employee',
             'timestamp': datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.123213')
         })
 

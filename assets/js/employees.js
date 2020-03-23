@@ -7,6 +7,7 @@ import GenericTable from './src/generic_list/containers/root';
 import MutableTable from './src/mutable_table/container/root';
 import SelectWidget from './src/components/select';
 import ShiftSchedule from './employees/shifts/container/root';
+import TimeLogger from './employees/time_logger'
 
 
 const taxTable = document.getElementById('tax-brackets');
@@ -15,6 +16,7 @@ const leaveCalendarContainer = document.getElementById('leave-calendar');
 const employeesList = document.getElementById('multiple-employees-list');
 const outstandingSlips = document.getElementById('outstanding-payslips');
 const scheduleTable = document.getElementById('schedule-table');
+const logger = document.getElementById('time-logger')
 
 if(taxTable){
     ReactDOM.render(<GenericTable
@@ -150,4 +152,6 @@ if(taxTable){
             />, outstandingSlips)
 }else if(scheduleTable){
     ReactDOM.render(<ShiftSchedule />, scheduleTable);
+}else if(logger){
+    ReactDOM.render(<TimeLogger />, logger)
 }

@@ -32,6 +32,15 @@ class ShiftUpdateView(ContextMixin, UpdateView):
     }
 
 
+class ShiftScheduleListView(ContextMixin, PaginationMixin, FilterView):
+    filterset_class = filters.ShiftScheduleFilter
+    model = models.ShiftSchedule
+    template_name = os.path.join('employees', 'shifts', 'schedule', 'list.html')
+    extra_context = {
+        'new_link':  '/employees/shift-schedule/create/'
+    }
+
+
 class ShiftListView(ContextMixin, PaginationMixin, FilterView):
     filterset_class = filters.ShiftFilter
     model = models.Shift
@@ -52,7 +61,7 @@ class ShiftDetailView(DetailView):
     model = models.Shift
 
 
-class ShiftScheduleUpdateView(ContextMixin, UpdateView):
+class ShiftScheduleCreateView(ContextMixin,CreateView):
     template_name = os.path.join(
         'employees', 'shifts', 'schedule', 'create.html')
     form_class = forms.ShiftScheduleForm
@@ -61,27 +70,50 @@ class ShiftScheduleUpdateView(ContextMixin, UpdateView):
         'title': 'Create Shift Schedule'
     }
 
-    def get_object(self, queryset=None):
-        if not models.ShiftSchedule.objects.first():
-            return models.ShiftSchedule.objects.create(name='Schedule')
+    def form_valid(self, form):
+        resp = super().form_valid(form)
+      
+        data_string = form.cleaned_data['shift_lines']
+        data = json.loads(urllib.parse.unquote(data_string))
 
-        return models.ShiftSchedule.objects.first()
+        for line in data:
+            models.ShiftScheduleLine.objects.create(
+                schedule=self.object,
+                start_time=line['startTime'],
+                end_time=line['endTime'],
+                shift=models.Shift.objects.get(
+                    pk=line['shift'].split('-')[0]
+                ),
+                monday=line['monday'],
+                tuesday=line['tuesday'],
+                wednesday=line['wednesday'],
+                thursday=line['thursday'],
+                friday=line['friday'],
+                saturday=line['saturday'],
+                sunday=line['sunday'],
+            )
 
-    def post(self, request, *args, **kwargs):
-        resp = super().post(request, *args, **kwargs)
-        if self.object is None:
-            return resp
+        return resp
 
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            data_string = form.cleaned_data['shift_lines']
-            data = json.loads(urllib.parse.unquote(data_string))
 
-        else:
-            return resp
+class ShiftScheduleUpdateView(ContextMixin, UpdateView):
+    template_name = os.path.join(
+        'employees', 'shifts', 'schedule', 'create.html')
+    form_class = forms.ShiftScheduleForm
+    model = models.ShiftSchedule
+    extra_context = {
+        'title': 'Update Shift Schedule'
+    }
+
+
+    def form_valid(self, form):
+        resp = super().form_valid(form)
+      
+        data_string = form.cleaned_data['shift_lines']
+        data = json.loads(urllib.parse.unquote(data_string))
 
         #clear all existing lines before reconstructing the lines
-        models.ShiftScheduleLine.objects.all().delete()
+        models.ShiftScheduleLine.objects.filter(schedule=self.object).delete()
 
         for line in data:
             try: 

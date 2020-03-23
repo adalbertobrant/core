@@ -102,11 +102,18 @@ class AttendanceLine(models.Model):
 
     @property
     def total_time(self):
-        return self.to_datetime(self.time_out) - self.to_datetime(self.time_in)
+        try:
+            return self.to_datetime(self.time_out) - self.to_datetime(self.time_in)
+        except:
+            return datetime.timedelta(seconds=0)
+        
 
     @property
     def working_time(self):
-        return self.total_time - self.lunch_duration
+        if self.lunch_duration:
+            return self.total_time - self.lunch_duration
+
+        return self.total_time
 
     @property
     def normal_time(self):
@@ -143,9 +150,10 @@ class Shift(models.Model):
     
 
 
-# engineering shift, bm shift etc
-class ShiftSchedule(SingletonModel):
+class ShiftSchedule(models.Model):
     name = models.CharField(max_length=255)
+    valid_from = models.DateField()
+    valid_to = models.DateField()
 
     def __str__(self):
         return self.name

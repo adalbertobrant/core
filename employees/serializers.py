@@ -4,6 +4,15 @@ from . import models
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    logged_in = serializers.SerializerMethodField()
+    login_time = serializers.SerializerMethodField()
+    
+    def get_logged_in(self, obj):
+        return obj.logged_in
+
+    def get_login_time(self, obj):
+        return obj.login_time
+
     class Meta:
         model = models.Employee
         fields = '__all__'
