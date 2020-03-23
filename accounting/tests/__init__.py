@@ -3,7 +3,8 @@ from .models import (SimpleModelTests,
                      ExpenseModelTests,
                      JournalEntryModelTests,
                      AccountModelTests,
-                     CurrencyTests
+                     CurrencyTests,
+                     BillModelTests
                      )
 
 from .views import (CommonViewTests,
@@ -12,7 +13,11 @@ from .views import (CommonViewTests,
                     TestReportViews,
                     TestCurrencyViews,
                     AccountingWizardTests,
-                    AssetViewTests, ExpesnseViewTests)
+                    AssetViewTests, 
+                    ExpenseViewTests,
+                    BillViewTests,
+                    AccountingImportViewTests
+                    )
 
 from .model_util import AccountingModelCreator
 

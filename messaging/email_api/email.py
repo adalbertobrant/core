@@ -4,12 +4,13 @@ import ssl
 import imaplib
 from email.mime.text import MIMEText
 from django.core.files import File
+import datetime
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 import email
-from messaging.models import Email, EmailAddress, UserProfile
+from messaging.models import Email, EmailAddress, UserProfile, EmailFolder
 from email.parser import HeaderParser
 import logging
 from latrom.settings import MEDIA_ROOT
@@ -17,6 +18,11 @@ import mailparser
 
 logger = logging.getLogger(__name__)
 
+class EmailAgeException(Exception):
+    pass
+
+class EmailSyncedException(Exception):
+    pass
 
 class EmailBaseClass():
     def send_plaintext_email(self, to, message):
@@ -145,6 +151,15 @@ class EmailBaseClass():
         html_string = ""
         file = None
 
+        #check date in headers
+        headers = dict(HeaderParser().parsestr(msg.as_string()).items())
+        better_headers = mailparser.parse_from_string(msg.as_string())
+        cutoff_date = datetime.date.today() - datetime.timedelta(
+            days=self.profile.max_email_age)
+        if better_headers.date.date() < cutoff_date:
+            raise EmailAgeException()
+
+
         # multipart vs singular message
         charset = msg.get_content_charset()
         charset = charset if charset else 'utf-8'
@@ -179,8 +194,7 @@ class EmailBaseClass():
                 payload = payload.decode(charset, errors="ignore")
             msg_string = payload
 
-        headers = dict(HeaderParser().parsestr(msg.as_string()).items())
-        better_headers = mailparser.parse_from_string(msg.as_string())
+        
 
         to = EmailAddress.get_address(better_headers.to[0][1])
         from_ = EmailAddress.get_address(better_headers.from_[0][1])
@@ -243,30 +257,34 @@ class EmailBaseClass():
     def fetch_messages(self,
                        mail,
                        mail_ids,
-                       latest,
                        folder):
-        skipped = 0
         errors = 0
         queryset = self.profile.emails
 
         for id in reversed(mail_ids):
             if isinstance(id, bytes):
                 id = id.decode('utf-8')
-
-            if queryset.filter(server_id=id, folder=folder).exists():
-                print(f'Email skipped: {id}')
-                continue
-
-            as_string = self.process_email(mail, id)
-
-            # returns email.Message object
-
-            email_message = email.message_from_string(as_string)
             try:
+                if queryset.filter(server_id=id, folder=folder).exists():
+                    raise EmailSyncedException()
+
+                as_string = self.process_email(mail, id)
+
+                # returns email.Message object
+
+                email_message = email.message_from_string(as_string)
+            
                 self.save_email_to_local_database(
                     email_message,
                     id,
                     folder)
+            except EmailAgeException:
+                logger.warn(f'email too old')
+                break
+
+            except EmailSyncedException:
+                logger.warn(f'emails synced successfully')
+                break
 
             except UnicodeDecodeError:
                 errors += 1
@@ -275,8 +293,28 @@ class EmailBaseClass():
                 errors += 1
                 logger.error(f'An unexpected error occurred: {e}')
 
-        logger.warn(f'{skipped} emails skipped')
         logger.warn(f'{errors} errors handled')
+
+    def fetch_inbox(self):
+        mail = self.fetch_mailbox()
+        mail.select('INBOX')
+        try:
+            _, data = mail.search(None, 'ALL')
+        except imaplib.IMAP4.error:
+            pass
+        
+        mail_ids = data[0].split()
+        folder = None 
+        qs = EmailFolder.objects.filter(owner=self.profile, name='INBOX')
+        if qs.exists():
+            folder = qs.first()
+        else:
+            EmailFolder.objects.create(
+                name='INBOX',
+                label='Inbox',
+                owner=self.profile
+            )
+        self.fetch_messages(mail, mail_ids, folder)
 
     def fetch_all_folders(self):
         mail = self.fetch_mailbox()
@@ -287,8 +325,7 @@ class EmailBaseClass():
             except imaplib.IMAP4.error:
                 continue
             mail_ids = data[0].split()
-            latest = folder.latest
-            self.fetch_messages(mail, mail_ids, latest, folder)
+            self.fetch_messages(mail, mail_ids, folder)
 
 
 class EmailSMTP(EmailBaseClass):

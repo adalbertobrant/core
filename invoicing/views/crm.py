@@ -70,7 +70,7 @@ class CRMAsyncDashboard(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['active_leads'] = \
-            models.Lead.objects.all().exclude(status='cold').count()
+            models.Lead.objects.all().exclude(status__in=['won', 'lost']).count()
         context['sales_mvp'] = ''
         max_leads = 0
         for rep in models.SalesRepresentative.objects.all():
@@ -169,7 +169,7 @@ class TaskUpdateView(UpdateView):
 
     def form_valid(self, form):
         resp = super().form_valid(form)
-        if self.object.event.date != self.object.due:
+        if not self.object.event or self.object.event.date != self.object.due:
             evt = Event.objects.create(
                 date=self.object.due,
                 description=self.object.description,

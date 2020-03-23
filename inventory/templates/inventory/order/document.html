@@ -1,6 +1,6 @@
 
 {% include "inventory/order/header.html" %}
-
+{% load accounting %}
 {% for page in pages %}                
 <table class="table simple-content table-sm" height='500'>
     <thead>
@@ -53,7 +53,7 @@
             <td colspan="2" class="subtotals">
                 <b>Total:</b>
             </td>
-            <td class="subtotals">{{object.total | floatformat:2 }}</td>
+            <td class="subtotals">{{object.total | active_currency }}</td>
         </tr>
     </tfoot>
     {% endif %}

@@ -1,26 +1,17 @@
-{% extends "window.html" %} {% load static %} {% block head %}
+{% extends "window.html" %} {% load static %} 
+{% block heading %}
+{{title}}
+
+{% endblock heading %}
+
+{% block head %}
 <link rel="stylesheet" href="{% static 'common_data/css/forms.css' %}"> {% endblock %} {% block content %}
 {% load render_bundle from webpack_loader %}
 
-<div class="jumbotron">
-    <div class="container">
-        <h1 class="display-3">{{title}}</h1>
-        <p class="lead">{{description}}</p>
-        
-    </div>
-</div>
-
 <div class="container">    
+    
     <div class="row">
-        
-        <div class="col-sm-12" id="schedule-table">
-        </div>
-    </div>
-    <hr />
-    <div class="row">
-        <div class="col-sm-4"></div>
-        <div class="col-sm-4"></div>
-        <div class="col-sm-4">
+        <div class="col-md-4 -col-sm-12">
             <div class="card ">
                 <div class="card-body">
                     <form method="POST" action="" enctype="multipart/form-data">
@@ -31,12 +22,18 @@
                         <button class="btn btn-default pull-right" type="submit">Submit</button>
                     </form>
                 </div>
-
             </div>
+        </div>
+        <div class="col-sm-12 col-md-8"></div>
+    </div>
+    <hr class="my-2">
+    <div class="row">
+        
+        <div class="col-sm-12" id="schedule-table">
         </div>
     </div>
 
 </div>
-{% render_bundle "manufacturing" %}
+{% render_bundle "employees" %}
 
 {% endblock %}

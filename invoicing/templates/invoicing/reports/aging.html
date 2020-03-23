@@ -10,9 +10,9 @@
             aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
 
         <div class="dropdown-menu" aria-labelledby="triggerId">
-            {% comment %} <a href="{% url 'invoicing:invoice-aging-pdf' %}" class="dropdown-item"><i class="fas fa-file-pdf"></i>
+            <a href="{% url 'invoicing:invoice-aging-pdf' %}" class="dropdown-item"><i class="fas fa-file-pdf"></i>
                 Generate PDF
-            </a>  {% endcomment %}
+            </a> 
             <button onclick='window.print()' class="dropdown-item"><i class="fas fa-print    "></i> Print</button>
         </div>
     </div>
@@ -41,7 +41,7 @@
                         </tr>
                         <tr>
                             <th></th>
-                            <th>Total A/R</th>
+                            <th style="width:20%;">Total A/R</th>
                             <th>Current</th>
                             <th>0-7 Days</th>
                             <th>8-14 Days</th>
@@ -56,7 +56,7 @@
                             <td>{{c|truncatechars:20}}</td>
                             <td>{{c.total_accounts_receivable |active_currency}}</td>
                             {% for amount in c.age_list %}
-                            <td>{{amount |active_currency}}</td>
+                            <td>{{amount |accounting}}</td>
                             {% endfor %}
                         </tr>
                         {% endfor %}

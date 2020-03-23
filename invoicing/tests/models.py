@@ -11,6 +11,7 @@ from inventory.tests.model_util import InventoryModelCreator
 import accounting
 from services.models import WorkOrderRequest, ServiceWorkOrder, WorkOrderExpense
 TODAY = datetime.date.today()
+from common_data.models import Individual
 
 
 class CommonModelTests(TestCase):
@@ -381,3 +382,73 @@ class InvoiceModelTests(TestCase):
 
     def test_service_gross_income(self):
         pass
+
+
+class CRMModelTests(TestCase):
+    fixtures = ['common.json', 'accounts.json', 'journals.json',
+                'employees.json', 'inventory.json', 'invoicing.json', 'settings.json']
+
+    @classmethod
+    def setUpTestData(cls):
+        invmc = InventoryModelCreator(cls)
+        invmc.create_warehouse_item()
+        invmc.create_orderitem()
+        cls.imc = InvoicingModelCreator(cls)
+        cls.imc.create_all()
+        accounting.tests.model_util.AccountingModelCreator(cls).create_tax()
+        cls.individual = Individual.objects.create(first_name='first',
+                last_name='last')
+        cls.ls = LeadSource.objects.create(
+            name='email',
+            description='source'
+        )
+        cls.interaction_type = InteractionType.objects.create(
+            name='type',
+            description='of interaction'
+        )
+
+        cls.sales_team = SalesTeam.objects.create(
+            name='team',
+            description='focused on sales',
+            leader=cls.sales_representative,
+        )
+        cls.lead = Lead.objects.create(
+            title='title',
+            description='description',
+            owner=cls.sales_representative,
+            team=cls.sales_team,
+            created=datetime.date.today(),
+            source=cls.ls,
+        )
+        cls.interaction = Interaction.objects.create(
+            lead=cls.lead,
+            contact=cls.individual,
+            sales_representative=cls.sales_representative,
+            type=cls.interaction_type
+        )
+        cls.task = Task.objects.create(
+            title='do something',
+            description='description',
+            due=datetime.date.today(),
+            lead=cls.lead,
+            assigned=cls.sales_representative
+        )
+
+
+    def test_lead_source(self):
+        self.assertIsInstance(self.ls, LeadSource)
+
+    def test_lead(self):
+        self.assertIsInstance(self.lead, Lead)
+
+    def test_interaction(self):
+        self.assertIsInstance(self.interaction, Interaction)
+
+    def test_interaction_type(self):
+        self.assertIsInstance(self.interaction_type, InteractionType)
+
+    def test_task(self):
+        self.assertIsInstance(self.task, Task)
+
+    def test_sales_team(self):
+        self.assertIsInstance(self.sales_team, SalesTeam)

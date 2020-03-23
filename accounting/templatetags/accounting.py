@@ -17,12 +17,23 @@ def accounting(number):
 
 @register.filter
 def active_currency(number):
+    
+    negative = False
     qs = AccountingSettings.objects.first()
     currency = qs.active_currency if qs else None
     if not currency:
         return number
+        
+    #negative accounting numbers
+    number= str(number)
+    if '(' in number and ')' in number:
+        negative = True
+        number = number.strip('()')
+
     try:
         number = float(number)
     except:
         return number
+    if negative:
+        return '{0} ({1:0.2f})'.format(currency.symbol, number)
     return '{0} {1:0.2f}'.format(currency.symbol, number)

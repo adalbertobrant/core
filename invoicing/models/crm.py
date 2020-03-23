@@ -46,20 +46,18 @@ class Lead(models.Model):
     source = models.ForeignKey('invoicing.LeadSource',
                                on_delete=models.SET_DEFAULT, default=1)
     contacts = models.ManyToManyField('common_data.Individual')
-    organization = models.ForeignKey('common_data.Organization', null=True,
+    organization = models.ForeignKey('common_data.Organization', null=True, blank=True,
                                      on_delete=models.SET_NULL)
     opportunity = models.FloatField(default=0.0)
     probability_of_sale = models.FloatField(default=100.0)
     status = models.CharField(default='lead', max_length=16, choices=[
-        ('lead', 'Lead'),
-        ('quotation', ' Quotation'),
-        ('invoice', 'Invoice'),
-        ('sale', 'Sale'),
-        ('cold', 'Cold')])
+        ('new', 'New'),
+        ('qualified', 'Qualified'),
+        ('quotation', 'Quotation'),
+        ('won', 'Won'),
+        ('lost', 'Lost')])
 
-    @property
-    def lead_cold(self):
-        return self.projected_closing < datetime.date.today()
+
 
     def __str__(self):
         return self.title
@@ -105,8 +103,7 @@ class Task(models.Model):
     assigned = models.ForeignKey('invoicing.SalesRepresentative', null=True,
                                  on_delete=models.SET_NULL)
 
-    def set_event(self):
-        raise NotImplementedError()
+
 
     def __str__(self):
         return self.title

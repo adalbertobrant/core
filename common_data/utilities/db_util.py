@@ -5,8 +5,6 @@ import os
 from latrom import settings
 import datetime
 import shutil
-
-
 class DBBackupService(AutomatedServiceMixin):
     service_name = 'common'
 

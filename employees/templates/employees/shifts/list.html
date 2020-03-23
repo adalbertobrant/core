@@ -1,4 +1,10 @@
-{% extends "common_data/list_template.html" %} {% block list_headings %}
+{% extends "common_data/list_template.html" %} 
+{% block heading %}
+Shift List
+{% endblock heading %}
+
+
+{% block list_headings %}
 <tr>
     <td class="info">Shift Name</td>
     <td class="info">Supervisor</td>
@@ -15,15 +21,15 @@
                 Actions
             </button>
             <div class="dropdown-menu" aria-labelledby="triggerId">
-                <a class="dropdown-item" href="{% url 'manufacturing:detail-shift' pk=item.pk %}">
+                <a class="dropdown-item" href="{% url 'employees:detail-shift' pk=item.pk %}">
                     <i class="fas fa-file-alt"></i> Detail
                 </a>
-                <a class="dropdown-item" href="">
+                <a class="dropdown-item" href="{% url 'employees:update-shift' pk=item.pk %}">
                     <i class="fas fa-edit"></i> Update
                 </a>
-                <a class="dropdown-item" href="">
+                {% comment %} <a class="dropdown-item" href="">
                     <i class="fas fa-trash"></i> Delete
-                </a>
+                </a> {% endcomment %}
             </div>
         </div>
 </tr>

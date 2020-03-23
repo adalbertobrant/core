@@ -4,25 +4,6 @@ from manufacturing import models
 from employees.models import Employee
 
 
-class ShiftForm(forms.ModelForm, BootstrapMixin):
-    employees = forms.ModelMultipleChoiceField(
-        Employee.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=False
-    )
-
-    class Meta:
-        model = models.Shift
-        fields = "__all__"
-
-
-class ShiftScheduleForm(forms.ModelForm, BootstrapMixin):
-    shift_lines = forms.CharField(widget=forms.HiddenInput)
-
-    class Meta:
-        model = models.ShiftSchedule
-        fields = "__all__"
-
 
 class ProcessForm(forms.ModelForm, BootstrapMixin):
     class Meta:

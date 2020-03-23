@@ -11,9 +11,11 @@ class MonthView extends Component{
         this.props.linkUpdater();
         const params = this.props.match.params;
 
+
         axios.get(`/employees/api/month/${params.year}/${params.month}`)
             .then(res =>{
-                this.setState({...res.data});
+                console.log(res.data)
+                this.setState({month: parseInt(params.month), ...res.data});
             })
     }
     
@@ -58,7 +60,11 @@ class MonthView extends Component{
                         </tbody>
                     </table>
                     {this.state.leave.map((leave, i) =>(
-                        <Leave data={leave} offset={i * 151} key={i} />
+                        <Leave data={leave} 
+                            month={this.state.month} 
+                            offset={i * 151} 
+                            key={i}
+                            yOffset={88} />
                     ))}
                 </div>
             </div>

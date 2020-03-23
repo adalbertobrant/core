@@ -15,6 +15,7 @@ from employees import forms, models
 from .employee import *
 from .leave import *
 from .payroll import *
+from .shift import *
 from .reports import *
 from accounting.models import Account
 from .timesheets import *

@@ -55,7 +55,8 @@ class JournalReport(ConfigMixin,
         context.update({
             'start': start.strftime("%d %B %Y"),
             'end': end.strftime("%d %B %Y"),
-            'journal': journal
+            'journal': journal,
+            'currency': models.AccountingSettings.objects.first().active_currency
         })
         return context
 

@@ -11,6 +11,7 @@ from employees import models as employee_models
 from common_data.tests import create_account_models
 from employees.tests.models import create_test_employees_models
 from django.contrib.auth.models import User
+from inventory.tests.models import create_test_inventory_models
 
 TODAY = datetime.date.today()
 
@@ -585,3 +586,60 @@ class CurrencyTests(TestCase):
             conversion_table=self.currency_table
         )
         self.assertIsInstance(obj, CurrencyConversionLine)
+
+
+class BillModelTests(TestCase):
+    fixtures = ['common.json', 'accounts.json',
+                'journals.json', 'settings.json']
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+    @classmethod
+    def setUpTestData(cls):
+        employee_models.Employee.objects.create(first_name='first', last_name='last')
+        create_account_models(cls)
+        create_test_inventory_models(cls)
+
+
+        cls.bill = Bill.objects.create(
+            vendor=cls.supplier,
+            date=datetime.date.today(),
+            due=datetime.date.today())
+
+        cls.billline = BillLine.objects.create(
+            bill=cls.bill, 
+            expense=cls.expense)
+
+        cls.bill_payment = BillPayment.objects.create(
+            date=datetime.date.today(),
+            account=Account.objects.get(pk=1000),
+            bill=cls.bill,
+            amount=100
+        )
+        
+    def test_bill_model(self):
+        self.assertIsInstance(self.bill, Bill)
+
+    def test_bill_line_model(self):
+        self.assertIsInstance(self.billline, BillLine)
+
+    def test_bill_payment_model(self):
+        self.assertIsInstance(self.bill_payment, BillPayment)
+
+    def test_bill_create_entry(self):
+        self.bill.create_entry()
+        self.assertIsInstance(self.bill.entry, JournalEntry)
+
+    def test_bill_total_property(self):
+        self.assertEqual(self.bill.total, D(100))
+
+    def test_bill_total_payments(self):
+        self.assertEqual(self.bill.total_payments, D(100))
+
+    def test_bill_total_due(self):
+        self.assertEqual(self.bill.total_due, D(0))
+
+    def test_bill_payment_entry(self):
+        self.assertIsInstance(self.bill_payment.create_entry(), JournalEntry)

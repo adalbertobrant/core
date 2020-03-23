@@ -9,6 +9,7 @@ from django.db.models import Q
 
 import inventory
 import invoicing
+import services
 from common_data.models import SoftDeletionModel
 from django.shortcuts import reverse
 
@@ -265,3 +266,21 @@ class EquipmentComponent(models.Model):
     asset_data = models.ForeignKey('accounting.Asset',
                                    on_delete=models.SET_NULL,
                                    null=True, blank=True)
+
+    @property
+    def requisitions(self):
+        return services.models.EquipmentRequisitionLine.objects.filter(
+            Q(equipment=self.inventoryitem) &
+            Q(quantity_returned=0) &
+            Q(requisition__released_by__isnull=False)
+        )
+
+    @property
+    def in_use(self):
+        return sum((line.quantity - line.quantity_returned \
+            for line in self.requisitions), 0)
+
+    @property
+    def in_storage(self):
+        return self.inventoryitem.quantity - self.in_use
+        

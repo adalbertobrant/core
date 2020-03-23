@@ -59,9 +59,9 @@
                 {% endif %}
                 <h6 class="dropdown-header">Other</h6>
                 
-                {% comment %} <a class="dropdown-item" href="{% if object.status == 'quotation' %} {% url 'invoicing:quotation-pdf' pk=object.pk %} {% else %} {% url 'invoicing:invoice-pdf' pk=object.pk %} {% endif %}">
+                <a class="dropdown-item" href="{% if object.status == 'quotation' %} {% url 'invoicing:quotation-pdf' pk=object.pk %} {% else %} {% url 'invoicing:invoice-pdf' pk=object.pk %} {% endif %}">
                     <i class="fas fa-file-pdf"></i> Generate PDF
-                </a> {% endcomment %}
+                </a>
                 <button onclick='window.print()' class="dropdown-item"><i class="fas fa-print    "></i> Print</button>
 
                 {% comment %} <a class="dropdown-item" href="{% if object.status == 'quotation' %} {% url 'invoicing:quotation-email' pk=object.pk %} {% else %} {% url 'invoicing:invoice-email' pk=object.pk %} {% endif %}">

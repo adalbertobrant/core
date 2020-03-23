@@ -111,6 +111,7 @@ class MessageDetail extends Component {
           <input type="hidden" name="copy" id="id_copy" />
           <input type="hidden" name="blind_copy" id="id_blind_copy" />
           <div className="btn-group">
+            
             <button
               className="btn btn-primary"
               onClick={() => this.setState({ forwardModalIsOpen: true })}

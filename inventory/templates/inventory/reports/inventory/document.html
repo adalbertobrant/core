@@ -1,4 +1,4 @@
-
+{% load accounting %}
 <table class=" table-sm" style="width:100%">
     <tbody>
         <tr>
@@ -28,7 +28,7 @@
                                 {% endfor %}
                             </td>
                             <td>{{i.quantity | floatformat:2 }}</td>
-                            <td>{{i.product_component.stock_value | floatformat:2 }}</td>
+                            <td>{{i.product_component.stock_value | active_currency }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

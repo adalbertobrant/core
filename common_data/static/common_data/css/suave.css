@@ -587,6 +587,7 @@ section#title button{
     padding: 5px;
     background-color: var(--primary);
     transition: right 2.5s linear;
+    overflow-y: auto;
 }
 
 .visible-notification-window {
@@ -859,3 +860,20 @@ span.less {
 .dash-loaded {
     display: none;
 }
+
+.bell-active {  
+    animation: ring 1s linear 0s 3 forwards;
+}
+
+@keyframes ring{
+    0% {
+        transform: rotateZ(45deg);
+    }
+
+    50% {
+        transform: rotateZ(-45deg);
+    }
+
+    100% {
+        transform: rotateZ(45deg);
+    }

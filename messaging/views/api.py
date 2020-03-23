@@ -15,7 +15,7 @@ from messaging.email_api.email import EmailSMTP
 from draftjs_exporter.html import HTML as exporterHTML
 from rest_framework.pagination import PageNumberPagination
 from common_data.serializers import UserSerializer
-
+import urllib
 
 class MessagingPaginator(PageNumberPagination):
     page_size = 10
@@ -100,6 +100,43 @@ class FolderAPIView(APIView):
         return Response(data)
 
 
+def send_email(request):
+    data = json.loads(request.POST['fields'])
+    to = data['to'][0]
+    cc = data['cc'] + data['to'][1:] 
+    bcc = data['bcc']
+    subj = data['subject']
+    config = {}
+    exporter = exporterHTML(config)
+    try:
+        msg = exporter.render(data['msg'])
+    except json.decoder.JSONDecodeError:
+        raise forms.ValidationError('The message must have content')
+    
+    attachment = request.FILES.get('attachment')
+
+    profile = models.UserProfile.objects.get(user=request.user)
+    g = EmailSMTP(profile)
+
+    
+    if attachment:
+        g.send_email_with_attachment(
+            subj,
+            to,
+            cc,
+            bcc,
+            msg,
+            attachment, html=True)
+    else:
+        g.send_html_email(
+            subj,
+            to,
+            cc,
+            bcc,
+            msg)
+
+    return JsonResponse({'status': 'ok'})
+    
 def reply_email(request, pk=None):
     email = get_object_or_404(models.Email, pk=pk)
 
@@ -340,7 +377,7 @@ def remove_participant(request, grp=None, id=None):
 def sync_folders(request, profile_id=None):
     profile = models.UserProfile.objects.get(pk=profile_id)
     client = EmailSMTP(profile)
-    messages = client.fetch_all_folders()
+    messages = client.fetch_inbox()
 
     return JsonResponse({
         'status': 'ok',

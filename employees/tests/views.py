@@ -265,6 +265,16 @@ class EmployeePageTests(TestCase):
     def setUpTestData(cls):
         create_test_employees_models(cls)
         common_data.tests.test_models.create_test_common_entities(cls)
+        cls.contract = Contract.objects.create(
+            start_date=datetime.date.today(),
+            employee=cls.employee,
+            end_of_probation=datetime.date.today(),
+            employee_category='Temporary'
+        )
+        # cls.termination = Termination.objects.create(
+        #     date=datetime.date.today(),
+        #     contract=cls.contract
+        # )
 
     def setUp(self):
         # wont work in setUpClass
@@ -367,6 +377,20 @@ class EmployeePageTests(TestCase):
                                 })
         self.assertEqual(resp.status_code, 302)
 
+    def test_employees_get_change_password_page(self):
+        resp = self.client.get('/employees/employee/user/change-password/1')
+        self.assertEqual(resp.status_code, 200)
+
+    def test_employees_change_password_page_post(self):
+        resp = self.client.post('/employees/employee/user/change-password/1',
+                                data={
+                                    'employee': 1,
+                                    'old_password': 'password',
+                                    'new_password': 'new_password',
+                                    'confirm_new_password': 'new_password'
+                                })
+        self.assertEqual(resp.status_code, 302)
+
     def test_employees_delete_user_post(self):
         resp = self.client.get('/employees/employee/delete-user/1')
         self.assertEqual(resp.status_code, 302)
@@ -374,6 +398,64 @@ class EmployeePageTests(TestCase):
     def test_get_employee_payslips(self):
         resp = self.client.get('/employees/list-employee-pay-slips/1')
         self.assertEqual(resp.status_code, 200)
+
+    def test_get_create_contract(self):
+        resp = self.client.get(reverse('employees:create-contract'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_create_contract(self):
+        resp = self.client.post(reverse('employees:create-contract'),
+            data={
+                'start_date': datetime.date.today(),
+                'end_of_probation': datetime.date.today(),
+                'termination_date': datetime.date.today() + datetime.timedelta(days=3),
+                'employee': 1,
+                'job_position': 'Manager',
+                'employee_category': 'Temporary',
+                'nature_of_employment': 'N'
+            })
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_update_contract(self):
+        resp = self.client.get(reverse('employees:update-contract', 
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_update_contract(self):
+        resp = self.client.post(reverse('employees:update-contract', 
+            kwargs={'pk': 1}), data={
+                'start_date': datetime.date.today(),
+                'end_of_probation': datetime.date.today(),
+                'termination_date': datetime.date.today() + datetime.timedelta(days=3),
+                'employee': 1,
+                'job_position': 'Manager',
+                'employee_category': 'Temporary',
+                'nature_of_employment': 'N'
+            })
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_contract_detail(self):
+        resp = self.client.get(reverse('employees:contract-details',
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_contract_list(self):
+        resp = self.client.get(reverse('employees:contract-list'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_terminate_contract(self):
+        resp = self.client.get(reverse('employees:terminate-contract', 
+            kwargs={'pk': 1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_terminate_contract(self):
+        resp = self.client.post(reverse('employees:terminate-contract', 
+            kwargs={'pk': 1}), data={
+                'date': datetime.date.today(),
+                'reason_for_termination': 'R',
+                'contract': 1
+            })
+        self.assertEqual(resp.status_code, 302)
 
 
 class BenefitsPageTests(TestCase):
@@ -839,6 +921,23 @@ class TimesheetViewTests(TestCase):
     def setUpTestData(cls):
         create_test_employees_models(cls)
         common_data.tests.test_models.create_test_common_entities(cls)
+        cls.shift = Shift.objects.create(
+            name='shift',
+            supervisor=cls.employee
+        )
+        cls.shift_schedule = ShiftSchedule.objects.create(
+            name='Schedule',
+            valid_from = datetime.date.today(),
+            valid_to = datetime.date.today() + datetime.timedelta(days=30)
+        )
+        cls.shift_schedule_line = ShiftScheduleLine.objects.create(
+            schedule=cls.shift_schedule,
+            start_time = datetime.time(8,0),
+            end_time=datetime.time(17, 0),
+            saturday=False,
+            sunday=False,
+            shift=cls.shift
+        )
         cls.timesheet = EmployeeTimeSheet.objects.create(
             employee=cls.employee,
             month=1,
@@ -895,13 +994,125 @@ class TimesheetViewTests(TestCase):
         resp = self.client.get('/employees/time-logger')
         self.assertEqual(resp.status_code, 200)
 
-    def test_post_time_logger_page(self):
-        resp = self.client.post('/employees/time-logger', data={
-            'employee_number': 1,
-            'pin': 1000
+    def test_get_shifts(self):
+        resp = self.client.get('/employees/get-current-shift/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertIsInstance(json.loads(resp.content), list)
+
+    def test_timesheet_login(self):
+        resp = self.client.post('/employees/log-in-out/', 
+            data={
+                'employee': 1,
+                'pin': '1000'
+            },
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(json.loads(resp.content)['status'], 'ok')
+
+    def test_get_shift_create(self):
+        resp = self.client.get(reverse('employees:create-shift'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_shift_create(self):
+        resp = self.client.post(reverse('employees:create-shift'),
+            data={
+                'name': 'shift',
+                'supervisor': 1,
+                'employees': [1]
+            })
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_shift_update(self):
+        resp = self.client.get(reverse('employees:update-shift', kwargs={
+            'pk': 1
+        }))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_shift_update(self):
+        resp = self.client.post(reverse('employees:update-shift', kwargs={
+            'pk': 1
+        }), data={
+            'name': 'shift',
+            'supervisor': 1,
+            'employees': [1]
         })
         self.assertEqual(resp.status_code, 302)
 
+    def test_get_shift_list(self):
+        resp = self.client.get(reverse('employees:list-shift'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_shift_detail(self):
+        resp = self.client.get(reverse('employees:detail-shift', kwargs={
+            'pk':1
+        }))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_shift_schedule_create(self):
+        resp = self.client.get(reverse('employees:create-shift-schedule'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_shift_schedule_create(self):
+        resp = self.client.post(reverse('employees:create-shift-schedule'), data={
+            'name': 'schedule 2',
+            'valid_from': datetime.date.today(),
+            'valid_to': datetime.date.today() + datetime.timedelta(days=30),
+            'shift_lines': urllib.parse.quote(json.dumps([
+                {
+                    'shift':' 1 - shift',
+                    'startTime': '08:00',
+                    'endTime': '17:00',
+                    'monday':True,    
+                    'tuesday':True,    
+                    'wednesday':True,    
+                    'thursday':True,    
+                    'friday':True,    
+                    'saturday':False,    
+                    'sunday':False,    
+                }
+            ]))
+        })
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_shift_schedule_update(self):
+        resp = self.client.get(reverse('employees:update-shift-schedule', kwargs={
+            'pk': 1
+        }))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_shift_schedule_update(self):
+        resp = self.client.post(reverse('employees:update-shift-schedule',kwargs={
+            'pk': 1
+        }), data={
+            'name': 'schedule two',
+            'valid_from': datetime.date.today(),
+            'valid_to': datetime.date.today() + datetime.timedelta(days=30),
+            'shift_lines': urllib.parse.quote(json.dumps([
+                {
+                    'shift': 1,
+                    'startTime': '08:00',
+                    'endTime': '17:00',
+                    'monday':True,    
+                    'tuesday':True,    
+                    'wednesday':True,    
+                    'thursday':True,    
+                    'friday':True,    
+                    'saturday':False,    
+                    'sunday':False,    
+                }
+            ]))
+        })
+        self.assertEqual(resp.status_code, 302)
+
+    def test_get_shift_schedule_list(self):
+        resp = self.client.get(reverse('employees:list-shift-schedules'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_shift_schedule_detail(self):
+        resp = self.client.get(reverse('employees:detail-shift-schedule', kwargs={
+            'pk': 1
+        }))
+        self.assertEqual(resp.status_code, 200)
 
 class EmployeeWizardTests(TestCase):
     fixtures = ['common.json', 'accounts.json',
@@ -1127,13 +1338,24 @@ class EmployeesReportViewTests(TestCase):
     def setUp(self):
         self.client.login(username='Testuser', password='123')
 
+    def test_employee_attendance_report_form(self):
+        resp = self.client.get(reverse('employees:employee-attendance-form'))
+        self.assertEqual(resp.status_code, 200)
+
     def test_employee_attendance_report(self):
-        resp = self.client.get(reverse('employees:employee-attendance'))
+        resp = self.client.get(reverse('employees:employee-attendance'), data={
+            'year': 2020,
+            'month': 3
+        }, content_type='application/json')
         self.assertEqual(resp.status_code, 200)
 
     def test_employee_attendance_pdf(self):
-        req = RequestFactory().get(reverse('employees:employee-attendance-pdf'))
-        resp = EmployeeAttendanceReportPDFView.as_view()(req)
+        kwargs = {
+            'year': 2020,
+            'month': 3
+        }
+        req = RequestFactory().get(reverse('employees:employee-attendance-pdf', kwargs=kwargs))
+        resp = EmployeeAttendanceReportPDFView.as_view()(req, **kwargs)
         self.assertEqual(resp.status_code, 200)
 
     def test_leave_report(self):

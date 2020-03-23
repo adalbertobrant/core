@@ -4,8 +4,10 @@ from employees.views import *
 report_urls = [
     path('employee-attendance', EmployeeAttendanceReport.as_view(),
          name='employee-attendance'),
-    path('employee-attendance-pdf', EmployeeAttendanceReportPDFView.as_view(),
+    path('employee-attendance-pdf/<int:month>/<int:year>', EmployeeAttendanceReportPDFView.as_view(),
          name='employee-attendance-pdf'),
+    path('employee-attendance-form', EmployeeAttendanceReportFormView.as_view(),
+         name='employee-attendance-form'),
     path('leave-report', LeaveReport.as_view(),
          name='leave-report'),
     path('leave-report-pdf', LeaveReportPDFView.as_view(),

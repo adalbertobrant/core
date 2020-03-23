@@ -173,9 +173,9 @@ class ViewTests(TestCase):
         resp = self.client.get('/base/individual/detail/' + '1')
         self.assertEqual(resp.status_code, 200)
 
-    def test_get_send_mail_page(self):
-        resp = self.client.get('/base/email')
-        self.assertEqual(resp.status_code, 200)
+    # def test_get_send_mail_page(self):
+    #     resp = self.client.get('/base/email')
+    #     self.assertEqual(resp.status_code, 200)
 
     def test_post_send_mail_page(self):
         # TODO simulate email do research
@@ -287,7 +287,52 @@ class ViewTests(TestCase):
         resp = self.client.get('/base/api/current-db/')
         self.assertEqual(resp.status_code, 200)
 
+    def test_license_check(self):
+        resp = self.client.get('/base/license-check/')
+        self.assertEqual(resp.status_code, 200)
 
+    def test_model_latest(self):
+        
+        resp = self.client.get(reverse('base:get-latest-model',
+            kwargs={
+                'model_name': 'individual'
+            }))
+        self.assertEqual(resp.status_code, 200)
+        self.assertNotEqual(json.loads(resp.content)['data'], -1)
+
+    def test_models_latest_group(self):
+        
+        resp = self.client.post(reverse('base:get-latest-model-group'),
+            data={'names': json.dumps(['contacts'])})
+        self.assertEqual(resp.status_code, 200)
+        print(resp.content)
+        self.assertIsInstance(json.loads(resp.content)['contacts'], dict)
+
+    def test_post_create_superuser_view(self):
+        resp = self.client.post(reverse('base:create-superuser'), data={
+            'username':'username',
+            'email':'test@mail.com',
+            'password':'12345678',
+            'confirm_password':'12345678',
+        })
+        self.assertEqual(resp.status_code, 302)
+
+
+class SuperuserTests(TestCase):
+    fixtures = ['common.json']
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.client = Client()
+
+
+    def test_get_create_superuser_view(self):
+        print(User.objects.all().count())
+        resp = self.client.get(reverse('base:create-superuser'))
+        self.assertEqual(resp.status_code, 200)
+
+    
 class UtilityTests(TestCase):
     fixtures = ['common.json', 'accounts.json',
                 'employees.json', 'inventory.json', 'invoicing.json']

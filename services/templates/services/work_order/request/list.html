@@ -8,7 +8,7 @@
         <td>Invoice</td>
         <td>Status</td>
 
-        <td class='mobile'># of WorkOrders</td>
+        <td class='mobile'># of Jobs</td>
         <td>Actions</td>
     </tr>
 
@@ -34,7 +34,7 @@
                     {% if wr.invoice %}
                     <a class="dropdown-item" href="{% url 'invoicing:invoice-details' pk=wr.invoice.pk %}"><i class="fas fa-file-alt    "></i> View Invoice</a>
                     {% endif %}
-                    <a class="dropdown-item" href="{% url 'services:work-order-create' pk=wr.pk %}"><i class="fas fa-plus    "></i> Add Work Order</a>
+                    <a class="dropdown-item" href="{% url 'services:work-order-create' pk=wr.pk %}"><i class="fas fa-plus    "></i> Add Job</a>
                 </div>
             </div>
         </td>

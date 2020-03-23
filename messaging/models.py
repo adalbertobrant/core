@@ -8,6 +8,8 @@ from cryptography.fernet import Fernet
 from django.core.files import File
 import imaplib
 import string
+from messaging.email_api.secrets import get_secret_key
+
 
 
 class EmailAddress(models.Model):
@@ -42,7 +44,7 @@ class EmailFolder(models.Model):
 
     @property
     def emails(self):
-        return Email.objects.filter(folder=self)
+        return Email.objects.filter(folder=self).order_by('server_id').reverse()
 
 
 class UserProfile(common_data.utilities.mixins.ContactsMixin, models.Model):
@@ -58,6 +60,11 @@ class UserProfile(common_data.utilities.mixins.ContactsMixin, models.Model):
     outgoing_port = models.IntegerField(default=465)
     incoming_host = models.CharField(max_length=255, default='imap.gmail.com')
     incoming_port = models.IntegerField(default=993)
+    max_email_age = models.PositiveSmallIntegerField(choices=[
+        (7, 'One Week'),
+        (30, 'One Month'),
+        (90, 'Three Months'),
+        ], default=30)
 
     @property
     def get_plaintext_password(self):

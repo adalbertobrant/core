@@ -23,15 +23,15 @@ Service Person Portal
                     <h4 class="card-title">{{object.employee}}</h4>
                     <p class="card-text">Role: {% if object.is_manager %}Manager {% else %} Technician {% endif %} </p>
                     <p class="card-text">Number of Teams : {{object.teams|length}}</p>
-                    <p class="card-text">Number of open Work Orders: {{object.current_orders.count}}</p>
+                    <p class="card-text">Number of open Jobs: {{object.current_orders.count}}</p>
 
                 </div>
             </div>
         </div>
         <div class="col-sm-8">
             <nav class="nav nav-tabs nav-stacked">
-                <a href="#current" data-toggle="tab" class="nav-link active">Current WorkOrders</a>
-                <a href="#complete" class="nav-link" data-toggle="tab">Complete Work Orders</a>
+                <a href="#current" data-toggle="tab" class="nav-link active">Current Jobs</a>
+                <a href="#complete" class="nav-link" data-toggle="tab">Complete Jobs</a>
                 <a href="#teams" class="nav-link" data-toggle="tab">Teams</a>
             </nav>
             <div class="tab-content panel-body">

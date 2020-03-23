@@ -104,6 +104,7 @@ class SupplierForm(BootstrapMixin, forms.Form):
                         Column('name', css_class='form-group col-9'),
                     ),
                     'email',
+                    'phone_1',
                     Row(
                         Column(
                             'address', css_class='form-group col-md-6 col-sm-12'),
@@ -113,6 +114,7 @@ class SupplierForm(BootstrapMixin, forms.Form):
                     ),
 
                 Tab('other',
+                    'phone_2',
                     'website',
                     'image',
                     'billing_address',
@@ -369,6 +371,7 @@ class EquipmentForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                         Column('depreciation_period',
                                css_class="col-md-6 col-sm-12"),
                     ),
+                    'active'
                     )
             ),
             Submit('submit', 'Submit')
@@ -450,7 +453,10 @@ class EquipmentForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                     models.EquipmentComponent.objects.create(
                         asset_data=asset
                     )
-
+        else:
+            if instance.equipment_component is None:
+                instance.equipment_component = \
+                    models.EquipmentComponent.objects.create()
         instance.save()
         return instance
 
@@ -495,6 +501,7 @@ class ConsumableForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                         Column('image', css_class="form-group col-sm-6"),
                     ),
                     'type',
+                    'active'
                     )
             ),
             Submit('submit', 'Submit')

@@ -285,8 +285,8 @@ class InventoryManagementViewTests(TestCase):
 
 
 class ItemViewTests(TestCase):
-    fixtures = ['accounts.json', 'employees.json', 'common.json',  'inventory.json',
-                'invoicing.json', 'journals.json']
+    fixtures = ['accounts.json', 'employees.json', 'common.json',  
+                'inventory.json', 'invoicing.json', 'journals.json']
 
     @classmethod
     def setUpClass(cls):
@@ -1159,3 +1159,86 @@ class ConfigWizardTests(TestCase):
                             print(resp.context['form'].errors)
             except ValueError:
                 pass
+
+
+class InventoryPurchaseViewTests(TestCase):
+    fixtures = ['accounts.json', 'employees.json', 'common.json',  
+                'inventory.json', 'invoicing.json', 'journals.json']
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.client = Client
+        cls.COMMON_DATA = {
+            'name': 'Test Item',
+            'unit': cls.unit.pk,
+            'length': 0.0,
+            'width': 0.0,
+            'height': 0.0,
+            'unit_purchase_price': 8,
+            'description': 'Test Description',
+            'supplier': cls.supplier.pk,
+            'quantity': 10,
+            'category': cls.category.pk,
+            'initial_quantity': 0
+        }
+        cls.PRODUCT_DATA = {
+            'margin': 0.2,
+            'markup': 0.2,
+            'direct_price': 10,
+            'pricing_method': 2,
+            'minimum_order_level': 0,
+            'maximum_stock_level': 20,
+            'type': 0,
+            'tax': Tax.objects.create(name='tax', rate=15).pk
+        }
+        cls.EQUIPMENT_DATA = {
+            'type': 1
+        }
+        cls.CONSUMABLE_DATA = {
+            'minimum_order_level': 0,
+            'maximum_stock_level': 20,
+            'type': 2
+        }
+
+        cls.EQUIPMENT_DATA.update(cls.COMMON_DATA)
+        cls.PRODUCT_DATA.update(cls.COMMON_DATA)
+        cls.CONSUMABLE_DATA.update(cls.COMMON_DATA)
+
+    @classmethod
+    def setUpTestData(cls):
+        create_account_models(cls)
+        create_test_user(cls)
+        create_test_inventory_models(cls)
+        create_test_common_entities(cls)
+
+    def setUp(self):
+        self.client.login(username='Testuser', password='123')
+
+    def test_get_item_purchase_view(self):
+        #have to have a default bookkeeper
+        self.config.default_bookkeeper = self.bookkeeper
+        self.config.save()
+        resp = self.client.get(reverse(
+            'inventory:equipment-and-consumables-purchase'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_inventory_purchase_view(self):
+        resp = self.client.post(reverse(
+            'inventory:equipment-and-consumables-purchase'), data={
+                'warehouse': 1,
+                'date': datetime.date.today(),
+                'due': datetime.date.today(),
+                'paid_in_full': True,
+                'vendor': 1,
+                'data': urllib.parse.quote(json.dumps([{
+                    'quantity': 1,
+                    'unit_price': 5,
+                    'unit': '1-ea',
+                    'item': '1 - Bearing',
+                    'lineTotal': 100
+                }])),
+
+            })
+        
+        self.assertEqual(resp.status_code, 302)

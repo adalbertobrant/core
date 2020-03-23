@@ -1,10 +1,44 @@
 import React, {Component} from 'react';
 import ShiftLine from '../components/shift_line';
 import ShiftEntryLine from '../components/shift_entry';
+import axios from 'axios'
 
 class ShiftSchedule extends Component{
     state = {
         lines: []
+    }
+
+    componentDidMount(){
+        const URL = window.location.href;
+        const  decomposed = URL.split('/');
+        const tail = decomposed[decomposed.length - 2];
+        
+        if(decomposed.indexOf('create') > -1){
+            return
+        }
+        axios({
+            method: 'GET',
+            url: '/employees/api/shift-schedule/' + tail
+        }).then(res =>{
+            if(res.data.length == 0){
+                return
+            }
+            const data = res.data.shiftscheduleline_set.map(line =>{
+                return({
+                    startTime: line.start_time,
+                    endTime: line.end_time,
+                    shift: line.shift,
+                    monday: line.monday,
+                    tuesday: line.tuesday,
+                    wednesday: line.wednesday,
+                    thursday: line.thursday,
+                    friday: line.friday,
+                    saturday: line.saturday,
+                    sunday: line.sunday
+                })
+            })
+            this.setState({lines: data}, this.updateForm)
+        })
     }
 
     insertHandler = (data) =>{

@@ -2,9 +2,9 @@
 
 {% block pre_page %}
 <script>
-{% comment %} var url = "/services/reports/service-person-utilization/pdf/{{start|urlencode}}/{{end|urlencode}}";
+var url = "/services/reports/service-person-utilization/pdf/{{start|urlencode}}/{{end|urlencode}}";
 var el = window.parent.document.getElementById('pdf-button');
-el.href = url; {% endcomment %}
+el.href = url;
 var actions = window.parent.document.getElementById('action-dropdown-items')
 var printBtn = window.parent.document.createElement('button')
 

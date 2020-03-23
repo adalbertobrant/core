@@ -5,9 +5,12 @@ import TimeField from '../../../src/components/time_field';
 class EditLine extends Component{
     state = {
         date: parseInt(this.props.initData.date.split('-')[2]),
-        timeIn: this.props.initData.timeIn.substring(0, 5),
-        timeOut: this.props.initData.timeOut.substring(0, 5),
-        breaksTaken: this.props.initData.breaksTaken.substring(0, 5),
+        timeIn: this.props.initData.timeIn ? 
+            this.props.initData.timeIn.substring(0, 5) : "",
+        timeOut: this.props.initData.timeOut ? 
+            this.props.initData.timeOut.substring(0, 5) : "",
+        breaksTaken: this.props.initData.breaksTaken ? 
+            this.props.initData.breaksTaken.substring(0, 5) : "",
         
     }
     timeHandler = (data, field) =>{
@@ -34,15 +37,15 @@ class EditLine extends Component{
             <td><TimeField 
                     name="timeIn" 
                     handler={this.timeHandler}
-                    initial={this.props.initData.timeIn.substring(0, 5)}/></td>
+                    initial={this.state.timeIn}/></td>
             <td><TimeField 
                     name="timeOut" 
                     handler={this.timeHandler}
-                    initial={this.props.initData.timeOut.substring(0, 5)}/></td>
+                    initial={this.state.timeOut}/></td>
             <td><TimeField 
                     name="breaksTaken" 
                     handler={this.timeHandler}
-                    initial={this.props.initData.breaksTaken.substring(0, 5)}
+                    initial={this.state.breaksTaken}
                     /></td>
             <td>Calculating...</td>
             <td>

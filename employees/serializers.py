@@ -4,6 +4,15 @@ from . import models
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    logged_in = serializers.SerializerMethodField()
+    login_time = serializers.SerializerMethodField()
+    
+    def get_logged_in(self, obj):
+        return obj.logged_in
+
+    def get_login_time(self, obj):
+        return obj.login_time
+
     class Meta:
         model = models.Employee
         fields = '__all__'
@@ -59,4 +68,22 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Department
+        fields = "__all__"
+
+
+class ShiftSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Shift
+        fields = "__all__"
+
+class ShiftScheduleLineSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.ShiftScheduleLine
+        fields = "__all__"
+
+class ShiftScheduleSerializer(serializers.ModelSerializer):
+    shiftscheduleline_set = ShiftScheduleLineSerializer(many=True)
+    class Meta:
+        model = models.ShiftSchedule
         fields = "__all__"

@@ -1,0 +1,42 @@
+{% extends "window.html" %}
+{% block actions %}
+<a class="dropdown-item" href="{% url 'employees:update-shift' pk=object.pk %}" role="button">Edit</a>
+
+{% endblock actions %}
+
+{% block heading %}
+Shift 
+{% endblock heading %}
+
+
+{% block content %}
+
+
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-sm-12">
+        <div class="card accent-lg shadow">
+            <div class="card-body">
+                <h4 class="card-title">{{object}}</h4>
+                <p class="card-text">Supervisor: {{object.supervisor}}</p>
+            </div>
+        </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Members</h4>
+                     
+                    <ul>
+                        {% for emp in object.employees.all %}
+                        <li>{{emp}}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4"></div>
+    </div>
+</div>
+{% endblock %}

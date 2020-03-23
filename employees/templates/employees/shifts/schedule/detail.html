@@ -1,21 +1,18 @@
 {% extends "window.html" %}
+{% block heading %}
+Shift Schedule
+{% endblock heading %}
+{% block actions %}
+<a class="dropdown-item" href="/employees/shift-schedule/update/{{object.pk}}" > <i class="fas fa-edit    "></i> Edit</a>
+{% endblock actions %}
 {% block content %}
-<div class="jumbotron">
-    <h1 class="display-3">Shift Schedule Details</h1>
-    <p class="lead">Details for shift working days hours and teams</p>
-    <hr class="my-2">
-    <p>Actions</p>
-    <p class="lead">
-        <a class="btn btn-primary" href="" role="button">Edit</a>
-    </p>
-</div>
+    
 <div class="container">
     <div class="row">
         <div class="col-sm-4">
         <div class="card">
             <div class="card-body bg-primary text-white">
-                <h4 class="card-title">Schedule Details</h4>
-                <p class="card-text">Name: {{object.name}}</p>
+                <h4 class="card-title">{{object.name}}</h4>
                 <p class="card-text">Number of Shifts: {{object.shifts.count}}</p>
                 <p class="card-text">Supervisors: 
                     <ul>

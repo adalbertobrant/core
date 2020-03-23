@@ -24,7 +24,9 @@ Task Details
                             {{object.created}}
                             <p class="card-text"><i class="fas fa-clock" aria-hidden="true"></i> {{object.due}}</p>
                             <p class="card-text"><i class="fas fa-user" aria-hidden="true"></i> {{object.assigned}}</p>
-                            <a href=" {% url 'planner:event-detail' pk=object.event.pk %} " class="btn btn-sm btn-primary">View Event</a>
+                            {% if object.event %}
+                                <a href=" {% url 'planner:event-detail' pk=object.event.pk %} " class="btn btn-sm btn-primary">View Event</a>
+                            {% endif %}
                         </div>
                         <div class="col-sm-12 col-md-6 accent-left-md">
                             <h5>Status:</h5>

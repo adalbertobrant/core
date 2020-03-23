@@ -19,7 +19,7 @@ from rest_framework.viewsets import ModelViewSet
 from wkhtmltopdf.views import PDFTemplateView
 
 from common_data.utilities import *
-from common_data.views import PaginationMixin, EmailPlusPDFView, PDFDetailView
+from common_data.views import PaginationMixin,  PDFDetailView #EmailPlusPDFView,
 from inventory import filters, forms, models, serializers
 from accounting.models import Account, Journal, JournalEntry
 
@@ -222,11 +222,11 @@ class OrderPDFView(ConfigMixin, MultiPageDocument, PDFTemplateView):
         return context
 
 
-class OrderEmailSendView(ConfigMixin, EmailPlusPDFView):
-    inv_class = models.Order
-    pdf_template_name = os.path.join("inventory", "order",
-                                     'pdf.html')
-    success_url = reverse_lazy('inventory:order-list')
+# class OrderEmailSendView(ConfigMixin, EmailPlusPDFView):
+#     inv_class = models.Order
+#     pdf_template_name = os.path.join("inventory", "order",
+#                                      'pdf.html')
+#     success_url = reverse_lazy('inventory:order-list')
 
 
 class ShippingCostDetailView(DetailView):

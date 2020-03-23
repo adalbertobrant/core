@@ -12,6 +12,7 @@ from invoicing.models import (SalesRepresentative,
                               )
 from inventory.models import InventoryItem, UnitOfMeasure, ProductComponent
 TODAY = datetime.date.today()
+from planner.models import Event
 
 
 def create_test_employees_models(cls):
@@ -168,19 +169,90 @@ class TimesheetTests(TestCase):
         self.assertEqual(self.line.working_time,
                          datetime.timedelta(hours=8))
 
-    def test_line_noraml_time(self):
+    def test_line_normal_time(self):
         self.assertEqual(self.line.normal_time, datetime.timedelta(hours=8))
 
     def test_line_overtime(self):
         self.assertEqual(self.line.overtime, datetime.timedelta(0))
 
+    def test_shift(self):
+        obj = Shift.objects.create(
+            name='shift',
+            supervisor=self.employee
+        )
+        self.assertIsInstance(obj, Shift)
 
+    def test_shift_schedule(self):
+        obj = ShiftSchedule.objects.create(
+            name='Schedule',
+            valid_from = datetime.date.today(),
+            valid_to = datetime.date.today() + datetime.timedelta(days=30)
+        )
+        self.assertIsInstance(obj, ShiftSchedule)
+
+    def test_shift_schedule_line(self):
+        sched = ShiftSchedule.objects.create(
+            name='Schedule',
+            valid_from = datetime.date.today(),
+            valid_to = datetime.date.today() + datetime.timedelta(days=30)
+        )
+        shift = Shift.objects.create(
+            name='shift 2',
+            supervisor=self.employee
+        )
+
+        obj = ShiftScheduleLine.objects.create(
+            schedule=sched,
+            start_time = datetime.time(8,0),
+            end_time=datetime.time(17, 0),
+            saturday=False,
+            sunday=False,
+            shift=shift
+        )
+        self.assertIsInstance(obj, ShiftScheduleLine)
+
+    def test_shift_schedule_line_date_on_shift(self):
+        sched = ShiftSchedule.objects.create(
+            name='Schedule',
+            valid_from = datetime.date.today(),
+            valid_to = datetime.date.today() + datetime.timedelta(days=30)
+        )
+        shift = Shift.objects.create(
+            name='shift 2',
+            supervisor=self.employee
+        )
+
+        obj = ShiftScheduleLine.objects.create(
+            schedule=sched,
+            start_time = datetime.time(8,0),
+            end_time=datetime.time(17, 0),
+            shift=shift,
+            saturday=True,
+            sunday=True
+        )
+
+        self.assertTrue(obj.date_on_shift(datetime.date.today()))
+        
 class EmployeeModelTests(TestCase):
     fixtures = ['accounts.json', 'employees.json']
 
     @classmethod
     def setUpTestData(cls):
         create_test_employees_models(cls)
+        today = datetime.date.today()
+        cls.timesheet = EmployeeTimeSheet.objects.create(
+            employee=cls.employee,
+            month=today.month,
+            year=today.year,
+            recorded_by=cls.employee,
+            complete=True
+        )
+        cls.line = AttendanceLine.objects.create(
+            timesheet=cls.timesheet,
+            date=datetime.date.today(),
+            time_in=datetime.time(8, 0),
+            time_out=datetime.time(17, 0)
+        )
 
     def test_create_employee(self):
         obj = Employee.objects.create(
@@ -210,6 +282,41 @@ class EmployeeModelTests(TestCase):
         self.assertFalse(self.employee.is_sales_rep)
         self.assertFalse(self.employee.is_inventory_controller)
         self.assertFalse(self.employee.is_bookkeeper)
+
+    def test_short_name(self):
+        self.assertIsInstance(self.employee.short_name, str)
+
+    def test_latest_timesheet(self):
+        today = datetime.date.today()
+        timesheet = EmployeeTimeSheet.objects.create(
+            employee=self.employee,
+            month=today.month,
+            year=today.year,
+            recorded_by=self.employee,
+            complete=True
+        )
+
+        self.assertIsInstance(self.employee.latest_timesheet, int)
+        
+    def test_earnings_for_month(self):
+        start = datetime.date(TODAY.year, TODAY.month, 1)
+        earnings = self.employee.get_earnings_for_month(start)
+        self.assertTrue(earnings > 0)
+
+    def test_missed_events(self):
+        yest = TODAY - datetime.timedelta(days=1)
+        Event.objects.create(
+            date=yest,
+            owner=self.employee,
+            label='test event')
+        
+        self.assertEqual(self.employee.missed_events, 1)
+
+    def test_logged_in(self):
+        self.assertTrue(self.employee.logged_in)
+
+    def test_login_time(self):
+        self.assertEqual(self.employee.login_time, "08:00")
 
 
 class AllowanceModelTest(TestCase):

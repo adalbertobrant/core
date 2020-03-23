@@ -1,4 +1,4 @@
-
+{% load accounting %}
 <table class=" table-sm" style="width:100%">
     <tbody>
         <tr>
@@ -19,7 +19,7 @@
                         {% for cus in customers %}
                             <tr>
                                 <td>{{cus.name}}</td>
-                                <td style="text-align:right;">{{cus.sales |floatformat:2}}</td>
+                                <td style="text-align:right;">{{cus.sales |active_currency}}</td>
                             </tr>
                         {% endfor %}
                     </tbody>

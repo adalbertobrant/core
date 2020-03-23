@@ -14,6 +14,7 @@ import os
 import json
 import urllib
 from messaging.email_api.email import EmailSMTP
+# from messaging.email_api.secrets import get_secret_key
 from cryptography.fernet import Fernet
 import imaplib
 import smtplib
@@ -128,10 +129,6 @@ class ComposeEmailView(LoginRequiredMixin,
             return resp
 
         if(data.get('attachment', None)):  # and os.path.exists(path):
-            path = os.path.join(
-                MEDIA_ROOT,
-                'messaging',
-                data['attachment'].name)
 
             g.send_email_with_attachment(
                 data['subject'],

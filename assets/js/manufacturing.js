@@ -1,19 +1,17 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import ShiftSchedule from './manufacturing/shifts/container/root';
+
 import MultipleSelectWidget from '../js/src/components/multiple_select';
 import GenericTable from '../js/src/generic_list/containers/root';
 import ProcessRoot from '../js/manufacturing/process/containers/root';
 
-const scheduleTable = document.getElementById('schedule-table');
+
 const machineGroup = document.getElementById('machine-group');
 const productList = document.getElementById('product-list');
 const billOfMaterialsTable = document.getElementById('raw-materials-table');
 const process = document.getElementById('process');
 
-if(scheduleTable){
-    ReactDOM.render(<ShiftSchedule />, scheduleTable);
-}else if(machineGroup){
+if(machineGroup){
     let resProcessor = (res) =>{
         return res.data.map((m) =>{
             return({

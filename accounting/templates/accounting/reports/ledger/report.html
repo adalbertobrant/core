@@ -3,9 +3,7 @@
 
 {% block pre_page %}
 <script>
-{% comment %} var url = "/accounting/pdf/general-ledger/{{start|urlencode}}/{{end|urlencode}}";
-var el = window.parent.document.getElementById('pdf-button');
-el.href = url; {% endcomment %}
+
 var actions = window.parent.document.getElementById('action-dropdown-items')
 var printBtn = window.parent.document.createElement('button')
 

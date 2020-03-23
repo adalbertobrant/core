@@ -107,7 +107,8 @@ $(document).ready(function () {
         document.getElementById('notifications-button').addEventListener('click',
         function () {
             $('.notifications').show()
-            $('.notification-window').addClass('visible-notification-window')
+            $('.notification-window').addClass('visible-notification-window');
+            $('#notification-badge').hide()
 
         })
     document.getElementById('close-notifications').addEventListener('click',
