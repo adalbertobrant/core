@@ -5,7 +5,6 @@ from background_task.models import Task
 
 
 try:
-    if not Task.objects.filter(task_name="accounting.schedules.run_accounting_service").exists():
-        run_accounting_service(repeat=Task.DAILY)
+    run_accounting_service(repeat=Task.DAILY)
 except:
     pass
