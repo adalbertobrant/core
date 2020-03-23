@@ -1,5 +1,7 @@
 import datetime
 from invoicing.models.invoice import Invoice, InvoiceLine
+from invoicing.models import SalesRepresentative
+from invoicing.models.crm import LeadSource, Lead, Task, Interaction
 from invoicing.models.customer import Customer
 from dateutil import relativedelta
 from django.db.models import Q
@@ -64,6 +66,56 @@ def plot_sales_by_customer(start, end):
                       )
     for key in sbc.keys():
         chart.add(key, sbc[key])
+
+    return chart.render(is_unicode=True)
+
+
+def plot_leads_by_source():
+    ls_s = LeadSource.objects.all()
+    chart = pygal.Pie(print_values=True, style=CustomStyle, height=500)
+
+    for ls in ls_s:
+        chart.add(ls.name, ls.active_leads.count())
+
+    return chart.render(is_unicode=True)
+
+def plot_leads_by_status():
+    statuses = ['lead', 'qualified', 'quotation', 'won', 'lost']
+    chart = pygal.Pie(print_values=True, style=CustomStyle, height=500)
+
+    for status in statuses:
+        chart.add(status, Lead.objects.filter(status=status).count())
+
+    return chart.render(is_unicode=True)
+
+
+def plot_leads_by_owner():
+    reps = SalesRepresentative.objects.all()
+    chart = pygal.Pie(print_values=True, style=CustomStyle, height=500)
+
+    for rep in reps:
+        chart.add(rep.employee.full_name, rep.lead_set.all().count())
+
+    return chart.render(is_unicode=True)
+
+
+def plot_activities():
+    today = datetime.date.today()
+    dates = [today - datetime.timedelta(days=i) for i in range(0,31)]
+    chart = pygal.Line(x_title="Date", x_label_rotation=15, fill=True,
+                      style=CustomStyle, height=400)
+    chart.x_labels = [d.strftime('%d') for d in dates]
+    sales = [sum(inv.subtotal for inv in Invoice.objects.filter(date=i)) for i in dates]
+    leads  = [Lead.objects.filter(created=i).count() for i in dates]
+    tasks = [Task.objects.filter(created=i).count() for i in dates]
+    interactions = [Interaction.objects.filter(
+        timestamp__gte=datetime.datetime.combine(i,datetime.time.min),
+        timestamp__lte=datetime.datetime.combine(i, datetime.time.max)).count() for i in dates]
+
+    chart.add('Sales', sales)
+    chart.add('Leads', leads)
+    chart.add('Interactions', interactions)
+    chart.add('Tasks', tasks)
 
     return chart.render(is_unicode=True)
 

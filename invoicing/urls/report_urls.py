@@ -1,6 +1,14 @@
 from django.urls import re_path, path
 from invoicing import views
 
+
+crm_urls = [
+     path('leads-by-source', views.LeadsBySourceReport.as_view(), name='leads-by-source'),
+     path('leads-by-status', views.LeadsByStatusReport.as_view(), name='leads-by-status'),
+     path('leads-by-owner', views.LeadsByOwnerReport.as_view(), name='leads-by-owner'),
+     path('activities', views.SalesActivitiesReport.as_view(), name='activities'),
+]
+
 report_urls = [
     re_path(r'^(?P<pk>[\w]+)/customer-statement-form/?$',
             views.CustomerReportFormView.as_view(),
@@ -55,4 +63,4 @@ report_urls = [
     path("accounts-receivable-report-pdf/",
          views.AccountsReceivableReportPDFView.as_view(),
          name="accounts-receivable-report-pdf"),
-]
+] + crm_urls

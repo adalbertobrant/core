@@ -1,0 +1,37 @@
+{% load accounting %}
+{% include 'invoicing/crm/reports/leads_by_owner/header.html' %}
+
+{% for rep in reps %}
+<div>
+<h2>{{rep}}</h2>
+<table class="table table-sm simple-content">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Primary Contact</th>
+                    <th>Created</th>
+                    <th>Probability of Sale</th>
+                    <th>Owner</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for lead in rep.lead_set.all %}
+                <tr>
+                    <td>{{lead.title}}</td>
+                    <td>{{lead.contacts.first}}</td>
+                    <td>{{lead.created}}</td>
+                    <td>{{lead.probability_of_sale}}</td>
+                    <td>{{lead.owner}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+</div>
+
+<div>
+{% endfor %}
+
+
+{% autoescape off %}
+{{chart}}
+{% endautoescape %}

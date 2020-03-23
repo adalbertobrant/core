@@ -1,0 +1,98 @@
+{% load accounting %}
+{% include 'invoicing/crm/reports/activities/header.html' %}
+
+<p>In the last 30 days</p>
+<ul>
+<li>Average daily leads generated: </li>
+<li>Average daily interactions: </li>
+<li>Average daily task completion: </li>
+
+</ul>
+
+<div>
+<h2>Leads</h2>
+<p>Leads generated in the last 30 days.</p>
+<table class="table table-sm simple-content">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Primary Contact</th>
+                    <th>Created</th>
+                    <th>Probability of Sale</th>
+                    <th>Owner</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for lead in leads %}
+                <tr>
+                    <td>{{lead.title}}</td>
+                    <td>{{lead.contacts.first}}</td>
+                    <td>{{lead.created}}</td>
+                    <td>{{lead.probability_of_sale}}</td>
+                    <td>{{lead.owner}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+</div>
+
+<div>
+<h2>Tasks</h2>
+<p>Tasks assigned in th last 30 days.</p>
+<table class="table table-sm simple-content">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Assigned</th>
+                    <th>Created</th>
+                    <th>Due</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for task in tasks %}
+                <tr>
+                    <td>{{task.title}}</td>
+                    <td>{{task.assigned}}</td>
+                    <td>{{task.created}}</td>
+                    <td>{{task.due}}</td>
+                    <td>{{task.status}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+</div>
+
+<div>
+<h2>Interactions</h2>
+<p>Interactions with potential clients in the last 30 days.</p>
+<table class="table table-sm simple-content">
+            <thead>
+                <tr>
+                    <th>Lead</th>
+                    <th>Primary Contact</th>
+                    <th>Created</th>
+                    <th>Interaction Type</th>
+                    <th>Representative</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for intr in interactions %}
+                <tr>
+                    <td>{{intr.lead}}</td>
+                    <td>{{intr.contact}}</td>
+                    <td>{{intr.timestamp}}</td>
+                    <td>{{intr.type}}</td>
+                    <td>{{intr.sales_representative}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+</div>
+
+
+{% autoescape off %}
+{{chart}}
+{% endautoescape %}
