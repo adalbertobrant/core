@@ -1,0 +1,148 @@
+{% load accounting %}
+{% include 'invoicing/crm/reports/leads_by_status/header.html' %}
+
+
+<div>
+<h2>Lead</h2>
+<p>A lead is a potential customer who is not yet your customer but has demonstrated an interest in your business.</p>
+<table class="table table-sm simple-content">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Primary Contact</th>
+                    <th>Created</th>
+                    <th>Probability of Sale</th>
+                    <th>Owner</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for lead in lead %}
+                <tr>
+                    <td>{{lead.title}}</td>
+                    <td>{{lead.contacts.first}}</td>
+                    <td>{{lead.created}}</td>
+                    <td>{{lead.probability_of_sale}}</td>
+                    <td>{{lead.owner}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+</div>
+
+<div>
+<h2>Qualified</h2>
+<p>A lead is qualified when enough information is gathered to determine which products a client is interested in and the value of the opportunity if converted.</p>
+<table class="table table-sm simple-content">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Primary Contact</th>
+                    <th>Created</th>
+                    <th>Probability of Sale</th>
+                    <th>Owner</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for lead in qualified %}
+                <tr>
+                    <td>{{lead.title}}</td>
+                    <td>{{lead.contacts.first}}</td>
+                    <td>{{lead.created}}</td>
+                    <td>{{lead.probability_of_sale}}</td>
+                    <td>{{lead.owner}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+</div>
+
+<div>
+<h2>Quotation/Invoice</h2>
+<p>This represents the negotiaition phase where prices are determined.</p>
+<table class="table table-sm simple-content">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Primary Contact</th>
+                    <th>Created</th>
+                    <th>Probability of Sale</th>
+                    <th>Owner</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for lead in quotation %}
+                <tr>
+                    <td>{{lead.title}}</td>
+                    <td>{{lead.contacts.first}}</td>
+                    <td>{{lead.created}}</td>
+                    <td>{{lead.probability_of_sale}}</td>
+                    <td>{{lead.owner}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+</div>
+
+<div>
+<h2>Won</h2>
+<p>A deal is won when a sale is completed.</p>
+<table class="table table-sm simple-content">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Primary Contact</th>
+                    <th>Created</th>
+                    <th>Probability of Sale</th>
+                    <th>Owner</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for lead in won %}
+                <tr>
+                    <td>{{lead.title}}</td>
+                    <td>{{lead.contacts.first}}</td>
+                    <td>{{lead.created}}</td>
+                    <td>{{lead.probability_of_sale}}</td>
+                    <td>{{lead.owner}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+</div>
+
+<div>
+<h2>Lost</h2>
+<p>A deal is lost when a potential client decides not to do business with you.</p>
+<table class="table table-sm simple-content">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Primary Contact</th>
+                    <th>Created</th>
+                    <th>Probability of Sale</th>
+                    <th>Owner</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for lead in lost %}
+                <tr>
+                    <td>{{lead.title}}</td>
+                    <td>{{lead.contacts.first}}</td>
+                    <td>{{lead.created}}</td>
+                    <td>{{lead.probability_of_sale}}</td>
+                    <td>{{lead.owner}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+</div>
+
+
+
+{% autoescape off %}
+{{chart}}
+{% endautoescape %}

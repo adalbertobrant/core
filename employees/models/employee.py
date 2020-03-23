@@ -196,9 +196,10 @@ class Employee(ContactsMixin, Person, SoftDeletionModel):
         qs = AttendanceLine.objects.filter(date=datetime.date.today(), 
             timesheet__employee=self)
         
-        if qs.first().time_in:
+        if qs.exists() and qs.first().time_in:
             return qs.first().time_in.strftime('%H:%M')
 
+        return ''
 
 class Department(models.Model):
     name = models.CharField(max_length=255)

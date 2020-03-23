@@ -1,0 +1,39 @@
+{% load accounting %}
+{% include 'invoicing/crm/reports/leads_by_source/header.html' %}
+
+
+{% for source in sources %}
+    <div>
+        <h2>{{source.name}}</h2>
+        <p>{{source.description}}</p>
+        <table class="table table-sm simple-content">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Primary Contact</th>
+                    <th>Created</th>
+                    <th>Status</th>
+                    <th>Probability of Sale</th>
+                    <th>Owner</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for lead in source.active_leads %}
+                <tr>
+                    <td>{{lead.title}}</td>
+                    <td>{{lead.contacts.first}}</td>
+                    <td>{{lead.created}}</td>
+                    <td>{{lead.status}}</td>
+                    <td>{{lead.probability_of_sale}}</td>
+                    <td>{{lead.owner}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endfor %}
+
+
+{% autoescape off %}
+{{chart}}
+{% endautoescape %}
