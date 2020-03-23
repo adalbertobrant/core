@@ -20,6 +20,10 @@ class LeadSource(models.Model):
     def get_absolute_url(self):
         return reverse("invoicing:list-lead-sources")
 
+    @property
+    def active_leads(self):
+        return self.lead_set.all().exclude(status='lost').order_by('created')
+
 
 class InteractionType(models.Model):
     name = models.CharField(max_length=64)

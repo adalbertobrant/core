@@ -1,0 +1,21 @@
+{% extends "common_data/page/pdf_page.html" %}
+
+{% block pre_page %}
+<section id='title'>
+    <div id='title-text'>Leads By Status Report</div>
+    <div id='action-icon dropdown'>
+
+        <button class="btn btn-block primary " id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
+
+        <div class="dropdown-menu" aria-labelledby="triggerId">
+          <a href=" " class="dropdown-item"><i class="fas fa-file-pdf"></i>
+                Generate PDF</a> 
+            <button onclick='window.print()' class="dropdown-item"><i class="fas fa-print    "></i> Print</button>
+        </div>
+    </div>
+</section>
+{% endblock  %}
+{% block page_contents %}
+{% include "invoicing/crm/reports/leads_by_status/document.html" %}
+{% endblock %}
