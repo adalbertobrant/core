@@ -8,7 +8,7 @@ from cryptography.fernet import Fernet
 from django.core.files import File
 import imaplib
 import string
-from messaging.email_api.secrets import get_secret_key
+# from messaging.email_api.secrets import get_secret_key
 
 
 
