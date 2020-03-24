@@ -1,5 +1,10 @@
 from invoicing.views.crm import *
 from django.urls import path
+from rest_framework import routers
+
+
+lead_router = routers.DefaultRouter()
+lead_router.register('api/lead', LeadAPIViewSet)
 
 crm_urls = [
     path('crm-dashboard/', CRMDashboard.as_view(), name='crm-dashboard'),
@@ -45,4 +50,4 @@ crm_urls = [
          name='list-interactions'),
     path('interaction-detail/<int:pk>',
          InteractionDetailView.as_view(), name='interaction-detail'),
-]
+] + lead_router.urls

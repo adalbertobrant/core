@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import AsyncSelect from '../components/async_select';
 import {setDataPayload} from '../utils';
 import axios from 'axios';
 
@@ -22,9 +21,10 @@ class NotesWidget extends Component{
     inputHandler = (evt) =>{
         this.setState({note: evt.target.value});
     }
-
-    selectWidgetHandler = (value) =>{
-        this.setState({author: value});
+    componentWillMount(){
+        axios.get('/base/api/current-user').then(res =>{
+            this.setState({author: res.data.pk})
+        })
     }
 
     submitHandler = () =>{
@@ -40,7 +40,11 @@ class NotesWidget extends Component{
             })
         }).then(()=>{
             let newNotes = [...this.state.notesList];
-            newNotes.push({note: this.state.note, author: this.state.author})
+            newNotes.push({
+                note: this.state.note, 
+                author: this.state.author,
+                timestamp: `${new Date().getHours()}: ${new Date().getMinutes()}`
+            })
             this.setState({
                 note: "",
                 notesList: newNotes
@@ -121,10 +125,16 @@ class Note extends Component{
         return(
             <li className='list-group-item' 
                 style={{
-                    'color': 'black'
+                    'color': 'black',
+                    marginBottom: '0.5rem'
                 }}>
-                <strong>{this.state.authorString}: </strong>
-                {this.props.note}
+                <strong><i className="fas fa-user    "></i>  {this.state.authorString}</strong>
+                <br/>
+                <p>{this.props.note}</p>
+                <p style={{
+                    textAlign: 'right',
+                    color: '#ccc'
+                }}>{this.props.timestamp}</p>
             </li>
         )
     }

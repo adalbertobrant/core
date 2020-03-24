@@ -67,12 +67,18 @@ class SalesActivitiesReport(ContextMixin,ConfigMixin,TemplateView):
         context['date'] = today
         context['tasks'] = models.Task.objects.filter(created__gte=start,
             created__lte=today)
-
         context['interactions'] = models.Interaction.objects.filter(
             timestamp__gte=datetime.datetime.combine(start, datetime.time.min),
             timestamp__lte=datetime.datetime.combine(today, datetime.time.max))
 
-        context['chart'] = plot_activities()
+        context['daily_leads'] = context['leads'].count() / 30.0
+        context['daily_interactions'] = context['interactions'].count() / 30.0
+        context['daily_tasks_created'] = context['tasks'].count() / 30.0
+        context['daily_tasks_completed'] = context['tasks'].filter(
+            status='completed').count() / 30.0
+
+
+        context['charts'] = plot_activities()
         context['pdf_link'] = True
 
         return context

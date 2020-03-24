@@ -4,6 +4,13 @@
 {% for rep in reps %}
 <div>
 <h2>{{rep}}</h2>
+<ul>
+    <li>Total active leads: {{rep.active_leads.count}}</li>
+    <li>Average stated probability of sales: {{rep.average_probability_of_sale|floatformat:2}}%</li>
+    <li>Lead conversion rate: {{rep.lead_conversion_rate|floatformat:2}}%</li>
+    <li>Mean time to response: {{rep.mean_time_to_response}}</li>
+    <li>Cumulative Sales: {{rep.cumulative_sales|active_currency}}</li>
+</ul>
 <table class="table table-sm simple-content">
             <thead>
                 <tr>
@@ -11,7 +18,7 @@
                     <th>Primary Contact</th>
                     <th>Created</th>
                     <th>Probability of Sale</th>
-                    <th>Owner</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -21,7 +28,7 @@
                     <td>{{lead.contacts.first}}</td>
                     <td>{{lead.created}}</td>
                     <td>{{lead.probability_of_sale}}</td>
-                    <td>{{lead.owner}}</td>
+                    <td>{{lead.status}}</td>
                 </tr>
             {% endfor %}
             </tbody>

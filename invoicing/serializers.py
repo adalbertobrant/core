@@ -7,6 +7,7 @@ from inventory.serializers import InventoryItemSerializer
 from .models import *
 
 
+
 class SalesRepsSerializer(serializers.ModelSerializer):
     rep_name = serializers.SerializerMethodField()
 
@@ -77,3 +78,9 @@ class InvoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Invoice
         fields = ['invoiceline_set', 'customer', 'id']
+
+
+class LeadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model =Lead
+        fields = '__all__'

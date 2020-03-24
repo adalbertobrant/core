@@ -12,7 +12,6 @@ media/temp/*.*
 wkhtmltopdf/
 build/app/*/
 database/*.sqlite3
-database/*.zip
 build/build/
 build/dist/
 !build/app/server/
