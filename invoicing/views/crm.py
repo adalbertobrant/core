@@ -119,13 +119,33 @@ class LeadUpdateView(ContextMixin, UpdateView):
     model = models.Lead
     extra_context = {'title': 'Update Lead'}
 
+class LeadKanbanBoardView(ContextMixin, TemplateView):
+    template_name = os.path.join('invoicing', 'crm', 'leads', 'kanban.html')
+    extra_context = {
+        'new_link': reverse('invoicing:create-lead'),
+        "action_list": [
+            {
+                'label': 'View as list',
+                'icon': 'list-ol',
+                'link': reverse('invoicing:list-leads')
+            }
+        ]
+    }
+
 
 class LeadListView(ContextMixin, PaginationMixin, FilterView):
     template_name = os.path.join('invoicing', 'crm', 'leads', 'list.html')
     filterset_class = filters.LeadFilter
     extra_context = {
         'title': 'Leads List',
-        'new_link': reverse('invoicing:create-lead')
+        'new_link': reverse('invoicing:create-lead'),
+        "action_list": [
+            {
+                'label': 'View Leads as Kanban Chart',
+                'icon': 'chart-bar',
+                'link': reverse('invoicing:leads-kanban')
+            }
+        ]
     }
 
     def get_queryset(self):
@@ -328,7 +348,7 @@ class CreateContact(IndividualCreateView):
         return resp
 
     def get_success_url(self):
-        return reverse('invoicing:lead-detail',
+        return reverse('invoicing:lead-details',
                        kwargs={'pk': self.kwargs['lead']})
 
 

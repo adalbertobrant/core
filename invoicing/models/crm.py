@@ -102,7 +102,7 @@ class Lead(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("invoicing:lead-detail", kwargs={"pk": self.pk})
+        return reverse("invoicing:lead-details", kwargs={"pk": self.pk})
 
 
 class Interaction(models.Model):
@@ -121,7 +121,7 @@ class Interaction(models.Model):
         return self.description
 
     def get_absolute_url(self):
-        return reverse("invoicing:lead-detail", kwargs={"pk": self.lead.pk})
+        return reverse("invoicing:lead-details", kwargs={"pk": self.lead.pk})
 
 
 class Task(models.Model):

@@ -136,7 +136,7 @@ Customer
                                 <tbody>
                                     {% for lead in leads %}
                                     <tr>
-                                        <td><a class='btn btn-primary btn-sm' href="{% url 'invoicing:lead-detail' pk=lead.pk %}">{{lead.pk}}</a></td>
+                                        <td><a class='btn btn-primary btn-sm' href="{% url 'invoicing:lead-details' pk=lead.pk %}">{{lead.pk}}</a></td>
                                         <td>{{lead.opportunity}}</td>
                                         <td>{{lead.owner}}</td>
                                     </tr>

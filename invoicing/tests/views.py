@@ -1013,7 +1013,7 @@ class CRMViewTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_get_lead_detail(self):
-        resp = self.client.get(reverse('invoicing:lead-detail',
+        resp = self.client.get(reverse('invoicing:lead-details',
             kwargs={'pk':1}))
         self.assertEqual(resp.status_code, 200)
 
