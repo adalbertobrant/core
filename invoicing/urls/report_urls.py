@@ -4,9 +4,16 @@ from invoicing import views
 
 crm_urls = [
      path('leads-by-source', views.LeadsBySourceReport.as_view(), name='leads-by-source'),
+     path('leads-by-source-pdf', views.LeadsBySourcePDFView.as_view(), 
+          name='leads-by-source-pdf'),
      path('leads-by-status', views.LeadsByStatusReport.as_view(), name='leads-by-status'),
+     path('leads-by-status-pdf', views.LeadsByStatusPDFView.as_view(), 
+          name='leads-by-status-pdf'),
      path('leads-by-owner', views.LeadsByOwnerReport.as_view(), name='leads-by-owner'),
+     path('leads-by-owner-pdf', views.LeadsByOwnerPDFView.as_view(), 
+          name='leads-by-owner-pdf'),
      path('activities', views.SalesActivitiesReport.as_view(), name='activities'),
+     path('activities-pdf', views.SalesActivitiesPDFView.as_view(), name='activities-pdf'),
 ]
 
 report_urls = [

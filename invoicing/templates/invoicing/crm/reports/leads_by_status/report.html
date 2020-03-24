@@ -9,7 +9,7 @@
             aria-expanded="false"> <i class="fas fa-ellipsis-v"></i> </button>
 
         <div class="dropdown-menu" aria-labelledby="triggerId">
-          <a href=" " class="dropdown-item"><i class="fas fa-file-pdf"></i>
+          <a href="  {% url 'invoicing:leads-by-status-pdf' %}  " class="dropdown-item"><i class="fas fa-file-pdf"></i>
                 Generate PDF</a> 
             <button onclick='window.print()' class="dropdown-item"><i class="fas fa-print    "></i> Print</button>
         </div>

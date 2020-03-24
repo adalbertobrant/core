@@ -4,7 +4,12 @@ from .sales_rep_views import *
 from .credit_note_views import *
 from .common import *
 from .report_views import *
-from .crm_reports import (LeadsBySourceReport, 
+from .crm_reports import (LeadsBySourceReport,
+                          LeadsBySourcePDFView, 
                           LeadsByStatusReport, 
+                          LeadsByStatusPDFView, 
                           LeadsByOwnerReport,
-                          SalesActivitiesReport)
+                          LeadsByOwnerPDFView,
+                          SalesActivitiesReport,
+                          SalesActivitiesPDFView
+                          )

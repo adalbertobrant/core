@@ -19,7 +19,12 @@ from invoicing.views import (CustomerStatementPDFView,
                              SalesByCustomerReportPDFView,
                              AverageDaysToPayPDFView,
                              AccountsReceivableReportPDFView,
-                             InvoiceAgingPDFView)
+                             InvoiceAgingPDFView,
+                             LeadsBySourcePDFView,
+                             LeadsByStatusPDFView,
+                             LeadsByOwnerPDFView,
+                             SalesActivitiesPDFView
+                             )
 from common_data.tests import create_test_common_entities
 from inventory.tests.model_util import InventoryModelCreator
 
@@ -231,6 +236,42 @@ class ReportViewsTests(TestCase):
 
         self.assertEqual(resp.status_code, 200)
 
+
+    def test_sales_by_source(self):
+        resp = self.client.get(reverse('invoicing:leads-by-source'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_sales_by_source_pdf(self):
+        req = RequestFactory().get(reverse('invoicing:leads-by-source-pdf'))
+        resp = LeadsBySourcePDFView.as_view()(req)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_sales_by_owner(self):
+        resp = self.client.get(reverse('invoicing:leads-by-owner'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_sales_by_owner_pdf(self):
+        req = RequestFactory().get(reverse('invoicing:leads-by-owner-pdf'))
+        resp = LeadsByOwnerPDFView.as_view()(req)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_sales_by_status(self):
+        resp = self.client.get(reverse('invoicing:leads-by-status'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_sales_by_status_pdf(self):
+        req = RequestFactory().get(reverse('invoicing:leads-by-status-pdf'))
+        resp = LeadsByStatusPDFView.as_view()(req)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_sales_activities(self):
+        resp = self.client.get(reverse('invoicing:activities'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_sales_activities_pdf(self):
+        req = RequestFactory().get(reverse('invoicing:activities-pdf'))
+        resp = SalesActivitiesPDFView.as_view()(req)
+        self.assertEqual(resp.status_code, 200)
 
 class CustomerViewsTests(TestCase):
     fixtures = ['common.json', 'accounts.json', 'employees.json',  'inventory.json',
@@ -1010,6 +1051,10 @@ class CRMViewTests(TestCase):
 
     def test_get_list_leads(self):
         resp = self.client.get(reverse('invoicing:list-leads'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_kanban_leads(self):
+        resp = self.client.get(reverse('invoicing:leads-kanban'))
         self.assertEqual(resp.status_code, 200)
 
     def test_get_lead_detail(self):

@@ -39,7 +39,11 @@ class SalesRepresentative(SoftDeletionModel):
         '''
         Sales only count for paid invoices
         '''
-        invoices = Invoice.objects.filter(Q(status="invoice") &
+        invoices = Invoice.objects.filter(Q(
+                                            Q(status="invoice") |
+                                            Q(status='paid') | 
+                                            Q(status='paid-partiailly') 
+                                        ) &
                                           Q(salesperson=self)
                                           & (Q(due__lt=end)
                                              | Q(due__gte=start)))
