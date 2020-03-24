@@ -2,7 +2,7 @@ from django.views.generic import (TemplateView,
                                   CreateView,
                                   UpdateView,
                                   DetailView)
-from invoicing import models, forms, filters
+from invoicing import models, forms, filters, serializers
 from common_data.views import PaginationMixin, IndividualCreateView
 from common_data.utilities import ContextMixin
 from django_filters.views import FilterView
@@ -17,6 +17,7 @@ import pygal
 import calendar
 from dateutil.relativedelta import relativedelta
 from common_data.utilities.plotting import CustomStyle
+from rest_framework import viewsets
 
 CREATE = os.path.join('common_data', 'crispy_create_template.html')
 
@@ -329,3 +330,8 @@ class CreateContact(IndividualCreateView):
     def get_success_url(self):
         return reverse('invoicing:lead-detail',
                        kwargs={'pk': self.kwargs['lead']})
+
+
+class LeadAPIViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.LeadSerializer
+    queryset = models.Lead.objects.all()

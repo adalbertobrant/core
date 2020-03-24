@@ -38,7 +38,7 @@
                     <th>Title</th>
                     <th>Primary Contact</th>
                     <th>Created</th>
-                    <th>Probability of Sale</th>
+                    <th>Opportunity</th>
                     <th>Owner</th>
                 </tr>
             </thead>
@@ -48,7 +48,7 @@
                     <td>{{lead.title}}</td>
                     <td>{{lead.contacts.first}}</td>
                     <td>{{lead.created}}</td>
-                    <td>{{lead.probability_of_sale}}</td>
+                    <td>{{lead.opportunity}}</td>
                     <td>{{lead.owner}}</td>
                 </tr>
             {% endfor %}
@@ -64,20 +64,21 @@
             <thead>
                 <tr>
                     <th>Title</th>
-                    <th>Primary Contact</th>
-                    <th>Created</th>
-                    <th>Probability of Sale</th>
                     <th>Owner</th>
+                    <th>Last Interaction</th>
+                    <th>Probability of Sale</th>
+                    <th>Opportunity</th>
+                    
                 </tr>
             </thead>
             <tbody>
             {% for lead in quotation %}
                 <tr>
                     <td>{{lead.title}}</td>
-                    <td>{{lead.contacts.first}}</td>
-                    <td>{{lead.created}}</td>
-                    <td>{{lead.probability_of_sale}}</td>
                     <td>{{lead.owner}}</td>
+                    <td>{{lead.last_interaction}}</td>
+                    <td>{{lead.probability_of_sale}}</td>
+                    <td>{{lead.opportunity}}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -88,14 +89,14 @@
 <div>
 <h2>Won</h2>
 <p>A deal is won when a sale is completed.</p>
+
 <table class="table table-sm simple-content">
             <thead>
                 <tr>
                     <th>Title</th>
                     <th>Primary Contact</th>
-                    <th>Created</th>
-                    <th>Probability of Sale</th>
                     <th>Owner</th>
+                    <th>Value</th>
                 </tr>
             </thead>
             <tbody>
@@ -103,9 +104,8 @@
                 <tr>
                     <td>{{lead.title}}</td>
                     <td>{{lead.contacts.first}}</td>
-                    <td>{{lead.created}}</td>
-                    <td>{{lead.probability_of_sale}}</td>
                     <td>{{lead.owner}}</td>
+                    <td>{{lead.opportunity}}</td>
                 </tr>
             {% endfor %}
             </tbody>

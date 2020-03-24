@@ -2,6 +2,7 @@ import random
 
 import os
 import datetime
+import invoicing
 from django.core.mail import send_mail
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
@@ -36,6 +37,7 @@ from common_data.schedules import backup_db
 from common_data.middleware.license import license_check
 import urllib
 from background_task.models import Task
+
 
 try:
     if not Task.objects.filter(task_name="common_data.schedules.backup_db").exists():
@@ -468,7 +470,8 @@ class LicenseCheck(TemplateView):
 
 
 NOTE_TARGET = {
-    'work_order': services.models.ServiceWorkOrder
+    'work_order': services.models.ServiceWorkOrder,
+    'lead': invoicing.models.Lead
 }
 
 
@@ -610,10 +613,23 @@ class ConfigWizard(ConfigWizardBase):
 
 def document_notes_api(request, document=None, id=None):
     notes = []
+    mapping = {
+        'service': services.models.ServiceWorkOrder,
+        'lead': invoicing.models.Lead
+    }
 
-    if document == 'service':
-        doc = services.models.ServiceWorkOrder.objects.get(pk=id)
-        notes = [{'note': i.note, 'author': i.author.pk}
+    obj = mapping.get(document)
+    if not obj:
+        return JsonResponse({'status': 'not found'})
+        
+    doc = obj.objects.get(pk=id)
+
+    notes = [{
+        'note': i.note, 
+        'author': i.author.pk,
+        'timestamp': i.timestamp.strftime("%d %b '%y, %H:%M")
+        
+        }
                  for i in doc.notes.all()]
 
     return JsonResponse(notes, safe=False)

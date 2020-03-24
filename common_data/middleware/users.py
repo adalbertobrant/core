@@ -37,8 +37,7 @@ class UserTestMiddleware(object):
             '/employees/list-pay-slips/',
             '/employees/pay-slip-detail/',
             '/employees/pay-slip-pdf/',
-            '/employees/time-logger/',
-            '/employees/time-logger-success/',
+            '/employees/time-logger',
             '/base/create-superuser/'
 
         ]
