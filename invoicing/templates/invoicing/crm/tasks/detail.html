@@ -5,7 +5,7 @@ Task Details
 {% endblock heading %}
 
 {% block actions %}
-<a href=" {% url 'invoicing:lead-detail' pk=object.lead.pk %} " class="dropdown-item"> <i class="fas fa-file    "></i> View Lead</a>
+<a href=" {% url 'invoicing:lead-details' pk=object.lead.pk %} " class="dropdown-item"> <i class="fas fa-file    "></i> View Lead</a>
 <a class="dropdown-item" href=" {% url 'invoicing:update-task' pk=object.pk %} "> <i class="fas fa-edit    "></i> Update</a>
 
 {% endblock actions %}

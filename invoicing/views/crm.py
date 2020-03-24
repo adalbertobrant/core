@@ -2,7 +2,7 @@ from django.views.generic import (TemplateView,
                                   CreateView,
                                   UpdateView,
                                   DetailView)
-from invoicing import models, forms, filters
+from invoicing import models, forms, filters, serializers
 from common_data.views import PaginationMixin, IndividualCreateView
 from common_data.utilities import ContextMixin
 from django_filters.views import FilterView
@@ -17,6 +17,7 @@ import pygal
 import calendar
 from dateutil.relativedelta import relativedelta
 from common_data.utilities.plotting import CustomStyle
+from rest_framework import viewsets
 
 CREATE = os.path.join('common_data', 'crispy_create_template.html')
 
@@ -118,13 +119,33 @@ class LeadUpdateView(ContextMixin, UpdateView):
     model = models.Lead
     extra_context = {'title': 'Update Lead'}
 
+class LeadKanbanBoardView(ContextMixin, TemplateView):
+    template_name = os.path.join('invoicing', 'crm', 'leads', 'kanban.html')
+    extra_context = {
+        'new_link': reverse('invoicing:create-lead'),
+        "action_list": [
+            {
+                'label': 'View as list',
+                'icon': 'list-ol',
+                'link': reverse('invoicing:list-leads')
+            }
+        ]
+    }
+
 
 class LeadListView(ContextMixin, PaginationMixin, FilterView):
     template_name = os.path.join('invoicing', 'crm', 'leads', 'list.html')
     filterset_class = filters.LeadFilter
     extra_context = {
         'title': 'Leads List',
-        'new_link': reverse('invoicing:create-lead')
+        'new_link': reverse('invoicing:create-lead'),
+        "action_list": [
+            {
+                'label': 'View Leads as Kanban Chart',
+                'icon': 'chart-bar',
+                'link': reverse('invoicing:leads-kanban')
+            }
+        ]
     }
 
     def get_queryset(self):
@@ -327,5 +348,10 @@ class CreateContact(IndividualCreateView):
         return resp
 
     def get_success_url(self):
-        return reverse('invoicing:lead-detail',
+        return reverse('invoicing:lead-details',
                        kwargs={'pk': self.kwargs['lead']})
+
+
+class LeadAPIViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.LeadSerializer
+    queryset = models.Lead.objects.all()

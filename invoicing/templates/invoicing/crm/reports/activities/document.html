@@ -3,9 +3,10 @@
 
 <p>In the last 30 days</p>
 <ul>
-<li>Average daily leads generated: </li>
-<li>Average daily interactions: </li>
-<li>Average daily task completion: </li>
+<li>Average daily leads generated: {{daily_leads|floatformat:1}}</li>
+<li>Average daily interactions:{{daily_interactions|floatformat:1}} </li>
+<li>Average daily task generation: {{daily_tasks_created|floatformat:1}}</li>
+<li>Average daily task completion: {{daily_tasks_completed|floatformat:1}}</li>
 
 </ul>
 
@@ -94,5 +95,9 @@
 
 
 {% autoescape off %}
+{% for chart in charts %}
+<div class="no-break">
 {{chart}}
+</div>
+{% endfor %}
 {% endautoescape %}

@@ -1,0 +1,18 @@
+{% extends "window.html" %}
+{% load render_bundle from webpack_loader %}
+{% block heading %}
+Lead Kanban Board
+{% endblock heading %}
+
+{% block actions %}
+
+<a href="/invoicing/create-lead" class="dropdown-item"> <i class="fas fa-file    "></i> Create Lead </a>
+<a href="/invoicing/list-leads" class="dropdown-item"> <i class="fas fa-list    "></i> View as List </a>
+
+{% endblock actions %}
+
+{% block content %}
+<div id="lead-kanban"></div>
+{% render_bundle "invoicing" %}
+
+{% endblock content %}

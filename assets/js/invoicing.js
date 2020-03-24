@@ -5,11 +5,15 @@ import MobileInvoice from './invoices/invoice_mobile';
 import MutableTable from './src/mutable_table/container/root';
 import SelectWidget from './src/components/select';
 import GenericTable from './src/generic_list/containers/root';
+import NotesWidget from './src/notes_widget/root';
+import KanbanBoard from './src/kanban/board';
 
 const creditNote = document.getElementById('credit-note-table');
 const directPurchase =  document.getElementById('direct-purchase-table');
 const sales = document.getElementById('invoice-table');
+const notes = document.getElementById('lead-notes');
 const multipleCustomersTable = document.getElementById('multiple-customers-list');
+const leads = document.getElementById('lead-kanban');
 
 const URL = window.location.href;
 const  decomposed = URL.split('/');
@@ -115,4 +119,17 @@ if(sales){
             }
         ]}
             />, multipleCustomersTable);
+}else if(notes){
+    const token= document.querySelector(
+        'input[name="csrfmiddlewaretoken"]').value;
+    
+    ReactDOM.render(<NotesWidget 
+        dataURL={'/base/api/notes/lead/' + tail}
+        target='lead'
+        token={token}
+        targetID={tail}/>
+        
+        , notes)
+}else if(leads){
+    ReactDOM.render(<KanbanBoard />, leads)
 }

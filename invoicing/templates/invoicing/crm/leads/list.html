@@ -1,4 +1,4 @@
-{% extends 'common_data/list_template.html' %}
+ {% extends 'common_data/list_template.html' %}
 
 {% block list_headings %}
 <tr>
@@ -25,7 +25,7 @@
                             Actions
                         </button>
                 <div class="dropdown-menu" aria-labelledby="triggerId">
-                    <a class="dropdown-item" href="{% url 'invoicing:lead-detail' pk=lead.pk %}"> <i class="fas fa-file" aria-hidden="true"></i> View</a>
+                    <a class="dropdown-item" href="{% url 'invoicing:lead-details' pk=lead.pk %}"> <i class="fas fa-file" aria-hidden="true"></i> View</a>
                     <a class="dropdown-item" href=" {% url 'invoicing:update-lead' pk=lead.pk %} "> <i class="fas fa-edit "></i> Update</a>
                     <a class="dropdown-item" href=" {% url 'invoicing:create-lead-task' pk=lead.pk %} "> <i class="fas fa-plus    "></i> Add Task</a>
                     <a class="dropdown-item" href=" {% url 'invoicing:create-interaction' pk=lead.pk %} "> <i class="fas fa-plus    "></i>Record Interaction</a>

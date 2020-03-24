@@ -427,7 +427,7 @@ class LeadForm(BootstrapMixin, forms.ModelForm):
                                widget=forms.DateInput(attrs={'class': 'ui-date-picker'}))
 
     class Meta:
-        exclude = 'created',
+        exclude = 'created', 'notes'
         model = models.Lead
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),

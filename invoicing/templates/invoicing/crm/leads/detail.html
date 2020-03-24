@@ -1,6 +1,8 @@
 {% extends 'window.html' %}
 {% load accounting %}
+{% load render_bundle from webpack_loader %}
 {% block heading %}
+
 Lead Details
 {% endblock heading %}
 
@@ -65,49 +67,66 @@ Lead Details
             </div>
         </div>
         <div class="col-md-8 col-sm-12">
-            <h3 class="primary text-white">Tasks</h3>
-            <table class="table table-sm">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Due</th>
-                        <th>Assigned</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
+        <nav class="nav nav-tabs">
+            <a href="#tasks" class="nav-link active" data-toggle="tab">Tasks</a>
+            <a href="#interactions" class="nav-link" data-toggle="tab">Interactions</a>
+            <a href="#notes" class="nav-link" data-toggle="tab">Notes</a>
+        </nav>
+            <div class="tab-content panel-body">
+                <div class="tab-pane active" id="tasks">
                     {% for task in object.task_set.all %}
-                        <tr>
-                            <td><a href=" {% url 'invoicing:task-detail' pk=task.pk %} " class="btn btn-sm btn-primary">{{task|truncatechars:30}}</a></td>
-                            <td>{{task.due}}</td>
-                            <td>{{task.assigned}}</td>
-                            <td>{{task.status}}</td>
-                        </tr>
+                        <div class="card accent-left-lg">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-6">
+                                        <h4>{{task.title}}</h4>
+                                        {{task.created}}
+                                        <p class="card-text"><i class="fas fa-clock" aria-hidden="true"></i> {{task.due}}</p>
+                                        <p class="card-text"><i class="fas fa-user" aria-hidden="true"></i> {{task.assigned}}</p>
+                                        {% if task.event %}
+                                            <a href=" {% url 'planner:event-detail' pk=task.event.pk %} " class="btn btn-sm btn-primary">View Event</a>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 accent-left-md">
+                                        <h5>Status:</h5>
+                                        <h3>{{task.status}}</h3>
+                                        <hr>
+                                        {{task.description}}
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
                     {% endfor %}
-                </tbody>
-            </table>
-            <h3 class="primary text-white">Interactions</h3>
-            <table class="table sm">
-                <thead>
-                    <tr>
-                        <th>Timestamp</th>
-                        <th>Contact</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
+                </div>
+                <div class="tab-pane" id="interactions">
+                       
                     {% for intr in object.interaction_set.all %}
-                        
-                            <tr>
-                            <td>{{intr.timestamp}}</td>
-                            <td>{{intr.contact}}</td>
-                            <td><a href=" {% url 'invoicing:interaction-detail' pk=intr.pk %} ">{{intr.description|truncatechars:40}}</a></td>
-                        </tr>
+                        <div class="card accent-left-lg">
+                            <div class="card-body">
+                                <h4>{{intr.type}}</h4>
+                                <p class="card-text"> <i class="fa fa-clock-o" aria-hidden="true"></i> <i>{{intr.timestamp}}</i></p>
+                                <p class="card-text"> <i class="fa fa-address-book" aria-hidden="true"></i> {{intr.contact}}</p>
+                                <p class="card-text">{{intr.description}}</p>
+                                
+                                <p class="card-text" style='text-align:right'> <i class="fas fa-user    "></i> - <b>{{intr.sales_representative}}</b> </p>
+                            </div>
+                        </div>
+                            
                         
                     {% endfor %}
-                </tbody>
-            </table>
+                
+
+                </div>
+                <div class="tab-pane" id="notes">
+                {% csrf_token %}
+                <div id="lead-notes"></div>
+                </div>
+
+            
         </div>
     </div>
 </div>
+
+{% render_bundle 'invoicing' %}
 {% endblock content %}

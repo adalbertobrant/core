@@ -1,5 +1,10 @@
 from invoicing.views.crm import *
 from django.urls import path
+from rest_framework import routers
+
+
+lead_router = routers.DefaultRouter()
+lead_router.register('api/lead', LeadAPIViewSet)
 
 crm_urls = [
     path('crm-dashboard/', CRMDashboard.as_view(), name='crm-dashboard'),
@@ -9,8 +14,9 @@ crm_urls = [
          CreateContact.as_view(), name='create-contact'),
     path('create-lead', LeadCreateView.as_view(), name='create-lead'),
     path('update-lead/<int:pk>', LeadUpdateView.as_view(), name='update-lead'),
+    path('leads-kanban', LeadKanbanBoardView.as_view(), name='leads-kanban'),
     path('list-leads', LeadListView.as_view(), name='list-leads'),
-    path('lead-detail/<int:pk>', LeadDetailView.as_view(), name='lead-detail'),
+    path('lead-details/<int:pk>', LeadDetailView.as_view(), name='lead-details'),
     path('create-task', TaskCreateView.as_view(), name='create-task'),
     path('create-task/<int:pk>', TaskCreateView.as_view(), name='create-lead-task'),
     path('update-task/<int:pk>', TaskUpdateView.as_view(), name='update-task'),
@@ -45,4 +51,4 @@ crm_urls = [
          name='list-interactions'),
     path('interaction-detail/<int:pk>',
          InteractionDetailView.as_view(), name='interaction-detail'),
-]
+] + lead_router.urls

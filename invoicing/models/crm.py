@@ -2,6 +2,7 @@ from django.db import models
 from invoicing.models.sales_rep import SalesRepresentative
 import datetime
 from django.shortcuts import reverse
+from statistics import mean
 
 try:
     default_rep = SalesRepresentative.objects.first().pk \
@@ -24,6 +25,36 @@ class LeadSource(models.Model):
     def active_leads(self):
         return self.lead_set.all().exclude(status='lost').order_by('created')
 
+    @property
+    def mean_time_to_response(self):
+        '''Calculated from the creation of the lead to the recording of the first interaction'''
+        response_times = []
+        for lead in self.lead_set.all():
+            qs = lead.interaction_set.first()
+            if not qs:
+                continue
+            
+            resp_time = qs.timestamp - lead.created 
+            response_times.append(resp_time.seconds)
+        if len(response_times) == 0:
+            return 0
+        return datetime.timedelta(seconds=mean(response_times))
+
+    @property
+    def lead_conversion_rate(self):
+        leads = self.lead_set.all().count()
+        sales = self.lead_set.filter(status='won').count()
+        if leads > 0:
+            return (sales / leads) * 100.0
+
+        return 0
+
+    @property
+    def average_probability_of_sale(self):
+        if self.lead_set.all().count() > 0:
+            return mean([i.probability_of_sale for i in self.lead_set.all()])
+        return 0
+        #use lead conversion rate to calculate probability on the fly
 
 class InteractionType(models.Model):
     name = models.CharField(max_length=64)
@@ -46,6 +77,7 @@ class Lead(models.Model):
                              blank=True,
                              on_delete=models.SET_NULL)
     created = models.DateTimeField(auto_now=True)
+    notes = models.ManyToManyField('common_data.Note')
     projected_closing = models.DateField(blank=True, null=True)
     source = models.ForeignKey('invoicing.LeadSource',
                                on_delete=models.SET_DEFAULT, default=1)
@@ -62,12 +94,15 @@ class Lead(models.Model):
         ('lost', 'Lost')])
 
 
+    @property
+    def last_interaction(self):
+        return self.interaction_set.latest('timestamp')
 
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("invoicing:lead-detail", kwargs={"pk": self.pk})
+        return reverse("invoicing:lead-details", kwargs={"pk": self.pk})
 
 
 class Interaction(models.Model):
@@ -75,7 +110,6 @@ class Interaction(models.Model):
                              null=True)
     timestamp = models.DateTimeField(auto_now=True)
     description = models.TextField(blank=True)
-    notes = models.ManyToManyField('common_data.Note')
     contact = models.ForeignKey('common_data.Individual',
                                 on_delete=models.SET_NULL, null=True)
     sales_representative = models.ForeignKey('invoicing.SalesRepresentative',
@@ -87,7 +121,7 @@ class Interaction(models.Model):
         return self.description
 
     def get_absolute_url(self):
-        return reverse("invoicing:lead-detail", kwargs={"pk": self.lead.pk})
+        return reverse("invoicing:lead-details", kwargs={"pk": self.lead.pk})
 
 
 class Task(models.Model):
