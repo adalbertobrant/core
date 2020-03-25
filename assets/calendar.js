@@ -94,7 +94,6 @@ function showCalendar(month, year) {
         // tbl.appendChild(row); // appending each row into calendar body.
         table.push(row)
     }
-    console.log(table)
 }
 
 showCalendar(0,2020)

@@ -7,7 +7,7 @@ import TimeField from './src/components/time_field';
 import NotesWidget from './src/notes_widget/root';
 import SelectWidget from './src/components/select';
 import TaskList from './services/tasks'
-import taskList from './services/tasks';
+import GanttChart from './services/gantt/root'
 
 const procedure = document.getElementById('procedure-widgets');
 const inventory = document.getElementById('inventory-widgets');
@@ -18,6 +18,7 @@ const workOrderPersons = document.getElementById('work-order-persons');
 const serviceTime = document.getElementById('service-time-logger');
 const notes = document.getElementById('notes-widget');
 const tasks = document.getElementById('task-list');
+const gantt = document.getElementById('gantt');
 
 const splitURL = window.location.href.split('/');
 const tail = splitURL[splitURL.length - 1];
@@ -247,4 +248,8 @@ if(notes){
 if(tasks){
     
     ReactDOM.render(<TaskList orderID={tail}/> , tasks)
+}
+
+if(gantt){
+    ReactDOM.render(<GanttChart orderID={tail}/>, gantt)
 }
