@@ -1,0 +1,74 @@
+.monthHeader {
+    text-align: center;
+    color: white;
+    background-color: steelblue;
+    padding: 0.3rem;
+    border-left: 2px solid white;
+    overflow-x: hidden;
+}
+
+.monthHeader h4 {
+    white-space: nowrap;
+}
+
+.ganttTableCell {
+    border: 1px solid #ccc;
+    width: 24px!important;
+    min-width: 24px!important;
+    max-width: 24px!important;
+    text-align: center;
+    padding: 0px;
+}
+
+.ganttTableRow {
+    display: flex;
+    flex-direction: row;
+}
+
+.ganttTable {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    flex-wrap: nowrap;
+}
+
+.months {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    position: relative;
+}
+
+.taskList {
+    width: 300px;
+    min-width: 300px;
+
+}
+
+.taskCard, .taskBar {
+    padding: 6px;
+    margin-bottom: 12px;
+    color: white;
+}
+
+.taskBar {
+    position: relative;
+}
+
+
+.taskBarChart {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}

@@ -157,9 +157,20 @@ Job Detail
                         <div class="col-12">
                             <div class="card shadow">
                                 <div class="card-body">
-                                    <h4>Tasks</h4>
-                                    
-                                    <div id="task-list"></div>
+                                   <nav class="nav nav-tabs">
+                                    <a href="#task-list-tab" class="nav-link" data-toggle='tab'> <i class="fas fa-list-ul    "></i> </a>
+                                    <a href="#gantt-tab" class="nav-link active" data-toggle='tab'> <i class="fas fa-chart-line    "></i> </a>
+                                    </nav>
+                                    <div class="tab-content pane-body">
+                                        <div class="tab-pane" id='task-list-tab'>
+                                             <h4>Task List</h4>
+                                            <div id="task-list"></div>
+                                        </div>
+                                        <div class="tab-pane active" id='gantt-tab'>
+                                            <h4>Gantt Chart </h4>
+                                            <div id="gantt"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

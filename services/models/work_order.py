@@ -241,4 +241,7 @@ class WorkOrderTask(models.Model):
                                  on_delete=models.SET_NULL, null=True)
     description = models.TextField()
     due = models.DateField(blank=True)
+    start = models.DateField(blank=True)
+    dependency = models.ForeignKey('services.WorkOrderTask',
+                                   on_delete=models.SET_NULL, null=True)
     completed = models.BooleanField(default=False)

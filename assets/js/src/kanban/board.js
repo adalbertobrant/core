@@ -15,12 +15,20 @@ class KanbanBoard extends Component{
         'quotation': [],
         'won': [],
         'lost': [],
+        'currency': ''
     }
 
     componentDidMount(){
         axios.defaults.xsrfCookieName = "csrftoken";
         axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
         this.updateBoard()
+        axios.get('/accounting/api/settings/1')
+            .then(res =>{
+                axios.get('/accounting/api/currency/' + res.data.active_currency)
+                    .then(res =>{
+                        this.setState({currency: res.data.symbol})
+                    })
+            })
     }
 
     syncLeads =(id, status) =>{
@@ -58,12 +66,14 @@ class KanbanBoard extends Component{
             <div className={styles.kanbanBoard}>
                 <KanbanColumn 
                     name='New'
+                    currency={this.state.currency}
                     accent='black'
                     statusValue='new'
                     data={this.state.new}
                     handleCardDrop={this.syncLeads}
                     />
                 <KanbanColumn 
+                    currency={this.state.currency}
                     name='Qualified'
                     accent='silver'
                     statusValue='qualified'
@@ -72,6 +82,7 @@ class KanbanBoard extends Component{
                     />
                 <KanbanColumn 
                     name='Quote'
+                    currency={this.state.currency}
                     statusValue='quotation'
                     accent='steelblue'
                     data={this.state.quotation}
@@ -79,6 +90,7 @@ class KanbanBoard extends Component{
                     />
                 <KanbanColumn 
                     name='Won'
+                    currency={this.state.currency}
                     accent='#7FFF00'
                     statusValue='won'
                     data={this.state.won}
@@ -86,6 +98,7 @@ class KanbanBoard extends Component{
                     />
                 <KanbanColumn 
                     name='Lost'
+                    currency={this.state.currency}
                     accent='crimson'
                     statusValue='lost'
                     data={this.state.lost}

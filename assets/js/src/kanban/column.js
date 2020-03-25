@@ -24,6 +24,7 @@ const kanbanColumn =(props) => {
             <h3>{props.name}</h3>
             {props.data.map((lead, i)=>{
                 return(<Card key={i} {...lead}
+                            currency={props.currency}
                             updateCards={props.handleCardDrop}
                             />)
             })}
