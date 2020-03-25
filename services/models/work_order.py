@@ -126,7 +126,9 @@ class ServiceWorkOrder(models.Model):
                     WorkOrderTask.objects.create(
                         work_order=self,
                         description=step.description,
-                        due=due
+                        due=due,
+                        start=due,
+
                     )
 
     @property
