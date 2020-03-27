@@ -75,17 +75,25 @@ Lead Details
             <div class="tab-content panel-body">
                 <div class="tab-pane active" id="tasks">
                     {% for task in object.task_set.all %}
-                        <div class="card accent-left-lg">
+                        <div class="card accent-left-lg" style='margin-bottom: 0.6rem;'>
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-sm-12 col-md-6">
-                                        <h4>{{task.title}}</h4>
+                                        <h4><a href="{% url 'invoicing:task-detail' pk=task.pk %}">{{task.title}}</a></h4>
                                         {{task.created}}
                                         <p class="card-text"><i class="fas fa-clock" aria-hidden="true"></i> {{task.due}}</p>
                                         <p class="card-text"><i class="fas fa-user" aria-hidden="true"></i> {{task.assigned}}</p>
-                                        {% if task.event %}
-                                            <a href=" {% url 'planner:event-detail' pk=task.event.pk %} " class="btn btn-sm btn-primary">View Event</a>
+                                        <div class="btn-group">
+                                            {% if task.status != 'completed' %}
+                                                <a href="{% url 'invoicing:complete-task' task=task.pk %}" class="btn btn-sm btn-primary">Complete</a>
+                                            {% endif %}
+                                                <a href="{% url 'invoicing:update-task' pk=task.pk %}" class="btn btn-sm btn-info">Edit</a>
+
+                                            {% if task.event %}
+                                            <a href=" {% url 'planner:event-detail' pk=task.event.pk %} " class="btn btn-sm">View Event</a>
                                         {% endif %}
+                                        </div>
+                                        
                                     </div>
                                     <div class="col-sm-12 col-md-6 accent-left-md">
                                         <h5>Status:</h5>
@@ -102,9 +110,9 @@ Lead Details
                 <div class="tab-pane" id="interactions">
                        
                     {% for intr in object.interaction_set.all %}
-                        <div class="card accent-left-lg">
+                        <div class="card accent-left-lg" style='margin-bottom: 0.6rem;'>
                             <div class="card-body">
-                                <h4>{{intr.type}}</h4>
+                                <h4><a href="{% url 'invoicing:interaction-detail' pk=intr.pk %}">{{intr.type}}</a></h4>
                                 <p class="card-text"> <i class="fa fa-clock-o" aria-hidden="true"></i> <i>{{intr.timestamp}}</i></p>
                                 <p class="card-text"> <i class="fa fa-address-book" aria-hidden="true"></i> {{intr.contact}}</p>
                                 <p class="card-text">{{intr.description}}</p>

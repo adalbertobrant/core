@@ -22,6 +22,7 @@ crm_urls = [
     path('update-task/<int:pk>', TaskUpdateView.as_view(), name='update-task'),
     path('list-tasks', TaskListView.as_view(), name='list-tasks'),
     path('task-detail/<int:pk>', TaskDetailView.as_view(), name='task-detail'),
+    path('complete-task/<int:task>', complete_task, name='complete-task'),
     path('create-sales-team', SalesTeamCreateView.as_view(),
          name='create-sales-team'),
     path('update-sales-team/<int:pk>', SalesTeamUpdateView.as_view(),
