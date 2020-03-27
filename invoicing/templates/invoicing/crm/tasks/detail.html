@@ -24,9 +24,16 @@ Task Details
                             {{object.created}}
                             <p class="card-text"><i class="fas fa-clock" aria-hidden="true"></i> {{object.due}}</p>
                             <p class="card-text"><i class="fas fa-user" aria-hidden="true"></i> {{object.assigned}}</p>
-                            {% if object.event %}
-                                <a href=" {% url 'planner:event-detail' pk=object.event.pk %} " class="btn btn-sm btn-primary">View Event</a>
-                            {% endif %}
+                             <div class="btn-group">
+                                            {% if object.status != 'completed' %}
+                                                <a href="{% url 'invoicing:complete-task' task=object.pk %}" class="btn btn-sm btn-primary">Complete</a>
+                                            {% endif %}
+                                                <a href="{% url 'invoicing:update-task' pk=object.pk %}" class="btn btn-sm btn-info">Edit</a>
+
+                                            {% if object.event %}
+                                            <a href=" {% url 'planner:event-detail' pk=object.event.pk %} " class="btn btn-sm">View Event</a>
+                                        {% endif %}
+                                        </div>
                         </div>
                         <div class="col-sm-12 col-md-6 accent-left-md">
                             <h5>Status:</h5>

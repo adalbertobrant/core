@@ -1084,6 +1084,11 @@ class CRMViewTests(TestCase):
             kwargs={'pk':1}))
         self.assertEqual(resp.status_code, 200)
 
+    def test_complete_task(self):
+        resp = self.client.get(reverse('invoicing:complete-task',
+            kwargs={'task':1}))
+        self.assertEqual(resp.status_code, 302)
+
     def test_post_create_lead_task(self):
         resp = self.client.post(reverse('invoicing:create-lead-task', kwargs={'pk':1}),
             data={
