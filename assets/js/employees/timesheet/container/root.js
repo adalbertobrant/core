@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import $ from 'jquery';
-import axios from 'axios';
+import axios from '../../../src/auth';
 import EntryLine from '../components/entry_line';
 import DataEntryLine from '../components/data_entry_line';
 import EditLine from '../components/edit_line';

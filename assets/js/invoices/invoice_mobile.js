@@ -1,5 +1,6 @@
 import React, {Component, useState, useEffect} from 'react';
-import axios from 'axios';
+import axios from '../src/auth';
+
 import {DeleteButton} from '../src/common';
 import styles from './styles.css'
 import EntryWidget from './invoice_entry'

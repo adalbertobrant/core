@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'webpack_loader',
     'django_filters',
     'crispy_forms',
@@ -62,10 +63,20 @@ INSTALLED_APPS = [
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+
 LOGIN_REQUIRED_FOR_CRUD = True
 LOGOUT_REDIRECT_URL = '/login'
 PROJECT_NAME = 'Smart business solutions'
-
+#a6b7a875d7a1c48dab5fdafac181419ce3418605
+#Authorization: Token <token_value>
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_AGE = 86400  #when page closes

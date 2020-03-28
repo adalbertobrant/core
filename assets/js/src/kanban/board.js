@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import styles from './styles.css'
-import axios from 'axios'
+import axios from '../auth'
 import { DndProvider } from 'react-dnd'
 import KanbanColumn from './column'
 import Backend from 'react-dnd-html5-backend'

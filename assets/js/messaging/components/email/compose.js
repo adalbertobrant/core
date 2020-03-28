@@ -4,7 +4,7 @@ import styles from './compose.css'
 import EmailWidget from './multi_email_widget'
 import FilePickerUI from '../../../src/components/custom_file_picker';
 import {convertToRaw} from 'draft-js';
-import axios from 'axios'
+import axios from '../../../src/auth'
 
 class Compose extends React.Component{
     state = {

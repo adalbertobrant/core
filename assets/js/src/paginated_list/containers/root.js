@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import axios from 'axios';
+import axios from '../../auth';
 
 import Headings from '../components/headings';
 import Row from '../components/rows';

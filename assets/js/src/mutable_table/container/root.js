@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import axios from 'axios';
+import axios from '../../auth';
 import TitleBar from '../components/title_bar';
 import Row from '../components/row';
 import ProgressBar from '../components/progress_bar';

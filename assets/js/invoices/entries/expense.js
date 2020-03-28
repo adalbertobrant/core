@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import SearchableWidget from '../../src/components/searchable_widget';
 import AsyncSelect from '../../src/components/async_select';
-import axios from 'axios';
+import axios from '../../src/auth';
+
 
 //!! Important, should not set up create new button as there is no way of filtering billable expenses for now
 class ExpenseEntry extends Component{

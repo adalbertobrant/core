@@ -14,7 +14,7 @@ import CompletedSalePage from './completed_sale'
 import Context from '../container/provider'
 import Head from '../components/head'
 import StartSession from '../routes/start_session'
-import axios from 'axios'
+import axios from '../../src/auth'
 
 
 axios.defaults.xsrfCookieName = "csrftoken";

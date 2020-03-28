@@ -107,6 +107,11 @@ class ViewTests(TestCase):
     def setUp(self):
         self.client.login(username='Testuser', password='123')
 
+    def test_get_token(self):
+        resp = self.client.get(reverse('base:current-user-token'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertNotEqual(json.loads(resp.content)['token'], '')
+
     def test_pagination_mixin(self):
         # tested in pages that inherit from it
         self.assertTrue(True)

@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios';
+import axios from '../../../src/auth';
 import ListItem from './message_list_item';
 
 class FolderList extends React.Component{

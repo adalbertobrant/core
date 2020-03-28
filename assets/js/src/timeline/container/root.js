@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import axios from 'axios';
+import axios from '../../auth';
 import styles from '../styles.css';
 import Bg from '../components/bg'
 import Card from '../components/card';

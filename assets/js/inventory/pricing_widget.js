@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import axios from "axios";
+import axios from "../src/auth";
 
 class PricingWidget extends Component{
     state = {

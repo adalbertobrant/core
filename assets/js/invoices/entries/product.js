@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import SearchableWidget from '../../src/components/searchable_widget';
 import AsyncSelect from '../../src/components/async_select';
-import axios from 'axios';
+import axios from '../../src/auth';
 
 class ProductEntry extends Component{
     state = {

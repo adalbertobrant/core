@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios'
+import axios from '../../../src/auth'
 import DeleteButton from '../../../src/components/delete_button';
 const shiftLine = (props) =>{
     const [shift, setShift] = React.useState(props.data.shift)

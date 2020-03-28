@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import setMultipleAttrs from '../src/utils';
 import SearchableWidget from '../src/components/searchable_widget';
-import axios from "axios";
+import axios from "../src/auth";
 
 export default class TransactionTable extends Component{
     state = {

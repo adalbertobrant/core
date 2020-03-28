@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import styles from '../style.css'
-import axios from 'axios'
+import axios from '../../../src/auth'
 
 const Task =(props) =>{
     const [name, setName] = useState('')

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import styles from './styles.css'
 import { useDrag } from 'react-dnd'
 import ItemTypes from './item_types'
-import axios from 'axios'
+import axios from '../auth'
 
 
 const Card =(props) =>{

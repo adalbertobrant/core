@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import SearchableWidget from '../../src/components/searchable_widget';
-import axios from 'axios';
+import axios from '../../src/auth';
 import AsyncSelect from '../../src/components/async_select';
 
 

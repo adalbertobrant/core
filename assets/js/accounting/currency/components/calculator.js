@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {AsyncSelect} from '../../../src/common';
-import axios from 'axios';
+import axios from '../../../src/auth';
 
 class Calculator extends Component{
     state = {

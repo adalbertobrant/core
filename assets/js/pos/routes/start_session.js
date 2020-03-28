@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import AsyncSelect from '..//../src/components/async_select'
+import AsyncSelect from '../../src/components/async_select'
 import styles from '../container/app.css'
-import axios from 'axios'
+import axios from '../../src/auth'
 
 
 const StartSessionPage =(props) =>{
