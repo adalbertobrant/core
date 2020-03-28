@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import SearchableWidget from '../../../src/components/searchable_widget';
 import $ from 'jquery';
-import axios from 'axios';
+import axios from '../../../src/auth';
 import {DeleteButton} from "../../../src/common";
 
 class ParticipantSelectWidget extends Component{

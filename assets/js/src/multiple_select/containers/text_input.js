@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import OptionsWidget from "../../components/options_widget";
-import axios from "axios";
+import axios from "../../auth";
 
 class SearchableTextInputWidget extends Component{
     state = {

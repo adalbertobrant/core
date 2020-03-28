@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import CalendarApp from './calendar/container/Root';
 import ParticipantSelectWidget from '../js/calendar/components/ParticipantSelect/select';
 import TimelineWidget from './src/timeline/container/root';
-import axios from 'axios';
+import axios from './src/auth';
 
 const calendar = document.getElementById('calendar-root');
 const timeline = document.getElementById('agenda-timeline');

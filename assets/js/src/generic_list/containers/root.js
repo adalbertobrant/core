@@ -3,7 +3,7 @@ import InputLine from '../components/input_line';
 import TitleBar from '../components/title_bar';
 import DataRow from '../components/row';
 import Totals from '../../components/totals_table';
-import axios from 'axios';
+import axios from '../../auth';
 
 /**
  * fieldOrder -array of strings 

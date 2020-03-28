@@ -18,7 +18,9 @@ const leads = document.getElementById('lead-kanban');
 const URL = window.location.href;
 const  decomposed = URL.split('/');
 const tail = decomposed[decomposed.length - 1];
-    
+
+
+
 if(sales){
     if(window.screen.width < 575){
         ReactDOM.render(<MobileInvoice />, sales);

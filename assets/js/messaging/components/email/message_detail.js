@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import ReplyWidget from "./reply_widget";
-import axios from "axios";
+import axios from "../../../src/auth";
 import { Aux } from "../../../src/common";
 import ReactModal from "react-modal";
 import SearchableWidget from "../../../src/components/searchable_widget";

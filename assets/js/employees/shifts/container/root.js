@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import ShiftLine from '../components/shift_line';
 import ShiftEntryLine from '../components/shift_entry';
-import axios from 'axios'
+import axios from '../../../src/auth'
 
 class ShiftSchedule extends Component{
     state = {

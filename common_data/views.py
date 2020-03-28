@@ -16,6 +16,7 @@ from wkhtmltopdf import utils as pdf_tools
 from wkhtmltopdf.views import PDFTemplateView
 from messaging.views import UserEmailConfiguredMixin
 from messaging.models import UserProfile
+from rest_framework.authtoken.models import Token
 
 from common_data import filters, models, serializers, forms
 from common_data.models import GlobalConfig, Organization
@@ -36,12 +37,10 @@ import json
 from common_data.schedules import backup_db
 from common_data.middleware.license import license_check
 import urllib
-from background_task.models import Task
 
 
 try:
-    if not Task.objects.filter(task_name="common_data.schedules.backup_db").exists():
-        backup_db(repeat=Task.DAILY)
+    backup_db(repeat=Task.DAILY)
 except:
     pass
 
@@ -651,3 +650,14 @@ def current_db(request):
 class ConfigAPIView(RetrieveAPIView):
     queryset = GlobalConfig.objects.all()
     serializer_class = serializers.ConfigSerializer
+
+
+def get_token_for_current_user(request):
+    if not request.user.is_anonymous:
+        token, _ = Token.objects.get_or_create(user=request.user)
+        return JsonResponse({'token': token.key})
+
+    return JsonResponse({
+        'detail': "The request's user is not signed in",
+        'token': ''
+        })

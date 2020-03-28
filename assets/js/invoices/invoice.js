@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import axios from 'axios';
+import axios from '../src/auth';
 import {DeleteButton} from '../src/common';
 import EntryWidget from './invoice_entry';
 import Totals from './invoice_totals';

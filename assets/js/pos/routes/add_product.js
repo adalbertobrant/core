@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import ProductCard from '../components/product_card'
 import SearchableWidget from '../../src/components/searchable_widget'
-import axios from 'axios'
+import axios from '../../src/auth'
 
 class ManualAddProduct extends Component{
     state = {

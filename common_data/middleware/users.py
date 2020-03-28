@@ -38,7 +38,9 @@ class UserTestMiddleware(object):
             '/employees/pay-slip-detail/',
             '/employees/pay-slip-pdf/',
             '/employees/time-logger',
-            '/base/create-superuser/'
+            '/base/create-superuser/',
+            '/employees/log-in-out/',
+            '/employees/get-current-shift/' # for the time logger
 
         ]
 
@@ -50,7 +52,7 @@ class UserTestMiddleware(object):
                 request.path.startswith("/media") or \
                 (request.path.startswith("/planner") and not request.user.is_anonymous) or \
                 ("calendar" in request.path and not request.user.is_anonymous) or \
-                ("api" in request.path and not request.user.is_anonymous) or \
+                "api" in request.path or \
                 request.path in exempted_urls:
             return self.get_response(request)
 

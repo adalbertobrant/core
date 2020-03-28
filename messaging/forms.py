@@ -9,7 +9,7 @@ from draftjs_exporter.html import HTML as exporterHTML
 import json
 import urllib
 from cryptography.fernet import Fernet
-from messaging.email_api.secrets import get_secret_key
+# from messaging.email_api.secrets import get_secret_key
 
 
 class EmailForm(BootstrapMixin, forms.ModelForm):

@@ -16,12 +16,15 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls import static
 from django.contrib import admin
-from django.urls import include, re_path
+from django.urls import include, re_path, path
 from planner.views import ReactCalendar
 from invoicing.views import Home
+from rest_framework.authtoken.views import obtain_auth_token 
+
 urlpatterns = [
     re_path('admin/', admin.site.urls),
     re_path(r'^$', Home.as_view()),
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
     re_path(r'^base/', include(('common_data.urls', 'base'), namespace='base')),
     re_path(r'^invoicing/', include(("invoicing.urls",
                                      'invoicing'), namespace="invoicing")),

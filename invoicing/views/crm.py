@@ -18,6 +18,8 @@ import calendar
 from dateutil.relativedelta import relativedelta
 from common_data.utilities.plotting import CustomStyle
 from rest_framework import viewsets
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponseRedirect
 
 CREATE = os.path.join('common_data', 'crispy_create_template.html')
 
@@ -166,16 +168,29 @@ class TaskCreateView(CreateView):
 
     def form_valid(self, form):
         resp = super().form_valid(form)
-        evt = Event.objects.create(
-            date=self.object.due,
-            description=self.object.description,
-            label=self.object.title,
-            owner=self.object.assigned.employee
-        )
-        self.object.event = evt
-        self.object.save()
+        if self.object.status== 'planned':
+            evt = Event.objects.create(
+                date=self.object.due,
+                description=self.object.description,
+                label=self.object.title,
+                owner=self.object.assigned.employee
+            )
+            self.object.event = evt
+            self.object.save()
+
         return resp
 
+
+def complete_task(request, task=None):
+    obj = get_object_or_404(models.Task, pk=task)
+    obj.status='completed'
+    obj.save()
+    if obj.event:
+        obj.event.completed = True
+        obj.event.completion_time = datetime.datetime.now()
+        obj.event.save()
+
+    return HttpResponseRedirect(reverse('invoicing:lead-details', kwargs={'pk': obj.lead.pk}))
 
 class TaskDetailView(DetailView):
     template_name = os.path.join('invoicing', 'crm', 'tasks', 'detail.html')

@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import  ExpenseEntry from './entries/expense'
 import  ServiceEntry from './entries/service'
 import  ProductEntry from './entries/product'
-import axios from 'axios';
+import axios from '../src/auth';
+
 
 
 class EntryWidget extends Component{

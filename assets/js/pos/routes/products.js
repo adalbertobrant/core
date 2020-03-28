@@ -1,6 +1,6 @@
 import React from 'react'
 import SearchableWidget from '../../src/components/searchable_widget'
-import axios from 'axios'
+import axios from '../../src/auth'
 
 class PriceCheckPage extends React.Component{
     state = {

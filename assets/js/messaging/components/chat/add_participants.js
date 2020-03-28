@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactModal from 'react-modal';
-import axios from 'axios';
+import axios from '../../../src/auth';
 
 const UserCard = (props) =>{
     

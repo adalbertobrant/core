@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import SelectedItemsListWidget from "../components/list_widget";
 import SearchableTextInputWidget from "./text_input";
-import axios from "axios";
+import axios from "../../auth";
 import $ from "jquery";
 
 /**

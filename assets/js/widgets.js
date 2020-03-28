@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import TreeSelectWidget from '../js/src/tree_select_widget';
-import axios from 'axios';
+import axios from '../js/src/auth';
 import PricingWidget from "../js/inventory/pricing_widget";
 import {ImgPreview} from '../js/src/common';
 import StepsWidget from '../js/src/steps/container/root';

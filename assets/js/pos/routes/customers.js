@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import styles from '../container/app.css'
 import SearchableWidget from '../../src/components/searchable_widget'
-import axios from 'axios'
+import axios from '../../src/auth'
 import {setDataPayload} from '../../src/utils'
 
 class CustomersPage extends Component{

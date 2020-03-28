@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import styles from './inbox.css';
 import FolderList from '../components/email/folder';
 import MessageDetail from '../components/email/message_detail';
-import axios from 'axios';
+import axios from '../../src/auth';
 import {Aux} from '../../src/common';
 import Compose from '../components/email/compose'
 

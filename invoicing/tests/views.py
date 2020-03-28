@@ -23,7 +23,8 @@ from invoicing.views import (CustomerStatementPDFView,
                              LeadsBySourcePDFView,
                              LeadsByStatusPDFView,
                              LeadsByOwnerPDFView,
-                             SalesActivitiesPDFView
+                             SalesActivitiesPDFView,
+                             InvoicePDFView
                              )
 from common_data.tests import create_test_common_entities
 from inventory.tests.model_util import InventoryModelCreator
@@ -577,7 +578,7 @@ class InvoiceViewTests(TestCase):
         self.assertEqual(resp.status_code, 302)
 
     def test_get_invoice_detail_page(self):
-        resp = self.client.get(reverse('invoicing:invoice-detail',
+        resp = self.client.get(reverse('invoicing:invoice-details',
                                        kwargs={'pk': 1}))
         self.assertEqual(resp.status_code, 200)
 
@@ -606,7 +607,7 @@ class InvoiceViewTests(TestCase):
         self.assertEqual(resp.status_code, 302)
 
     def test_get_invoice_list_page(self):
-        resp = self.client.get(reverse('invoicing:invoice-list'))
+        resp = self.client.get(reverse('invoicing:invoices-list'))
         self.assertEqual(resp.status_code, 200)
 
     def test_get_comnbined_invoice_payment_page(self):
@@ -633,9 +634,12 @@ class InvoiceViewTests(TestCase):
 
     def test_invoice_pdf_page(self):
         # assume that the detail view can be converted to a pdf
-        resp = self.client.get(reverse('invoicing:invoice-detail',
-                                       kwargs={'pk': 1}))
+        kwargs = {'pk': 1}
+        req = RequestFactory().get(reverse('invoicing:invoice-pdf',
+                                           kwargs=kwargs))
+        resp = InvoicePDFView.as_view()(req, **kwargs)
         self.assertEqual(resp.status_code, 200)
+    
 
     def test_get_invoice_email_page(self):
         with self.assertRaises(Exception):
@@ -1083,6 +1087,11 @@ class CRMViewTests(TestCase):
         resp = self.client.get(reverse('invoicing:create-lead-task',
             kwargs={'pk':1}))
         self.assertEqual(resp.status_code, 200)
+
+    def test_complete_task(self):
+        resp = self.client.get(reverse('invoicing:complete-task',
+            kwargs={'task':1}))
+        self.assertEqual(resp.status_code, 302)
 
     def test_post_create_lead_task(self):
         resp = self.client.post(reverse('invoicing:create-lead-task', kwargs={'pk':1}),

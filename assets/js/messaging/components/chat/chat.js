@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import axios from "axios";
+import axios from "../../../src/auth";
 import MessageBubble from "./bubble";
 import ChatInput from "./chat_input";
 import styles from "./chatStyles.css";

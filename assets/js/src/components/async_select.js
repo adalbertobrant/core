@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
+import axios from '../auth';
+
 /**
  * props 
  * dataURL - string with the data that populates the form

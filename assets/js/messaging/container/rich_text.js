@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Editor, EditorState, RichUtils, convertFromHTML, ContentState } from "draft-js";
 import "draft-js/dist/Draft.css";
 import styles from './richEditor.css';
-import axios from 'axios';
+import axios from '../../src/auth';
 import BlockStyleToolbar, {getBlockStyle} from '../components/block_style_toolbar';
 //import ErrorBoundary from '../../src/components/error_boundary';
 

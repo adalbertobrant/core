@@ -1,9 +1,8 @@
 import React, {useState, useEffect} from 'react'
 
-import axios from 'axios'
+import axios from '../src/auth'
 
-axios.defaults.xsrfCookieName = "csrftoken";
-axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+
     
 const taskList =(props) =>{
     const [taskList, setTaskList] = useState([])

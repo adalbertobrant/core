@@ -1,5 +1,5 @@
 import React from 'react'
-import axios from 'axios'
+import axios from '../../src/auth'
 import Month from './components/month'
 import TaskList from './components/task_list'
 import TaskBarChart from './components/tasks'

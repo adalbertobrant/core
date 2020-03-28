@@ -6,6 +6,8 @@ urlpatterns = [
     re_path(r'^workflow/?$', workflow, name="workflow"),
     re_path(r'^config-wizard', views.ConfigWizard.as_view(),
             name='config-wizard'),
+    re_path(r'^current-user-token/?', views.get_token_for_current_user,
+            name='current-user-token'),
     re_path(r'^create-superuser/?$',
             views.CreateSuperUserView.as_view(), name='create-superuser'),
     re_path(r'^license-check/?$', views.LicenseCheck.as_view(),

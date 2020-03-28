@@ -10,7 +10,6 @@ from latrom import settings
 import subprocess
 from common_data.utilities.mixins import ContactsMixin
 from django.shortcuts import reverse
-from background_task.models import Task
 
 
 class PhoneNumber(models.Model):

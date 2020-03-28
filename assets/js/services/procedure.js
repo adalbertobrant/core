@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import MultipleSelectWidget from '../src/multiple_select/containers/root';
 import TextBoxListWidget from '../src/text_box_list';
-import $ from 'jquery';
-import axios from 'axios';
+
 
 class ProcedureViews extends Component{
     render(){

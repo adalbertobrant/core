@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import $ from 'jquery';
-import axios from 'axios';
+import axios from './auth';
 
 class TextBoxListWidget extends Component{
     state = {

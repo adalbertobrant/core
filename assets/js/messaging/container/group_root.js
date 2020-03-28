@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import axios from 'axios';
+import axios from '../../src/auth';
 import GroupChatWidget from '../components/chat/group';
 import {Aux} from '../../src/common';
 import ChatHeader from '../components/chat/chat_header';

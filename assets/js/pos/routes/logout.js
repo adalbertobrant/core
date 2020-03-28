@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import styles from '../container/app.css'
-import axios from 'axios'
+import axios from '../../src/auth'
 
 class LogoutPage extends Component{
     endSessionHandler = () =>{

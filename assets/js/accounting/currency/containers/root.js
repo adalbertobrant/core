@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import Calculator from '../components/calculator';
 import CurrencyList from '../components/currency_list';
 import ExchangeTable from '../components/exchange_table';
-import axios from 'axios';
+import axios from '../../../src/auth';
 import $ from 'jquery';
 
 class CurrencyConverter extends Component{

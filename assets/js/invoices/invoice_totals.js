@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import axios from 'axios';
-import $ from 'jquery';
+
 
 export const Aux = (props) => props.children;
 

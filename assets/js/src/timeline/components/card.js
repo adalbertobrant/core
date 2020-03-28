@@ -14,7 +14,7 @@ class Card extends Component{
         return(
             <div className={styles.timelineCard}
                 style={{
-                    height: this.state.showOptions ? '200px' : '100px'
+                    height: this.state.showOptions ? '240px' : '120px'
                 }}>
                 <div className={styles.timelineCardLeft}>
                     <div className={styles.timelinePoint}></div>
@@ -24,7 +24,7 @@ class Card extends Component{
                     <p>{this.props.title}</p>
                             
                     <span onClick={this.toggleOptions} style={{
-                        padding: '3px',
+                        padding: '6px',
                         display: 'block',
                     }}><i  className="fa fa-ellipsis-h" ></i></span>
                     <div >

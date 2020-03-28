@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {setDataPayload} from '../utils';
-import axios from 'axios';
+import axios from '../auth';
 
 /**
  * Props 
