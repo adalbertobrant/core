@@ -24,7 +24,7 @@ Task Details
                             {{object.created}}
                             <p class="card-text"><i class="fas fa-clock" aria-hidden="true"></i> {{object.due}}</p>
                             <p class="card-text"><i class="fas fa-user" aria-hidden="true"></i> {{object.assigned}}</p>
-                             <div class="btn-group">
+                            <div class="btn-group">
                                             {% if object.status != 'completed' %}
                                                 <a href="{% url 'invoicing:complete-task' task=object.pk %}" class="btn btn-sm btn-primary">Complete</a>
                                             {% endif %}

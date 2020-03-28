@@ -4,7 +4,7 @@ $.ajax({
     method: 'GET',
     url: '/base/current-user-token'
 }).then(res =>{
-    if(res.token == ''){
+    if(res.token == '' && window.location.href.indexOf('login') == -1){
         alert('The current session has expired. Please login again.')
         window.location.href = '/login'
     }else{

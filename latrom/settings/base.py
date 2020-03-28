@@ -14,6 +14,7 @@ import environ
 
 env = environ.Env()
 environ.Env.read_env()
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
@@ -75,8 +76,6 @@ REST_FRAMEWORK = {
 LOGIN_REQUIRED_FOR_CRUD = True
 LOGOUT_REDIRECT_URL = '/login'
 PROJECT_NAME = 'Smart business solutions'
-#a6b7a875d7a1c48dab5fdafac181419ce3418605
-#Authorization: Token <token_value>
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_AGE = 86400  #when page closes
