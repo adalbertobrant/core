@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from common_data.models import GlobalConfig
+from common_data.models import GlobalConfig, Individual
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -13,3 +13,9 @@ class ConfigSerializer(serializers.ModelSerializer):
     class Meta:
         model = GlobalConfig
         fields = "pos_supervisor_password",
+
+
+class IndividualSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Individual
+        fields = '__all__'

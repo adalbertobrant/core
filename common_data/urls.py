@@ -1,7 +1,15 @@
 from django.urls import path, re_path
 
 from common_data import views
+from rest_framework import routers
+
+individual_router = routers.DefaultRouter()
+individual_router.register('api/individual', views.IndividualViewset)
+
+
 workflow = views.WorkFlowView.as_view()
+
+
 urlpatterns = [
     re_path(r'^workflow/?$', workflow, name="workflow"),
     re_path(r'^config-wizard', views.ConfigWizard.as_view(),
@@ -61,4 +69,4 @@ urlpatterns = [
          name='blank-report'),
     path('api/current-db/', views.current_db, name='api-current-db'),
     path('api/config/<int:pk>', views.ConfigAPIView.as_view())
-]
+] + individual_router.urls

@@ -39,7 +39,7 @@ class PayslipSerializer(serializers.ModelSerializer):
 
 
 class AttendanceLineSerializer(serializers.ModelSerializer):
-    working_hours = serializers.SerializerMethodField()
+    working_hours = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = models.AttendanceLine
@@ -87,3 +87,9 @@ class ShiftScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ShiftSchedule
         fields = "__all__"
+
+
+class LeaveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Leave
+        fields = '__all__'
