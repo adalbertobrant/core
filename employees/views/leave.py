@@ -14,6 +14,8 @@ from employees.filters import LeaveRequestFilter
 from django.db.models import Q
 import datetime
 from django.http import JsonResponse
+from employees import serializers
+from rest_framework import viewsets
 
 
 class LeaveCalendarView(TemplateView):
@@ -133,3 +135,8 @@ def get_year_data(request, year=None):
 
     }
     return JsonResponse(data)
+
+
+class LeaveViewset(viewsets.ModelViewSet):
+    queryset = models.Leave.objects.all()
+    serializer_class = serializers.LeaveSerializer

@@ -1,6 +1,12 @@
 from django.urls import re_path
+from rest_framework import routers
 
 from employees import views
+
+
+leave_router = routers.DefaultRouter()
+leave_router.register(r'^api/leave', views.LeaveViewset)
+
 
 leave_urls = [
     re_path(r'^leave-request/?$', views.LeaveDayRequestView.as_view(),
@@ -19,5 +25,4 @@ leave_urls = [
             views.get_month_data),
     re_path(r'^api/year/(?P<year>[\d]{4})/?$',
             views.get_year_data)
-
-]
+] + leave_router.urls

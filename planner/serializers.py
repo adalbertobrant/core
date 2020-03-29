@@ -18,7 +18,7 @@ class EventParticipantSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
-    participants = EventParticipantSerializer(many=True)
+    participants = EventParticipantSerializer(many=True, read_only=True)
 
     class Meta:
         model = models.Event

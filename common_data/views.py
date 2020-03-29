@@ -26,6 +26,7 @@ from common_data.utilities import (ContextMixin,
                                    MultiPagePDFDocument,
                                    ConfigWizardBase)
 from rest_framework.generics import RetrieveAPIView, ListAPIView
+from rest_framework import viewsets
 from django.contrib.auth.models import User
 from django.apps import apps
 from django.conf import settings
@@ -661,3 +662,7 @@ def get_token_for_current_user(request):
         'detail': "The request's user is not signed in",
         'token': ''
         })
+
+class IndividualViewset(viewsets.ModelViewSet):
+    queryset = models.Individual.objects.all()
+    serializer_class = serializers.IndividualSerializer

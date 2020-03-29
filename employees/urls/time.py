@@ -7,6 +7,9 @@ from employees import views
 timesheet_router = routers.DefaultRouter()
 timesheet_router.register(r'^api/timesheet', views.TimeSheetViewset)
 
+attendance_router = routers.DefaultRouter()
+attendance_router.register(r'^api/attendance', views.AttendanceLineViewset)
+
 timesheet_urls = [
     re_path(r'^timesheet/create/?$', views.CreateTimeSheetView.as_view(),
             name='timesheet-create'),
@@ -20,4 +23,4 @@ timesheet_urls = [
             name='time-logger'),
     
 
-] + timesheet_router.urls
+] + timesheet_router.urls + attendance_router.urls

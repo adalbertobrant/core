@@ -107,6 +107,10 @@ class TimeSheetViewset(viewsets.ModelViewSet):
     queryset = models.EmployeeTimeSheet.objects.all()
     serializer_class = serializers.TimeSheetSerializer
 
+class AttendanceLineViewset(viewsets.ModelViewSet):
+    queryset = models.AttendanceLine.objects.all()
+    serializer_class = serializers.AttendanceLineSerializer
+
 
 class TimeLoggerView(ContextMixin, TemplateView):
     template_name = os.path.join('employees', 'timesheet', 'logger.html')
