@@ -9,7 +9,9 @@ from django.views.generic import DetailView, TemplateView
 from django.views.generic.edit import (CreateView, DeleteView, FormView,
                                        UpdateView)
 from django_filters.views import FilterView
-from rest_framework import viewsets
+from rest_framework.response import Response as DRFResponse
+from rest_framework import viewsets, status,generics
+from django.http import Http404
 
 from common_data.utilities import ContextMixin
 from common_data.views import PaginationMixin
@@ -110,6 +112,30 @@ class TimeSheetViewset(viewsets.ModelViewSet):
 class AttendanceLineViewset(viewsets.ModelViewSet):
     queryset = models.AttendanceLine.objects.all()
     serializer_class = serializers.AttendanceLineSerializer
+
+# For the mobile app
+class LatestAttendanceLineView(generics.GenericAPIView):
+    model = models.AttendanceLine
+    serializer_class = serializers.AttendanceLineSerializer
+
+    def get_queryset(self):
+        employee = models.Employee.objects.get(
+            pk=self.kwargs['employee'])
+        lines = models.AttendanceLine.objects.filter(
+            timesheet__employee=employee)
+        if not lines.exists():
+            raise Http404
+        return lines.latest('pk')
+        
+    def get(self, *args, **kwargs):
+        try:
+            qs = self.get_queryset()
+        except Http404:
+            return DRFResponse(status=status.HTTP_404_NOT_FOUND)
+        
+        data = self.serializer_class(qs).data
+        return DRFResponse(data)
+
 
 
 class TimeLoggerView(ContextMixin, TemplateView):

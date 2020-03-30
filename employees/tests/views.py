@@ -6,6 +6,7 @@ from django.shortcuts import reverse
 from django.test import Client, TestCase
 from django.test.client import RequestFactory
 from django.contrib.auth.models import User
+from rest_framework.test import APIRequestFactory, force_authenticate
 
 from employees.models import *
 from accounting.models import Account, JournalEntry
@@ -16,7 +17,8 @@ from employees.views import (
     EmployeeAttendanceReportPDFView,
     PayslipPDFView,
     PayrollPDFReport,
-    LeaveReportPDFView)
+    LeaveReportPDFView,
+    LatestAttendanceLineView)
 
 TODAY = datetime.date.today()
 
@@ -993,6 +995,13 @@ class TimesheetViewTests(TestCase):
     def test_get_time_logger_page(self):
         resp = self.client.get('/employees/time-logger')
         self.assertEqual(resp.status_code, 200)
+
+    def test_get_latest_attendance_line(self):
+        kwargs = {'employee': 1}
+        req = APIRequestFactory().get('/employees/api/latest-attendance-line/1/', kwargs=kwargs)
+        force_authenticate(req, self.user)
+        resp = LatestAttendanceLineView.as_view()(req, **kwargs)
+        self.assertEqual(resp.status_code, 404)
 
     def test_get_shifts(self):
         resp = self.client.get('/employees/get-current-shift/')
