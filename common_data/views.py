@@ -26,7 +26,7 @@ from common_data.utilities import (ContextMixin,
                                    MultiPagePDFDocument,
                                    ConfigWizardBase)
 from rest_framework.generics import RetrieveAPIView, ListAPIView
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from django.contrib.auth.models import User
 from django.apps import apps
 from django.conf import settings
@@ -666,3 +666,15 @@ def get_token_for_current_user(request):
 class IndividualViewset(viewsets.ModelViewSet):
     queryset = models.Individual.objects.all()
     serializer_class = serializers.IndividualSerializer
+
+
+class IndividualBulkCreateAPIView(generics.CreateAPIView):
+    queryset = models.Individual.objects.all()
+    
+    def get_serializer(self, *args, **kwargs):
+        return serializers.BulkIndividualSerializer(many=True, *args, **kwargs)    
+
+
+class OrganizationViewset(viewsets.ModelViewSet):
+    queryset = models.Organization.objects.all()
+    serializer_class = serializers.OrganizationSerializer

@@ -229,7 +229,7 @@ class PayrollDate(models.Model):
 
     @property
     def date_suffix(self):
-        suffices = ['st', 'nd', 'rd'] + ['th' for i in range(3, 29)]
+        suffices = ['st', 'nd', 'rd'] + ['th' for i in range(3, 31)]
         return suffices[self.date - 1]
 
     def get_absolute_url(self):

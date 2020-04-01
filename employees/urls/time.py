@@ -21,6 +21,8 @@ timesheet_urls = [
             views.TimeSheetDetailView.as_view(), name='timesheet-detail'),
     re_path(r'^time-logger/?$', views.TimeLoggerView.as_view(),
             name='time-logger'),
-    
+    path('api/latest-attendance-line/<int:employee>/', 
+        views.LatestAttendanceLineView.as_view(), 
+        name='api-latest-attendance-line')
 
 ] + timesheet_router.urls + attendance_router.urls
