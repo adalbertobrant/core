@@ -326,7 +326,7 @@ class ContactListView(PaginationMixin, FilterView):
     }
 
     def get_queryset(self):
-        return Individual.objects.filter(organization__isnull=False)
+        return Individual.objects.filter()
 
 
 class SalesTeamCreateView(CreateView):
@@ -370,3 +370,12 @@ class CreateContact(IndividualCreateView):
 class LeadAPIViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.LeadSerializer
     queryset = models.Lead.objects.all()
+
+
+class LeadTaskAPIViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.LeadTaskSerializer
+    queryset = models.Task.objects.all()
+
+class InteractionAPIViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.InteractionSerializer
+    queryset = models.Interaction.objects.all()

@@ -84,3 +84,14 @@ class LeadSerializer(serializers.ModelSerializer):
     class Meta:
         model =Lead
         fields = '__all__'
+
+class LeadTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model =Task
+        fields = '__all__'
+
+
+class InteractionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model =Interaction
+        fields = '__all__'

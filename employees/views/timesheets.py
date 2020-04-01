@@ -11,6 +11,7 @@ from django.views.generic.edit import (CreateView, DeleteView, FormView,
 from django_filters.views import FilterView
 from rest_framework.response import Response as DRFResponse
 from rest_framework import viewsets, status,generics
+from rest_framework.decorators import api_view
 from django.http import Http404
 
 from common_data.utilities import ContextMixin
@@ -160,17 +161,8 @@ def get_current_shift_api(request):
 
     return JsonResponse(shifts, safe=False)
 
-def timesheet_login(request):
-    data = json.loads(request.body)
-    e_num = data['employee']
-    employee = models.Employee.objects.get(pk=e_num)
 
-    if data['pin'] != str(employee.pin):
-        return JsonResponse({'status': 'incorrect pin'})
-
-    # check if a timesheet for this employee for this month exists, if not
-    # create a new one. Check if today has a attendance line if not create a new
-    # one. Check if this line has been logged in, if so log out if not log in.
+def common_api_login(employee):
     NOW = datetime.datetime.now().time()
     TODAY = datetime.date.today()
 
@@ -215,3 +207,21 @@ def timesheet_login(request):
             'status': 'ok',
             'value': 'out'
             })
+
+@api_view(['GET'])
+def api_timesheet_login(request, pk=None):
+    employee = models.Employee.objects.get(pk=pk)
+    return common_api_login(employee)
+
+def timesheet_login(request):
+    data = json.loads(request.body)
+    e_num = data['employee']
+    employee = models.Employee.objects.get(pk=e_num)
+
+    if data['pin'] != str(employee.pin):
+        return JsonResponse({'status': 'incorrect pin'})
+
+    # check if a timesheet for this employee for this month exists, if not
+    # create a new one. Check if today has a attendance line if not create a new
+    # one. Check if this line has been logged in, if so log out if not log in.
+    return common_api_login(employee)

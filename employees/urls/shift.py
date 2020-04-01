@@ -12,6 +12,7 @@ shift_urls = [
     path('shift/create', views.ShiftCreateView.as_view(), name='create-shift'),
     path('get-current-shift/', views.get_current_shift_api, name='get-current-shift'),
     path('log-in-out/', views.timesheet_login, name='log-in-out'),
+    path('api/log-in-out/<int:pk>/', views.api_timesheet_login, name='api-log-in-out'),
     path('shift/list', views.ShiftListView.as_view(), name='list-shift'),
     path('shift/detail/<int:pk>',
          views.ShiftDetailView.as_view(),

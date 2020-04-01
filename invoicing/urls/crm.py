@@ -6,6 +6,12 @@ from rest_framework import routers
 lead_router = routers.DefaultRouter()
 lead_router.register('api/lead', LeadAPIViewSet)
 
+interaction_router = routers.DefaultRouter()
+interaction_router.register('api/interaction', InteractionAPIViewSet)
+
+task_router = routers.DefaultRouter()
+task_router.register('api/task', LeadTaskAPIViewSet)
+
 crm_urls = [
     path('crm-dashboard/', CRMDashboard.as_view(), name='crm-dashboard'),
     path('crm-async-dashboard/', CRMAsyncDashboard.as_view(),
@@ -52,4 +58,4 @@ crm_urls = [
          name='list-interactions'),
     path('interaction-detail/<int:pk>',
          InteractionDetailView.as_view(), name='interaction-detail'),
-] + lead_router.urls
+] + lead_router.urls + task_router.urls + interaction_router.urls

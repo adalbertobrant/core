@@ -6,6 +6,9 @@ from rest_framework import routers
 individual_router = routers.DefaultRouter()
 individual_router.register('api/individual', views.IndividualViewset)
 
+organization_router = routers.DefaultRouter()
+organization_router.register('api/organization', views.OrganizationViewset)
+
 
 workflow = views.WorkFlowView.as_view()
 
@@ -68,5 +71,6 @@ urlpatterns = [
     path('blank-report/', views.ReportBlankView.as_view(),
          name='blank-report'),
     path('api/current-db/', views.current_db, name='api-current-db'),
-    path('api/config/<int:pk>', views.ConfigAPIView.as_view())
-] + individual_router.urls
+    path('api/config/<int:pk>', views.ConfigAPIView.as_view()),
+    path('api/bulk-individuals-create/', views.IndividualBulkCreateAPIView.as_view())
+] + individual_router.urls + organization_router.urls
