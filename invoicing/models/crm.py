@@ -77,7 +77,7 @@ class Lead(models.Model):
                              blank=True,
                              on_delete=models.SET_NULL)
     created = models.DateTimeField(auto_now=True)
-    notes = models.ManyToManyField('common_data.Note')
+    notes = models.ManyToManyField('common_data.Note', blank=True)
     projected_closing = models.DateField(blank=True, null=True)
     source = models.ForeignKey('invoicing.LeadSource',
                                on_delete=models.SET_DEFAULT, default=1)

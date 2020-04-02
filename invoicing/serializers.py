@@ -97,8 +97,8 @@ class LeadSourceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class LeadSerializer(serializers.ModelSerializer):
-    task_set=LeadTaskSerializer(many=True)
-    interaction_set=InteractionSerializer(many=True)
+    task_set=LeadTaskSerializer(many=True, read_only=True)
+    interaction_set=InteractionSerializer(many=True, read_only=True)
 
     class Meta:
         model =Lead
