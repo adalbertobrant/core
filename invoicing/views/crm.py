@@ -17,7 +17,7 @@ import pygal
 import calendar
 from dateutil.relativedelta import relativedelta
 from common_data.utilities.plotting import CustomStyle
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 
@@ -379,3 +379,8 @@ class LeadTaskAPIViewSet(viewsets.ModelViewSet):
 class InteractionAPIViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.InteractionSerializer
     queryset = models.Interaction.objects.all()
+
+
+class LeadSourceAPIView(generics.ListAPIView):
+    serializer_class = serializers.LeadSourceSerializer
+    queryset = models.LeadSource.objects.all()

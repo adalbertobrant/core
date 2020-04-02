@@ -41,6 +41,8 @@ crm_urls = [
          name='update-lead-source'),
     path('list-lead-sources', LeadSourceListView.as_view(),
          name='list-lead-sources'),
+     path('api-list-lead-sources', LeadSourceAPIView.as_view(),
+         name='api-list-lead-sources'),
     path('create-interaction-type', InteractionTypeCreateView.as_view(),
          name='create-interaction-type'),
     path('update-interaction-type/<int:pk>',
