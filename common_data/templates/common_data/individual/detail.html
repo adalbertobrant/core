@@ -33,7 +33,7 @@ Individual Details
             <div class="card shadow accent-md">
                 <div class="card-body">
                     <h4 class="card-title">Organization </h4>
-                    <p class="card-text"><a href="{% url 'base:organization-detail' pk=object.organization.pk %}" class="tertiary-link">{{object.organization.legal_name}}</a></p>
+                    <p class="card-text"><a href="{% url 'base:organization-details' pk=object.organization.pk %}" class="tertiary-link">{{object.organization.legal_name}}</a></p>
                     <p class="card-text"> <i class="fas fa-home    "></i> {{object.organization.business_address}}</p>
                     <p class="card-text">
                         {% if object.organization.website %}
@@ -63,7 +63,7 @@ Individual Details
                             <tr>
                                 <td >{{intr.timestamp.date}}</td>
                                 <td >{{intr.description|truncatechars:80}}</td>
-                                <td style='text-align:center;' ><a href=" {% url 'invoicing:interaction-detail' pk=intr.pk %} "><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a></td>
+                                <td style='text-align:center;' ><a href=" {% url 'invoicing:interaction-details' pk=intr.pk %} "><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a></td>
                             </tr>
                             {% endfor %}
                         </tbody>

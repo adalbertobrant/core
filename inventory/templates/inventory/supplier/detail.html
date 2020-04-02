@@ -136,7 +136,7 @@ Vendor Details
                                     {% for m in object.organization.members %}
                                     <tr>
 
-                                        <td><a href="{% url 'base:individual-detail' pk=m.pk %}"
+                                        <td><a href="{% url 'base:individual-details' pk=m.pk %}"
                                                 >{{m.full_name}}</a></td>
                                         <td>{{m.phone}}</td>
                                         <td>{{m.email}}</td>

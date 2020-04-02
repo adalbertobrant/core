@@ -58,7 +58,7 @@ class AccountingServiceTest(TestCase):
             reference=""
         )
         self.service.run_recurring_expenses()
-        self.assertEqual(Expense.objects.all().count(), 2)
+        self.assertEqual(Expense.objects.all().count(), 1)
 
     def test_run_interest_on_accounts(self):
         InterestBearingAccount.objects.create(

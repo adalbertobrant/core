@@ -67,7 +67,7 @@ class Individual(ContactsMixin, Person, SoftDeletionModel):
         return self.full_name
 
     def get_absolute_url(self):
-        return reverse("base:individual-detail", kwargs={"pk": self.pk})
+        return reverse("base:individual-details", kwargs={"pk": self.pk})
 
 
 class Note(models.Model):
@@ -104,7 +104,7 @@ class Organization(ContactsMixin, models.Model):
         individual.save()
 
     def get_absolute_url(self):
-        return reverse("base:organization-detail", kwargs={"pk": self.pk})
+        return reverse("base:organization-details", kwargs={"pk": self.pk})
 
     @property
     def interactions(self):

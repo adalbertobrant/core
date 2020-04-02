@@ -147,7 +147,7 @@ class Task(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("invoicing:task-detail", kwargs={"pk": self.pk})
+        return reverse("invoicing:task-details", kwargs={"pk": self.pk})
 
 
 class SalesTeam(models.Model):
