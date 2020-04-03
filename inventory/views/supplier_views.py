@@ -11,7 +11,7 @@ from django.views.generic import DetailView
 from django.views.generic.edit import (CreateView, DeleteView, FormView,
                                        UpdateView)
 from django_filters.views import FilterView
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListCreateAPIView
 
 from common_data.models import Individual, Organization
 from common_data.utilities import *
@@ -233,7 +233,7 @@ class SupplierDeleteView(
     model = models.Supplier
 
 
-class SupplierListAPIView(ListAPIView):
+class SupplierListAPIView(ListCreateAPIView):
     serializer_class = serializers.SupplierSerializer
     queryset = models.Supplier.objects.all()
 

@@ -20,7 +20,7 @@ class SalesRepsSerializer(serializers.ModelSerializer):
 
 
 class CustomerSerializer(serializers.ModelSerializer):
-    expense_set = ExpenseSerializer(many=True)
+    expense_set = ExpenseSerializer(many=True, read_only=True)
 
     class Meta:
         model = Customer
