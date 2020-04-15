@@ -488,9 +488,12 @@ def create_note(request):
             request, 'Only users linked to employees can write notes')
         return JsonResponse({'status': 'error'})
 
+    attachment = request.FILES.get('attachment')
+
     note = models.Note.objects.create(
         author=request.user.employee,
-        note=request.POST['note']
+        note=request.POST['note'],
+        attachment=attachment
     )
 
     NOTE_TARGET[request.POST['target']].objects.get(
@@ -627,7 +630,8 @@ def document_notes_api(request, document=None, id=None):
     notes = [{
         'note': i.note, 
         'author': i.author.pk,
-        'timestamp': i.timestamp.strftime("%d %b '%y, %H:%M")
+        'timestamp': i.timestamp.strftime("%d %b '%y, %H:%M"),
+        'attachment': i.attachment.url if i.attachment else ''
         
         }
                  for i in doc.notes.all()]

@@ -1,0 +1,27 @@
+.emojiBox {
+    display: flex;
+    background-color: white;
+    box-shadow: 0px 2px 4px #ccc;
+    padding: 5px;
+    border-radius: 5px;
+    flex-direction: column;
+    position: absolute;
+    top: 50px;
+    right: 0px
+}
+
+.emojiRow {
+    display: flex;
+    flex-direction: row;
+}
+
+.emoji {
+    padding: 2px 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.emoji:hover {
+    background-color: #ccc;
+}

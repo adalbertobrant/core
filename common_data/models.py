@@ -72,6 +72,7 @@ class Individual(ContactsMixin, Person, SoftDeletionModel):
 
 class Note(models.Model):
     timestamp = models.DateTimeField(auto_now=True)
+    attachment= models.FileField(upload_to='notes/', blank=True, null=True)
     author = models.ForeignKey('employees.employee', on_delete=models.SET_NULL,
                                null=True)
     note = models.TextField()
