@@ -73,7 +73,7 @@ class Note extends Component{
                         style={{textDecoration: "none" }} download target="_blank">       
                         {this.state.isImg 
                             ? <img src={this.props.attachment} alt={this.state.fileName} style={{height: '150px', width: 'auto'}}/>
-                            :  <i className={`fas fa-file-${this.state.icon} fa-7x`} style={{color: "#23374d"}} />
+                            :  <i className={`far fa-file-${this.state.icon} fa-7x`} style={{color: "#23374d"}} />
                         }
                         
                         <p style={{textAlign: 'center'}}>{this.state.fileName}</p>

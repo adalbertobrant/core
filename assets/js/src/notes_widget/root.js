@@ -105,7 +105,7 @@ class NotesWidget extends Component{
             newNotes.push({
                 note: this.state.note, 
                 author: this.state.author,
-                attachment: null,
+                attachment: "",
                 timestamp: `${new Date().getHours()}: ${new Date().getMinutes()}`
             })
             this.setState({
