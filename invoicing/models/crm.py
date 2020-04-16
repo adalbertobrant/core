@@ -77,7 +77,7 @@ class Lead(models.Model):
                              blank=True,
                              on_delete=models.SET_NULL)
     created = models.DateTimeField(auto_now=True)
-    notes = models.ManyToManyField('common_data.Note')
+    notes = models.ManyToManyField('common_data.Note', blank=True)
     projected_closing = models.DateField(blank=True, null=True)
     source = models.ForeignKey('invoicing.LeadSource',
                                on_delete=models.SET_DEFAULT, default=1)
@@ -147,7 +147,7 @@ class Task(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("invoicing:task-detail", kwargs={"pk": self.pk})
+        return reverse("invoicing:task-details", kwargs={"pk": self.pk})
 
 
 class SalesTeam(models.Model):

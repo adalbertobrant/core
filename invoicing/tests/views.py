@@ -1128,7 +1128,7 @@ class CRMViewTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_get_task_detail(self):
-        resp = self.client.get(reverse('invoicing:task-detail',
+        resp = self.client.get(reverse('invoicing:task-details',
             kwargs={'pk':1}))
         self.assertEqual(resp.status_code, 200)
 
@@ -1266,7 +1266,7 @@ class CRMViewTests(TestCase):
         self.assertEqual(resp.status_code, 302)
 
     def test_get_interaction_detail(self):
-        resp = self.client.get(reverse('invoicing:interaction-detail',
+        resp = self.client.get(reverse('invoicing:interaction-details',
             kwargs={'pk': 1}))
         self.assertEqual(resp.status_code, 200)
 

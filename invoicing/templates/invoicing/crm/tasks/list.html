@@ -25,7 +25,7 @@
                             Actions
                         </button>
                 <div class="dropdown-menu" aria-labelledby="triggerId">
-                    <a class="dropdown-item" href="{% url 'invoicing:task-detail' pk=task.pk %}"> <i class="fas fa-file" aria-hidden="true"></i> View</a>
+                    <a class="dropdown-item" href="{% url 'invoicing:task-details' pk=task.pk %}"> <i class="fas fa-file" aria-hidden="true"></i> View</a>
                     <a class="dropdown-item" href=" {% url 'invoicing:update-task' pk=task.pk %} "> <i class="fas fa-edit    "></i> Update</a>
                     {% if task.event %}
                         <a href="{% url 'planner:event-detail' pk=task.event.pk %}" class="dropdown-item"> <i class="fas fa-calendar    "></i> View Event</a>

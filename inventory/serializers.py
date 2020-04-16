@@ -83,7 +83,7 @@ class StorageMediaSerializer(serializers.ModelSerializer):
 class SupplierSerializer(serializers.ModelSerializer):
     class Meta:
         model = Supplier
-        fields = ['id', 'name']
+        exclude = 'active',
 
 
 class OrderItemSerializer(serializers.ModelSerializer):

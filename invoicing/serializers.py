@@ -20,7 +20,7 @@ class SalesRepsSerializer(serializers.ModelSerializer):
 
 
 class CustomerSerializer(serializers.ModelSerializer):
-    expense_set = ExpenseSerializer(many=True)
+    expense_set = ExpenseSerializer(many=True, read_only=True)
 
     class Meta:
         model = Customer
@@ -80,11 +80,6 @@ class InvoiceSerializer(serializers.ModelSerializer):
         fields = ['invoiceline_set', 'customer', 'id']
 
 
-class LeadSerializer(serializers.ModelSerializer):
-    class Meta:
-        model =Lead
-        fields = '__all__'
-
 class LeadTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model =Task
@@ -95,3 +90,17 @@ class InteractionSerializer(serializers.ModelSerializer):
     class Meta:
         model =Interaction
         fields = '__all__'
+
+class LeadSourceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model =LeadSource
+        fields = '__all__'
+
+class LeadSerializer(serializers.ModelSerializer):
+    task_set=LeadTaskSerializer(many=True, read_only=True)
+    interaction_set=InteractionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model =Lead
+        fields = '__all__'
+

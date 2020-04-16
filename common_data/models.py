@@ -67,11 +67,12 @@ class Individual(ContactsMixin, Person, SoftDeletionModel):
         return self.full_name
 
     def get_absolute_url(self):
-        return reverse("base:individual-detail", kwargs={"pk": self.pk})
+        return reverse("base:individual-details", kwargs={"pk": self.pk})
 
 
 class Note(models.Model):
     timestamp = models.DateTimeField(auto_now=True)
+    attachment= models.FileField(upload_to='notes/', blank=True, null=True)
     author = models.ForeignKey('employees.employee', on_delete=models.SET_NULL,
                                null=True)
     note = models.TextField()
@@ -104,7 +105,7 @@ class Organization(ContactsMixin, models.Model):
         individual.save()
 
     def get_absolute_url(self):
-        return reverse("base:organization-detail", kwargs={"pk": self.pk})
+        return reverse("base:organization-details", kwargs={"pk": self.pk})
 
     @property
     def interactions(self):

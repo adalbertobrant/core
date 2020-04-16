@@ -41,7 +41,7 @@ Organization Details
                         <h4 class="card-title">Members</h4>
                         <ul>
                             {% for m in object.members %}
-                                <li><a href="{% url 'base:individual-detail' pk=m.pk %}" class="tertiary-link">{{m}}</a></li>
+                                <li><a href="{% url 'base:individual-details' pk=m.pk %}" class="tertiary-link">{{m}}</a></li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -63,7 +63,7 @@ Organization Details
                             {% for intr in object.interactions %}
                                 <tr>
                                     <td>{{intr.timestamp.date}}</td>
-                                    <td><a href=" {% url 'invoicing:interaction-detail' pk=intr.pk %} ">{{intr.description}}</a></td>
+                                    <td><a href=" {% url 'invoicing:interaction-details' pk=intr.pk %} ">{{intr.description}}</a></td>
                                     <td>{{intr.contact}}</td>
                                 </tr>
                             {% endfor %}

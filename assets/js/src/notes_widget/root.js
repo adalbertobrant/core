@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {setDataPayload} from '../utils';
 import axios from '../auth';
-
+import EmojiBox from './emoji'
+import Note from './note'
 /**
  * Props 
  * token - csrfmiddlewaretoken string
@@ -15,8 +16,14 @@ class NotesWidget extends Component{
     state = {
         author: null,
         note: "",
-        notesList: []
+        notesList: [],
+        showEmoji: false
     }
+
+    constructor(props) {
+        super(props);
+        this.fileInput = React.createRef();
+      }
 
     inputHandler = (evt) =>{
         this.setState({note: evt.target.value});
@@ -25,6 +32,61 @@ class NotesWidget extends Component{
         axios.get('/base/api/current-user').then(res =>{
             this.setState({author: res.data.pk})
         })
+    }
+    
+    attachmentToggler =() =>{
+        this.fileInput.current.click()
+    }
+
+    attachmentHandler =(evt) =>{
+        const file = evt.target.files[0];
+        const extension = file.name.split('.')[1];
+
+        if(file.size > 5000000){
+            alert('Cannot Upload files larger than 5MB');
+            return;
+        }else if(!['jpg', 'jpeg', 
+                    'gif', 'png', 'pdf', 'pptx',
+                    'doc', 'txt', 'docx', 'ppt',
+                    'xlsx', 'xlx', 'mp3', 'mp4', 'mp4a', 'csv'].includes(extension)){
+            alert('Unsupported file upload format.');
+            return;
+        }
+        const data = setDataPayload({
+            'csrfmiddlewaretoken': this.props.token,
+            'target': this.props.target,
+            'target_id': this.props.targetID,
+            'attachment': file,
+            ...this.state
+        })
+        axios({
+            'method': 'POST',
+            'url': '/base/create-note',
+            'data': data
+        }).then(()=>{
+            let newNotes = [...this.state.notesList];
+            newNotes.push({
+                note: this.state.note, 
+                author: this.state.author,
+                attachment: file.name,
+                timestamp: `${new Date().getHours()}: ${new Date().getMinutes()}`
+            })
+            this.setState({
+                note: "",
+                notesList: newNotes
+            });
+        });
+          
+    }
+
+    emojiHandler = () =>{
+        this.setState(prevState =>({showEmoji: !prevState.showEmoji}))
+    }
+    insertEmoji = (code) =>{
+        this.setState(prevState => ({
+            showEmoji: false,
+            note: prevState.note + code
+        }))
     }
 
     submitHandler = () =>{
@@ -43,6 +105,7 @@ class NotesWidget extends Component{
             newNotes.push({
                 note: this.state.note, 
                 author: this.state.author,
+                attachment: "",
                 timestamp: `${new Date().getHours()}: ${new Date().getMinutes()}`
             })
             this.setState({
@@ -94,51 +157,37 @@ class NotesWidget extends Component{
                 onChange={this.inputHandler}
                 value={this.state.note}></textarea>
             </div>
+            <div style={{position: 'relative'}}>
             <div style={{
                 display: 'flex',
                 justifyContent: 'flex-end'
-            }}>
+            }} className='btn-group'>
+                <button onClick={this.emojiHandler}
+                    type="button" 
+                    className="btn btn-primary">
+                    <i class="fas fa-smile    "></i> </button>
+                <button onClick={this.attachmentToggler}
+                    type="button" 
+                    className="btn btn-primary">
+                    <i class="fas fa-paperclip    "></i> </button>
                 <button onClick={this.submitHandler}
-                type="button" 
-                className="btn">
-            <i className="fas fa-paper-plane    "></i> </button>
+                    type="button" 
+                    className="btn btn-primary">
+                    <i className="fas fa-paper-plane    "></i> </button>
+                
+            </div>
+            <input 
+                type="file" 
+                style={{display: 'none'}}
+                ref={this.fileInput}
+                
+                onChange={this.attachmentHandler} />
+            <EmojiBox show={this.state.showEmoji} insertHandler={this.insertEmoji}/>
             </div>
         </div>)
     }
 }
 
-class Note extends Component{
-    state = {
-        authorString: ''
-    }
-
-    componentDidMount(){
-        axios({
-            'method': 'GET',
-            'url': '/base/api/users/'+ this.props.author
-        }).then((res)=>{
-            this.setState({authorString: res.data.username})
-        })
-    }
-
-    render(){
-        return(
-            <li className='list-group-item' 
-                style={{
-                    'color': 'black',
-                    marginBottom: '0.5rem'
-                }}>
-                <strong><i className="fas fa-user    "></i>  {this.state.authorString}</strong>
-                <br/>
-                <p>{this.props.note}</p>
-                <p style={{
-                    textAlign: 'right',
-                    color: '#ccc'
-                }}>{this.props.timestamp}</p>
-            </li>
-        )
-    }
-}
 
 
 export default NotesWidget;

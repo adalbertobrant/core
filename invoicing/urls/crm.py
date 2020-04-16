@@ -21,7 +21,7 @@ crm_urls = [
     path('create-task/<int:pk>', TaskCreateView.as_view(), name='create-lead-task'),
     path('update-task/<int:pk>', TaskUpdateView.as_view(), name='update-task'),
     path('list-tasks', TaskListView.as_view(), name='list-tasks'),
-    path('task-detail/<int:pk>', TaskDetailView.as_view(), name='task-detail'),
+    path('task-details/<int:pk>', TaskDetailView.as_view(), name='task-details'),
     path('complete-task/<int:task>', complete_task, name='complete-task'),
     path('create-sales-team', SalesTeamCreateView.as_view(),
          name='create-sales-team'),
@@ -35,6 +35,8 @@ crm_urls = [
          name='update-lead-source'),
     path('list-lead-sources', LeadSourceListView.as_view(),
          name='list-lead-sources'),
+     path('api-list-lead-sources', LeadSourceAPIView.as_view(),
+         name='api-list-lead-sources'),
     path('create-interaction-type', InteractionTypeCreateView.as_view(),
          name='create-interaction-type'),
     path('update-interaction-type/<int:pk>',
@@ -50,6 +52,6 @@ crm_urls = [
          InteractionUpdateView.as_view(), name='update-interaction'),
     path('list-interactions', InteractionListView.as_view(),
          name='list-interactions'),
-    path('interaction-detail/<int:pk>',
-         InteractionDetailView.as_view(), name='interaction-detail'),
-] + lead_router.urls
+    path('interaction-details/<int:pk>',
+         InteractionDetailView.as_view(), name='interaction-details'),
+] + lead_router.urls + task_router.urls + interaction_router.urls

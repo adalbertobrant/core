@@ -95,7 +95,7 @@ Customer
                                 {% for m in object.organization.members %}
                                 <tr>
                                     <td>
-                                        <a href="{% url 'base:individual-detail' pk=m.pk %}" class='btn btn-primary btn-sm' >{{m.full_name}}</a>
+                                        <a href="{% url 'base:individual-details' pk=m.pk %}" class='btn btn-primary btn-sm' >{{m.full_name}}</a>
                                     </td>
                                     <td>{{m.phone}}</td>
                                     <td>{{m.email}}</td>

@@ -57,7 +57,7 @@ Lead Details
                 <ul>
                     {% for contact in object.contacts.all %}
                         <li style='list-style-type:none;'>
-                            <a href=" {% url 'base:individual-detail' pk=contact.pk %} "><i class="fas fa-address-book" aria-hidden="true"></i> {{contact}}</a>
+                            <a href=" {% url 'base:individual-details' pk=contact.pk %} "><i class="fas fa-address-book" aria-hidden="true"></i> {{contact}}</a>
                         </li>
                     {% endfor %}
                 </ul>
@@ -79,7 +79,7 @@ Lead Details
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-sm-12 col-md-6">
-                                        <h4><a href="{% url 'invoicing:task-detail' pk=task.pk %}">{{task.title}}</a></h4>
+                                        <h4><a href="{% url 'invoicing:task-details' pk=task.pk %}">{{task.title}}</a></h4>
                                         {{task.created}}
                                         <p class="card-text"><i class="fas fa-clock" aria-hidden="true"></i> {{task.due}}</p>
                                         <p class="card-text"><i class="fas fa-user" aria-hidden="true"></i> {{task.assigned}}</p>
@@ -112,7 +112,7 @@ Lead Details
                     {% for intr in object.interaction_set.all %}
                         <div class="card accent-left-lg" style='margin-bottom: 0.6rem;'>
                             <div class="card-body">
-                                <h4><a href="{% url 'invoicing:interaction-detail' pk=intr.pk %}">{{intr.type}}</a></h4>
+                                <h4><a href="{% url 'invoicing:interaction-details' pk=intr.pk %}">{{intr.type}}</a></h4>
                                 <p class="card-text"> <i class="fa fa-clock-o" aria-hidden="true"></i> <i>{{intr.timestamp}}</i></p>
                                 <p class="card-text"> <i class="fa fa-address-book" aria-hidden="true"></i> {{intr.contact}}</p>
                                 <p class="card-text">{{intr.description}}</p>
