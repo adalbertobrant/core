@@ -59,6 +59,9 @@
     padding: 6px;
     margin-bottom: 12px;
     color: white;
+    overflow-x: hidden;
+    white-space: nowrap;
+    border-radius: 5px;
 }
 
 .taskBar {

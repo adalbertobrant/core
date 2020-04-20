@@ -178,21 +178,21 @@ class TimeLogger extends React.Component{
                     </div>
                     <div className='col-md-6 col-sm-12'>
                         <div style={{textAlign: 'center'}}>
-                        <h1>{new Date().toDateString()}</h1>
-                <h1>{this.state.time.getHours()}<span style={{visibility: this.state.tick ? 'visible' : 'hidden'}}>:</span>{("0" + this.state.time.getMinutes()).slice(-2)}</h1>
-                        </div>
-                        <label htmlFor="">Name:</label>
-                        <select className='form-control' 
-                            name="" 
-                            id=""
-                            value={this.state.currentEmployee}
-                            onChange={evt => this.setState({currentEmployee: evt.target.value})}>
-                            <option value="" >----------</option>
-                            {this.state.employees.map(emp =>{
-                                return(<option value={emp.employee_number}>{emp.first_name} {emp.last_name}</option>)
-                            })}
-                        </select>
-                        <label htmlFor="">Pin:</label>
+                            <h1>{new Date().toDateString()}</h1>
+                            <h1>{this.state.time.getHours()}<span style={{visibility: this.state.tick ? 'visible' : 'hidden'}}>:</span>{("0" + this.state.time.getMinutes()).slice(-2)}</h1>
+                            </div>
+                            <label htmlFor="">Name:</label>
+                            <select className='form-control' 
+                                name="" 
+                                id=""
+                                value={this.state.currentEmployee}
+                                onChange={evt => this.setState({currentEmployee: evt.target.value})}>
+                                <option value="" >----------</option>
+                                {this.state.employees.map(emp =>{
+                                    return(<option value={emp.employee_number}>{emp.first_name} {emp.last_name}</option>)
+                                })}
+                            </select>
+                            <label htmlFor="">Pin:</label>
                         <Keypad enterHandler={this.logInOut}/>
                     </div>
 

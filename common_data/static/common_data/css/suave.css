@@ -124,11 +124,16 @@ input:required, textarea:required, select:required {
     display: flex;
     flex-direction: column;
     align-items:center;
+    background-color: white;
 }
 
 .dashbox h3 {
     font-weight: 500;
     font-size:3rem;
+}
+
+.dashbox .fas {
+    z-index: 1;
 }
 
 .dashbox h4 {

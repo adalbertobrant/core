@@ -58,7 +58,7 @@ const month = (props) => {
                             return(
                                 <div className={styles.ganttTableCell} 
                                     style={{
-                                        backgroundColor: today ? 'black': 'white'
+                                        borderLeftColor: today ? 'black': '#ccc'
                                     }}></div>
                             )} )}
                 </div>

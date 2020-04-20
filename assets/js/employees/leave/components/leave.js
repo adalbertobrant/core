@@ -35,6 +35,7 @@ const leave = (props) =>{
         top: `${startY}px`,
         height: `${height}px`, 
         width: "150px",
+        borderRadius: '5px'
     };
     return(
         <a 
