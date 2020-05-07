@@ -60,6 +60,10 @@ class UserTracker(object):
         self.users = []
         self.users_info = []
 
+        if os.environ.get('CLOUD_TEST', None):
+            self.MAX_USERS = 10
+            return
+
         # assume 1 max user if no license is present
         if not os.path.exists('license.json'):
             self.MAX_USERS = 1
@@ -114,6 +118,8 @@ TRACKER = UserTracker()
 
 def license_check():
     license = None
+    if os.environ.get('CLOUD_TEST', None):
+            return 'ok'
     try:
         # installer requires license in top level directory
         with open('license.json', 'r') as f:

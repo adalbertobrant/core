@@ -3,6 +3,10 @@ language: python
 python:
   - "3.6"      # current default Python on Travis CI
 
+env:
+  global:
+    - CLOUD_TEST=1
+
 # command to install dependencies
 install:
   - pip3 install -r requirements.txt
