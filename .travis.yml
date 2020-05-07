@@ -12,7 +12,7 @@ install:
   - pip3 install -r requirements.txt
 # command to run tests
 script:
-  - coverage run --omit="manufacturing/* messaging/*" manage.py test
+  - coverage run --source="." --omit="manufacturing/* messaging/*" manage.py test
 
 git:
   depth: 1
