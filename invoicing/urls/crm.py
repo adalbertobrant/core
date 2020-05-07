@@ -54,4 +54,4 @@ crm_urls = [
          name='list-interactions'),
     path('interaction-details/<int:pk>',
          InteractionDetailView.as_view(), name='interaction-details'),
-] + lead_router.urls + task_router.urls + interaction_router.urls
+] + lead_router.urls #+ task_router.urls + interaction_router.urls
