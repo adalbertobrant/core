@@ -10,7 +10,12 @@ ALLOWED_HOSTS = ["*"]
 
 def get_current_database():
     global BASE_DIR
-    with open(os.path.join(BASE_DIR, 'database', 'config.json'), 'r') as conf:
+    config = os.path.join(BASE_DIR, 'database', 'config.json')
+    if not os.path.exists(config):
+        with open(config, 'w') as f:
+            json.dump({'current': 'db.sqlite3'}, f)
+
+    with open(config, 'r') as conf:
         config = json.load(conf)
         print(f"Current Database: {config['current']}")
         return config['current']
