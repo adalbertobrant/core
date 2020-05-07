@@ -12,11 +12,14 @@ install:
   - pip3 install -r requirements.txt
 # command to run tests
 script:
-  - python3 manage.py test
+  - coverage run --omit="manufacturing/* messaging/*" manage.py test
 
 git:
   depth: 1
 
 notifications:
   email:
-    -kandoroc@hotmail.com
+    - kandoroc@hotmail.com
+
+after_success:
+  - coveralls
