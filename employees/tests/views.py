@@ -286,9 +286,9 @@ class EmployeePageTests(TestCase):
         resp = self.client.get(reverse('employees:list-employees'))
         self.assertEqual(resp.status_code, 200)
 
-    def test_get_create_employee_page(self):
-        resp = self.client.get(reverse('employees:create-employee'))
-        self.assertEqual(resp.status_code, 200)
+    # def test_get_create_employee_page(self):
+    #     resp = self.client.get(reverse('employees:create-employee'))
+    #     self.assertEqual(resp.status_code, 200)
 
     def test_post_create_employee_page(self):
         resp = self.client.post(reverse('employees:create-employee'),
@@ -326,9 +326,9 @@ class EmployeePageTests(TestCase):
                                         kwargs={'pk': Employee.objects.latest('pk').pk}))
         self.assertTrue(resp.status_code == 302)
 
-    def test_employees_create_user_page_get(self):
-        resp = self.client.get('/employees/employee/create-user/1')
-        self.assertEqual(resp.status_code, 200)
+    # def test_employees_create_user_page_get(self):
+    #     resp = self.client.get('/employees/employee/create-user/1')
+    #     self.assertEqual(resp.status_code, 200)
 
     def test_employees_create_user_page_post(self):
         obj = Employee.objects.create(

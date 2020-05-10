@@ -1,0 +1,25 @@
+language: python 
+
+python:
+  - "3.6"      # current default Python on Travis CI
+
+env:
+  global:
+    - CLOUD_TEST=1
+
+# command to install dependencies
+install:
+  - pip3 install -r requirements.txt
+# command to run tests
+script:
+  - coverage run --source="." --omit="manufacturing/* messaging/*" manage.py test
+
+git:
+  depth: 1
+
+notifications:
+  email:
+    - kandoroc@hotmail.com
+
+after_success:
+  - coveralls
