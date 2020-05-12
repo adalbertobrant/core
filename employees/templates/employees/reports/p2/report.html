@@ -1,4 +1,4 @@
-{% extends 'common_data/page/pdf_page.html' %}
+{% extends 'common_data/page/framed_pdf_page.html' %}
 {% load static %}
 {% load accounting %}
 {% block pre_page %}
@@ -10,7 +10,7 @@
                 Actions
             </button>
     <div class="dropdown-menu" aria-labelledby="triggerId">
-        {% comment %} <a class="dropdown-item" href="/employees/zimra-p2-pdf-report?tax_period={{tax_period}}&postal_address={{postal}}&due_date={{due_date}}"> <i class='fas fa-file-pdf'></i> Generate PDF</a> {% endcomment %}
+        <a class="dropdown-item" href="/employees/zimra-p2-pdf-report?tax_period={{tax_period}}&postal_address={{postal}}&due_date={{due_date}}"> <i class='fas fa-file-pdf'></i> Generate PDF</a>
         
         
     </div>
