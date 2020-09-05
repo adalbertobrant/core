@@ -28,6 +28,8 @@ class Supplier(SoftDeletionModel):
                                 blank=True, null=True)
     banking_details = models.TextField(blank=True, default="")
     billing_address = models.TextField(blank=True, default="")
+    billing_currency = models.ForeignKey('accounting.currency', null=True,
+        on_delete=models.SET_NULL)
 
     @property
     def name(self):
@@ -116,6 +118,7 @@ class Supplier(SoftDeletionModel):
                 name="Vendor: %s" % self.name,
                 id=2100 + n_suppliers + 1,  # the + 1 for the default supplier
                 balance=0,
+                currency=self.billing_currency,
                 type='liability',
                 description='Account which represents debt owed to a Vendor',
                 balance_sheet_category='current-liabilities',

@@ -53,10 +53,7 @@ class CommonViewTests(TestCase):
             name='Test',
             symbol='$'
         )
-        cls.currency_table = CurrencyConversionTable.objects.create(
-            name='Base',
-            reference_currency=cls.currency
-        )
+       
 
         cls.employee = Employee.objects.create(first_name='first',
                                                last_name='last',
@@ -120,7 +117,6 @@ class CommonViewTests(TestCase):
         resp = self.client.post(reverse('accounting:config', kwargs={'pk': 1}),
                                 data={
             # 'start_of_financial_year': TODAY,
-            'currency_exchange_table': self.currency_table.pk,
             'default_accounting_period': 0,
             'active_currency': 1,
             'equipment_capitalization_limit': 200
@@ -291,7 +287,7 @@ class JournalEntryViewTests(TestCase):
 
 class AccountViewTests(TestCase):
     fixtures = ['common.json', 'accounts.json',
-                'employees.json', 'journals.json']
+                'employees.json', 'journals.json', 'settings.json']
 
     @classmethod
     def setUpClass(cls):
@@ -310,7 +306,8 @@ class AccountViewTests(TestCase):
             'balance': 100,
             'type': 'asset',
             'description': 'Test Description',
-            'balance_sheet_category': 'non-current-assets'
+            'balance_sheet_category': 'non-current-assets',
+            'currency': 1
         }
 
         cls.end = datetime.date.today()
@@ -565,35 +562,13 @@ class TestCurrencyViews(TestCase):
             name='Test',
             symbol='$'
         )
-        cls.currency_table = CurrencyConversionTable.objects.create(
-            name='Base',
-            reference_currency=cls.currency
-        )
-
-        cls.currency_table_line = CurrencyConversionLine.objects.create(
-            currency=cls.currency,
-            exchange_rate=1.5,
-            conversion_table=cls.currency_table
-        )
+       
         create_test_common_entities(cls)
 
     def setUp(self):
         # wont work in setUpClass
         self.client.login(username='Testuser', password='123')
 
-    def test_currency_converter_view(self):
-        resp = self.client.get(reverse('accounting:currency-converter'))
-        self.assertEqual(resp.status_code, 200)
-
-    def test_post_create_currency_exchange_table(self):
-        # no get
-        resp = self.client.post(reverse('accounting:create-exchange-table'),
-                                data={
-            'name': 'Test',
-            'reference_currency': self.currency.pk
-        })
-
-        self.assertEqual(resp.status_code, 302)
 
     def test_create_currency(self):
         resp = self.client.get(reverse('accounting:create-currency'))
@@ -625,97 +600,7 @@ class TestCurrencyViews(TestCase):
         })
         self.assertEqual(resp.status_code, 302)
 
-    def test_currency_conversion_line_create_get(self):
-        resp = self.client.get(reverse(
-            'accounting:create-currency-conversion-line'))
-        self.assertEqual(resp.status_code, 200)
-
-    def test_currency_conversion_line_create_post(self):
-        resp = self.client.post(reverse(
-            'accounting:create-currency-conversion-line'),
-            data={
-                'currency': self.currency.pk,
-                'exchange_rate': 1,
-                'conversion_table': self.currency_table.pk
-        })
-        self.assertEqual(resp.status_code, 302)
-
-    def test_currency_conversion_line_update_get(self):
-        resp = self.client.get(reverse(
-            'accounting:update-currency-conversion-line',
-            kwargs={
-                'pk': self.currency_table_line.pk
-            }))
-        self.assertEqual(resp.status_code, 200)
-
-    def test_currency_conversion_line_update_post(self):
-        resp = self.client.post(reverse(
-            'accounting:update-currency-conversion-line',
-            kwargs={
-                'pk': self.currency_table_line.pk
-            }),
-            data={
-                'currency': self.currency.pk,
-                'exchange_rate': 1,
-                'conversion_table': self.currency_table.pk
-        })
-        self.assertEqual(resp.status_code, 302)
-
-    def test_update_reference_currency_functional_view(self):
-        currency_two = Currency.objects.create(
-            name='two',
-            symbol='t'
-        )
-        resp = self.client.get('/accounting/api/update-reference-currency/%d/%d' % (
-            self.currency_table.pk,
-            currency_two.pk
-        )
-        )
-        self.assertEqual(json.loads(resp.content)['status'], 'ok')
-
-    def test_create_exchange_table_conversion_line_function(self):
-        resp = self.client.post('/accounting/create-conversion-line',
-                                data={
-                                    'table_id': self.currency_table.pk,
-                                    'currency_id': self.currency.pk,
-                                    'rate': 1.5
-                                })
-
-    def test_exchange_rate(self):
-
-        resp = self.client.post(
-            '/accounting/api/update-exchange-rate/%d' %
-            self.currency_table_line.pk, data={
-                'rate': 2.5
-            })
-
-        self.assertEqual(json.loads(resp.content)['status'], 'ok')
-
-    def test_currency_conversion_line_serializer(self):
-        resp = self.client.post('/accounting/api/currency-conversion-line', data={
-            'currency': self.currency.pk,
-            'exchange_rate': 2,
-            'conversion_table': self.currency_table.pk
-        })
-        self.assertEqual(resp.status_code, 301)
-
-    def test_currency_conversion_table_serializer(self):
-        resp = self.client.post('/accounting/api/currency-conversion-table', data={
-            'name': 'table',
-            'reference_currency': self.currency.pk,
-        })
-        self.assertEqual(resp.status_code, 301)
-
-    def test_currency_exchange_table_conversion_line(self):
-        resp = self.client.post('/accounting/api/create-conversion-line', data={
-            'table_id': self.currency_table.pk,
-            'currency_id': self.currency.pk,
-            'rate': 4.5
-        })
-        self.assertEqual(resp.status_code, 200)
-        self.assertEqual(json.loads(resp.content)['status'], 'ok')
-
-
+   
 class AccountingWizardTests(TestCase):
     fixtures = ['accounts.json', 'settings.json',
                 'journals.json', 'common.json', 'employees.json']
@@ -782,7 +667,7 @@ class AccountingWizardTests(TestCase):
 
 class AssetViewTests(TestCase):
     fixtures = ['common.json', 'settings.json',
-                'accounts.json', 'journals.json']
+                'accounts.json', 'journals.json', 'asset_patch.json']
 
     @classmethod
     def setUpClass(cls):
@@ -797,7 +682,7 @@ class AssetViewTests(TestCase):
         cls.asset = Asset.objects.create(
             name='Test Asset',
             description='Test description',
-            category=0,
+            category=AssetCategory.objects.first(),
             initial_value=100,
             credit_account=Account.objects.get(pk=1000),
             depreciation_period=5,

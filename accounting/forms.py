@@ -19,12 +19,12 @@ from . import models
 class ConfigForm(forms.ModelForm, BootstrapMixin):
     class Meta:
         model = models.AccountingSettings
-        exclude = "is_configured", 'service_hash','currency_exchange_table'
-
+        exclude = "is_configured", 'service_hash'
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Submit'))
+
 
 
 class AssetForm(forms.ModelForm, BootstrapMixin):
@@ -46,22 +46,47 @@ class AssetForm(forms.ModelForm, BootstrapMixin):
             TabHolder(
                 Tab('basic',
                     Row(
-                        Column('name', css_class='form-group col-md-6 col-sm-12'),
-                        Column('initialized_by',
-                               css_class='form-group col-md-6 col-sm-12'),
+                        Column(
+                            'photo',
+                            HTML("""
+                                <div id='image-container' >
+                                    <i class='fas fa-image fa-7x' id='image-placeholder'></i>
+                                    <img id='attachment-preview' src='' alt='Attachment appears here.' />
+                                </div>
+                                
+                                <script>
+                                    function upload_img(input) {
+                                    if (input.files && input.files[0]) {
+                                        var reader = new FileReader();
+                                        reader.onload = function (e) {
+                                            $('#attachment-preview').attr('src', e.target.result);
+                                        }
+                                        $('#image-placeholder').hide()
+                                        $('#attachment-preview').show()
+                                        reader.readAsDataURL(input.files[0]);
+                                    }
+                                }
+
+                                    $(document).ready(function(){
+                                        $('#id_photo').attr({
+                                        'onchange': 'upload_img(this)'
+                                    });
+                                    })
+                                
+                                </script>
+                            """),
+                        
+                        css_class='form-group col-md-6 col-sm-12'),
+                        Column(
+                            'name',
+                            'initial_value',
+                            'salvage_value',
+                            'initialized_by',
+                            'depreciation_period',
+                            'depreciation_method',
+                            css_class='form-group col-md-6 col-sm-12'),
                     ),
-                    Row(
-                        Column('initial_value',
-                               css_class='form-group col-md-6 col-sm-12'),
-                        Column('salvage_value',
-                               css_class='form-group col-md-6 col-sm-12'),
-                    ),
-                    Row(
-                        Column('depreciation_period',
-                               css_class='form-group col-md-6 col-sm-12'),
-                        Column('depreciation_method',
-                               css_class='form-group col-md-6 col-sm-12'),
-                    ),
+                    
                     'init_date',
                     'category',
                     ),
@@ -338,7 +363,7 @@ class AccountForm(forms.ModelForm, BootstrapMixin):
                     'description',
                     ),
                 Tab('account',
-                    # 'account_code',
+                    'currency',
                     'bank_account_number',
                     'parent_account',
                     'pk',
@@ -392,11 +417,6 @@ class BookkeeperForm(forms.ModelForm, BootstrapMixin):
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
-
-class ExchangeTableForm(forms.ModelForm):
-    class Meta:
-        fields = 'reference_currency', 'name',
-        model = models.CurrencyConversionTable
 
 
 class JournalReportForm(PeriodReportForm):

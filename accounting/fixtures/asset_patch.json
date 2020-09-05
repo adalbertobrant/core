@@ -1,0 +1,62 @@
+[
+    {
+        "model": "accounting.AssetCategory",
+        "pk": 1,
+        "fields": {
+            "name": "Land",
+            "description": "",
+            "account": 1005,
+            "accumulated_depreciation_account": null
+        }
+    },
+    {
+        "model": "accounting.AssetCategory",
+        "pk": 2,
+        "fields": {
+            "name": "Buildings",
+            "description": "",
+            "account": 1006,
+            "accumulated_depreciation_account": 1007
+        }
+    },
+    {
+        "model": "accounting.AssetCategory",
+        "pk": 3,
+        "fields": {
+            "name": "Leasehold Improvements",
+            "description": "",
+            "account": 1008,
+            "accumulated_depreciation_account": null
+        }
+    },
+    {
+        "model": "accounting.AssetCategory",
+        "pk": 4,
+        "fields": {
+            "name": "Vehicles",
+            "description": "",
+            "account": 1009,
+            "accumulated_depreciation_account": 1010
+        }
+    },
+    {
+        "model": "accounting.AssetCategory",
+        "pk": 5,
+        "fields": {
+            "name": "Furniture and Fixtures",
+            "description": "",
+            "account": 1011,
+            "accumulated_depreciation_account": 1012
+        }
+    },
+    {
+        "model": "accounting.AssetCategory",
+        "pk": 6,
+        "fields": {
+            "name": "Equipment",
+            "description": "",
+            "account": 1013,
+            "accumulated_depreciation_account": 1014
+        }
+    }
+]

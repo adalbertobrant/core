@@ -90,12 +90,14 @@ class UserTestMiddleware(object):
                 return self.get_response(request)
 
             else:
+                print(request.path)
                 messages.info(
                     request, "The currently logged in user does not have the appropriate permissions to access this feature")
                 return HttpResponseRedirect(
                     "/login/?next={}".format(redirect) if redirect else "/login/")
 
         else:
+            print(request.path)
             messages.info(
                 request, "The currently logged in user does not have the appropriate permissions to access this feature")
             return HttpResponseRedirect(

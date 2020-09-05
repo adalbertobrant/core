@@ -88,7 +88,7 @@ def create_account_models(cls):
     cls.asset = Asset.objects.create(
         name='Test Asset',
         description='Test description',
-        category=0,
+        category=AssetCategory.objects.first(),
         initial_value=100,
         credit_account=cls.account_d,
         depreciation_period=5,

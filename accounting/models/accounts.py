@@ -42,6 +42,7 @@ class AbstractAccount(SoftDeletionModel):
     ------------
     '''
     name = models.CharField(max_length=64)
+    currency = models.ForeignKey('accounting.currency', null=True, on_delete=models.SET_NULL)
     balance = models.DecimalField(max_digits=16, decimal_places=2)
     type = models.CharField(max_length=32, choices=TYPE_CHOICES)
     description = models.TextField()
@@ -180,7 +181,6 @@ class Account(AbstractAccount):
 
     def get_absolute_url(self):
         return reverse("accounting:account-detail", kwargs={"pk": self.pk})
-
 
 class InterestBearingAccount(AbstractAccount):
     '''

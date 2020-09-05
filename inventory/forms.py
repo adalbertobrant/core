@@ -16,6 +16,7 @@ from accounting.models import (Account,
                                Bill,
                                Asset,
                                ASSET_CHOICES,
+                               AssetCategory,
                                AccountingSettings)
 from common_data.forms import BootstrapMixin
 from employees.models import Employee
@@ -416,7 +417,7 @@ class EquipmentForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
             return Asset.objects.create(
                 name=instance.name,
                 description=instance.description,
-                category=self.cleaned_data['asset_category'],
+                category=AssetCategory.objects.get(pk=self.cleaned_data['asset_category']),
                 initial_value=self.cleaned_data['initial_value'],
                 init_date=self.cleaned_data['date_purchased'],
                 salvage_value=self.cleaned_data['salvage_value'],
@@ -430,7 +431,7 @@ class EquipmentForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                 asset = instance.equipment_component.asset_data
                 asset.name = instance.name
                 asset.description = instance.description
-                asset.category = self.cleaned_data['asset_category']
+                asset.category = AssetCategory.objects.get(pk=self.cleaned_data['asset_category'])
                 asset.initial_value = self.cleaned_data['initial_value']
                 asset.init_date = self.cleaned_data['date_purchased']
                 asset.salvage_value = self.cleaned_data['salvage_value']

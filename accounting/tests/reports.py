@@ -29,6 +29,7 @@ from accounting.models import (Account,
                                Expense,
                                Tax,
                                Asset,
+                               AssetCategory,
                                Journal,
                                JournalEntry)
 
@@ -60,7 +61,7 @@ class ReportTests(TestCase):
             name='Test Asset',
             initialized_by=cls.employee,
             description='Test description',
-            category=0,
+            category=AssetCategory.objects.first(),
             initial_value=100,
             credit_account=Account.objects.get(pk=1000),  # cash
             depreciation_period=5,

@@ -28,8 +28,9 @@ class Asset(models.Model):
     The corresponding journal entry is supplied on creation.
     '''
     name = models.CharField(max_length=128)
+    photo = models.ImageField(null=True, blank=True)
     description = models.TextField(blank=True)
-    category = models.IntegerField(choices=ASSET_CHOICES)
+    category = models.ForeignKey('accounting.AssetCategory', null=True, blank=False, on_delete=models.SET_NULL)
     initial_value = models.DecimalField(max_digits=16, decimal_places=2)
     credit_account = models.ForeignKey('accounting.Account',
                                        on_delete=models.SET_DEFAULT, default=1000)
@@ -132,6 +133,22 @@ class Asset(models.Model):
     @property
     def current_value(self):
         return self.initial_value - self.total_depreciation
+
+    def __str__(self):
+        return self.name
+
+
+class AssetCategory(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    description = models.TextField()
+    account = models.ForeignKey('accounting.account', 
+        on_delete= models.SET_NULL, 
+        null=True,
+        related_name='current_value_account')
+    accumulated_depreciation_account = models.ForeignKey('accounting.account', 
+        on_delete=models.SET_NULL, 
+        null=True,
+        related_name='overall_depreciation_account')
 
     def __str__(self):
         return self.name

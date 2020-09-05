@@ -142,7 +142,7 @@ class SimpleModelTests(TestCase):
 
 class AssetTests(TestCase):
     # use fixtures later
-    fixtures = ['accounts.json', 'journals.json']
+    fixtures = ['accounts.json', 'journals.json', 'asset_patch.json']
 
     @classmethod
     def setUpTestData(cls):
@@ -151,7 +151,7 @@ class AssetTests(TestCase):
         cls.old_asset = Asset.objects.create(
             name='Test Asset',
             description='Test description',
-            category=0,
+            category=AssetCategory.objects.first(),
             initial_value=100,
             credit_account=cls.account_d,
             depreciation_period=5,
@@ -558,10 +558,6 @@ class CurrencyTests(TestCase):
             name="Test",
             symbol="$"
         )
-        cls.currency_table = CurrencyConversionTable.objects.create(
-            name="table",
-            reference_currency=cls.currency
-        )
 
     def test_create_currency(self):
         obj = Currency.objects.create(
@@ -570,22 +566,6 @@ class CurrencyTests(TestCase):
         )
         self.assertIsInstance(obj, Currency)
         self.assertEqual(str(obj), "Dollar")
-
-    def test_create_conversion_table(self):
-        obj = CurrencyConversionTable.objects.create(
-            name="table",
-            reference_currency=self.currency
-        )
-        self.assertIsInstance(obj, CurrencyConversionTable)
-        self.assertEqual(str(obj), 'table')
-
-    def test_currency_conversion_line(self):
-        obj = CurrencyConversionLine.objects.create(
-            currency=self.currency,
-            exchange_rate=4,
-            conversion_table=self.currency_table
-        )
-        self.assertIsInstance(obj, CurrencyConversionLine)
 
 
 class BillModelTests(TestCase):

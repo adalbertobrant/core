@@ -24,14 +24,6 @@
         }
     },
     {
-        "model": "accounting.CurrencyConversionTable",
-        "pk": "1",
-        "fields": {
-            "name": "Default Table",
-            "reference_currency": 1
-        }
-    },
-    {
         "model": "accounting.AccountingSettings",
         "pk": "1",
         "fields": {

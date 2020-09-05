@@ -395,6 +395,7 @@ main {
     padding: 5px;
     height: 100vh;
     background-color: var(--primary);
+    max-width: 200px;
 }
 
 #window {
@@ -828,11 +829,14 @@ span.less {
     height: 300px;
     padding: 12px;
     margin: 24px;
+    overflow: hidden;
 }
 
 
 #image-container img {
     display: none;
+    width: auto;
+    height: 100%;
 }
 
 

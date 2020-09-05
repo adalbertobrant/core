@@ -9,19 +9,13 @@ class Currency(models.Model):
     def __str__(self):
         return self.name
 
-
-class CurrencyConversionTable(models.Model):
-    name = models.CharField(max_length=255)
-    reference_currency = models.ForeignKey('accounting.Currency',
-                                           on_delete=models.SET_NULL, null=True, related_name="reference_currency", default=1)
+class ExchangeRate(models.Model):
+    date = models.DateField()
+    from_currency = models.ForeignKey('accounting.Currency',
+        on_delete=models.CASCADE, related_name="from_currency")
+    to_currency = models.ForeignKey('accounting.Currency', 
+        on_delete=models.CASCADE, related_name="to_currency")
+    exchange_rate = models.FloatField(default=1.0)
 
     def __str__(self):
-        return self.name
-
-
-class CurrencyConversionLine(models.Model):
-    currency = models.ForeignKey('accounting.Currency',
-                                 on_delete=models.SET_NULL, null=True, related_name="exchange_currency")
-    exchange_rate = models.DecimalField(max_digits=16, decimal_places=2)
-    conversion_table = models.ForeignKey('accounting.CurrencyConversionTable',
-                                         on_delete=models.SET_NULL, null=True)
+        return "%s to %s" % (self.from_currency, self.to_currency)

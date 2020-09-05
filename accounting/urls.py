@@ -20,13 +20,6 @@ expense_router.register(r'^api/expense', views.ExpenseAPIView)
 currency_router = routers.DefaultRouter()
 currency_router.register(r'^api/currency', views.CurrencyAPIView)
 
-currency_conversion_line_router = routers.DefaultRouter()
-currency_conversion_line_router.register(r'^api/currency-conversion-line',
-                                         views.CurrencyConversionLineAPIView)
-
-currency_conversion_table_router = routers.DefaultRouter()
-currency_conversion_table_router.register(r'^api/currency-conversion-table',
-                                          views.CurrencyConversionTableAPIView)
 
 bill_urls = [
     path('create-bill/', views.BillCreateView.as_view(), name='create-bill'),
@@ -184,28 +177,10 @@ bookkeeper_urls = [
 ]
 
 currency_urls = [
-    re_path(r'^currency-converter/?$', views.CurrencyConverterView.as_view(),
-            name='currency-converter'),
-    re_path(r'^create-exchange-table/?$',
-            views.ExchangeTableCreateView.as_view(),
-            name='create-exchange-table'),
-    re_path(r'^api/update-reference-currency/(?P<table>[\d]+)/'
-            '(?P<currency>[\d]+)/?$',
-            views.update_reference_currency),
-    re_path(r'^api/create-conversion-line/?$',
-            views.create_exchange_table_conversion_line),
-    re_path(r'^api/update-exchange-rate/(?P<line>[\d]+)/?$',
-            views.exchange_rate),
     re_path(r'^create-currency/?$', views.CurrencyCreateView.as_view(),
             name='create-currency'),
     re_path(r'^update-currency/(?P<pk>[\d]+)?$',
-            views.CurrencyUpdateView.as_view(), name='update-currency'),
-    re_path(r'^create-currency-conversion-line/?$',
-            views.CurrencyConversionLineCreateView.as_view(),
-            name='create-currency-conversion-line'),
-    re_path(r'^update-currency-conversion-line/(?P<pk>[\d]+)/?$',
-            views.CurrencyConversionLineUpdateView.as_view(),
-            name='update-currency-conversion-line'),
+            views.CurrencyUpdateView.as_view(), name='update-currency')
 ]
 
 misc_urls = [
@@ -271,5 +246,5 @@ urlpatterns = [
     entry_urls + account_router.urls + expense_urls + report_urls + \
     expense_router.urls + recurring_expense_urls + asset_urls + \
     bookkeeper_urls + currency_urls + currency_router.urls + \
-    currency_conversion_line_router.urls + currency_conversion_table_router.urls + settings_router.urls + \
+    settings_router.urls + \
     bill_urls

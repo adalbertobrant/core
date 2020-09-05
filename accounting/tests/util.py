@@ -9,7 +9,8 @@ from accounting.models import (
     InterestBearingAccount,
     AccountingSettings,
     Asset,
-    Bookkeeper
+    Bookkeeper,
+    AssetCategory
 )
 from django.contrib.auth.models import User
 import employees
@@ -19,7 +20,7 @@ from calendar import monthrange
 
 class AccountingServiceTest(TestCase):
     fixtures = ['settings.json', 'common.json',
-                'journals.json', 'accounts.json']
+                'journals.json', 'accounts.json', 'asset_patch.json']
 
     @classmethod
     def setUpTestData(cls):
@@ -81,7 +82,7 @@ class AccountingServiceTest(TestCase):
         asset = Asset.objects.create(
             name='Test Asset',
             description='Test description',
-            category=1,
+            category=AssetCategory.objects.first(),
             initial_value=100,
             credit_account=Account.objects.get(pk=1000),
             depreciation_period=5,

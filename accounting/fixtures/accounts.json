@@ -95,7 +95,7 @@
         "fields": {
             "name": "Land",
             "balance": 0,
-            "description": "Tracks the land owned by the organization, bsaed on the cost of purchase.",
+            "description": "Tracks the land owned by the organization, based on the cost of purchase.",
             "type": "asset",
             "balance_sheet_category": "non-current-assets"
         }

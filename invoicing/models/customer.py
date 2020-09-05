@@ -29,8 +29,12 @@ class Customer(SoftDeletionModel):
                                       on_delete=models.CASCADE, blank=True,)
     billing_address = models.TextField(default="", blank=True)
     banking_details = models.TextField(default="", blank=True)
+    billing_currency = models.ForeignKey('accounting.Currency', null=True,
+        on_delete=models.SET_NULL)
     account = models.ForeignKey('accounting.Account', on_delete=models.CASCADE,
                                 null=True)  # created in save method
+
+    
 
     @property
     def invoices(self):
@@ -63,6 +67,7 @@ class Customer(SoftDeletionModel):
             name="Customer: %s" % self.name,
             balance=0,
             id=1100 + n_customers,
+            currency=self.billing_currency,
             type='asset',
             description='Account which represents credit extended to a customer',
             balance_sheet_category='current-assets',
