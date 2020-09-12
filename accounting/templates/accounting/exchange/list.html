@@ -1,0 +1,32 @@
+{% extends "common_data/unfiltered_list_template.html" %} 
+
+{% block  list_headings %}
+<tr class="bg-primary">
+    <td>Date</td>
+    <td >From</td>
+    <td >To</td>
+    <td >Exhange Rate</td>
+    <td ></td>
+</tr>
+{% endblock %}
+{% block list_content %}
+    {% for item in object_list %}
+    <tr>
+        <td>{{item.date}}</td>
+        <td>{{item.from_currency}}</td>
+        <td>{{item.to_currency}}</td>
+        <td>{{item.exchange_rate}}</td>
+        <td>
+            <div class="dropdown">
+                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    Actions
+                </button>
+                <div class="dropdown-menu" aria-labelledby="triggerId">
+                    <a class="dropdown-item" href="{% url 'accounting:exchange-rate-detail' pk=item.pk %}"><i class="fas fa-file-alt"></i> Detail</a>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+{% endblock %}

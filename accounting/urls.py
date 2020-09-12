@@ -180,7 +180,15 @@ currency_urls = [
     re_path(r'^create-currency/?$', views.CurrencyCreateView.as_view(),
             name='create-currency'),
     re_path(r'^update-currency/(?P<pk>[\d]+)?$',
-            views.CurrencyUpdateView.as_view(), name='update-currency')
+            views.CurrencyUpdateView.as_view(), name='update-currency'),
+    re_path(r'^list-currency/?$',
+            views.CurrencyListView.as_view(), name='list-currency'),
+    re_path(r'^create-exchange-rate/(?P<pk>[\d]+)?$',
+            views.ExchangeRateCreateView.as_view(), name='create-exchange-rate'),
+    re_path(r'^exchange-rate-detail/(?P<pk>[\d]+)?$',
+            views.ExchangeRateDetailView.as_view(), name='exchange-rate-detail'),
+    re_path(r'^list-exchange-rates/?$',
+            views.ExchangeRateListView.as_view(), name='list-exchange-rates'),
 ]
 
 misc_urls = [

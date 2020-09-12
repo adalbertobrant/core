@@ -14,6 +14,15 @@ from common_data.models import SoftDeletionModel
 from django.shortcuts import reverse
 
 
+class ItemPrice(models.Model):
+    item = models.ForeignKey('inventory.inventoryitem', on_delete=models.CASCADE)
+    buying = models.BooleanField(default=False)
+    selling = models.BooleanField(default=True)
+    currency = models.ForeignKey('accounting.currency', on_delete=models.CASCADE)
+    rate = models.DecimalField(max_digits=16,
+                               decimal_places=2,
+                               default=0.0)
+
 class InventoryItem(SoftDeletionModel):
     INVENTORY_TYPES = [
         (0, 'Product'),
@@ -181,6 +190,14 @@ class ProductComponent(models.Model):
             return D(self.parent.unit_purchase_price / D(1 - self.margin))
         else:
             return D(self.parent.unit_purchase_price * D(1 + self.markup))
+
+    @property
+    def unit_sales__price(self):
+        """returns prices in """
+        if not ItemPrice.objects.filter(item=self).exists():
+            return D(0)
+        
+        return ItemPrice.objects.filter(item=self).first().rate
 
     @property
     def unit_value(self):

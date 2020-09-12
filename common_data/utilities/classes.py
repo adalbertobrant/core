@@ -175,3 +175,15 @@ class VariableLengthPaginator(Paginator):
             return 0
         hits = max(1, self.count - self.orphans)
         return ceil(hits / self._per_page)
+
+
+# class QuickEntryMixin(object):
+#     quick_entry_fields = []
+#     api_url = ""
+#     name = ""
+
+#     def save(self, *args, **kwargs):
+#         super().save(*args, **kwargs)
+#         # check if quick entry exists if not 
+#         # create new
+#         # if existing update entry fields

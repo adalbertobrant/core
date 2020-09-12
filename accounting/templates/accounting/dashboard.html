@@ -79,9 +79,12 @@
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'accounting:tax-list' %}">Manage Sales Taxes</a>
                     </li>
-                    {% comment %} <li class="list-group-item hvr-grow">
-                        <a href="{% url 'accounting:currency-converter' %}">Manage Currencies</a>
-                    </li> {% endcomment %}
+                    <li class="list-group-item hvr-grow">
+                        <a href="{% url 'accounting:list-currency' %}">Manage Currencies</a>
+                    </li>
+                    <li class="list-group-item hvr-grow">
+                        <a href="{% url 'accounting:list-exchange-rates' %}">Manage Exchange Rates</a>
+                    </li>
                 </ul>
             </nav>
         </div>

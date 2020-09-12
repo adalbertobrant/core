@@ -1,0 +1,28 @@
+{% extends "common_data/list_template.html" %} 
+
+{% block  list_headings %}
+<tr class="bg-primary">
+    <td>Name</td>
+    <td >Symbol</td>
+    <td ></td>
+</tr>
+{% endblock %}
+{% block list_content %}
+    {% for item in object_list %}
+    <tr>
+        <td>{{item.name}}</td>
+        <td>{{item.symbol}}</td>
+        <td>
+            <div class="dropdown">
+                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    Actions
+                </button>
+                <div class="dropdown-menu" aria-labelledby="triggerId">
+                    <a class="dropdown-item" href="{% url 'accounting:update-currency' pk=item.pk %}"><i class="fas fa-file-alt"></i> Update</a>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+{% endblock %}

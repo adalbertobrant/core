@@ -30,7 +30,7 @@ form li {
                         <table class="table table-sm">
                             {{form.as_p}}
                         </table>
-                        <button class="btn btn-default pull-right" type="submit">Submit</button>
+                        <button class="btn btn-primary pull-right" type="submit">Submit</button>
                     </form>
                 </div>
 
@@ -41,6 +41,9 @@ form li {
     </div>
 
 </div>
+<script>
+$('input, select').addClass('form-control')
+</script>
 
 
 {% endblock %}

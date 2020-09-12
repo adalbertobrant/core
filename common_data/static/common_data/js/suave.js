@@ -130,7 +130,7 @@ $(document).ready(function () {
 })
 
 if(window.screen.width > 575){
-    $(".ui-date-picker").datepicker({
+    $(".ui-date-picker, input[name='date']").datepicker({
         changeYear: true,
         changeMonth: true,
         dateFormat: 'yy-mm-dd',
@@ -138,7 +138,7 @@ if(window.screen.width > 575){
         yearRange: "1955:2035"
         });
 }else{
-    $('.ui-date-picker').each(function(i, el){
+    $(".ui-date-picker, input[name='date']").each(function(i, el){
         $(el).attr('type', 'date')
     })
 }

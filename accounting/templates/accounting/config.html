@@ -18,5 +18,14 @@ Accounts Settings
     </div>
 </div>
 
+<script>
+$(document).ready(function(){
+    var el = $('select[name="active_currency"]')
+    if(el.val()){
+        el.prop('disabled', true)
+    }
+})
+    
+</script>
 
 {% endblock content %}

@@ -33,6 +33,7 @@ from inventory.models import InventoryScrappingRecord, InventoryCheck
 
 
 CREATE_TEMPLATE = os.path.join('common_data', 'crispy_create_template.html')
+SIMPLE_CREATE_TEMPLATE = os.path.join('common_data', 'create_template.html')
 
 
 class Dashboard(TemplateView):
@@ -708,18 +709,45 @@ class BillPaymentView(ContextMixin, CreateView):
 
 
 class CurrencyCreateView(CreateView):
-    template_name = CREATE_TEMPLATE
+    template_name = SIMPLE_CREATE_TEMPLATE
     model = models.Currency
     fields = "__all__"
-    success_url = "accounting/currency-converter"
+    success_url = "/accounting/list-currency"
 
+
+class CurrencyListView(ContextMixin, ListView):
+    template_name = os.path.join('accounting', 'currency', 'list.html')
+    model = models.Currency
+    extra_context = {
+        "title": "Currencies",
+        'new_link': reverse_lazy('accounting:create-currency')
+        }
+    
 
 class CurrencyUpdateView(UpdateView):
-    template_name = CREATE_TEMPLATE
+    template_name = SIMPLE_CREATE_TEMPLATE
     model = models.Currency
     fields = "__all__"
-    success_url = "accounting/currency-converter"
+    success_url = "/accounting/list-currency"
 
+class ExchangeRateCreateView(CreateView):
+    template_name = SIMPLE_CREATE_TEMPLATE
+    model = models.ExchangeRate
+    fields = "__all__"
+    success_url = "/accounting/list-exchange-rates"
+
+class ExchangeRateDetailView(DetailView):
+    template_name = os.path.join('accounting', 'exchange', 'detail.html')
+    model = models.ExchangeRate
+
+class ExchangeRateListView(ContextMixin, ListView):
+    template_name = os.path.join('accounting', 'exchange', 'list.html')
+    model = models.ExchangeRate
+
+    extra_context = {
+        "title": "Exchange Rates",
+        'new_link': reverse_lazy('accounting:create-exchange-rate')
+        }
 
 class CurrencyAPIView(viewsets.ModelViewSet):
     queryset = models.Currency.objects.all()

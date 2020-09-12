@@ -265,3 +265,28 @@ class GlobalConfig(SingletonModel):
     @property
     def logo(self):
         return self.organization.logo if self.organization else None
+
+
+# class Document(models.Model):
+#     author = models.ForeignKey('auth.user')
+#     created = models.DateTimeField(auto_now=True)
+#     last_seen = models.DateTimeField()
+#     last_edited = models.DateTimeField()
+    
+
+# class DocumentComment(models.Model):
+#     document = models.ForeignKey('common_data.Document')
+#     author = models.ForeignKey('auth.user')
+#     comment = models.TextField()
+#     created = models.DateTimeField(auto_now=True)
+
+# class QuickEntry(models.Model):
+#     name = models.CharField(max_length=255, unique=True)
+#     api_url = models.CharField(max_length=1024)
+
+# class QuickEntryField(models.Model):
+#     entry = models.ForeignKey("common_data.QuickEntry", on_delete=models.CASCADE)
+#     label = models.CharField(max_length=255)
+#     fieldname = models.CharField(max_length=255)
+#     fieldtype = models.CharField(max_length=255)
+#     options = models.TextField()

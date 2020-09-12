@@ -1,0 +1,32 @@
+{% extends "window.html" %}
+{% block heading %}
+Exchange Rate
+{% endblock heading %}
+{% block actions %}
+<a class="dropdown-item" href="{% url 'accounting:create-exchange-rate' %}"><i class="fas fa-plus"></i>New Exchange Rate</a>
+{% endblock actions %}
+{% block content %}
+
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow accent-left-lg">
+                <div class="card-body ">
+                    <p class="card-text">
+                    <i class="fas fa-calendar    "></i> {{object.date}}</p>
+                    <p class="card-text">
+                    From: {{object.from_currency}}</p>
+                    <p class="card-text">
+                    To: {{object.to_currency}}</p>
+                    <p class="card-text">
+                    Exchange Rate: {{object.exchange_rate}}</p>
+                    <hr>
+                    <p>  {{object.from_currency.symbol}}1.00 =  {{object.to_currency.symbol}}{{object.exchange_rate}}</p>                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
