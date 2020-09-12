@@ -8,11 +8,12 @@ from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView
-from django.views.generic.edit import UpdateView
+from django.views.generic import TemplateView, ListView
+from django.views.generic.edit import UpdateView, CreateView
 from rest_framework import generics
 
 from common_data.utilities import ConfigWizardBase
+from common_data.utilities.mixins import ContextMixin
 from invoicing import forms, serializers
 from invoicing.models import *
 from invoicing.views.report_utils import plotters
@@ -20,7 +21,6 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from employees.models import Employee
 from employees.forms import EmployeeForm
-
 
 class SalesConfigMixin(object):
     def get_context_data(self, **kwargs):
@@ -125,3 +125,29 @@ class ConfigWizard(ConfigWizardBase):
             initial.update({'customer_type': 'individual'})
 
         return initial
+
+
+class CreatePaymentMethod(ContextMixin, CreateView):
+    extra_context = {
+        'title': 'Create Payment Method'
+    }
+    template_name = os.path.join('common_data', 'create_template.html')
+    model = PaymentMethod
+    fields = '__all__'
+    success_url = reverse_lazy('invoicing:list-payment-methods')
+
+class UpdatePaymentMethod(ContextMixin, UpdateView):
+    extra_context = {
+        'title': 'Edit Payment Method'
+    }
+    template_name  = os.path.join('common_data', 'create_template.html')
+    model = PaymentMethod
+    fields = '__all__'
+    success_url = reverse_lazy('invoicing:list-payment-methods')
+
+class PaymentMethodList(ContextMixin, ListView):
+    template_name = os.path.join('invoicing', 'payment_method','list.html')
+    queryset = PaymentMethod.objects.all()
+    extra_context = {
+        'new_link': reverse_lazy('invoicing:create-payment-method')
+    }

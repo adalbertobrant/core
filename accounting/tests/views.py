@@ -117,7 +117,7 @@ class CommonViewTests(TestCase):
         resp = self.client.post(reverse('accounting:config', kwargs={'pk': 1}),
                                 data={
             # 'start_of_financial_year': TODAY,
-            'default_accounting_period': 0,
+            # 'default_accounting_period': 0,
             'active_currency': 1,
             'equipment_capitalization_limit': 200
         })

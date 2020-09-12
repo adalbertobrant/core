@@ -27,9 +27,7 @@ class BalanceSheet(ConfigMixin, TemplateView):
 
         end = datetime.date.today()
 
-        start = end - datetime.timedelta(days=delta_mapping[
-            models.AccountingSettings.objects.first().default_accounting_period
-        ])
+        start = end - datetime.timedelta(days=365)# TODO make start of financial year
 
         # LONG TERM ASSETS
         long_term_assets = models.Account.objects.filter(

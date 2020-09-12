@@ -11,7 +11,7 @@ from crispy_forms.layout import (HTML,
 
 from django import forms
 
-from accounting.models import Tax
+from accounting.models import Tax, Currency
 from common_data.forms import BootstrapMixin, PeriodReportForm
 from common_data.models import Organization, Individual
 from . import models
@@ -79,6 +79,7 @@ class CustomerForm(BootstrapMixin, forms.Form):
     email = forms.EmailField(required=False)
     organization = forms.ModelChoiceField(Organization.objects.all(),
                                           required=False)
+    billing_currency = forms.ModelChoiceField(Currency.objects.all())
     phone_1 = forms.CharField(required=False)
     phone_2 = forms.CharField(required=False)
     image = forms.ImageField(required=False)
@@ -92,12 +93,12 @@ class CustomerForm(BootstrapMixin, forms.Form):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             TabHolder(
-                Tab('details',
+                Tab('basic',
                     Row(
                         Column('name',
                                'phone_1',
                                'email',
-
+                               'billing_currency',
                                css_class='form-group col-md-6 col-sm-12'),
                         Column('customer_type', 'address',
                                css_class='form-group col-md-6 col-sm-12'),
@@ -105,7 +106,7 @@ class CustomerForm(BootstrapMixin, forms.Form):
                     ),
 
                     ),
-                Tab('other',
+                Tab('more',
                     'website',
                     'phone_2',
                     'image',

@@ -87,6 +87,7 @@ class UserTracker(object):
             info.verify_request(request)
 
         else:
+            print(self.users)
             if len(self.users) >= self.MAX_USERS:
                 logger.critical(
                     'More users than licensed are logging in to the server')

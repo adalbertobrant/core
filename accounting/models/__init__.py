@@ -15,14 +15,14 @@ from .accounts import *
 
 
 class AccountingSettings(SingletonModel):
-    ACCOUNTING_PERIODS = [
-        (0, "Annually"),
-        (1, "Monthly"),
-        (2, "Weekly")
-    ]
-    # start_of_financial_year = models.DateField()
-    default_accounting_period = models.PositiveSmallIntegerField(
-        choices=ACCOUNTING_PERIODS, default=1)
+    # ACCOUNTING_PERIODS = [
+    #     (0, "Annually"),
+    #     (1, "Monthly"),
+    #     (2, "Weekly")
+    # ]
+    # # start_of_financial_year = models.DateField()
+    # default_accounting_period = models.PositiveSmallIntegerField(
+    #     choices=ACCOUNTING_PERIODS, default=1)
     default_bookkeeper = models.ForeignKey('accounting.Bookkeeper', null=True,
                                            limit_choices_to=Q(active=True),
                                            blank=True,

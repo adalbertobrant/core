@@ -17,7 +17,8 @@ from accounting.models import (Account,
                                Asset,
                                ASSET_CHOICES,
                                AssetCategory,
-                               AccountingSettings)
+                               AccountingSettings,
+                               Currency)
 from common_data.forms import BootstrapMixin
 from employees.models import Employee
 from common_data.models import Individual, Organization
@@ -85,6 +86,8 @@ class SupplierForm(BootstrapMixin, forms.Form):
     email = forms.EmailField(required=False)
     organization = forms.ModelChoiceField(Organization.objects.all(),
                                           required=False)
+
+    billing_currency = forms.ModelChoiceField(Currency.objects.all()) 
     phone_1 = forms.CharField(required=False)
     phone_2 = forms.CharField(required=False)
     image = forms.ImageField(required=False)
@@ -106,6 +109,7 @@ class SupplierForm(BootstrapMixin, forms.Form):
                     ),
                     'email',
                     'phone_1',
+                    'billing_currency',
                     Row(
                         Column(
                             'address', css_class='form-group col-md-6 col-sm-12'),

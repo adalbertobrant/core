@@ -1,13 +1,13 @@
 from django.db import models
 from common_data.models import SingletonModel
 
-from .invoice import *
+from .invoice import Invoice, InvoiceLine, ProductLineComponent, ExpenseLineComponent, ServiceLineComponent
 from .customer import Customer, CustomerNote
-from .payment import Payment
+from .payment import Payment, PaymentMethod
 from .sales_rep import SalesRepresentative
 from .credit_note import CreditNote, CreditNoteLine
 from .pos import POSSession, POSSale
-from .crm import *
+from .crm import LeadSource, Lead, InteractionType, Interaction, Task, SalesTeam
 
 
 class SalesConfig(SingletonModel):

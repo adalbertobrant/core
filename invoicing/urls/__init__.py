@@ -37,6 +37,9 @@ customer_urls = [
     re_path(r'^customer/add-member/(?P<pk>[\d]+)?$',
             views.AddCustomerIndividualView.as_view(),
             name='customer-member-add'),
+    path('payment-method/create', views.CreatePaymentMethod.as_view() ,name='create-payment-method'),
+    path('payment-method/list', views.PaymentMethodList.as_view() ,name='list-payment-methods'),
+    path('payment-method/update/<int:pk>', views.UpdatePaymentMethod.as_view() ,name='update-payment-method'),
 ] + customer_router.urls
 
 sales_rep_router = DefaultRouter()

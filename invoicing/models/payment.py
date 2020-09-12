@@ -18,19 +18,13 @@ class Payment(SoftDeletionModel):
     ---------
     create_entry - returns the journal entry that debits the customer account
         and credits the sales account. Should also impact tax accounts'''
-    PAYMENT_METHODS = [("cash", "Cash"),
-                       ("transfer", "Transfer"),
-                       ("debit card", "Debit Card"),
-                       ("ecocash", "EcoCash")]
+    
     invoice = models.ForeignKey("invoicing.Invoice",
                                 on_delete=models.SET_NULL,
                                 null=True)
     amount = models.DecimalField(max_digits=16, decimal_places=2)
     date = models.DateField()
-    method = models.CharField(
-        max_length=32,
-        choices=PAYMENT_METHODS,
-        default='transfer')
+    method = models.ForeignKey('invoicing.PaymentMethod', on_delete=models.SET_NULL, null=True)
     reference_number = models.AutoField(primary_key=True)
     sales_rep = models.ForeignKey("invoicing.SalesRepresentative",
                                   on_delete=models.SET_NULL,
@@ -80,3 +74,8 @@ class Payment(SoftDeletionModel):
         self.entry = j
         self.save()
         self.invoice.save()
+
+class PaymentMethod(SoftDeletionModel):
+    name = models.CharField(max_length=255)
+    currency = models.ForeignKey('accounting.currency', on_delete=models.SET_NULL, null=True)
+    account = models.ForeignKey('accounting.account', on_delete=models.SET_NULL, null=True)
