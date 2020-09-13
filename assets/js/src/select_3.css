@@ -1,0 +1,47 @@
+.container {
+    position:relative
+}
+
+.option_list {
+    box-shadow: 0px 8px 4px rgba(220,220,220, 0.3);
+    z-index: 1000;
+    padding-left: 0px;
+    background-color: white;
+    position: absolute;
+    width: 100%;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.option_list::-webkit-scrollbar{
+    width: 5px;
+    background-color: #ddd;
+ }
+
+.option_list::-webkit-scrollbar-thumb {
+    width: 5px;
+    background: steelblue;
+}
+
+
+.option_list::-webkit-scrollbar-thumb:hover {
+    width: 10px;
+    background: steelblue;
+}
+
+.option_list li{
+    list-style-type: none;
+    padding: 0.5rem;
+    transition: 0.2s;
+}
+
+.option_list li:hover{
+    background-color: powderblue;
+}
+
+.new_option {
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: steelblue;
+}
+

@@ -6,8 +6,6 @@ from inventory.serializers import InventoryItemSerializer
 
 from .models import *
 
-
-
 class SalesRepsSerializer(serializers.ModelSerializer):
     rep_name = serializers.SerializerMethodField()
 
@@ -24,7 +22,7 @@ class CustomerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Customer
-        fields = ['name', 'id', 'expense_set', 'organization',
+        fields = ['name', 'id', 'expense_set', 'organization', 'billing_currency',
                   'individual', 'account', 'billing_address', 'banking_details']
 
 

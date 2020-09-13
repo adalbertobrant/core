@@ -1,0 +1,3 @@
+all transactions involving an account are in its currency
+reports convert foreign currency balances to system currency balances.
+therefore one trial balance one balance sheet etc

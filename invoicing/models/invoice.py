@@ -103,6 +103,8 @@ class Invoice(SoftDeletionModel):
                                   null=True,
                                   default=DEFAULT_WAREHOUSE)
     shipping_expenses = models.ManyToManyField('accounting.Expense')
+    currency = models.ForeignKey('accounting.currency', null=True, on_delete=models.SET_NULL)
+    exchange_rate = models.DecimalField(max_digits=16, decimal_places=4, default=1)    
     timestamp = models.DateTimeField(
         null=True, blank=True, auto_now=False)  # for pos
     entry = models.ForeignKey('accounting.JournalEntry',

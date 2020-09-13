@@ -26,7 +26,6 @@ from django.contrib import messages
 from services.models import Service
 from inventory.models import InventoryItem, ProductComponent, UnitOfMeasure
 
-
 def process_data(items, inv):
     if items:
         items = json.loads(urllib.parse.unquote(items))
@@ -74,7 +73,7 @@ class InvoiceDetailView(ContextMixin, ConfigMixin, MultiPageDocument, DetailView
     def get_multipage_queryset(self):
         return InvoiceLine.objects.filter(invoice=Invoice.objects.get(pk=self.kwargs['pk']))
 
-
+os.path.exists(os.path.join('invoicing', 'scripts', 'invoice.js'))
 class InvoiceCreateView(ContextMixin, InvoiceCreateMixin, ConfigMixin, CreateView):
     '''Quotes and Invoices are created with React.js help.
     data is shared between the static form and django by means
@@ -83,6 +82,9 @@ class InvoiceCreateView(ContextMixin, InvoiceCreateMixin, ConfigMixin, CreateVie
 
     template_name = os.path.join("invoicing", "invoice", "create.html")
     form_class = forms.InvoiceForm
+    extra_context = {
+        'page_script': os.path.join('invoicing', 'scripts', 'invoice.js')
+    }
 
     def get_initial(self):
         initial = {}

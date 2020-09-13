@@ -530,6 +530,13 @@ ALIAS_MAPPING = {
 APP_LIST = ['services', 'inventory', 'common_data', 'messaging',
                 'accounting', 'employees', 'planner', 'messaging', 'invoicing']
 
+
+def get_models(request, model_name=None, app_name=None):
+    model = apps.get_model(app_label=app_name, model_name=model_name)
+
+    return JsonResponse({'data': [(i.pk, str(i)) for i in model.objects.all()]})
+
+    
 def get_model_latest(request, model_name=None):
     model_name = ALIAS_MAPPING.get(model_name, model_name)
     latest = None

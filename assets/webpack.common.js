@@ -15,6 +15,7 @@ module.exports = {
         services: './js/services',
         manufacturing: './js/manufacturing',
         widgets: './js/widgets',
+        common: './js/common',
         messaging: './js/messaging',
         pos: './js/pos',
     },

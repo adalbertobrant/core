@@ -26,6 +26,7 @@ class CreditNote(models.Model):
     date = models.DateField()
     invoice = models.ForeignKey('invoicing.Invoice',
                                 on_delete=models.SET_NULL, null=True)
+    currency = models.ForeignKey('accounting.currency', null=True, on_delete=models.SET_NULL)
     comments = models.TextField()  # never allow blank comments
     entry = models.ForeignKey("accounting.JournalEntry", null=True,
                               on_delete=models.SET_NULL)

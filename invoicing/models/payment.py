@@ -25,6 +25,7 @@ class Payment(SoftDeletionModel):
     amount = models.DecimalField(max_digits=16, decimal_places=2)
     date = models.DateField()
     method = models.ForeignKey('invoicing.PaymentMethod', on_delete=models.SET_NULL, null=True)
+    currency = models.ForeignKey('accounting.currency', null=True, on_delete=models.SET_NULL)
     reference_number = models.AutoField(primary_key=True)
     sales_rep = models.ForeignKey("invoicing.SalesRepresentative",
                                   on_delete=models.SET_NULL,

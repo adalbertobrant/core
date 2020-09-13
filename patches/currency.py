@@ -4,11 +4,9 @@ from inventory.models import Supplier
 
 settings = AccountingSettings.objects.first()
 
-
 for acc in Account.objects.filter(currency__isnull=True):
     acc.currency = settings.active_currency
     acc.save()
-
 
 for cus in Customer.objects.filter(billing_currency__isnull=True):
     cus.billing_currency = settings.active_currency

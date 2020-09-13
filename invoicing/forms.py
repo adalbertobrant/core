@@ -236,7 +236,7 @@ class InvoiceForm(InvoiceCreateMixin, forms.ModelForm, BootstrapMixin):
     status = forms.CharField(widget=forms.HiddenInput)
 
     class Meta:
-        fields = ["status", 'customer', 'purchase_order_number', 'ship_from',
+        fields = ["status", 'customer', 'purchase_order_number', 'ship_from', 'currency',
                   'date', 'due', 'salesperson', 'terms', 'comments', 'invoice_number']
         model = models.Invoice
         widgets = {

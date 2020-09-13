@@ -14,7 +14,6 @@ const testView = document.getElementById('test');
 const pricing = document.getElementById('pricing-widget');
 const depts = document.getElementById('department-list');
 const avatar = document.getElementById('avatar-preview');
-
 const dataMapper = (node, i) =>{
 
     return({
@@ -80,3 +79,4 @@ if(storageMedia){
                         inputID='id_avatar'
                         url='/messaging/user-icon/' />, avatar);
 }
+

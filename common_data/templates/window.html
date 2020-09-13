@@ -4,6 +4,8 @@
 {% block head_extended %}{% endblock %}
 {% endblock %}
 {% block window %}
+{% load render_bundle from webpack_loader %}
+
 
 <main>
     <aside id='nav'>
@@ -74,6 +76,13 @@
         </section>
     </article>
 </main>
+
+<script >
+    {% if page_script %}
+        {% include page_script %}
+    {% endif %}
+</script>
+{% render_bundle 'common' %}
 
 
 {% endblock %}

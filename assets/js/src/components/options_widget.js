@@ -54,11 +54,12 @@ class OptionsWidget extends Component{
         const linkStyle = {
             padding: "5px 2px",
             color: "#23374d",
+            fontWeight: 500,
             borderBottom: '1px solid #aaa',
             borderTop: '1px solid #aaa',
             ":hover": {
                 'color':'white',
-                'backgroundColor':'#23374d',
+                'backgroundColor':'powderblue',
             }
         }
         return(

@@ -17,13 +17,19 @@ from . import models
 class BootstrapMixin(forms.Form):
     """This class intergrates bootstrap into select form fields
 
-    The class is a mixin that adds the 'form-control class' to each field in the form as well as making each text input have a placeholder instead of a label. It can be used as a common point for inserting other standard behaviour in the future."""
+    The class is a mixin that adds the 'form-control class' to each field in the form as well as making each text input have a placeholder instead of a label. It can be used as a common point for inserting other standard behaviour in the future.
+    Adds model data attribute to all model choice fields
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields:
             field = self.fields.get(field)
             field.widget.attrs['class'] = "form-control form-control-sm"
+            if isinstance(field, forms.models.ModelChoiceField):
+                field.widget.attrs['data-model'] = field.queryset.model.__name__
+                field.widget.attrs['data-app'] = field.queryset.model._meta.app_label
+                field.widget.attrs['class'] += " bentsch-select"
 
             if isinstance(field.widget, forms.widgets.DateInput):
                 field.widget.attrs['class'] += " ui-date-picker"

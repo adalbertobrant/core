@@ -72,5 +72,6 @@ urlpatterns = [
          name='blank-report'),
     path('api/current-db/', views.current_db, name='api-current-db'),
     path('api/config/<int:pk>', views.ConfigAPIView.as_view()),
-    path('api/bulk-individuals-create/', views.IndividualBulkCreateAPIView.as_view())
+    path('api/bulk-individuals-create/', views.IndividualBulkCreateAPIView.as_view()),
+    path('api/model-items/<str:app_name>/<str:model_name>/', views.get_models)
 ] + individual_router.urls + organization_router.urls
