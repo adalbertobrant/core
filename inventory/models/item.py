@@ -12,6 +12,8 @@ import invoicing
 import services
 from common_data.models import SoftDeletionModel
 from django.shortcuts import reverse
+from common_data.models import QuickEntry 
+
 
 
 class ItemPrice(models.Model):
@@ -23,7 +25,9 @@ class ItemPrice(models.Model):
                                decimal_places=2,
                                default=0.0)
 
-class InventoryItem(SoftDeletionModel):
+class InventoryItem(QuickEntry, SoftDeletionModel):
+    quick_entry_fields = ['name', 'type', 'description']
+
     INVENTORY_TYPES = [
         (0, 'Product'),
         (1, 'Equipment'),

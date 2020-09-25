@@ -19,7 +19,7 @@ from messaging.models import UserProfile
 from rest_framework.authtoken.models import Token
 
 from common_data import filters, models, serializers, forms
-from common_data.models import GlobalConfig, Organization
+from common_data.models import GlobalConfig, Organization, QuickEntry
 from common_data.utilities import (ContextMixin,
                                    apply_style,
                                    MultiPageDocument,
@@ -38,7 +38,7 @@ import json
 from common_data.schedules import backup_db
 from common_data.middleware.license import license_check
 import urllib
-
+import copy
 
 try:
     backup_db(repeat=Task.DAILY)
@@ -599,8 +599,49 @@ def get_models_latest(request):
 
     return JsonResponse(payload)
 
+def get_quick_entry_fields(request, app=None, model_name=None):
+    model = apps.get_model(app_label=app, model_name=model_name)
+    if not hasattr(model, "supports_quick_entry"):
+        return JsonResponse({'data': []})
 
+    return JsonResponse({'data': model.get_quick_entry_fields()})
 
+def create_via_quick_entry(request, app=None, model_name=None):
+    model = apps.get_model(app_label=app, model_name=model_name)
+    data = json.loads(request.body.decode('utf-8'))
+    def parse_foreign_keys(m, d):
+        temp = m.get_quick_entry_fields()
+        model_fields = {i['name']: i for i in temp}
+        processed = copy.deepcopy(d)
+        for key,value in d.items():
+            model_field = model_fields.get(key)
+            if model_field and model_field['fieldtype'] == "link":
+                mf_app, mf_model_name = model_field['options'].split('.')
+                mf_model = apps.get_model(app_label=mf_app, 
+                                          model_name=mf_model_name)
+                mf_obj =mf_model.objects.get(pk=value)
+
+                processed[key] = mf_obj
+        
+        return processed
+
+    data = parse_foreign_keys(model, data)
+
+    print(data)
+    try:
+        obj = model.objects.create(**data)
+    except Exception as e:
+        print(e)
+        return JsonResponse({'error': str(e)})
+
+    else:
+        print(obj)
+        return JsonResponse({'pk': obj.pk})
+
+def supports_quick_entry(request, app=None, model_name=None):
+    model = apps.get_model(app_label=app, model_name=model_name)
+    return JsonResponse({'supports_quick_entry': issubclass(model, QuickEntry)})
+    
 class ConfigWizard(ConfigWizardBase):
     template_name = os.path.join('common_data', 'wizard.html')
     form_list = [forms.GlobalConfigForm]

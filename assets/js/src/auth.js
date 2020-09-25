@@ -12,7 +12,6 @@ authAxiosInstance.interceptors.request.use(async config =>{
     return config
 })
 authAxiosInstance.interceptors.response.use( resp =>{
-    console.log('intercepted!')
     return resp
 }, err =>{
     console.log('There was an error processing your request.')

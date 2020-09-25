@@ -71,6 +71,9 @@ urlpatterns = [
     path('blank-report/', views.ReportBlankView.as_view(),
          name='blank-report'),
     path('api/current-db/', views.current_db, name='api-current-db'),
+    path('api/supports-quick-entry/<str:app>/<str:model_name>/', views.supports_quick_entry, name='api-supports-quick-entry'),
+    path('api/create-via-quick-entry/<str:app>/<str:model_name>', views.create_via_quick_entry, name='api-create-via-quick-entry'),
+    path('api/get-quick-entry-fields/<str:app>/<str:model_name>', views.get_quick_entry_fields, name='api-get-quick-entry-fields'),
     path('api/config/<int:pk>', views.ConfigAPIView.as_view()),
     path('api/bulk-individuals-create/', views.IndividualBulkCreateAPIView.as_view()),
     path('api/model-items/<str:app_name>/<str:model_name>/', views.get_models)

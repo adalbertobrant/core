@@ -6,7 +6,7 @@ from django.db.models import Q
 from common_data.models import SingletonModel, SoftDeletionModel
 import services
 from decimal import Decimal as D
-
+from common_data.models import QuickEntry
 # Create your models here.
 
 
@@ -14,8 +14,9 @@ class ServicesSettings(SingletonModel):
     is_configured = models.BooleanField(default=False)
 
 
-class Service(models.Model):
+class Service(QuickEntry, models.Model):
     # client and sales facing model
+    quick_entry_fields = ['name', 'flat_fee', 'hourly_rate', 'frequency']
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     flat_fee = models.DecimalField(max_digits=16, decimal_places=2)

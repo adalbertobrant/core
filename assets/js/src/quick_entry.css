@@ -1,0 +1,18 @@
+.modal {
+    position: fixed;
+    z-index: 1000;
+    background-color: rgba(0,0,0,0.5);
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+}   
+
+.modal_body {
+    width: 400px;
+    margin: 50px auto;
+    background-color: white;
+    border-radius: 0.75rem;
+    padding: 1rem;
+
+}

@@ -5,7 +5,7 @@ from decimal import Decimal as D
 from django.db import models
 from django.db.models import Q
 
-from common_data.models import Person, SoftDeletionModel
+from common_data.models import Person, SoftDeletionModel, QuickEntry
 import planner
 from employees.models.payslip import Payslip
 from employees.models.timesheets import EmployeeTimeSheet, AttendanceLine
@@ -14,9 +14,10 @@ from django.shortcuts import reverse
 from common_data.utilities.mixins import ContactsMixin
 
 
-class Employee(ContactsMixin, Person, SoftDeletionModel):
+class Employee(QuickEntry, ContactsMixin, Person, SoftDeletionModel):
     email_fields = ['email']
     phone_fields = ['phone']
+    quick_entry_fields = ['first_name', 'last_name']
     '''
     Represents an individual employee of the business. Records their personal 
     details as well as their title, pay grade and leave days.

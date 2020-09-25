@@ -6,7 +6,7 @@ from accounting.models import Account
 
 from invoicing.models.invoice import Invoice, InvoiceLine
 from invoicing.models.payment import Payment
-from common_data.models import SoftDeletionModel
+from common_data.models import SoftDeletionModel, QuickEntry,Individual, Organization
 
 
 class CustomerNote(models.Model):
@@ -17,12 +17,15 @@ class CustomerNote(models.Model):
     timestamp = models.DateTimeField(auto_now=True)
 
 
-class Customer(SoftDeletionModel):
+class Customer(SoftDeletionModel, QuickEntry):
     '''The customer model represents business clients to whom products are 
     sold. Customers are typically businesses and the fields reflect that 
     likelihood. Individuals however can also be represented.
     Customers can have accounts if store credit is extended to them.'''
     # make sure it can only be one or the other not both
+    quick_entry_fields = ["is_company", "customer_name"]
+    is_company = models.BooleanField(default=False)
+    customer_name = models.CharField(max_length=255, blank=True, null=True)
     organization = models.OneToOneField('common_data.Organization', null=True,
                                         on_delete=models.CASCADE, blank=True, unique=True)
     individual = models.OneToOneField('common_data.Individual', null=True,
@@ -67,17 +70,11 @@ class Customer(SoftDeletionModel):
             name="Customer: %s" % self.name,
             balance=0,
             id=1100 + n_customers,
-            currency=self.billing_currency,
             type='asset',
             description='Account which represents credit extended to a customer',
             balance_sheet_category='current-assets',
             parent_account=Account.objects.get(pk=1003)  # trade receivables
         )
-
-    def save(self, *args, **kwargs):
-        if self.account is None:
-            self.create_customer_account()
-        super(Customer, self).save(*args, **kwargs)
 
     @property
     def credit_invoices(self):
@@ -163,3 +160,23 @@ class Customer(SoftDeletionModel):
                     total_time += wo.total_time
 
         return total_time.seconds / 3600.0
+
+    def save(self, *args, **kwargs):
+        if not self.pk and self.customer_name:
+            if self.is_company and not self.organization:
+                self.organization = Organization.objects.create(legal_name = self.customer_name)
+            
+            if not self.is_company and not self.individual:
+                names = self.customer_name.split("")
+                if len(names) < 2:
+                    first = self.customer_name
+                    last = "Customer"
+                else:
+                    first, last = names[:2]
+                self.individual = Individual.objects.create(first_name=first,
+                    last_name=last)
+
+        if self.account is None:
+            self.create_customer_account()
+
+        super().save(*args, **kwargs)

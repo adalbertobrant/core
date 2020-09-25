@@ -47,8 +47,66 @@ class SoftDeletionModel(models.Model):
     def hard_delete(self):
         super().delete()
 
+class QuickEntry(models.Model):
+    class Meta:
+        abstract = True
+        
+    supports_quick_entry = models.BooleanField(default=True)
+    quick_entry_fields = []
 
-class Individual(ContactsMixin, Person, SoftDeletionModel):
+    @classmethod
+    def get_quick_entry_fields(cls):
+        _fields = {}
+        for field in cls._meta.fields:
+            if field.name in cls.quick_entry_fields:
+                _fields[field.name] = field
+
+        fields = []
+        for key, value in _fields.items():
+            name = key
+            print(type(value))
+            if isinstance(value, models.BooleanField):
+                options = ""
+                fieldtype = "bool"
+                continue
+            
+            if isinstance(value, models.CharField):
+                if value.choices:
+                    options = value.choices
+                    fieldtype = "select"
+                else:
+                    options = ""
+                    fieldtype="char"
+
+
+            if isinstance(value, models.DecimalField) or \
+                    isinstance(value, models.IntegerField) or \
+                    isinstance(value, models.FloatField):
+                options = ""
+                fieldtype="number"
+
+            if isinstance(value, models.TextField):
+                options = ""
+                fieldtype = "text"
+
+            if issubclass(value.__class__, models.ForeignKey):
+                app = value.remote_field.model._meta.app_label
+                model__name = value.remote_field.model.__name__
+                options = "{}.{}".format(app,model__name)
+                fieldtype = 'link'
+                
+            fields.append({
+                'name': name,
+                'label': name.replace("_", " ").title(),
+                'fieldtype': fieldtype,
+                'options': options,
+            })
+
+        print(fields)
+        return fields
+
+
+class Individual(QuickEntry, ContactsMixin, Person, SoftDeletionModel):
     '''inherits from the base person class in common data
     represents clients of the business with entry specific details.
     the customer can also have an account with the business for credit 
@@ -57,6 +115,8 @@ class Individual(ContactsMixin, Person, SoftDeletionModel):
     '''
     phone_fields = ['phone', 'phone_two']
     email_fields = ['email']
+    quick_entry_fields = ['first_name', 'last_name']
+
     phone_two = models.CharField(max_length=16, blank=True, default="")
     other_details = models.TextField(blank=True, default="")
     organization = models.ForeignKey('common_data.Organization',
@@ -81,9 +141,11 @@ class Note(models.Model):
         return "{}({}): {}".format(self.timestamp.strftime("%d %b %y, %H:%M "), self.author, self.note)
 
 
-class Organization(ContactsMixin, models.Model):
+class Organization(QuickEntry, ContactsMixin, models.Model):
     phone_fields = ['phone']
     email_fields = ['email']
+    quick_entry_fields = ['legal_name', 'business_address']
+    
 
     legal_name = models.CharField(max_length=255)
     business_address = models.TextField(blank=True)
@@ -280,13 +342,6 @@ class GlobalConfig(SingletonModel):
 #     comment = models.TextField()
 #     created = models.DateTimeField(auto_now=True)
 
-# class QuickEntry(models.Model):
-#     name = models.CharField(max_length=255, unique=True)
-#     api_url = models.CharField(max_length=1024)
 
-# class QuickEntryField(models.Model):
-#     entry = models.ForeignKey("common_data.QuickEntry", on_delete=models.CASCADE)
-#     label = models.CharField(max_length=255)
-#     fieldname = models.CharField(max_length=255)
-#     fieldtype = models.CharField(max_length=255)
-#     options = models.TextField()
+
+    

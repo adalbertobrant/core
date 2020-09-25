@@ -7,6 +7,7 @@ from django.db.models import Q
 from common_data.models import SoftDeletionModel
 from accounting.models.transactions import Credit, Debit
 from django.shortcuts import reverse
+from common_data.models import QuickEntry
 
 # Choices for the account model
 TYPE_CHOICES = [
@@ -42,7 +43,6 @@ class AbstractAccount(SoftDeletionModel):
     ------------
     '''
     name = models.CharField(max_length=64)
-    currency = models.ForeignKey('accounting.currency', null=True, on_delete=models.SET_NULL)
     balance = models.DecimalField(max_digits=16, decimal_places=2)
     type = models.CharField(max_length=32, choices=TYPE_CHOICES)
     description = models.TextField()
@@ -126,8 +126,11 @@ class AbstractAccount(SoftDeletionModel):
     class Meta:
         abstract = True
 
+    #TODO save function that adds non zero balances as debits or credits depending on the type of account
 
-class Account(AbstractAccount):
+
+class Account(QuickEntry, AbstractAccount):
+    quick_entry_fields = ['name', 'balance', 'type', 'description', 'balance_sheet_category']
     '''
     balance- mutable(not directly)
     '''

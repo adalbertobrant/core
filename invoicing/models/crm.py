@@ -3,6 +3,7 @@ from invoicing.models.sales_rep import SalesRepresentative
 import datetime
 from django.shortcuts import reverse
 from statistics import mean
+from common_data.models import QuickEntry
 
 try:
     default_rep = SalesRepresentative.objects.first().pk \
@@ -11,7 +12,9 @@ except:
     default_rep = 1
 
 
-class LeadSource(models.Model):
+class LeadSource(QuickEntry, models.Model):
+    quick_entry_fields = ['name', 'description']
+
     name = models.CharField(max_length=64)
     description = models.TextField()
 
@@ -150,7 +153,9 @@ class Task(models.Model):
         return reverse("invoicing:task-details", kwargs={"pk": self.pk})
 
 
-class SalesTeam(models.Model):
+class SalesTeam(QuickEntry, models.Model):
+    quick_entry_fields = ['name', 'leader']
+
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     members = models.ManyToManyField('invoicing.SalesRepresentative')

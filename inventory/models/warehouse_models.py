@@ -9,12 +9,14 @@ from django.db.models import Q
 
 from django.shortcuts import reverse
 from inventory.models.item_management import InventoryCheck
+from common_data.models import QuickEntry 
 
 class WarehouseExeption(Exception):
     pass
 
 
-class WareHouse(models.Model):
+class WareHouse(QuickEntry, models.Model):
+    quick_entry_fields = ['name', 'address']
     name = models.CharField(max_length=128)
     address = models.TextField()
     description = models.TextField(blank=True)
