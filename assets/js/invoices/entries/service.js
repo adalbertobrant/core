@@ -59,7 +59,7 @@ class ServiceEntry extends Component{
             this.setState({
                 selected: value,
                 rate: res.data.hourly_rate,
-                fee: res.data.flat_fee
+                fee: 
             }, () => this.props.changeHandler(this.state))
         })
         

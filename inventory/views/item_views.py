@@ -58,6 +58,14 @@ class ProductUpdateView(ContextMixin, UpdateView):
     template_name = os.path.join("common_data", "crispy_create_template.html")
     extra_context = {"title": "Update Existing Product"}
 
+    def get_initial(self, *args, **kwargs):
+        initial = super().get_initial(*args, **kwargs)
+        if not self.object:
+            self.get_object()
+        initial['tax'] = self.object.product_component.tax.pk
+        # ignore warehouse it is an optional field for initial inventory
+        return initial
+
 
 class ProductDetailView(ContextMixin, DetailView):
     model = models.InventoryItem

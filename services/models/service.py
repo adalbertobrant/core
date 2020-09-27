@@ -21,6 +21,7 @@ class Service(QuickEntry, models.Model):
     description = models.TextField(blank=True)
     flat_fee = models.DecimalField(max_digits=16, decimal_places=2)
     hourly_rate = models.DecimalField(max_digits=16, decimal_places=2)
+    tax = models.ForeignKey('accounting.tax', on_delete=models.SET_NULL, null=True)
     category = models.ForeignKey('services.ServiceCategory',
                                  on_delete=models.SET_NULL, null=True,)
     procedure = models.ForeignKey('services.ServiceProcedure',

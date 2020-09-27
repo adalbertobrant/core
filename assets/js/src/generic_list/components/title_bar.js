@@ -9,22 +9,21 @@ const titleBar = (props) =>{
         
         <thead>
 
-            <tr 
-                className="bg-primary text-white"
-                >
-                
+            <tr className="bg-primary text-white">
+                <th></th>
                 {wide ? 
-                    props.fieldOrder.map((fieldName, i)=>(
-                        <th colSpan={i == 0 ? 2:1}  key={i}
+                    props.fieldOrder.map((fieldName, i)=>{
+                        return (<th  key={i}
                             style={{
                                 padding: "5px",
                                 borderRight: "1px solid white",
-                                width: `${props.fields[i].width}%`
+                                width: `${props.fields[i].width}%`,
+                                textAlign: props.fields[i].type == 'number' ? 'right': 'left' 
                             }}>
                             {fieldName}
                         </th>
-                )) : 
-                        <th colSpan={2} style={{width: '80%'}}>Description</th>
+                )}) : 
+                        <th  style={{width: '80%'}}>Description</th>
                 }
                 {props.hasLineTotal ?
                 <th style={{

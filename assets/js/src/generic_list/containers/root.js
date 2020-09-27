@@ -52,6 +52,7 @@ class GenericTable extends Component{
                     this.setState({lines: this.props.resProcessor(res)})
                 });
         }
+        
     }
 
     componentDidUpdate = (prevProps, prevState) =>{
@@ -118,6 +119,7 @@ class GenericTable extends Component{
                     {this.state.lines.map((field, i) =>(
                         <DataRow 
                             key={i}
+                            fields={this.props.fields}
                             data={this.state.lines[i]}
                             fieldOrder={this.props.fieldOrder}
                             index={i}

@@ -71,6 +71,11 @@ function toggleMobileNav(){
 // for employees deduction page
 $(document).ready(function () {
 
+    if($('#action-dropdown-items').length) {
+        if(!$('#action-dropdown-items a').length > 0) {
+            $('#action-dropdown-items').html('<p class="dropdown-item">No actions on this page</p>')
+        }
+    }
 
     if($('#title').length){
         if(!$('#mobile-nav').length){

@@ -52,7 +52,7 @@ class UserTestMiddleware(object):
                 request.path.startswith("/media") or \
                 (request.path.startswith("/planner") and not request.user.is_anonymous) or \
                 ("calendar" in request.path and not request.user.is_anonymous) or \
-                "api" in request.path or \
+                "api" in request.path or request.is_ajax() or \
                 request.path in exempted_urls:
             return self.get_response(request)
 
@@ -90,14 +90,12 @@ class UserTestMiddleware(object):
                 return self.get_response(request)
 
             else:
-                print(request.path)
                 messages.info(
                     request, "The currently logged in user does not have the appropriate permissions to access this feature")
                 return HttpResponseRedirect(
                     "/login/?next={}".format(redirect) if redirect else "/login/")
 
         else:
-            print(request.path)
             messages.info(
                 request, "The currently logged in user does not have the appropriate permissions to access this feature")
             return HttpResponseRedirect(

@@ -171,15 +171,13 @@ class inputLine extends Component{
                     style={{
                         borderTop: '2px solid white',
                     }}>
+                    <td></td>
                     {this.props.fieldOrder.map((fieldName, i) =>(
-                        <td colSpan={i==0 ? 2:1} key={i}>
+                        <td key={i}>
                             {this.fieldSelector(i)}
                         </td>
                     ))}
-                    <td colSpan={this.props.hasLineTotal 
-                        ? 2
-                        : 1}>
-                        
+                    <td> 
                         <div>
                         <button 
                             style={{ margin: '5px'}}

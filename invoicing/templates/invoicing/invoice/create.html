@@ -2,7 +2,7 @@
 {% load render_bundle from webpack_loader %}
 
 {% block heading %}
-Create Invoice
+{{title}}
 {% endblock heading %}
 {% block content %}
 <style>
@@ -21,92 +21,78 @@ Create Invoice
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
-                        <table class=" table-sm">
-                            <tbody>
-                                <tr>
-                                    <th>Customer</th>
-                                    <td>{{form.customer}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Customer PO Number</th>
-                                    <td>{{form.purchase_order_number}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Source Warehouse:</th>
-                                    <td>{{form.ship_from}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Invoice Number</th>
-                                    <td>{{form.invoice_number}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <label>Customer:</label>
+                        <div>
+                            {{form.customer}}
+                        </div>
+                        <br>
+                        <label>Customer PO Number</label>
+                        <div>{{form.purchase_order_number}}</div>
+                        <br>
+                        <label>Source Warehouse:</label>
+                        <div>{{form.ship_from}}</div>
+                        <br>
+                        <label>Invoice Number</label>
+                        <div>{{form.invoice_number}}</div>
                     </div>
                     <div class="col-sm-12 col-md-6">
-                        <table class=" table-sm">
-                            <tbody>
-                                <tr>
-                                    <th>Date</th>
-                                    <td>{{form.date}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Due</th>
-                                    <td>{{form.due}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Sales Representative</th>
-                                    <td>{{form.salesperson}}</td>
-                                </tr>
-
-                                <tr>
-                                    <th>Currency</th>
-                                    <td>{{form.currency}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <label>Date</label>
+                        <div>{{form.date}}</div>
+                        <br>
+                        <label>Due</label>
+                        <div>{{form.due}}</div>
+                        <br>
+                        <label>Sales Representative</label>
+                        <div>{{form.salesperson}}</div>
+                        <br>
+                        <label>Currency</label>
+                        <div>{{form.currency}}</div>
+                        <br>
+                        <label>Exchange Rate</label>
+                        <div>{{form.exchange_rate}}</div>
                     </div>
                 </div>
                 {{form.status}}
-
-                <ul class="nav nav-tabs">
-                    <li class="nav-item"><a class="nav-link active" href="#lines" data-toggle="tab">Invoice Lines</a>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="#comments-terms" data-toggle="tab">T's & C's</a></li>
-                </ul>
-                <div class="tab-content panel-body">
-                    <div id="lines" class="tab-pane active">
+                <hr>
+                <div class="row">
+                    <div class="col-12">
                         <div id="div_id_recipient" class="form-group"> <label for="id_recipient"
-                                class="col-form-label  requiredField">
+                            class="col-form-label  requiredField">
                                 Invoice Lines</label>
                             <div id="invoice-table"></div>
                         </div>
                     </div>
-                    <div id="comments-terms" class="tab-pane">
-                        <div id="div_id_recipient" class="form-group"> <label for="id_recipient"
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-12">
+                        <label for="id_recipient"
                                 class="col-form-label  requiredField">
                                 Terms and Comments</label>
-                            <div class="{{style}}-footer-cell">
-                                <div class="{{style}}-footer-cell-heading">
-                                    Terms:
-                                </div>
-                                <div class="{{style}}-footer-cell-contents">
-                                    {{form.terms}}
-                                </div>
+                        <div class="{{style}}-footer-cell">
+                            <div class="{{style}}-footer-cell-heading">
+                                Terms:
                             </div>
-                            <div class="{{style}}-footer-cell">
-                                <div class="{{style}}-footer-cell-heading">
-                                    Comments:
-                                </div>
-                                <div class="{{style}}-footer-cell-contents">
-                                    {{form.comments}}
-                                </div>
+                            <div class="{{style}}-footer-cell-contents">
+                                {{form.terms}}
                             </div>
+                        </div>
+                        <div class="{{style}}-footer-cell">
+                            <div class="{{style}}-footer-cell-heading">
+                                Comments:
+                            </div>
+                            <div class="{{style}}-footer-cell-contents">
+                                {{form.comments}}
+                            </div>
+                        </div>
+                        <br>
+                        <div style='display:flex;justify-content: flex-end;'>
+                            <button class="btn btn-info " type="submit">
+                                Submit
+                            </button>
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-info " type="submit">
-                    Submit
-                </button>
             </form>
             {% render_bundle 'invoicing' %}
         </div>

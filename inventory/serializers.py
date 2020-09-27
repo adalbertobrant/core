@@ -34,7 +34,6 @@ class InventoryItemSerializer(serializers.ModelSerializer):
         model = InventoryItem
         fields = "__all__"
 
-
 class WareHouseItemSerializer(serializers.ModelSerializer):
     item = InventoryItemSerializer(many=False)
 

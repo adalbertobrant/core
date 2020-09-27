@@ -7,7 +7,6 @@ const authAxiosInstance = axios.create({})
 authAxiosInstance.interceptors.request.use(async config =>{
     let token = 'Token ' 
     const resp = await (await axios.get('/base/current-user-token')).data.token
-    console.log(resp)
     config.headers.Authorization = token + resp
     return config
 })

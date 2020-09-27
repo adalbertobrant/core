@@ -117,7 +117,7 @@ class InvoiceCreateView(ContextMixin, InvoiceCreateMixin, ConfigMixin, CreateVie
 class InvoiceUpdateView(ContextMixin, UpdateView):
     template_name = os.path.join('invoicing', 'invoice', 'create.html')
     model = Invoice
-    form_class = forms.InvoiceUpdateForm
+    form_class = forms.InvoiceForm
     extra_context = {
         'title': 'Update  Invoice'
     }

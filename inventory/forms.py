@@ -528,6 +528,7 @@ class OrderForm(forms.ModelForm, BootstrapMixin):
     )
     make_payment = forms.BooleanField(initial=False, required=False)
     status = forms.CharField(widget=forms.HiddenInput)
+    items = forms.CharField(widget=forms.HiddenInput)
     active = forms.BooleanField(widget=forms.HiddenInput, required=False, initial=True)
     ship_to = forms.ModelChoiceField(
         models.WareHouse.objects.all(), label='Ship To Warehouse')
@@ -539,18 +540,21 @@ class OrderForm(forms.ModelForm, BootstrapMixin):
         self.fields['due'].required = True
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('Basic',
                     Row(
-                        Column('date', 'expected_receipt_date', 'due',
+                        Column('date', 'expected_receipt_date', 'due', 'currency', 'exchange_rate',
                                css_class='form group col-md-6 col-sm-12'),
                         Column('supplier', 'ship_to', 'issuing_inventory_controller',
                                css_class='form group col-md-6 col-sm-12'),
                     ),
                     'tax',
-                    'active'
-                    ),
-                Tab('Shipping and Payment',
+                    'status',
+                    'active',
+                    'items',
+                    HTML('''<hr>
+                        <p>Items</p>
+                        <div id='order-root'></div>
+                        <hr>
+                        '''),
                     Row(
                         Column(
                             'supplier_invoice_number',
@@ -559,30 +563,13 @@ class OrderForm(forms.ModelForm, BootstrapMixin):
                             'make_payment',
                             css_class='col-md-6 col-sm-12'),
                         Column('notes', css_class='col-md-6 col-sm-12'),
-                    )),
-            ),
-            HTML(
-                """
-                <div id="order-root"></div>
-                """
-            ),
-            HTML("""
-                <div class="dropdown open">
-                        <button class="btn btn-info dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" >
-                                    Submit as...
-                                </button>
-                        <div class="dropdown-menu" aria-labelledby="triggerId">
-                            <input class="dropdown-item" 
-                                type="submit"
-                                name="status"
-                                value="draft">
-                            <input class="dropdown-item" 
-                                type="submit"
-                                name="status"
-                                value="order">                           
-                        </div>
-            """)
+              
+            )
         )
+
+        self.helper.add_input(Submit('submit', 'Submit'))
+
+
 
     class Meta:
         exclude = ['validated_by', "entry", 'entries',
@@ -592,18 +579,6 @@ class OrderForm(forms.ModelForm, BootstrapMixin):
             'supplier': Select2Widget
         }
 
-
-class OrderUpdateForm(forms.ModelForm, BootstrapMixin):
-    tax = forms.ModelChoiceField(
-        Tax.objects.all(),
-        widget=forms.HiddenInput
-    )
-
-    class Meta:
-        model = models.Order
-        fields = ['date', 'expected_receipt_date',
-                  'due', 'supplier', 'bill_to',
-                  'notes', 'tax']
 
 
 class OrderPaymentForm(forms.ModelForm, BootstrapMixin):

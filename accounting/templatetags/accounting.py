@@ -37,3 +37,10 @@ def active_currency(number):
     if negative:
         return '{0} ({1:0.2f})'.format(currency.symbol, number)
     return '{0} {1:0.2f}'.format(currency.symbol, number)
+
+
+@register.filter
+def transaction_amount(transaction, field):
+    value = getattr(transaction, field)
+    print(value)
+    return '{0} {1:0.2f}'.format(transaction.currency.symbol, value * transaction.exchange_rate)

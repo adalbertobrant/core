@@ -27,7 +27,8 @@ class BootstrapMixin(forms.Form):
             field = self.fields.get(field)
             field.widget.attrs['class'] = "form-control form-control-sm"
             if isinstance(field, forms.models.ModelChoiceField):
-                print(field)
+                if isinstance(field.widget, forms.widgets.HiddenInput):
+                    continue
                 field.widget.attrs['data-model'] = field.queryset.model.__name__
                 field.widget.attrs['data-app'] = field.queryset.model._meta.app_label
                 field.widget.attrs['class'] += " bentsch-select"

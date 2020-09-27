@@ -236,25 +236,10 @@ class InvoiceForm(InvoiceCreateMixin, forms.ModelForm, BootstrapMixin):
     status = forms.CharField(widget=forms.HiddenInput)
 
     class Meta:
-        fields = ["status", 'customer', 'purchase_order_number', 'ship_from', 'currency',
+        fields = ["status", 'customer', 'purchase_order_number', 'ship_from', 'currency', 'exchange_rate',
                   'date', 'due', 'salesperson', 'terms', 'comments', 'invoice_number']
         model = models.Invoice
-        widgets = {
-            'customer': Select2Widget
-        }
-
-
-class InvoiceUpdateForm(forms.ModelForm, BootstrapMixin):
-    status = forms.CharField(widget=forms.HiddenInput)
-
-    class Meta:
-        fields = ["status", 'customer', 'purchase_order_number', 'ship_from',
-                  'date', 'due', 'salesperson',  'terms', 'comments', 'invoice_number']
-        model = models.Invoice
-        widgets = {
-            'customer': Select2Widget
-        }
-
+        
 
 class QuotationForm(InvoiceCreateMixin, forms.ModelForm, BootstrapMixin):
     status = forms.CharField(widget=forms.HiddenInput)
@@ -263,7 +248,7 @@ class QuotationForm(InvoiceCreateMixin, forms.ModelForm, BootstrapMixin):
 
     class Meta:
         fields = ["status", 'customer', 'quotation_date',
-                  'quotation_valid', 'salesperson', 'terms', 'comments']
+                  'quotation_valid', 'salesperson', 'terms', 'comments', 'currency', 'exchange_rate']
         model = models.Invoice
         widgets = {
             'customer': Select2Widget

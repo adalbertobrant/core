@@ -9,6 +9,7 @@ const select = document.querySelectorAll('.bentsch-select')
 select.forEach(field => {
     ReactDOM.render(<SelectThree 
         model={field.dataset.model}
+        initial={field.value}
         app={field.dataset.app}
         name={field.name}/>, field.parentElement)
 })

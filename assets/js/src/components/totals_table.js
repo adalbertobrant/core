@@ -66,14 +66,15 @@ class Totals extends Component{
     render(){
         let contents;
         const cellStyle = {
-            padding: '10px'
+            padding: '10px',
+            borderTop: '0px'
         }
 
         if(this.props.taxFormField == null){
             contents = (
                 <tfoot>
                     <tr >
-                        <th style={cellStyle} colSpan={this.props.span - 1}>Total</th>
+                        <th style={cellStyle} colSpan={this.props.span-1}>Total</th>
                         <td style={cellStyle}>{this.state.total.toFixed(2)}</td>
                     </tr>
                 </tfoot>
@@ -82,30 +83,36 @@ class Totals extends Component{
             contents = (
                 <tfoot>    
                     <tr >
-                        <th style={cellStyle} colSpan={this.props.span - 1}>Subtotal</th>
-                        <td style={cellStyle}>{this.state.subtotal.toFixed(2)}</td>
+                        <th style={{...cellStyle, textAlign: 'right'}} colSpan={this.props.span-1}>Subtotal</th>
+                        <td style={{...cellStyle, textAlign: 'right'}}>{this.state.subtotal.toFixed(2)}</td>
                     </tr>
                     
                     <tr >
-                        <th style={cellStyle} colSpan={this.props.span - 2}>Tax</th>
-                        <td>
-                            <AsyncSelect
-                                dataURL="/accounting/api/tax/"
-                                name="total_tax"
-                                resProcessor={(res) => {
-                                    return(res.data.map((tax) =>({
-                                        value: tax.id,
-                                        name: tax.name
-                                    })))
-                                }}
-                                onPopulated={this.setInitialTax}
-                                handler={this.handleTaxChange} />
-                        </td>
-                        <td style={cellStyle}>{this.state.tax.toFixed(2)}</td>
+                        <th style={{...cellStyle, textAlign: 'right'}} colSpan={this.props.span - 2}>
+                            <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+                                <div style={{width: '100px'}}>
+                                    <AsyncSelect
+                                        dataURL="/accounting/api/tax/"
+                                        name="total_tax"
+                                        resProcessor={(res) => {
+                                            return(res.data.map((tax) =>({
+                                                value: tax.id,
+                                                name: tax.name
+                                            })))
+                                        }}
+                                        onPopulated={this.setInitialTax}
+                                        handler={this.handleTaxChange} />
+                                </div>
+                            </div>
+                        </th>
+                        <th style={{...cellStyle, textAlign:'right'}}>
+                            Tax
+                        </th>
+                        <td style={{...cellStyle, textAlign: 'right'}}>{this.state.tax.toFixed(2)}</td>
                     </tr>
                     <tr >
-                        <th style={cellStyle} colSpan={this.props.span - 1}>Total</th>
-                        <td style={cellStyle}>{this.state.total.toFixed(2)}</td>
+                        <th style={{...cellStyle, textAlign: 'right'}} colSpan={this.props.span-1}>Total</th>
+                        <td style={{...cellStyle, textAlign: 'right'}}>{this.state.total.toFixed(2)}</td>
                     </tr>
                 </tfoot>
                 )

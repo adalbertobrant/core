@@ -82,6 +82,10 @@ class Order(SoftDeletionModel):
                                      related_name="order_entries")
     shipping_cost_entries = models.ManyToManyField('accounting.JournalEntry',
                                                    related_name="shipping_cost_entries")
+    currency = models.ForeignKey('accounting.Currency',
+                                 on_delete=models.SET_NULL, null=True, default=1)
+    exchange_rate = models.DecimalField(max_digits=16, decimal_places=4, default=1)    
+
 
     def get_absolute_url(self):
         return reverse("inventory:order-detail", kwargs={"pk": self.pk})

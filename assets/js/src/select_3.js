@@ -18,9 +18,16 @@ class SelectThree extends Component {
         if(this.state.selected != prevState.selected && this.state.showOptions) {
             this.setState({showOptions: false})
         }
+        if(this.props.toggleClear != prevProps.toggleClear) {
+            this.setState({
+                inputVal: "",
+                filteredOptions: this.state.options,
+                selected: null
+        })
+        }
     }
 
-    refreshOptions = () => {
+    refreshOptions = (initial) => {
         axios({
             'method': 'GET',
             url: `/base/api/model-items/${this.props.app}/${this.props.model}/` 
@@ -28,12 +35,19 @@ class SelectThree extends Component {
             this.setState({
                 options: resp.data.data,
                 filteredOptions: resp.data.data,
-            })
+            }, () => {
+                if(this.props.initial && initial) {
+                    const selectedText = resp.data.data.filter(opt => opt[0] == this.props.initial)[0][1]
+                    this.setState({
+                        selected: this.props.initial,
+                        inputVal: selectedText
+                    })
+                }})
         })
     }
 
     componentDidMount() {
-        this.refreshOptions()
+        this.refreshOptions(true)
         axios({
             'method': 'GET',
             url: `/base/api/supports-quick-entry/${this.props.app}/${this.props.model}/` 
@@ -45,6 +59,17 @@ class SelectThree extends Component {
     }
 
     handleInputChange = (evt) => {
+        if(evt.target.value == "" && this.state.selected) {
+            if(this.props.onClear) {
+                this.props.onClear()
+            }
+            this.setState({
+                filteredOptions: this.state.options,
+                inputVal: "",
+                selected: null
+            }, () => $(`input[name="${this.props.name}"]`).trigger('change'))
+            return
+        }
         let selected = null
         const newOptions = this.state.options.filter(opt =>{
             if(opt[1] === evt.target.value) {
@@ -56,19 +81,28 @@ class SelectThree extends Component {
             filteredOptions: newOptions,
             inputVal: evt.target.value,
             selected: selected ? selected : this.state.selected
+        }, () => { 
+            if(!this.props.name) { return }
+            const target = document.querySelector(`input[name="${this.props.name}"]`)
+            const event = new Event('change');
+            target.dispatchEvent(event);
         })
-
     }
 
     selectOption = (evt) => {
         this.setState({
             selected: evt.target.dataset.pk,
             inputVal: evt.target.textContent
+        }, () => {
+            this.props.onSelect ? this.props.onSelect(this.state): null
+            if(!this.props.name) { return }
+            const target = document.querySelector(`input[name="${this.props.name}"]`)
+            const event = new Event('change');
+            target.dispatchEvent(event);
         })
     }
 
     handleCreateNew = () => {
-        console.log('create new')
         this.setState({showOptions: false})
         ReactDOM.render(<QuickEntry 
             
@@ -79,14 +113,16 @@ class SelectThree extends Component {
     render() {
         return (
             <div className={styles.container} >
-                <input type='hidden' name={this.props.name} value={this.state.selected} />
+                {this.props.name 
+                    ? <input type='hidden' name={this.props.name} value={this.state.selected} />
+                    : null }
                 <input 
-                    className='form-control' 
+                    className='form-control form-control-sm' 
                     type='text' 
                     value={this.state.inputVal} 
                     onChange={this.handleInputChange}
                     onFocus={() => {
-                        this.refreshOptions()
+                        this.refreshOptions(false)
                         this.setState({showOptions: true})
                     }}
                     onBlur={() => setTimeout(() =>this.setState({showOptions: false}), 500)} />

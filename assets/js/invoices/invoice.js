@@ -10,7 +10,9 @@ export default class InvoiceTable extends Component{
         tax: 0.0,
         subtotal: 0.0,
         total: 0.0,
-        items: []
+        items: [],
+        currency: null,
+        exchange_rate: 1
     }
 
     componentDidMount(){
@@ -20,6 +22,21 @@ export default class InvoiceTable extends Component{
             id: 'id_item_list',
             name: 'item_list'
         }).appendTo('form');
+
+        setTimeout(() =>{$('input[name="currency"]').change( evt => {
+            console.log('change')
+            const id = evt.target.value
+            axios({
+                method:'GET',
+                url: '/accounting/api/currency/' + id
+            }).then(res => {
+                this.setState({currency: res.data})
+            })
+        })}, 2000)
+
+        $('#id_exchange_rate').on('change', evt => {
+            this.setState({exchange_rate: parseFloat(evt.target.value)})
+        })
 
          //check if the page is an update
          let URL = window.location.href;
@@ -32,39 +49,49 @@ export default class InvoiceTable extends Component{
                  method: 'GET',
              }).then(res =>{
                 let itemList = res.data.invoiceline_set.map((line) =>{
-                    let lineMappings = {
-                        1: 'product',
-                        2: 'service',
-                        3: 'expense'
-                    };
                     let data;
                     if(line.line_type === 1){
+                        let tax_rate = line.tax ? line.tax.rate : null
+                        let line_total = parseFloat(line.product.quantity) * parseFloat(line.product.unit_price)
+                        let tax = tax_rate ? line_total * (tax_rate / 100.0): 0.00
+                        let subtotal = line_total + tax
                         data = {
-                            selected: line.product.product.id + '-' + line.product.product.name,
-                            quantity: parseFloat(line.product.quantity),
-                            unitPrice: parseFloat(line.product.unit_price),
-                            
+                            item: line.product.product.id,
+                            item_label: line.product.product.name,
+                            unit: line.product.product.unit ? line.product.product.unit.id : null,
+                            unit_label: line.product.product.unit ? line.product.product.unit.name : "",
+                            type: 'product',
+                            qty: parseFloat(line.product.quantity),
+                            unit_price: parseFloat(line.product.unit_price),
+                            rate: parseFloat(line.product.unit_price),
+                            subtotal: subtotal,
+                            tax: tax,
+                            tax_id: line.tax ? line.tax.id : null,
+                            tax_rate: tax_rate
                         };
                     }else if (line.line_type === 2){
+                        let tax_rate = line.tax ? line.tax.rate : null
+                        let line_total = parseFloat(line.service.flat_fee) + (parseFloat(line.service.hours) * parseFloat(line.service.hourly_rate))
+                        let tax = tax_rate ? line_total * (tax_rate / 100.0): 0.00
+                        let subtotal = line_total + tax
                         data = {
-                            selected: line.service.id + '-' + line.service.service.name,
-                            hours: line.service.hours,
-                            rate: line.service.hourly_rate,
-                            fee: line.service.flat_fee
-                        }
-                    }else if (line.line_type === 3){
-                        data = {
-                            selected: line.expense.id + '-' +line.expense.expense.description,
-                            description: line.expense.expense.description,
-                            amount: line.expense.expense.amount 
+                            item: line.service.service.id,
+                            item_label: line.service.service.name,
+                            unit: null,
+                            unit_label: "Hrs",
+                            type: 'service',
+                            qty: parseFloat(line.service.hours),
+                            unit_price: parseFloat(line.service.hourly_rate),
+                            rate: parseFloat(line.service.flat_fee),
+                            subtotal: subtotal,
+                            tax: tax,
+                            tax_id: line.tax ? line.tax.id : null,
+                            tax_rate: tax_rate
                         }
                     }
                     return {
-                        type: lineMappings[line.line_type],
                         ...data,
-                        discount: parseFloat(line.discount),
-                        tax: line.tax.id +'-'+line.tax.name +
-                                    '@'+line.tax.rate
+                        // discount: parseFloat(line.discount),
                      }
                  })
                  this.setState({items: itemList}, this.updateForm);
@@ -101,48 +128,33 @@ export default class InvoiceTable extends Component{
                         backgroundColor: '#23374d',
                         width: '100%'
                     }}>
-                        <th style={{width:"10%"}}></th>
-                        <th style={{width:"45%"}}>Description</th>
-                        <th style={{width:"15%"}}>Discount</th>
-                        <th style={{width:"15%"}}>Tax</th>
-                        <th style={{width:"15%"}}>Line Total</th>
+                        <th style={{width:"5%"}}></th>
+                        <th style={{width:"30%"}}>Item</th>
+                        <th style={{width:"10%"}}>Unit</th>
+                        <th style={{width:"10%", textAlign:'right'}}>Unit Price</th>
+                        <th style={{width:"10%", textAlign:'right'}}>Rate</th>
+                        <th style={{width:"10%", textAlign:'right'}}>Qty</th>
+                        <th style={{width:"10%", textAlign:'right'}}>Tax</th>
+                        <th style={{width:"15%", textAlign:'right'}}>Subtotal</th>
                     </tr>
                 </thead>
                 <tbody>
                     {this.state.items.map((item, i) =>{
-                        let line;
-                        if(item.type === "product"){
-                            line = <SaleLine 
+                        return (<Line 
                                         {...item}
+                                        exchange_rate={this.state.exchange_rate}
                                         key={i}
                                         index={i}
-                                        handler={this.deleteHandler}/>
-                        }else if(item.type === "service"){
-                            line = <ServiceLine  
-                                        {...item}
-                                        key={i}
-                                        index={i}
-                                        handler={this.deleteHandler}/>
-                        }else{
-                            line = <BillableLine  
-                                        {...item}
-                                        key={i}
-                                        index={i}
-                                        handler={this.deleteHandler}/>
-                        }
-                        return(line);
-                    }
-                    )}
-                <tr>
-                    <td colSpan={5} style={{padding: '0px'}}>
-                        <EntryWidget
-                            itemList={this.state.items}
-                            insertHandler={this.insertHandler}/>
-                    </td>
-                </tr>
+                                        handler={this.deleteHandler}/>)
+                        })}
                 
+                <EntryWidget
+                            
+                            insertHandler={this.insertHandler}/>
                 </tbody>
-                <Totals list={this.state.items}/>
+                <Totals list={this.state.items}
+                    exchange_rate={this.state.exchange_rate}
+                    currency={this.state.currency}/>
             
                 </table>
 
@@ -150,12 +162,11 @@ export default class InvoiceTable extends Component{
     }
 }
 
-const SaleLine = (props) =>{
-    const subtotal = props.unitPrice * parseFloat(props.quantity);
-    const discount =  subtotal * (props.discount / 100.0)
-    const taxRate = parseFloat(props.tax.split('@')[1])
-    const tax = (subtotal - discount) * (taxRate /100.0) 
-    const total = subtotal - discount + tax
+function in_cur(val) {
+    return parseFloat(val).toFixed(2)
+}
+
+const Line = (props) =>{
     return(
         <tr>
             <td>
@@ -163,63 +174,13 @@ const SaleLine = (props) =>{
                     index={props.index}
                     handler={props.handler}/>
             </td>
-            <td>
-                {props.quantity} x {
-                    props.selected.split('-')[1]
-                } @ ${parseFloat(props.unitPrice).toFixed(2)} each.
-            </td>
-            {window.screen.width > 575 ? <React.Fragment>
-                <td>{props.discount}</td>
-                <td>{props.tax}%</td>
-                </React.Fragment>: null}
-            
-            <td>{total.toFixed(2)}</td>
-        </tr>
-    )
-}
-
-const ServiceLine = (props) =>{
-    const subtotal = (parseFloat(props.hours) * parseFloat(props.rate)) +
-         parseFloat(props.fee);
-    const discount =  subtotal * (props.discount / 100.0)
-    const taxRate = parseFloat(props.tax.split('@')[1])
-    const tax = (subtotal - discount) * (taxRate /100.0) 
-    const total = subtotal - discount + tax
-
-    return(
-        <tr>
-            <td>
-                <DeleteButton
-                    index={props.index}
-                    handler={props.handler}/>
-            </td>
-            <td>{
-                props.selected.split('-')[1]
-            } - Flat Fee: ${props.fee} + {props.hours}Hrs x @ ${props.rate} /Hr</td>
-            <td>{props.discount}</td>
-            <td>{props.tax}%</td>
-            <td>{total.toFixed(2)}</td>
-        </tr>
-    )
-}
-
-const BillableLine = (props) =>{
-    const subtotal  =parseFloat(props.amount);
-    const discount =  subtotal * (props.discount / 100.0)
-    const taxRate = parseFloat(props.tax.split('@')[1])
-    const tax = (subtotal - discount) * (taxRate /100.0) 
-    const total = subtotal - discount + tax
-    return(
-        <tr>
-            <td>
-                <DeleteButton 
-                    index={props.index}
-                    handler={props.handler}/>
-            </td>
-            <td>{props.description} @ ${props.amount}</td>
-            <td>{props.discount}</td>
-            <td>{props.tax}%</td>
-            <td>{total.toFixed(2)}</td>
+            <td>{props.item_label}</td>
+            <td>{props.unit_label}</td>
+            <td style={{textAlign: "right"}}>{in_cur(props.unit_price * props.exchange_rate)}</td>
+            <td style={{textAlign: "right"}}>{in_cur(props.rate * props.exchange_rate)}</td>
+            <td style={{textAlign: "right"}}>{in_cur(props.qty)}</td>
+            <td style={{textAlign: "right"}}>{in_cur(props.tax * props.exchange_rate)}</td>
+            <td style={{textAlign: "right"}}>{in_cur(props.subtotal * props.exchange_rate)}</td>
         </tr>
     )
 }

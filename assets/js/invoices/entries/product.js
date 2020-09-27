@@ -104,18 +104,7 @@ class ProductEntry extends Component{
                     <tbody>
                         <tr>
                             <td >
-                                <SearchableWidget
-                                    widgetID="product-widget"
-                                    list={this.props.itemList}
-                                    dataURL="/inventory/api/product/"
-                                    displayField="name"
-                                    idField="id"
-                                    model="inventoryitem"
-                                    app="inventory"
-                                    canCreateNewItem={true}
-                                    newLink='/inventory/product-create/'
-                                    onSelect={this.handleProductSelect}
-                                    onClear={this.handleProductClear} />
+                                
                             </td>
                             <td >
                                 <input 

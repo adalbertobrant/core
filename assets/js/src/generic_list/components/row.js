@@ -11,7 +11,6 @@ const dataRow = (props) =>{
     const cellStyle = {
         border: '1px solid #ccc',
         borderCollapse: 'collapse',
-        textAlign: 'center'
     }
     
     return(
@@ -23,16 +22,23 @@ const dataRow = (props) =>{
                     handler={props.deleteHandler}/>
             </td>
             {window.screen.width > 575 && props.concise ?
-                props.fieldOrder.map((fieldName, i) =>(
-                    <td style={cellStyle} key={i}>{props.data[fieldName]}</td>
-                ))
+                props.fieldOrder.map((fieldName, i) =>{
+                    
+                    const value = props.data[fieldName]
+                    
+                    const renderedValue = typeof(value) != 'number' && value.indexOf('-') > -1 ? value.split('-')[1] : value
+                    return (<td style={{
+                                        ...cellStyle,
+                                        textAlign: props.fields[i].type == 'number' ? 'right': 'left'
+                                    }} key={i}>{typeof(renderedValue) == "number" ? renderedValue.toFixed(2) : renderedValue}</td>
+                )})
                 : <td colSpan={2}>
                     <DeleteButton 
                         index={props.index}
                         handler={props.deleteHandler}/> {props.concise(props.data)}</td>
             }
             {props.hasLineTotal ?
-            <td style={cellStyle}>
+            <td style={{...cellStyle, textAlign: 'right'}}>
                 {props.data.lineTotal}
             </td>
             : null}

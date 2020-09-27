@@ -121,53 +121,39 @@ class Invoice(SoftDeletionModel):
     def add_line(self, data):
         '''Takes a dictionary that represents the invoice line and create
         the appropriate objects to match the provided data'''
-        tax_id = data['tax'].split('-')[0]
-        tax = Tax.objects.get(pk=tax_id)
-        discount = D(data['discount'])
+        print(data)
+        tax_id = data['tax_id']
+        tax = Tax.objects.get(pk=tax_id) if tax_id else None
+        # discount = D(data['discount'])
         if data['type'] == 'product':
-            pk = data['selected'].split('-')[0]
+            pk = data['item']
             product = inventory.models.InventoryItem.objects.get(pk=pk)
             component = ProductLineComponent.objects.create(
                 product=product,
-                quantity=data['quantity'],
-                unit_price=data['unitPrice']
-
+                quantity=data['qty'],
+                unit_price=data['unit_price']
             )
             line = self.invoiceline_set.create(
                 line_type=1,  # product
                 product=component,
                 tax=tax,
-                discount=discount
+                # discount=discount
             )
 
         elif data['type'] == 'service':
-            pk = data['selected'].split('-')[0]
+            pk = data['item']
             service = Service.objects.get(pk=pk)
             component = ServiceLineComponent.objects.create(
                 service=service,
-                hours=data['hours'],
-                flat_fee=data['fee'],
-                hourly_rate=data['rate']
+                hours=data['qty'],
+                flat_fee=data['rate'],
+                hourly_rate=data['unit_price']
             )
             self.invoiceline_set.create(
                 line_type=2,  # service
                 service=component,
                 tax=tax,
-                discount=discount
-            )
-
-        elif data['type'] == 'expense':
-            pk = data['selected'].split('-')[0]
-            expense = Expense.objects.get(pk=pk)
-            component = ExpenseLineComponent.objects.create(
-                expense=expense,
-                price=expense.amount
-            )
-            self.invoiceline_set.create(
-                line_type=3,  # expense
-                expense=component,
-                tax=tax,
-                discount=discount
+                # discount=discount
             )
 
     def update_inventory(self):
@@ -510,6 +496,14 @@ class InvoiceLine(models.Model):
             return 0
 
         return self.subtotal + self.tax_
+
+    @property
+    def transaction_total(self):
+        return self.total * self.invoice.exchange_rate
+
+    @property
+    def transaction_tax(self):
+        return self.tax_ * self.invoice.exchange_rate
 
     @property
     def discount_total(self):

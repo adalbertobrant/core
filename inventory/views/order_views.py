@@ -105,17 +105,20 @@ class OrderCreateView(ContextMixin,
     }
 
     def get_initial(self):
+        initial = {'status': 'draft'}
         if self.kwargs.get('supplier', None):
-            return {
-                'supplier': self.kwargs['supplier']
-            }
+            initial.update({
+                'supplier': self.kwargs['supplier'],    
+            })
+
+        return initial
 
 
 class OrderUpdateView(ContextMixin,
                       OrderPOSTMixin, UpdateView):
-    form_class = forms.OrderUpdateForm
+    form_class = forms.OrderForm
     model = models.Order
-    template_name = os.path.join("inventory", "order", "update.html")
+    template_name = os.path.join("inventory", "order", "create.html")
     extra_context = {"title": "Update Existing Purchase Order"}
 
 

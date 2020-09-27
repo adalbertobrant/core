@@ -27,13 +27,13 @@
                                 <td colspan="4">
                                     <b>SubTotal:</b>
                                 </td>
-                                <td colspan='2'>{{object.subtotal | floatformat:2 }}</td>
+                                <td colspan='2'>{{object | transaction_amount:"subtotal" }}</td>
                             </tr>
                             <tr>
                                 <td colspan="4">
                                     <b>Tax Due :</b>
                                 </td>
-                                <td colspan='2'>{{object.tax_amount | floatformat:2 }}</td>
+                                <td colspan='2'>{{object | transaction_amount:"tax_amount" }}</td>
                             </tr>
 
                             <tr>
@@ -41,7 +41,7 @@
                                 <td colspan="4">
                                     <b>Total:</b>
                                 </td>
-                                <td colspan='2'>{{object.total | active_currency}}</td>
+                                <td colspan='2'>{{object | transaction_amount:"tax_amount"}}</td>
                             </tr>
                     </tfoot>
                     {% endif %}

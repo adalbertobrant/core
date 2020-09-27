@@ -11,31 +11,6 @@ class Totals extends Component{
         total: 0.00
     }
 
-
-    listMapper = (item) =>{
-        let subtotal;
-        if(item.type === 'product'){
-            subtotal = item.unitPrice * parseFloat(item.quantity);
-            
-        }else if(item.type === 'service'){
-            subtotal = (parseFloat(item.hours) * parseFloat(item.rate)) +
-                parseFloat(item.fee);
-            
-        }else{
-            //billable
-            subtotal  =parseFloat(item.amount);
-            
-        }
-        
-        const discount =  subtotal * (item.discount / 100.0)
-        subtotal = subtotal - discount;
-        const percentage = parseFloat(item.tax.split('@')[1])
-        const tax = subtotal * (percentage /100.0)
-        return ({
-            subtotal: subtotal,
-            tax: tax
-        });
-    }
     subtotalReducer =(x, y) =>{
         return x + y.subtotal
     }
@@ -45,34 +20,40 @@ class Totals extends Component{
     }
 
     componentDidUpdate(prevProps, prevState){
-        if(prevProps.list !== this.props.list || prevState.taxObj !== this.state.taxObj){
+        if(prevProps.list !== this.props.list || 
+            prevState.taxObj !== this.state.taxObj ||
+            prevProps.exchange_rate != this.props.exchange_rate){
             //update totals 
-            const mappedList = this.props.list.map(this.listMapper)
-            let subtotal = mappedList.reduce(this.subtotalReducer, 0);
-            let tax = mappedList.reduce(this.taxReducer, 0)            
+            
+            let total = this.props.list.reduce(this.subtotalReducer, 0);
+            let tax = this.props.list.reduce(this.taxReducer, 0)            
 
-            let total = subtotal + tax;
+            let subtotal = total - tax;
             this.setState({
-                subtotal : subtotal,
-                tax : tax,
-                total : total
+                subtotal : subtotal * this.props.exchange_rate,
+                tax : tax * this.props.exchange_rate,
+                total : total * this.props.exchange_rate
             });
         }
     }
     render(){
+        const totalStyle = {
+            fontSize: '1.5rem',
+            padding: '.5rem'
+        }
         return(
             <tfoot>    
                 <tr>
-                        <th colSpan={4}>Subtotal</th>
-                        <td>{this.state.subtotal.toFixed(2)}</td>
+                        <th colSpan={7} style={{textAlign:"right"}}>Subtotal</th>
+                        <td style={totalStyle}>{this.state.subtotal.toFixed(2)}</td>
                     </tr>
                     <tr>
-                        <th colSpan={4}>Tax</th>
-                        <td>{this.state.tax.toFixed(2)}</td>
+                        <th colSpan={7} style={{textAlign:"right"}}>Tax</th>
+                        <td style={totalStyle}>{this.state.tax.toFixed(2)}</td>
                     </tr>
                     <tr>
-                        <th colSpan={4}>Total</th>
-                        <td>{this.state.total.toFixed(2)}</td>
+                        <th colSpan={7} style={{textAlign:"right"}}>Total</th>
+                        <td style={totalStyle}>{this.props.currency ? this.props.currency.symbol : null} {this.state.total.toFixed(2)}</td>
                     </tr>
             </tfoot>
             );

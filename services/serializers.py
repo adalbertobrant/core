@@ -1,12 +1,16 @@
 from rest_framework import serializers
 from inventory.serializers import InventoryItemSerializer
 from . import models
+from accounting.serializers import TaxSerializer
 
 
 class ServiceSerializer(serializers.ModelSerializer):
+    tax = TaxSerializer(many=False)
+    
     class Meta:
         fields = "__all__"
         model = models.Service
+
 
 
 class ServicePersonSerializer(serializers.ModelSerializer):
