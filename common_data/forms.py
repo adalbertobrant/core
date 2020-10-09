@@ -75,19 +75,15 @@ class OrganizationForm(forms.ModelForm, BootstrapMixin):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab(
-            'Main',
+            
             'legal_name',
             'email',
             'phone',
-        ), Tab(
             'Detail',
             'business_address',
             'website',
             'logo',
-            'bp_number',
-        ))
+            'bp_number'
         )
 
         self.helper.add_input(Submit('submit', 'Submit'))
@@ -105,8 +101,7 @@ class IndividualForm(forms.ModelForm, BootstrapMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.layout = Layout(TabHolder(Tab(
-            'Main',
+        self.helper.layout = Layout(
             Row(
                 Column('first_name', css_class='col-md-6 col-sm-12'),
                 Column('last_name', css_class='col-md-6 col-sm-12'),
@@ -116,12 +111,11 @@ class IndividualForm(forms.ModelForm, BootstrapMixin):
                 Column('address',  css_class='col-md-6 col-sm-12'),
             ),
             'organization',
-        ), Tab(
-            'Other',
+            HTML('''<hr>
+            <h5>Description</h5>'''),
             'phone_two',
             'photo',
             'other_details',
-        ))
         )
 
         self.helper.add_input(Submit('submit', 'Submit'))
@@ -160,9 +154,6 @@ class GlobalConfigForm(forms.ModelForm, BootstrapMixin):
 
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('Business Details',
-
                     'organization_name',
                     'organization_address',
                     'organization_business_partner_number',
@@ -176,7 +167,6 @@ class GlobalConfigForm(forms.ModelForm, BootstrapMixin):
                             css_class='form-group col-md-6 col-sm-12')
                     ),
                     Row(
-
                         Column('payment_details',
                                css_class='form-group col-md-6 col-sm-12'),
                         Column(
@@ -188,16 +178,14 @@ class GlobalConfigForm(forms.ModelForm, BootstrapMixin):
                                        css_class='form-group col-12')),
                             css_class='form-group col-md-6 col-sm-12'
                         )
-                    )
-                    ),
-
-                Tab('Backups',
+                    ),        
+                    HTML('''<hr>
+                    <h5>Backuos</h5>'''),
                     'use_backups',
                     'backup_frequency',
-                    ),
-                Tab('POS',
-                    'pos_supervisor_password')
-            )
+                    HTML('''<hr>
+                    <h5>Point of Sale</h5>'''),
+                    'pos_supervisor_password'
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 

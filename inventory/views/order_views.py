@@ -37,11 +37,11 @@ class OrderPOSTMixin(object):
         try:
             items = json.loads(urllib.parse.unquote(request.POST["items"]))
         except json.JSONDecodeError:
+            print(len(request.POST["items"]))
+            if update_flag and len(request.POST["items"]) == 0:
+                return super().post(request, *args, **kwargs)
             messages.info(
                 request, 'Please populate the form with the lines of inventory to be ordered.')
-            if update_flag:
-                return HttpResponseRedirect(
-                    '/inventory/order-update/{}'.format(self.object.pk))
             return HttpResponseRedirect('/inventory/order-create')
 
         resp = super().post(request, *args, **kwargs)

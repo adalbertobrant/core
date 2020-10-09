@@ -43,60 +43,53 @@ class AssetForm(forms.ModelForm, BootstrapMixin):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('basic',
-                    Row(
-                        Column(
-                            'photo',
-                            HTML("""
-                                <div id='image-container' >
-                                    <i class='fas fa-image fa-7x' id='image-placeholder'></i>
-                                    <img id='attachment-preview' src='' alt='Attachment appears here.' />
-                                </div>
-                                
-                                <script>
-                                    function upload_img(input) {
-                                    if (input.files && input.files[0]) {
-                                        var reader = new FileReader();
-                                        reader.onload = function (e) {
-                                            $('#attachment-preview').attr('src', e.target.result);
-                                        }
-                                        $('#image-placeholder').hide()
-                                        $('#attachment-preview').show()
-                                        reader.readAsDataURL(input.files[0]);
-                                    }
-                                }
-
-                                    $(document).ready(function(){
-                                        $('#id_photo').attr({
-                                        'onchange': 'upload_img(this)'
-                                    });
-                                    })
-                                
-                                </script>
-                            """),
+            Row(
+                Column(
+                    'photo',
+                    HTML("""
+                        <div id='image-container' >
+                            <i class='fas fa-image fa-7x' id='image-placeholder'></i>
+                            <img id='attachment-preview' src='' alt='Attachment appears here.' />
+                        </div>
                         
-                        css_class='form-group col-md-6 col-sm-12'),
-                        Column(
-                            'name',
-                            'initial_value',
-                            'salvage_value',
-                            'initialized_by',
-                            'depreciation_period',
-                            'depreciation_method',
-                            css_class='form-group col-md-6 col-sm-12'),
-                    ),
-                    
-                    'init_date',
-                    'category',
-                    ),
-                Tab('description',
-                    'description',
-                    'credit_account',
+                        <script>
+                            function upload_img(input) {
+                            if (input.files && input.files[0]) {
+                                var reader = new FileReader();
+                                reader.onload = function (e) {
+                                    $('#attachment-preview').attr('src', e.target.result);
+                                }
+                                $('#image-placeholder').hide()
+                                $('#attachment-preview').show()
+                                reader.readAsDataURL(input.files[0]);
+                            }
+                        }
 
-                    ),
+                            $(document).ready(function(){
+                                $('#id_photo').attr({
+                                'onchange': 'upload_img(this)'
+                            });
+                            })
+                        
+                        </script>
+                    """),           
+                css_class='form-group col-md-6 col-sm-12'),
+                Column(
+                    'name',
+                    'initial_value',
+                    'salvage_value',
+                    'initialized_by',
+                    'depreciation_period',
+                    'depreciation_method',
+                    css_class='form-group col-md-6 col-sm-12'),
+            ),
+            'init_date',
+            'category',
+            HTML('''<hr>
+            <h5>Description</h5>'''),
+            'description',
+            'credit_account'
             )
-        )
         self.helper.add_input(Submit('submit', 'Submit'))
 
 
@@ -116,9 +109,6 @@ class ExpenseForm(forms.ModelForm, BootstrapMixin):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('Basic',
-
                     Row(
                         Column('amount', css_class='form-group col-md-6 col-sm-12'),
                         Column('date', css_class='form-group col-md-6 col-sm-12'),
@@ -130,13 +120,13 @@ class ExpenseForm(forms.ModelForm, BootstrapMixin):
                                css_class='form-group col-md-6 col-sm-12'),
                         Column('reference',
                                css_class='form-group col-md-6 col-sm-12'),
-                    )
                     ),
-                Tab('Billing',
+            HTML('''<hr>
+            <h5>Billing</h5>'''),
                     'billable',
                     'customer',
-                    ),
-                Tab('Attachment',
+            HTML('''<hr>
+            <h5>Attachment</h5>'''),
                     'attachment',
                     HTML("""
                         <div id='image-container' >
@@ -165,8 +155,6 @@ class ExpenseForm(forms.ModelForm, BootstrapMixin):
                          
                          </script>
                     """)
-                    ),
-            )
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
@@ -185,8 +173,6 @@ class RecurringExpenseForm(forms.ModelForm, BootstrapMixin):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('basic',
                     Row(
                         Column('start_date',
                                css_class='form-group col-md-6 col-sm-12'),
@@ -204,9 +190,7 @@ class RecurringExpenseForm(forms.ModelForm, BootstrapMixin):
                         Column('recorded_by',
                                css_class='form-group col-md-6 col-sm-12'),
                     ),
-                    'reference'
-                    ),
-            )
+                    'reference',
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
@@ -350,19 +334,14 @@ class AccountForm(forms.ModelForm, BootstrapMixin):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('general',
                     'name',
                     'balance',
-
                     Row(
                         Column('balance_sheet_category',
                                css_class='form-group col-md-6 col-sm-12'),
                         Column('type', css_class='form-group col-md-6 col-sm-12'),
                     ),
                     'description',
-                    ),
-                Tab('account',
                     'currency',
                     'bank_account_number',
                     'parent_account',
@@ -373,8 +352,6 @@ class AccountForm(forms.ModelForm, BootstrapMixin):
                         Column('bank_account',
                                css_class='form-group col-md-6 col-sm-12'),
                     ),
-                    ),
-            )
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 

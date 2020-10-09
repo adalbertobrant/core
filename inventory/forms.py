@@ -48,25 +48,22 @@ class ConfigForm(forms.ModelForm, BootstrapMixin):
 
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('Inventory Settings',
                     'inventory_check_date',
                     'inventory_check_frequency',
                     'default_product_sales_pricing_method',
-                    'inventory_valuation_method',
-                    ),
-                Tab('WareHousing Settings',
+                    'inventory_valuation_method',      
+                    HTML('''<hr>
+                    <h5>Warehousing Settings</h5>'''),
                     'use_warehousing_model',
                     'default_warehouse',
-                    'use_storage_media_model'),
-                Tab('Inventory Types',
+                    'use_storage_media_model',
+                    HTML('''<hr>
+                    <h5>Warehousing Settings</h5>'''),
                     'use_product_inventory',
                     'use_equipment_inventory',
                     'use_consumables_inventory',
                     # 'use_raw_materials_inventory'
                     )
-            )
-        )
 
         self.helper.add_input(Submit('submit', 'Submit'))
 
@@ -101,8 +98,7 @@ class SupplierForm(BootstrapMixin, forms.Form):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('details',
+            
                     Row(
                         Column('vendor_type', css_class='form-group col-3'),
                         Column('name', css_class='form-group col-9'),
@@ -116,19 +112,16 @@ class SupplierForm(BootstrapMixin, forms.Form):
                         Column('banking_details',
                                css_class='form-group col-md-6 col-sm-12'),
                     ),
-                    ),
-
-                Tab('other',
+                    HTML('''<hr>
+                    <h5>Description</h5>'''),
                     'phone_2',
                     'website',
                     'image',
                     'billing_address',
                     'organization',
                     'other_details',
-                    ),
-            ),
-            Submit('submit', 'Submit')
-        )
+                   Submit('submit', 'Submit')
+                )
 
     def clean(self, *args, **kwargs):
         cleaned_data = super().clean(*args, **kwargs)
@@ -225,9 +218,6 @@ class ProductForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
         super(ProductForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('Main',
-
                     Row(
                         Column(
                             'name',
@@ -237,10 +227,9 @@ class ProductForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                         Column(
                             HTML("<div id='pricing-widget' style='margin:30px auto;'></div>"), css_class="form-group col-sm-6"),
                     ),
-
                     'type',  # hidden field
-                    ),
-                Tab('Details',
+                    HTML('''<hr>
+                    <h5>Description</h5>'''),
                     'description',
                     'unit',
                     Row(
@@ -267,9 +256,7 @@ class ProductForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                             'category', css_class="form group col-md-6 col-sm-12"),
                         Column('image', css_class="form group col-md-6 col-sm-12"),
                     ),
-                    'active'
-                    ),
-            ),
+                    'active',
             Submit('submit', 'Submit')
         )
 
@@ -333,8 +320,6 @@ class EquipmentForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
         super(EquipmentForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('Main',
                     Row(
                         Column('name',
                                'unit_purchase_price',
@@ -342,10 +327,9 @@ class EquipmentForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                                'initial_quantity', css_class='col-md-6 col-sm-12 form-group'),
                         Column('unit',
                                'description', css_class='col-md-6 col-sm-12 form-group')
-                    )
                     ),
-                Tab('Details',
-
+                    HTML('''<hr>
+                    <h5>Details</h5>'''),
                     Row(
                         Column('length', css_class='form group col-md-4 col-sm-12'),
                         Column('width', css_class='form group col-md-4 col-sm-12'),
@@ -361,9 +345,9 @@ class EquipmentForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                         Column(
                             'category', css_class='form group col-md-6 col-sm-12'),
                         Column('image', css_class='form group col-md-6 col-sm-12'),
-                    ),
-                    ),
-                Tab('Asset',
+                    ),    
+                    HTML('''<hr>
+                    <h5>Asset</h5>'''),
                     'record_as_asset',
                     'asset_category',
                     Row(
@@ -376,12 +360,9 @@ class EquipmentForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                         Column('depreciation_period',
                                css_class="col-md-6 col-sm-12"),
                     ),
-                    'active'
-                    )
-            ),
-            Submit('submit', 'Submit')
-
-        )
+                    'active',
+                    Submit('submit', 'Submit')
+                )
 
     class Meta:
         exclude = "maximum_stock_level", "minimum_order_level", "product_component", "equipment_component",
@@ -475,17 +456,16 @@ class ConsumableForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('Main',
+            
                     Row(
                         Column('name',
                                'unit_purchase_price',
                                'initial_quantity', css_class='col-md-6 col-sm-12 form-group'),
                         Column('unit',
                                'description', css_class='col-md-6 col-sm-12 form-group')
-                    )
-                    ),
-                Tab('Details',
+                    ),       
+                    HTML('''<hr>
+                    <h5>Details</h5>'''),
                     Row(
                         Column('minimum_order_level',
                                css_class="form-group col-sm-6"),
@@ -506,12 +486,9 @@ class ConsumableForm(ItemInitialMixin, forms.ModelForm, BootstrapMixin):
                         Column('image', css_class="form-group col-sm-6"),
                     ),
                     'type',
-                    'active'
-                    )
-            ),
-            Submit('submit', 'Submit')
-
-        )
+                    'active',
+                    Submit('submit', 'Submit')
+                )
 
     class Meta:
         exclude = 'quantity', 'product_component', 'equipment_component',
@@ -528,7 +505,7 @@ class OrderForm(forms.ModelForm, BootstrapMixin):
     )
     make_payment = forms.BooleanField(initial=False, required=False)
     status = forms.CharField(widget=forms.HiddenInput)
-    items = forms.CharField(widget=forms.HiddenInput)
+    items = forms.CharField(widget=forms.HiddenInput, required=False)
     active = forms.BooleanField(widget=forms.HiddenInput, required=False, initial=True)
     ship_to = forms.ModelChoiceField(
         models.WareHouse.objects.all(), label='Ship To Warehouse')
@@ -563,7 +540,6 @@ class OrderForm(forms.ModelForm, BootstrapMixin):
                             'make_payment',
                             css_class='col-md-6 col-sm-12'),
                         Column('notes', css_class='col-md-6 col-sm-12'),
-              
             )
         )
 
@@ -821,8 +797,7 @@ class StorageMediaForm(forms.ModelForm, BootstrapMixin):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('Basic',
+            
                     'name',
                     Row(
                         Column('length', css_class="form group col-md-4 col-sm-12"),
@@ -830,22 +805,20 @@ class StorageMediaForm(forms.ModelForm, BootstrapMixin):
                         Column('height', css_class="form group col-md-4 col-sm-12"),
                     ),
                     'capacity',
-                    ),
-                Tab('description',
+                    HTML('''<hr>
+                    <h5>Description</h5>'''),
                     'description',
                     'unit',
                     'warehouse',
                     'location',
-                    ),
-                Tab('Parent Storage Medium',
+                    HTML('''<hr>
+                    <h5>Parent Storage Medium</h5>'''),
                     HTML(
                         """
                         <div id="storage-media-select-widget"></div>                        
                         """
                     ),
-                    ),
-            ),
-        )
+                )
         self.helper.add_input(Submit('submit', 'Submit'))
 
 
