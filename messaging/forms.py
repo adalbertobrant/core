@@ -97,8 +97,6 @@ class UserProfileForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('Basic',
                     'user',
                     # 'avatar',
                     'email_address',
@@ -111,15 +109,12 @@ class UserProfileForm(forms.ModelForm):
                     #         <div id="avatar-preview"></div>
                     #     """), css_class='form-group col-md-6 col-sm-12'),
                     # )
-                    ),
-                Tab('Advanced',
+                
                     'outgoing_server',
                     'outgoing_port',
                     'incoming_host',
                     'incoming_port',
                     'max_email_age'
-                    )
-            )
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 

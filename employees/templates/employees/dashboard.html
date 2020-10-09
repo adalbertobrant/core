@@ -9,7 +9,8 @@
         <div class="col-md-3 col-sm-12">
             <nav class="nav flex-column primary" style='padding:5px;'>
                 <ul class='navbar-nav dashboard-nav'>
-                    <li class="nav-item"><i class="fas fa-puzzle-piece"></i> Payroll</li>
+
+                    {% comment %} <li class="nav-item"><i class="fas fa-puzzle-piece"></i> Payroll</li>
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:list-pay-slips' %}"> Pay Slips</a>
                     </li>
@@ -22,7 +23,7 @@
                     </li>
                     <li class="list-group-item hvr-grow"><a href="{% url 'employees:allowances-list' %}">Benefits</a></li>
                     <li class="list-group-item hvr-grow"><a
-                            href="{% url 'employees:commissions-list' %}">Commission Rules</a></li>
+                            href="{% url 'employees:commissions-list' %}">Commission Rules</a></li> {% endcomment %}
                     <li class="nav-item"><i class="fas fa-users"></i> Employees</li>
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:list-employees' %}">
@@ -35,19 +36,13 @@
                     </li>
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:contract-list' %}">Contracts</a>
-                    </li>
-
-
-
-
-                
-
+                    {% comment %} </li>
                     <li class="list-group-item hvr-grow"><a href="{% url 'employees:payroll-report-form' %}">Payroll
                             Report</a></li>
                     <li class="list-group-item hvr-grow"><a href="{% url 'employees:zimra-p2-report-form' %}">Zimra P2
                             Report</a></li>
                     <li class="list-group-item hvr-grow"><a href="{% url 'employees:nssa-p4-report-form' %}">NSSA P4
-                            Report</a></li>
+                            Report</a></li> {% endcomment %}
                     <li class="nav-item"><i class="fas fa-calendar"></i> Time Management </li>
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:leave-list' %}">Leave Day Management</a>
@@ -92,14 +87,13 @@
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:config' pk=1 %}">Settings</a>
                     </li>
-                    <li class="list-group-item hvr-grow">
+                    {% comment %} <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:payroll-date-list' %}">Manage Payroll Schedule</a>
                     </li>
                     <li class="list-group-item hvr-grow">
                         <a href="{% url 'employees:manual-config' %}">Run
                             Manual Payroll</a>
-
-                    </li> 
+                    </li>  {% endcomment %}
                 </ul>
             </nav>
         </div>

@@ -80,3 +80,6 @@ class PaymentMethod(SoftDeletionModel):
     name = models.CharField(max_length=255)
     currency = models.ForeignKey('accounting.currency', on_delete=models.SET_NULL, null=True)
     account = models.ForeignKey('accounting.account', on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.name

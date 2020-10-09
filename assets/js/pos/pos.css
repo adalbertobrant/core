@@ -1,0 +1,34 @@
+.root {
+    display: flex;
+    background-color: white;
+}
+
+.sidebar {
+    height: 80vh;
+    background-color: #23374d;
+    flex: 1;
+    padding: 0.5rem;
+}
+
+.list {
+    flex: 2;
+}
+
+.fields {
+    flex: 2;
+    margin: 0px 1rem;
+}
+
+.item_selection_row, .payment_selection_row {
+    display: flex;
+}
+
+.item_select, .payment_select {
+    flex: 4;
+    padding: .5rem
+}
+
+.qty_select, .amount_select {
+    flex: 1;
+    padding: .5rem
+}

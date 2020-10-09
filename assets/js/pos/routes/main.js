@@ -1,21 +1,9 @@
 import React, {Component} from 'react';
-import ProductList from '../components/product_list'
-import {Keypad} from '../components/keypad'
-import ActionGrid from '../components/actions'
-import Modal from 'react-modal';
-import {HashRouter as Router, Route, Switch} from 'react-router-dom';
-import PriceCheckPage from './products'
-import CheckoutPage from './payment'
-import ManualAddProduct from './add_product'
-import VoidPage from './void'
-import CustomersPage from './customers'
-import LogoutPage from './logout'
-import CompletedSalePage from './completed_sale'
 import Context from '../container/provider'
 import Head from '../components/head'
-import StartSession from '../routes/start_session'
 import axios from '../../src/auth'
-
+import styles from '../pos.css';
+import SelectThree from '../../src/select_3';
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
@@ -30,15 +18,20 @@ const history = {
 class MainPage extends Component{
     state = {
         products: [],
+        payments: [],
         currentSaleID: null,
         sessionID: null,
         checkoutState: {},
-        active: null,
         keypadText: "",
         keypadState: "barcode", //quantity, price, barcode
         isQuote: false,
         suspendedSale: null,
-        currentCustomer: null,
+        customer_id: null,
+        customer_name: "",
+        current_item_id: null,
+        current_payment_method_id: null,
+        current_item_qty: 0,
+        current_payment_amount: 0,
         salesPerson: null,
         modalOpen: false,
         sessionStart: new Date(),
@@ -64,7 +57,6 @@ class MainPage extends Component{
         if(this.state.isQuote){alert('You cannot checkout a quote.'); return}
         this.setState({modalOpen: true});
         history.push("/payment")
-        
     }
 
 
@@ -107,21 +99,25 @@ class MainPage extends Component{
     }
 
     addProduct = () =>{
-        // manually add product by entering code(only)
-        //show list of popular products
+        if(!this.state.current_item_id || this.state.current_item_qty <= 0) {
+            alert("Please select a valid product and a quantity greater than 0")
+            return
+        }
+        axios.get('/inventory/api/product/' + this.state.current_item_id)
+            .then(res =>{
+                let newProducts = [...this.state.products]
+                newProducts.push({
+                    name: res.data.name,
+                    price: res.data.unit_sales_price,
+                    id: res.data.id,
+                    quantity: this.state.current_item_qty,
+                    tax: typeof(res.data.tax) ==="undefined" ? null : res.data.tax 
+                })
+                this.setState({ products: newProducts,})
+            })
         
-        this.setState({
-            modalOpen: true,
-            keypadState: 'quantity'
-        });
-        history.push("/add-product")
-
     }
 
-    voidSale = () =>{
-        this.setState({modalOpen: true});
-        history.push("/void")
-    }
 
     endSession = () =>{
         //log session and then conclude
@@ -131,8 +127,6 @@ class MainPage extends Component{
                 return
             }
         }
-        this.setState({modalOpen: true});
-        history.push("/pos-logout")
     }
 
     suspendSale = () =>{
@@ -162,115 +156,11 @@ class MainPage extends Component{
         }
     }
 
-    executeAction = (name) =>{
-        switch(name){
-            case 'quote': 
-                this.quote()
-                break;
-            case 'price-check': 
-                this.priceCheck()
-                break;
-            case 'checkout': 
-                this.openCheckout()
-                break;
-            case 'customers': 
-                this.openCustomers()
-                break;
-            case 'removeProduct': 
-                this.removeProduct()
-                break;
-            case 'addProduct': 
-                this.addProduct()
-                break;
-            case 'void': 
-                this.voidSale()
-                break;
-            case 'endSession': 
-                this.endSession()
-                break;
-            case 'suspend': 
-                this.suspendSale()
-                break;
-            // from keypad not action buttons
-            case 'enterKeypadValue': 
-                this.handleEnterButtonPress()
-                break;
-            default:
-                return null;
-        }
-    }
 
     //#######################################################
     // Handles Route Events 
     //#######################################################
 
-    insertProduct =(productString) =>{
-        const productID = productString.split('-')[0]
-        axios.get('/inventory/api/product/' + productID)
-            .then(res =>{
-                let newProducts = [...this.state.products]
-                newProducts.push({
-                    name: res.data.name,
-                    price: res.data.unit_sales_price,
-                    id: res.data.id,
-                    quantity: 1,
-                    tax: typeof(res.data.tax) ==="undefined" ? null : res.data.tax 
-                })
-                this.setState({
-                    modalOpen: false,
-                    products: newProducts,
-                    active: this.state.products.length
-                })
-            })
-    }
-
-    handleEnterButtonPress = () =>{
-        if(this.state.keypadText == ""){alert('Please enter a number.');return}
-        if(this.state.keypadState == 'quantity' && this.state.active != null){
-            let newProducts = [...this.state.products]
-            newProducts[this.state.active].quantity = parseFloat(
-                this.state.keypadText)
-            this.setState({
-                products: newProducts,
-                keypadText: ""
-            })
-        }else if(this.state.keypadState == 'barcode'){
-            // get barcodes from the server, if none create an alert
-            axios.get('/inventory/api/product/' + this.state.keypadText)
-                .then(res =>{
-                    let newProducts = [...this.state.products]
-                    newProducts.push({
-                        name: res.data.name,
-                        price: res.data.unit_sales_price,
-                        id: res.data.id,
-                        quantity: 1,
-                        tax: typeof(res.data.tax) ==="undefined" ? null : res.data.tax 
-                    })
-                    
-                    this.setState(prevState =>({
-                        keypadState:'quantity',
-                        keypadText: "",
-                        products: newProducts,
-                        active: prevState.products.length
-                    }))
-                })
-                .catch(error => {
-                        alert('No product matching this code exists')
-                        console.log(error)
-                    })
-        
-        }else if(this.state.keypadState== 'price' && this.state.active != null){
-            let newProducts = [...this.state.products]
-            newProducts[this.state.active].price = parseFloat(
-                this.state.keypadText)
-            this.setState({
-                products: newProducts,
-                keypadText: ""
-            })
-        }
-    }
-
-    
     handleSessionStart = (user) =>{
         const timestamp = new Date()
         axios.post('/invoicing/pos/start-session/', {
@@ -316,6 +206,15 @@ class MainPage extends Component{
         })
     }
 
+    handleInputChange = (evt) =>{
+        const fieldname = evt.target.name
+        const newVals = {}
+        newVals[fieldname] =  evt.target.value 
+        console.log(fieldname)
+        console.log(newVals)
+        this.setState(newVals)
+    }
+
     componentDidMount(){
         //Master keyboard event handler
         //select the first customer
@@ -325,46 +224,9 @@ class MainPage extends Component{
                 this.setState({currentCustomer: `${first.id} - ${first.name}`})
             }
         })
-
-        const handler = (evt) =>{
-            if(["0","1","2","3","4","5","6","7","8","9","."].includes(evt.key)
-              && !this.state.modalOpen){
-                this.setState({keypadText: this.state.keypadText + evt.key})
-                
-            }else if(evt.key=='Backspace' && !this.state.modalOpen){
-                const newText = this.state.keypadText.slice(0, 
-                    this.state.keypadText.length-1)
-                this.setState({keypadText: newText})
-            }else if(!("undefined" === typeof(this.state.keyMapping[evt.key]))){
-                //for action buttons
-                if(this.state.modalOpen){
-                    return
-                }
-                this.executeAction(this.state.keyMapping[evt.key])
-            }
-                document.addEventListener('keydown', handler, {once:true})
-            }
-            document.addEventListener('keydown', handler, {once:true})
-            history.push('/start-session')
-            this.setState({modalOpen: true}) 
-        }
-
-    updateKeypad =(value) =>{
-        this.setState({keypadText: value})
     }
 
-
-    render(){
-        const styles = {
-            backgroundColor: '#EEE',
-            display: 'flex',
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            height: '75vh'
-        }
-        const wide = window.screen.width > 600
-
+    render() {
         return(
             <Context.Provider value={{
                 state: this.state,
@@ -372,125 +234,139 @@ class MainPage extends Component{
                 updateMapping: this.setKeyMapper
             }}>
                 <Head {...this.state}/>
-                <div style={styles}>
-                    <ProductList 
-                        {...this.state}
-                        handleEnter={this.handleEnterButtonPress}
-                        mode={this.state.keypadState}
-                        inputText={this.state.keypadText}
-                        
-                            changeMode={(mode) =>{
-                                this.setState({keypadState: mode})}}
-                        setActive={(index) =>{
-                            this.setState({active: index})
-                        }}/>
-                    
-                    {wide ? 
-                        <React.Fragment>
-                            <Keypad text={this.state.keypadText}
-                            setText={this.updateKeypad}
-                            mode={this.state.keypadState}
-                            changeMode={(mode) =>{
-                                this.setState({keypadState: mode})}}
-                            handleEnter={this.handleEnterButtonPress}/>
-                        <ActionGrid />
-                        </React.Fragment>
-                        :null}
-                    
-                    <Modal 
-                        ariaHideApp={false}
-                        isOpen={this.state.modalOpen} >
-                        <div style={{
-                            display:'flex',
-                            justifyContent: 'flex-end'
-                            }}>
-                        {this.state.salesPerson !=null 
-                            ? <button className="btn btn-sm"
-                                onClick={()=>{
-                                    this.setState({modalOpen: false})
-                                }}><i className="fas fa-times"></i></button>
-                            : null}
-                        
+                <div className={styles.root}>
+                    <div className={styles.sidebar}>
+                        <ul className='list-group'>
+                            <li className="list-group-item">Price Check</li>
+                            <li className="list-group-item">Void</li>
+                            <li className="list-group-item">Customers</li>
+                            <li className="list-group-item">Suspend | Restore</li>
+                            <li className="list-group-item">Quote | Sale</li>
+                            <li className="list-group-item">Logout</li>
+                        </ul>
+                    </div>
+                    <div className={styles.fields}>
+                        <h5>Customer:</h5>
+                        <div>
+                        <SelectThree 
+                            app='invoicing'
+                            model="customer"
+                            onSelect={(data) => this.setState({
+                                customer_id: data.selected,
+                                customer_name: data.inputVal,
+                            })}
+                            />
+                        </div>
+                        <hr />
+                        <h5>Item</h5>
+                            <div className={styles.item_selection_row}>
+                                <div className={styles.item_select}>
+                                    <label>Item:</label><br/>
+                                    <SelectThree 
+                                        app='inventory'
+                                        model="inventoryitem"
+                                        onSelect={(data) => this.setState({current_item_id: data.selected})}
+                                        />
+                                </div>
+                                <div className={styles.qty_select}>
+                                    <label>Qty:</label><br/>
+                                    <input 
+                                        type="number"
+                                        name="current_item_qty"
+                                        value={this.state.current_item_qty}
+                                        onChange={this.handleInputChange}/>
+                                </div>
                             </div>
-                    <Router>
-                            <Switch>
-                                <Route path='/payment'>
-                                    <CheckoutPage 
-                                        currentCustomer={this.state.currentCustomer}
-                                        products={this.state.products}
-                                        cancel={() =>{this.setState({
-                                            modalOpen: false
-                                        })}}
-                                        checkoutAction={this.handleCheckoutAction}/>
-                                </Route>
-                                <Route path='/complete'>
-                                    <CompletedSalePage 
-                                        products={this.state.products}
-                                        salesPerson={this.state.salesPerson}
-                                        checkout={this.state.checkoutState}
-                                        receiptID={this.state.currentSaleID}
-                                        completeSale={() =>{
-                                            this.setState({
-                                                modalOpen: false,
-                                                active: null,
-                                                products: []
-                                            });
-
-                                            //select the first customer
-                                            axios.get('/invoicing/api/customer/').then(res =>{
-                                                if(res.data.length > 0){
-                                                    let first = res.data[0]
-                                                    this.setState({currentCustomer: `${first.id} - ${first.name}`})
-                                                }
-                                            })
-                                        }}/>
-                                </Route>
-                                <Route path='/add-product'>
-                                    <ManualAddProduct 
-                                        insertProduct={this.insertProduct}/>   
-                                </Route>
-                                <Route path='/price-check'>
-                                        <PriceCheckPage 
-                                            handler={() =>this.setState({
-                                                modalOpen: false
-                                            })}/>
-                                </Route>
-                                <Route path='/start-session' >
-                                    <StartSession 
-                                        sessionStartSuccessful={this.handleSessionStart}/>
-                                </Route>
-                                <Route path='/customers'>
-                                        <CustomersPage 
-                                            selectHandler={(val) =>{
-                                                this.setState({
-                                                    modalOpen: false,
-                                                    currentCustomer: val
-                                                })
-                                            }}/>
-                                </Route>
-                                <Route path='/pos-logout'>
-                                        <LogoutPage 
-                                            sessionID={this.state.sessionID}
-                                            cancelAction={() =>this.setState({
-                                                modalOpen: false
-                                            })}
-                                            />
-                                </Route>
-                                <Route path='/void'>
-                                    <VoidPage 
-                                        cancelAction={()=>this.setState({
-                                            modalOpen: false
-                                        })}
-                                        voidAction={() =>this.setState({
-                                            products: [], 
-                                            currentCustomer: null,
-                                            modalOpen: false
-                                        })}/>
-                                </Route>
+                            <button 
+                                class='btn btn-primary'
+                                onClick={this.addProduct}>Add Item</button>
+                            <hr />
+                        <h5>Payment</h5>
+                            <div className={styles.payment_selection_row}>
+                                <div className={styles.payment_select}>
+                                    <label>Mode of Payment:</label><br/>
+                                    <SelectThree 
+                                        app='invoicing'
+                                        model="paymentmethod"
+                                        />
+                                    
+                                </div>
+                                <div className={styles.amount_select}>
+                                    <label>Amount:</label><br/>
+                                    <input type="number"
+                                         name="current_payment_amount"
+                                         value={this.state.current_payment_amount}
+                                         onChange={this.handleInputChange}/>
+                                </div>
+                            </div>
+                            <button className='btn btn-primary'>Add Payment</button>
+                        <button class='btn btn-block btn-primary'>Submit Transaction</button>
+                    </div>
+                    <div className={styles.list}>
+                        <h5>Items</h5>
+                        <table className="table">
+                            <thead>
+                                <tr className="bg-primary text-white">
+                                    <th></th>
+                                    <th style={{width: "50%"}}>Item</th>
+                                    <th>Qty</th>
+                                    <th>Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.state.products.map(prod => (
+                                    <tr>
+                                        <th></th>
+                                        <th style={{width: "50%"}}>{prod.name}</th>
+                                        <th>{prod.quantity}</th>
+                                        <th>{parseFloat(prod.price).toFixed(2)}</th>
+                                    </tr>
+                                ))}
                                 
-                            </Switch>
-                        </Router>
-                    </Modal>
+                            </tbody>
+                        </table>
+                        <hr />
+                        <h5>Payments</h5>
+                        <table class="table">
+                            <thead>
+                                <tr className="bg-primary text-white">
+                                    <th></th>
+                                    <th>Payment Method</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.state.payments.map(pmt => (<tr>
+                                    <td></td>
+                                    <td>{pmt.method}</td>
+                                    <td>{parseFloat(pmt.tendered).toFixed(2)}</td>
+                                </tr>))}
+                            </tbody>
+                        </table>
+                        <div>
+                            <div>
+                                <div className="text-right">Subtotal</div>
+                                <div></div>
+                            </div>
+                            <div>
+                                <div  className="text-right">Tax</div>
+                                <div></div>
+                            </div>
+                            <div>
+                                <div className="text-right">Total Due</div>
+                                <div></div>
+                            </div>
+                            <hr/>
+                            <div>
+                                <div className="text-right">Amount Paid</div>
+                                <div className="text-right"></div>
+                            </div>
+                            <div>
+                                <div>Change</div>
+                                <div></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </Context.Provider>
         )
@@ -498,4 +374,3 @@ class MainPage extends Component{
 }
 
 export default MainPage;
-export {history}

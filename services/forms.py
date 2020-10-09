@@ -33,9 +33,6 @@ class ServiceForm(forms.ModelForm, BootstrapMixin):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab(
-                    'Basic',
                     'name',
                     Row(
                         Column(
@@ -43,8 +40,6 @@ class ServiceForm(forms.ModelForm, BootstrapMixin):
                         Column(
                             'hourly_rate', css_class='form-group col-md-6 col-sm-12'),
                     ),
-                ),
-                Tab('Other',
                     'description',
                     Row(
                         Column(
@@ -55,10 +50,7 @@ class ServiceForm(forms.ModelForm, BootstrapMixin):
                             'frequency', css_class='form-group col-md-4 col-sm-12'),
                     ),
                     'is_listed',
-                    )
-            ),
-
-            Submit('submit', 'Submit')
+                    Submit('submit', 'Submit')
         )
 
 
@@ -136,8 +128,7 @@ class ServiceWorkOrderForm(forms.ModelForm, BootstrapMixin):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('Form',
+            
                     Row(
                         Column('date', css_class="form group col-md-6 col-sm-12"),
                         Column('time', css_class="form group col-md-6 col-sm-12"),
@@ -149,15 +140,12 @@ class ServiceWorkOrderForm(forms.ModelForm, BootstrapMixin):
                     'status',
                     'authorized_by',
                     'team',
-                    ),
-                Tab('Service People',
+                    HTML('''<hr>
+                    <h5>Service Team</h5>'''),
                     HTML(
                         """
                         <div id="work-order-persons"></div>      
-                        """
-                    ),
-                    ),
-            )
+                        """)
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
@@ -323,30 +311,24 @@ class ServiceProcedureForm(forms.ModelForm, BootstrapMixin):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('Procedure Details',
                     'name',
                     'reference',
                     'author',
                     'description',
-                    ),
-                Tab('procedure steps',
+                    HTML('''<hr>
+                    <h5>Procedure Steps</h5>'''),
                     HTML(
                         """
                         <div id="procedure-widgets" style="display:block;clear:both">
                         </div>
                         """
-                    )
                     ),
-                Tab('Select Equipment And Consumables',
-                    HTML(
-                        """
-            <div id="inventory-widgets" style="display:block;clear:both"></div>
-                        """
-                    )
-                    ),
+                    HTML('''<hr>
+                    <h5>Equipment and Consumables</h5>'''),
+                    HTML("""
+                        <div id="inventory-widgets" style="display:block;clear:both"></div>
+                        """)
             )
-        )
         self.helper.add_input(Submit('submit', 'Submit'))
 
 

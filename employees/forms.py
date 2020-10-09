@@ -131,8 +131,6 @@ class PayGradeForm(forms.ModelForm, BootstrapMixin):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('basic',
                     'name',
                     Row(
                         Column('monthly_leave_days',
@@ -160,14 +158,13 @@ class PayGradeForm(forms.ModelForm, BootstrapMixin):
                                css_class='form-group col-md-6 col-sm-12'),
                     ),
                     'subtract_lunch_time_from_working_hours',
-                    ),
-                Tab('Allowances, Deductions and Taxes',
+                    
+            HTML('''<hr>
+            <h5>Allowances Deductions and Taxes</h5>'''),
                     'allowances',
                     'deductions',
                     'payroll_taxes',
-                    ),
-            )
-        )
+                    )
         self.helper.add_input(Submit('submit', 'Submit'))
 
 
@@ -274,8 +271,6 @@ class EmployeeForm(forms.ModelForm, BootstrapMixin):
 
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('Basic',
                     HTML(f'<br/><p>{user_string}</p>'),
                     Row(
                         Column('first_name',
@@ -288,21 +283,20 @@ class EmployeeForm(forms.ModelForm, BootstrapMixin):
                                css_class='form-group col-md-6 col-sm-12'),
                         Column(
                             'address', css_class='form-group col-md-6 col-sm-12'),
-                    ),
-                    ),
-                Tab('Personal',
+                    ),         
+                    HTML('''<hr>
+                    <h5>Personal</h5>'''),
                     'date_of_birth',
                     'id_number',
                     'social_security_number',
-                    'gender',
-                    ),
-                Tab('Conditions of service',
+                    'gender',         
+                    HTML('''<hr>
+                    <h5>Conditions of Service</h5>'''),
                     'pay_grade',
                     'leave_days',
                     'pin',
                     'uses_timesheet'
                     )
-            ))
         self.helper.add_input(Submit('submit', 'Submit'))
 
     def save(self, *args, **kwargs):
@@ -339,21 +333,13 @@ class PayrollTaxForm(forms.ModelForm, BootstrapMixin):
         super(). __init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('Payroll Tax Details',
                     'brackets',
                     'name',
-                    'paid_by',
-                    ),
-                Tab('Tax Brackets',
-                    HTML(
-                        """
-            <div id="tax-brackets"></div>                        
-                        """
+                    'paid_by',    
+                    HTML('''<hr>
+                    <h5>Tax Brackets</h5>'''),
+                    HTML("""div id="tax-brackets"></div>""")
                     )
-                    )
-            )
-        )
         self.helper.add_input(Submit('submit', 'Submit'))
 
 
@@ -428,8 +414,6 @@ class LeaveRequestForm(forms.ModelForm, BootstrapMixin):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('basic',
                     Row(
                         Column('start_date',
                                css_class='form-group col-md-6 col-sm-12'),
@@ -437,12 +421,10 @@ class LeaveRequestForm(forms.ModelForm, BootstrapMixin):
                             'end_date', css_class='form-group col-md-6 col-sm-12'),
                     ),
                     'employee',
-                    'category',
-                    ),
-                Tab('notes',
+                    'category',      
+                    HTML('''<hr>
+                    <h5>Notes</h5>'''),
                     'notes',
-                    ),
-            )
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 
@@ -502,19 +484,15 @@ class PayrollDateForm(forms.ModelForm, BootstrapMixin):
 
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('Employees',
                     'schedule',
                     'date',
-                    'employees'
-                    ),
-                Tab('Departments',
-                    'departments'
-                    ),
-                Tab('Pay Grades',
-                    'pay_grades'
-                    ),
-            )
+                    'employees',
+                    HTML('''<hr>
+                    <h5>Departments</h5>'''),
+                    'departments',
+                    HTML('''<hr>
+                    <h5>Pay grades</h5>'''),
+                    'pay_grades'        
         )
 
         self.helper.add_input(Submit('submit', 'Submit'))
@@ -536,18 +514,13 @@ class DepartmentForm(forms.ModelForm, BootstrapMixin):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('basic',
-                    'name',
-                    'manager',
-                    'description',
-                    'parent_department',
-
-                    ),
-                Tab('members',
-                    'employees'
-                    ),
-            )
+            'name',
+            'manager',
+            'description',
+            'parent_department',
+            HTML('''<hr>
+            <h5>Members</h5>'''),
+            'employees'
         )
         self.helper.add_input(Submit('submit', 'Submit'))
 

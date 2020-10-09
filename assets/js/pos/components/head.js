@@ -67,12 +67,8 @@ const HeadStats = (props) =>{
                 <table className="table-sm">
                     <tbody>
                         <tr>
-                            <td>Current Customer: </td>
-                            <td>{context.state.currentCustomer}</td>
-                        </tr>
-                        <tr>
-                            <td>Current Mode: </td>
-                            <td>{context.state.isQuote ? "QUOTE": "SALE"} MODE</td>
+                            <td>Current Time</td>
+                            <td>{("0" + time.getHours()).slice(-2)}:{("0" + time.getMinutes()).slice(-2)}:{("0" + time.getSeconds()).slice(-2)}</td>
                         </tr>
                         <tr>
                             <td>Current Sales Person: </td>
@@ -85,10 +81,7 @@ const HeadStats = (props) =>{
                 <h5>Time</h5>
                 <table className="table-sm">
                     <tbody>
-                        <tr>
-                            <td>Current Time</td>
-                            <td>{("0" + time.getHours()).slice(-2)}:{("0" + time.getMinutes()).slice(-2)}:{("0" + time.getSeconds()).slice(-2)}</td>
-                        </tr>
+                        
                         <tr>
                             <td>Session Start</td>
                             <td>{("0" + props.sessionStart.getHours()).slice(-2)}:{("0" + props.sessionStart.getMinutes()).slice(-2)}:{("0" + props.sessionStart.getSeconds()).slice(-2)}</td>

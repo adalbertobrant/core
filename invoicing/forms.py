@@ -36,8 +36,6 @@ class SalesConfigForm(forms.ModelForm, BootstrapMixin):
 
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('Invoices and quotations',
                     Row(
                         Column('default_invoice_comments', css_class='col-md-6 col-sm-12'),
                         Column('default_credit_note_comments', css_class='col-md-6 col-sm-12')
@@ -48,18 +46,11 @@ class SalesConfigForm(forms.ModelForm, BootstrapMixin):
                     ),
                     'next_invoice_number',
                     'next_quotation_number',
-                    ),
-                # Tab('Page Layout',
-                #     # 'sales_tax',
-                #     # 'include_tax_in_invoice',
-                #     # 'include_units_in_sales_invoice',
-                #     # 'include_shipping_address',
-                #     ),
-                Tab('POS Settings',
+                    HTML('''<hr>
+                    <h5>Invoice Settings</h5>'''),
                     'default_warehouse',
-                    
                     )
-            ))
+            
 
         self.helper.add_input(Submit('submit', "Submit"))
 
@@ -92,8 +83,6 @@ class CustomerForm(BootstrapMixin, forms.Form):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            TabHolder(
-                Tab('basic',
                     Row(
                         Column('name',
                                'phone_1',
@@ -102,14 +91,12 @@ class CustomerForm(BootstrapMixin, forms.Form):
                                css_class='form-group col-md-6 col-sm-12'),
                         Column('customer_type', 'address',
                                css_class='form-group col-md-6 col-sm-12'),
-
                     ),
-
-                    ),
-                Tab('more',
                     'website',
                     'phone_2',
                     'image',
+                    HTML('''<hr>
+                    <h5>Other Details</h5>'''),
                     'organization',
                     Row(
                         Column('banking_details',
@@ -118,10 +105,7 @@ class CustomerForm(BootstrapMixin, forms.Form):
                                css_class='form group col-md-6 col-sm-12')
                     ),
                     'other_details',
-
-                    ),
-            ),
-            Submit('submit', 'Submit')
+                    Submit('submit', 'Submit')
         )
 
     def clean(self, *args, **kwargs):
