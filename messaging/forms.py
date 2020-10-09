@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from draftjs_exporter.html import HTML as exporterHTML
 import json
 import urllib
-from cryptography.fernet import Fernet
+# from cryptography.fernet import Fernet
 # from messaging.email_api.secrets import get_secret_key
 
 

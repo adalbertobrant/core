@@ -4,7 +4,7 @@ import datetime
 import os
 from django.shortcuts import reverse
 import common_data
-from cryptography.fernet import Fernet
+# from cryptography.fernet import Fernet
 from django.core.files import File
 import imaplib
 import string

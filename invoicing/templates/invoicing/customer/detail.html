@@ -236,14 +236,14 @@ Customer
                                             function createCustomerNote(){
                                                 var text = $('#customer-note').val()
                                                 if(text == ''){
-                                                    alert('You need to enter some text to submit a note')
+                                                    bentschAlert('You need to enter some text to submit a note')
                                                     return
                                                 }
                                                 console.log(text)
                                                 console.log($('input[name="csrfmiddlewaretoken"]').val())
                                                 $.post('/invoicing/create-customer-note/{{object.pk}}/', {'note': text, 'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()}, function(data){
                                                     if(data.status == 'ok'){
-                                                        alert('Note Created successfully!')
+                                                        bentschAlert('Note Created successfully!')
                                                         $('#customer-note-form').before($("<div class='card' style='margin-bottom:.75rem'> \
                                                          <div class='card-body'> \
                                                             <p><span class='less'> " + data.data.date + " </span> </p> \
