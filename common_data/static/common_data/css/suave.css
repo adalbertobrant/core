@@ -40,6 +40,10 @@ body.framed::-webkit-scrollbar{
     color: var(--quarternary);
 } 
 
+.primary-style {
+    border-color: whitesmoke;
+}
+
 .hover-primary:hover {
     background-color: var(--primary);
     color: var(--quarternary);
@@ -583,7 +587,7 @@ section#title button{
 }
 
 .notification-window {
-    width: 300px;
+    width: 400px;
     height: 100vh;
     position: absolute;
     left: 100vw;
@@ -598,14 +602,14 @@ section#title button{
 }
 
 .visible-notification-window {
-    left: calc(100vw - 300px);
+    left: calc(100vw - 400px);
 }
 
-.notification-window h5{
+.notification-window h4{
     color:white;;
     background-color: var(--primary);
     padding: 10px;
-    text-align: center;
+    text-align: left;
 
 }
 
@@ -902,6 +906,7 @@ span.less {
     width: 100vw;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.5);
+    padding: 50px
 }
 
 .bentsch-modal-content {
@@ -915,7 +920,7 @@ span.less {
 .bentsch-close {
     color: #aaa;
     float: right;
-    font-size: 28px;
+    font-size: 20px;
     font-weight: bold;
 }
 
@@ -927,13 +932,13 @@ span.less {
 }
 
 .bentsch-modal-header {
-    padding: 2px 16px;
+    padding: 10px 16px;
     background-color: var(--primary);
     color:var(--quarternary);
 }
 
 .bentsch-modal-body {
-    padding: 2px 16px;
+    padding: 10px 16px;
 }
 
 .bentsch-modal-content {

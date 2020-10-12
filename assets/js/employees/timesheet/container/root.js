@@ -51,7 +51,7 @@ export default class TimeSheet extends Component{
         const reg = /[012]\d:[0-5]\d/;
         if(!reg.test(data.timeIn) || !reg.test(data.timeOut) ||
                 !reg.test(data.breaksTaken)){
-            alert('Ensure all the times entered are formatted as "HH:MM"');
+            bentschAlert('Ensure all the times entered are formatted as "HH:MM"');
         }else{
             let newLines = [...this.state.lines];
             newLines.push(data);
@@ -72,11 +72,11 @@ export default class TimeSheet extends Component{
         const reg = /[012]\d:[0-5]\d/;
         if(data.date === 0 || data.timeIn === 0 || 
                 data.timeOut === 0  || data.breaksTaken === 0){
-            alert('Please fill in all data');
+            bentschAlert('Please fill in all data');
         
         }else if(!reg.test(data.timeIn) || !reg.test(data.timeOut) ||
                 !reg.test(data.breaksTaken)){
-            alert('Ensure all the times entered are formatted as "HH:MM"');
+            bentschAlert('Ensure all the times entered are formatted as "HH:MM"');
         }else{
             let line = {
                 editing: false,

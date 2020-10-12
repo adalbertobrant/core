@@ -53,8 +53,8 @@ class MainPage extends Component{
     // Handles Routing
     //##############################################################
     openCheckout =() =>{
-        if(this.state.currentCustomer == null){alert('A sale cannot be completed without a valid customer.'); return}
-        if(this.state.isQuote){alert('You cannot checkout a quote.'); return}
+        if(this.state.currentCustomer == null){bentschAlert('A sale cannot be completed without a valid customer.'); return}
+        if(this.state.isQuote){bentschAlert('You cannot checkout a quote.'); return}
         this.setState({modalOpen: true});
         history.push("/payment")
     }
@@ -69,13 +69,13 @@ class MainPage extends Component{
     quote =() =>{
         //change to quotation mode 
         if(this.state.products.length > 0 && !this.state.isQuote){
-            alert('Sales cannot be changed to quotes, either do a price check or suspend the current sale or void it in order to change modes')
+            bentschAlert('Sales cannot be changed to quotes, either do a price check or suspend the current sale or void it in order to change modes')
             return
         }
         if(this.state.isQuote){
-            alert('Changed to Sale Mode')
+            bentschAlert('Changed to Sale Mode')
         }else{
-            alert('Changed to Quote Mode')
+            bentschAlert('Changed to Quote Mode')
         }
         
         this.setState((prevState) => ({isQuote:!prevState.isQuote}))
@@ -100,7 +100,7 @@ class MainPage extends Component{
 
     addProduct = () =>{
         if(!this.state.current_item_id || this.state.current_item_qty <= 0) {
-            alert("Please select a valid product and a quantity greater than 0")
+            bentschAlert("Please select a valid product and a quantity greater than 0")
             return
         }
         axios.get('/inventory/api/product/' + this.state.current_item_id)
@@ -139,10 +139,10 @@ class MainPage extends Component{
                 currentCustomer: null, 
                 products: []
             }))
-            alert('Sale Suspended Successfully')
+            bentschAlert('Sale Suspended Successfully')
             return
         }else if(this.state.products.length > 0){
-            alert('A sale is already suspended in this session, restore it before suspending another sale.')
+            bentschAlert('A sale is already suspended in this session, restore it before suspending another sale.')
             return
         }else if((this.state.suspendedSale && this.state.products.length == 0)
                     || this.state.isQuote){
@@ -151,7 +151,7 @@ class MainPage extends Component{
                 products: prevState.suspendedSale.products,
                 currentCustomer: prevState.suspendedSale.customer
             }))
-          alert('Sale restored')
+          bentschAlert('Sale restored')
 
         }
     }

@@ -37,7 +37,7 @@ class ProcessDetails extends Component{
 
     durationHandler = (data, name) =>{
         if(!data.valid && data.value.length == 5){
-            alert('Please provide a proper duration');
+            bentschAlert('Please provide a proper duration');
         }else if(data.valid){
             this.setState({duration: data.value})
         }else{

@@ -15,7 +15,7 @@ class LogoutPage extends Component{
             console.log('Server status not OK')
             
         }).catch(error =>{
-            alert('Failed to end session because of an error')
+            bentschAlert('Failed to end session because of an error')
             console.error(error)
         })
         

@@ -85,7 +85,7 @@ export default class ExchangeTable extends Component{
                     csrfmiddlewaretoken: 
                         $("input[name='csrfmiddlewaretoken']").val()
                 }
-            }).fail(() =>{alert('failed to update the server')})
+            }).fail(() =>{bentschAlert('failed to update the server')})
         }
          
         item.editing = !item.editing;
@@ -116,7 +116,7 @@ export default class ExchangeTable extends Component{
                 }
             })
             .then(this.setTable)
-            .fail(() =>{alert('failed to communicate with server')});
+            .fail(() =>{bentschAlert('failed to communicate with server')});
         }
         this.setState((prevState) =>{
             return({createRateMode: !prevState.createRateMode})

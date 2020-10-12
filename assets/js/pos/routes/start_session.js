@@ -28,7 +28,7 @@ const StartSessionPage =(props) =>{
                 onChange={evt => setPwd(evt.target.value)}/> <br/>
             <button className="btn btn-block btn-lg primary"
                 onClick={() =>{
-                    if(usr == ''){alert('Please select a user');return;}
+                    if(usr == ''){bentschAlert('Please select a user');return;}
                     axios.get('/employees/api/employee/' + usr)
                         .then(res =>{
                             if(res.data.pin == pwd){
@@ -36,7 +36,7 @@ const StartSessionPage =(props) =>{
                                     usr + ' - ' + res.data.first_name +
                                     ', ' + res.data.last_name)
                             }else{
-                                alert('The pin supplied is incorrect')
+                                bentschAlert('The pin supplied is incorrect')
                             }
                         })
                 }}>Login</button>

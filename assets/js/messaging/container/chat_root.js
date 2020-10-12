@@ -123,7 +123,7 @@ export default class ChatRoot extends Component {
     const extension = file.name.split(".")[1];
 
     if (file.size > 5000000) {
-      alert("Cannot Upload files larger than 5MB");
+      bentschAlert("Cannot Upload files larger than 5MB");
       return;
     } else if (
       ![
@@ -141,7 +141,7 @@ export default class ChatRoot extends Component {
         "xlx"
       ].includes(extension)
     ) {
-      alert("Unsupported file upload format.");
+      bentschAlert("Unsupported file upload format.");
       return;
     }
     axios.defaults.xsrfCookieName = "csrftoken";
@@ -176,7 +176,7 @@ export default class ChatRoot extends Component {
             });
           })
           .catch(() => {
-            alert("No more older messages");
+            bentschAlert("No more older messages");
           });
       }
     );

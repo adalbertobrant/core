@@ -15,7 +15,7 @@ class CustomersPage extends Component{
 
     createCustomer = () => {
         if(this.state.name.indexOf(" ") == -1){
-            alert('A full name, separated by a space is required to create customers')
+            bentschAlert('A full name, separated by a space is required to create customers')
             return
         }
         axios.defaults.xsrfCookieName = "csrftoken";

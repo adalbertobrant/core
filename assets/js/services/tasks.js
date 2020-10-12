@@ -106,7 +106,7 @@ const Task =(props) =>{
                             let pk 
                             axios.delete('/services/api/work-order-task/' + props.data.id)
                                 .then(() =>{props.remove()})
-                                .catch(() =>alert('error deleting task'))
+                                .catch(() =>bentschAlert('error deleting task'))
                                 
                         }
                         evt.stopPropagation()
@@ -231,7 +231,7 @@ const TaskForm =(props) => {
                         if( description == ""){
                             return
                         }else if(due == "" || start == ""){
-                            alert('A valid date must be set')
+                            bentschAlert('A valid date must be set')
                             return
                         }
                         props.toggleEdit(false)

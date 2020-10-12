@@ -38,7 +38,7 @@ class FolderList extends React.Component{
                 messages: prevState.messages.concat(res.data) 
             }))
         }).catch(error =>{
-            alert('No more email messages')
+            bentschAlert('No more email messages')
         })
     }
 

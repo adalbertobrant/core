@@ -32,7 +32,7 @@ const ActionGrid = () =>{
                     text='DISCOUNT'
                 keyboardKey='F6' />
                 <ActionButton 
-                    action={() => {alert('Action!')}}
+                    action={() => {bentschAlert('Action!')}}
                     text='REFUND'
                     keyboardKey='F9' />
             </div>*/}
