@@ -51,7 +51,7 @@ class MainPage extends Component{
 
     addProduct = () =>{
         if(!this.state.current_item_id || this.state.current_item_qty <= 0) {
-            alert("Please select a valid product and a quantity greater than 0")
+            bentschAlert("Please select a valid product and a quantity greater than 0")
             return
         }
         axios.get('/inventory/api/product/' + this.state.current_item_id)

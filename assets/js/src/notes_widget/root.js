@@ -43,13 +43,13 @@ class NotesWidget extends Component{
         const extension = file.name.split('.')[1];
 
         if(file.size > 5000000){
-            alert('Cannot Upload files larger than 5MB');
+            bentschAlert('Cannot Upload files larger than 5MB');
             return;
         }else if(!['jpg', 'jpeg', 
                     'gif', 'png', 'pdf', 'pptx',
                     'doc', 'txt', 'docx', 'ppt',
                     'xlsx', 'xlx', 'mp3', 'mp4', 'mp4a', 'csv'].includes(extension)){
-            alert('Unsupported file upload format.');
+            bentschAlert('Unsupported file upload format.');
             return;
         }
         const data = setDataPayload({

@@ -114,7 +114,7 @@ class EntryRow extends Component {
         if(this.state.inputs.account === "" || 
                 this.state.inputs.amount === 0 ||
                     this.state.inputs.debit === ""){
-            alert('Please provide the necessary data!');
+            bentschAlert('Please provide the necessary data!');
         }else{
             this.props.addHandler(this.state.inputs);
             this.setState({inputs: {

@@ -81,7 +81,7 @@ class GenericTable extends Component{
             field = this.props.fields[i];
             value = data[fieldName]
             if(field.required && value === ""){
-                alert(`A required field, ${fieldName} is missing.`);
+                bentschAlert(`A required field, ${fieldName} is missing.`);
                 return;
             } 
         }

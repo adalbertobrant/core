@@ -88,7 +88,7 @@ class PayrollTaxEntryRow extends Component{
         
         if(lower_limit.val() === "" || upper_limit.val() === "" ||
             rate.val() === "" || deduction.val() == ""){
-                alert('Please enter all the required fields');
+                bentschAlert('Please enter all the required fields');
             }else{
                 this.props.insertHandler(this.state);
         lower_limit.val("");

@@ -36,7 +36,7 @@ class InboxView extends Component{
             'url': '/messaging/api/sync-folders/' + this.state.profile,
             'method': 'GET'
         }).then(() =>{
-            alert('Emails Synchronized successfully.')
+            bentschAlert('Emails Synchronized successfully.')
         })
     }
 

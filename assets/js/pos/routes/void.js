@@ -10,7 +10,7 @@ class Void extends Component{
         axios.get('/base/api/config/1')
             .then(res =>{
                 if(this.state.pwd != res.data.pos_supervisor_password){
-                    alert('The supervisor password is incorrect.')
+                    bentschAlert('The supervisor password is incorrect.')
                 }else{
                     this.props.voidAction()
                 }

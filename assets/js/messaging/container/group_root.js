@@ -182,7 +182,7 @@ export default class GroupChatRoot extends Component{
                                     .concat(prevState.messages)}
                         })
                     }).catch(() =>{
-                        alert('No more older messages')
+                        bentschAlert('No more older messages')
                     })
         })
     }
@@ -192,13 +192,13 @@ export default class GroupChatRoot extends Component{
         const extension = file.name.split('.')[1];
 
         if(file.size > 5000000){
-            alert('Cannot Upload files larger than 5MB');
+            bentschAlert('Cannot Upload files larger than 5MB');
             return;
         }else if(!['jpg', 'jpeg', 
                     'gif', 'png', 'pdf', 'pptx',
                     'doc', 'txt', 'docx', 'ppt',
                     'xlsx', 'xlx'].includes(extension)){
-            alert('Unsupported file upload format.');
+            bentschAlert('Unsupported file upload format.');
             return;
         }
         axios.defaults.xsrfCookieName = "csrftoken";
@@ -230,7 +230,7 @@ export default class GroupChatRoot extends Component{
                 participantsModalOpen: false
             })
         }).error(err =>{
-            alert('An error occurred');
+            bentschAlert('An error occurred');
             this.setState({participantsModalOpen: false})
         })
     }
@@ -247,7 +247,7 @@ export default class GroupChatRoot extends Component{
                 participantsModalOpen: false
             })
         }).error(err =>{
-            alert('An error occurred');
+            bentschAlert('An error occurred');
             this.setState({participantsModalOpen: false})
         })
     }

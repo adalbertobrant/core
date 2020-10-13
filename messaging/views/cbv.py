@@ -15,7 +15,7 @@ import json
 import urllib
 from messaging.email_api.email import EmailSMTP
 # from messaging.email_api.secrets import get_secret_key
-from cryptography.fernet import Fernet
+# from cryptography.fernet import Fernet
 import imaplib
 import smtplib
 from django.contrib import messages

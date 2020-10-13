@@ -11,7 +11,7 @@ const Keypad = (props) =>{
         document.addEventListener('keydown', evt =>{
             if(evt.keyCode == 13){
                 if(pin.length == 0){
-                    alert('Please enter a pin to continue')
+                    bentschAlert('Please enter a pin to continue')
                     return
                 }
                 props.enterHandler(pin)
@@ -68,7 +68,7 @@ const Keypad = (props) =>{
                         onClick={() =>setPin(pin + '0')}>0</button>    
                     <button onClick={() =>{
                         if(pin.length == 0){
-                            alert('Please enter a pin to continue')
+                            bentschAlert('Please enter a pin to continue')
                             return
                         }
                         props.enterHandler(pin)
@@ -133,9 +133,9 @@ class TimeLogger extends React.Component{
         }).then(res =>{
             console.log(res.data)
             if(res.data.status == 'ok'){
-                alert(`Logged ${res.data.value} successfully at ${this.state.time.getHours()}:${this.state.time.getMinutes()}`)
+                bentschAlert(`Logged ${res.data.value} successfully at ${this.state.time.getHours()}:${this.state.time.getMinutes()}`)
             }else{
-                alert('Incorrect credentials')
+                bentschAlert('Incorrect credentials')
             }
 
         }).catch(err =>{

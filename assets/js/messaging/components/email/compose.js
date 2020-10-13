@@ -41,7 +41,7 @@ class Compose extends React.Component{
                     'Content-Type': 'multipart/form-data',
                   },
             data: data})
-            .then(res => alert('message sent succesfully'))
+            .then(res => bentschAlert('message sent succesfully'))
             .catch(err => console.log('error sending email ' + err))
     }
 

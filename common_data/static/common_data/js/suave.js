@@ -119,6 +119,7 @@ $(document).ready(function () {
     document.getElementById('close-notifications').addEventListener('click',
         function () {
             $('.notifications').hide()
+            $('.notification-window').removeClass('visible-notification-window');
 
         })
 
