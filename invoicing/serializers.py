@@ -102,3 +102,7 @@ class LeadSerializer(serializers.ModelSerializer):
         model =Lead
         fields = '__all__'
 
+class PaymentMethodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentMethod
+        fields = '__all__'

@@ -5,16 +5,6 @@ import axios from '../../src/auth'
 import styles from '../pos.css';
 import SelectThree from '../../src/select_3';
 
-axios.defaults.xsrfCookieName = "csrftoken";
-axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
-
-const history = {
-    name: 'History',
-    push: function(url){
-        window.location.hash = url
-    }
-}
-
 class MainPage extends Component{
     state = {
         products: [],
@@ -32,70 +22,31 @@ class MainPage extends Component{
         current_payment_method_id: null,
         current_item_qty: 0,
         current_payment_amount: 0,
+        net_total: 0,
+        grand_total: 0,
+        tax: 0,
+        total_tendered: 0,
+        change: 0,
         salesPerson: null,
         modalOpen: false,
         sessionStart: new Date(),
-        keyMapping: {
-            'Enter': 'enterKeypadValue'
-        }
+        allProductsSelected: false,
+        allPaymentsSelected: false,
     }
 
-    //used with action buttons
-    setKeyMapper = (key, action) =>{
-        if("undefined" === typeof(this.state.keyMapping[key])){
-            let newMapping = {...this.state.keyMapping}
-            newMapping[key] = action
-
-            this.setState({keyMapping:newMapping})    
-        }
-    }
-    //#############################################################
-    // Handles Routing
-    //##############################################################
-    openCheckout =() =>{
-        if(this.state.currentCustomer == null){alert('A sale cannot be completed without a valid customer.'); return}
-        if(this.state.isQuote){alert('You cannot checkout a quote.'); return}
-        this.setState({modalOpen: true});
-        history.push("/payment")
-    }
-
-
-    openCustomers =() =>{
-        //list of customers, set current
-        this.setState({modalOpen: true});
-        history.push("/customers")
-    }
-
-    quote =() =>{
-        //change to quotation mode 
-        if(this.state.products.length > 0 && !this.state.isQuote){
-            alert('Sales cannot be changed to quotes, either do a price check or suspend the current sale or void it in order to change modes')
-            return
-        }
-        if(this.state.isQuote){
-            alert('Changed to Sale Mode')
-        }else{
-            alert('Changed to Quote Mode')
-        }
-        
-        this.setState((prevState) => ({isQuote:!prevState.isQuote}))
-    }
-
-    priceCheck =() =>{
-        this.setState({modalOpen: true})
-        history.push('/price-check')
-    }
-
-    removeProduct = () =>{
-        //no route
-        // remove current selection from products
-        if(confirm(
-            'Are you sure you want to remove the currently selected product?')){
-                let newProducts = [...this.state.products]
-                newProducts.splice(this.state.active, 1)
-                this.setState({products: newProducts})
-        }
-
+    updateTotals() {
+        const tendered = this.state.payments.reduce((tot, pmt) => tot + pmt.tendered, 0) 
+        const tax = this.state.products.reduce((tot, prod) => tot + prod.tax_amount, 0)
+        const net_total = this.state.products.reduce((tot, prod) => tot + (prod.price * prod.quantity), 0)
+        const grand_total = net_total + tax
+        const change = tendered > grand_total ? tendered - grand_total : 0.0
+        this.setState({
+            tax: tax,
+            total_tendered: tendered,
+            net_total: net_total,
+            grand_total: grand_total,
+            change: change
+        })      
     }
 
     addProduct = () =>{
@@ -104,114 +55,100 @@ class MainPage extends Component{
             return
         }
         axios.get('/inventory/api/product/' + this.state.current_item_id)
-            .then(res =>{
+            .then(res =>{ 
+                console.log(res)
                 let newProducts = [...this.state.products]
+                const tax_rate = [null, undefined].includes(res.data.product_component.tax) ? null : res.data.product_component.tax.rate  
+                const tax_amount = tax_rate ? res.data.unit_sales_price * this.state.current_item_qty * (tax_rate / 100.0) : 0.0
                 newProducts.push({
                     name: res.data.name,
                     price: res.data.unit_sales_price,
                     id: res.data.id,
                     quantity: this.state.current_item_qty,
-                    tax: typeof(res.data.tax) ==="undefined" ? null : res.data.tax 
+                    tax_id:  [null, undefined].includes(res.data.product_component.tax) ? null : res.data.product_component.tax.id,
+                    tax_amount: tax_amount,
+                    checked: false
                 })
-                this.setState({ products: newProducts,})
+                this.setState({ products: newProducts}, this.updateTotals)
             })
         
     }
 
-
-    endSession = () =>{
-        //log session and then conclude
-        if(this.state.products.length > 0){
-            const choice = confirm('You have some products in the queue, are you sure you want to end the current session?')
-            if(!choice){
-                return
-            }
-        }
+    addPayment =() => {
+        axios.get('/invoicing/api/payment-method/' +this.state.current_payment_method_id )
+            .then(res =>{
+                const newPayments = [...this.state.payments]
+                newPayments.push({
+                    method: res.data.name,
+                    checked: false,
+                    tendered: parseFloat(this.state.current_payment_amount)
+                })
+                this.setState({
+                    payments: newPayments
+                }, this.updateTotals)
+            })
     }
 
-    suspendSale = () =>{
-        if(!this.state.suspendedSale ){
-            this.setState(prevState =>({
-                suspendedSale: {
-                    products: [...prevState.products],
-                    customer: prevState.currentCustomer
-                },
-                currentCustomer: null, 
-                products: []
-            }))
-            alert('Sale Suspended Successfully')
-            return
-        }else if(this.state.products.length > 0){
-            alert('A sale is already suspended in this session, restore it before suspending another sale.')
-            return
-        }else if((this.state.suspendedSale && this.state.products.length == 0)
-                    || this.state.isQuote){
-            this.setState(prevState => ({
-                suspendedSale: null,
-                products: prevState.suspendedSale.products,
-                currentCustomer: prevState.suspendedSale.customer
-            }))
-          alert('Sale restored')
+    toggleAllPayments = (evt) => {
+        const newPayments = this.state.payments.map(pmt =>{
+            pmt.checked = !this.state.allPaymentsSelected
+            return pmt
+        })
 
-        }
+        this.setState({
+            allPaymentsSelected: !this.state.allPaymentsSelected,
+            payments: newPayments
+        })
     }
 
+    toggleAllProducts = (evt) => {
+        const newProducts = this.state.products.map(prod => {
+            prod.checked = !this.state.allProductsSelected
+            return prod
+        })
+
+        this.setState({
+            allProductsSelected: !this.state.allProductsSelected,
+            products: newProducts
+        })
+    }
+
+    toggleProduct  = (evt) => {
+        const id = parseInt(evt.target.dataset.index)
+        const newProducts = this.state.products.map((prod, i) =>{
+            if(i == id){ prod.checked = !prod.checked }
+            return prod
+        })
+        this.setState({products: newProducts})
+    }
+
+    togglePayment = (evt) => {
+        const id = parseInt(evt.target.dataset.index)
+        const newPayments = this.state.payments.map((pmt, i) =>{
+            if(i == id){ pmt.checked = !pmt.checked }
+            return pmt
+        })
+        this.setState({payments: newPayments})
+    }
+
+    deleteSelectedPayments = () => {
+        const newPayments = this.state.payments.filter(pmt => !pmt.checked)
+        this.setState({payments: newPayments}, this.updateTotals)
+    }
+
+    deleteSelectedProducts = () => {
+        const newProducts = this.state.products.filter(prod => !prod.checked)
+        this.setState({products: newProducts}, this.updateTotals)
+    }
 
     //#######################################################
     // Handles Route Events 
     //#######################################################
 
-    handleSessionStart = (user) =>{
-        const timestamp = new Date()
-        axios.post('/invoicing/pos/start-session/', {
-            sales_person: user,
-            timestamp: timestamp
-        }).then(res =>{
-            this.setState({
-                modalOpen: false,
-                sessionStart: timestamp,
-                salesPerson: user,
-                sessionID: res.data.id
-            })
-        })
-    }
-
-    handleCheckoutAction = (checkoutState) =>{
-        // create invoice 
-        //create list of payments
-        //create sale
-        // go to completed sale page
-        
-        
-        axios.post('/invoicing/pos/process-sale/', {
-            timestamp: new Date(),
-            session: this.state.sessionID,
-            invoice: {
-                //date extracted from timestamp
-                customer: this.state.currentCustomer,
-                sales_person: this.state.salesPerson,
-                lines: this.state.products
-            },
-            payments: checkoutState.payments,
-
-        }).then(res =>{
-            //returns a receipt number 
-            this.setState({
-                modalOpen: true,
-                checkoutState: checkoutState,
-                currentSaleID: res.data.sale_id
-            }, () =>history.push('/complete'))
-        }).catch(error =>{
-            console.log('error')
-        })
-    }
-
     handleInputChange = (evt) =>{
         const fieldname = evt.target.name
         const newVals = {}
         newVals[fieldname] =  evt.target.value 
-        console.log(fieldname)
-        console.log(newVals)
         this.setState(newVals)
     }
 
@@ -288,6 +225,7 @@ class MainPage extends Component{
                                     <SelectThree 
                                         app='invoicing'
                                         model="paymentmethod"
+                                        onSelect={(data) => this.setState({current_payment_method_id: data.selected})}
                                         />
                                     
                                 </div>
@@ -299,71 +237,90 @@ class MainPage extends Component{
                                          onChange={this.handleInputChange}/>
                                 </div>
                             </div>
-                            <button className='btn btn-primary'>Add Payment</button>
+                            <button className='btn btn-primary'
+                                onClick={this.addPayment}>Add Payment</button>
+                        <hr/>
                         <button class='btn btn-block btn-primary'>Submit Transaction</button>
                     </div>
                     <div className={styles.list}>
                         <h5>Items</h5>
-                        <table className="table">
+                        <table className="table table-sm">
                             <thead>
                                 <tr className="bg-primary text-white">
-                                    <th></th>
+                                    <th><input 
+                                            type="checkbox" 
+                                            onChange={this.toggleAllProducts} 
+                                            checked={this.state.allProductsSelected}/></th>
                                     <th style={{width: "50%"}}>Item</th>
-                                    <th>Qty</th>
-                                    <th>Rate</th>
+                                    <th className="text-right">Qty</th>
+                                    <th className="text-right">Rate</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.products.map(prod => (
-                                    <tr>
-                                        <th></th>
-                                        <th style={{width: "50%"}}>{prod.name}</th>
-                                        <th>{prod.quantity}</th>
-                                        <th>{parseFloat(prod.price).toFixed(2)}</th>
+                                {this.state.products.map((prod, i) => (
+                                    <tr key={i}>
+                                        <td><input 
+                                                type="checkbox" 
+                                                checked={prod.checked} 
+                                                onChange={this.toggleProduct} 
+                                                data-index={i}/></td>
+                                        <td style={{width: "50%"}}>{prod.name}</td>
+                                        <td className="text-right">{prod.quantity}</td>
+                                        <td className="text-right">{parseFloat(prod.price).toFixed(2)}</td>
                                     </tr>
                                 ))}
                                 
                             </tbody>
                         </table>
+                        <button class="btn btn-sm btn-danger" onClick={this.deleteSelectedProducts}>Delete</button>
                         <hr />
                         <h5>Payments</h5>
-                        <table class="table">
+                        <table class="table table-sm">
                             <thead>
                                 <tr className="bg-primary text-white">
-                                    <th></th>
+                                    <th><input 
+                                            type="checkbox" 
+                                            onChange={this.toggleAllPayments}
+                                            value={this.state.allPaymentsSelected}/></th>
                                     <th>Payment Method</th>
-                                    <th>Amount</th>
+                                    <th className="text-right">Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.payments.map(pmt => (<tr>
-                                    <td></td>
+                                {this.state.payments.map((pmt, i) => (<tr key={i}>
+                                    <td><input 
+                                            type="checkbox" 
+                                            onChange={this.togglePayment}
+                                            checked={pmt.checked}
+                                            data-index={i} /></td>
                                     <td>{pmt.method}</td>
-                                    <td>{parseFloat(pmt.tendered).toFixed(2)}</td>
+                                    <td className="text-right">{parseFloat(pmt.tendered).toFixed(2)}</td>
                                 </tr>))}
                             </tbody>
                         </table>
+                        <button class="btn btn-sm btn-danger" onClick={this.deleteSelectedPayments}>Delete</button>
+                        <hr/>
                         <div>
-                            <div>
+                            <div className={styles.totals}>
                                 <div className="text-right">Subtotal</div>
-                                <div></div>
+                                <div>{this.state.net_total.toFixed(2)}</div>
                             </div>
-                            <div>
+                            <div className={styles.totals}>
                                 <div  className="text-right">Tax</div>
-                                <div></div>
+                                <div>{this.state.tax.toFixed(2)}</div>
                             </div>
-                            <div>
+                            <div className={styles.totals}>
                                 <div className="text-right">Total Due</div>
-                                <div></div>
+                                <div>{this.state.grand_total.toFixed(2)}</div>
                             </div>
                             <hr/>
-                            <div>
+                            <div className={styles.totals}>
                                 <div className="text-right">Amount Paid</div>
-                                <div className="text-right"></div>
-                            </div>
-                            <div>
-                                <div>Change</div>
-                                <div></div>
+                                <div className="text-right">{this.state.total_tendered.toFixed(2)}</div>
+                            </div >
+                            <div className={styles.totals}>
+                                <div className="text-right">Change</div>
+                                <div className="text-right">{this.state.change.toFixed(2)}</div>
                             </div>
                         </div>
                     </div>

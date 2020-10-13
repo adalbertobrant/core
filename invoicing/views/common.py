@@ -91,6 +91,11 @@ class ConfigAPIView(generics.RetrieveAPIView):
     serializer_class = serializers.ConfigSerializer
 
 
+class PaymentMethodAPIView(generics.RetrieveAPIView):
+    queryset = PaymentMethod.objects.all()
+    serializer_class = serializers.PaymentMethodSerializer
+
+
 def employee_condition(self):
     return Employee.objects.all().count() == 0
 

@@ -5,9 +5,11 @@ from .report_urls import report_urls
 from .invoice import urls as invoice_urls
 from .pos import urls as pos_urls
 from .crm import crm_urls
+
 customer_router = DefaultRouter()
 customer_router.register(
     r'api/customer', views.CustomerAPIViewSet, base_name='customer')
+
 
 
 customer_urls = [
@@ -55,6 +57,8 @@ sales_rep_urls = [
             views.SalesRepDeleteView.as_view(), name='delete-sales-rep'),
     re_path(r'^sales-reps-list$', views.SalesRepListView.as_view(),
             name='sales-reps-list'),
+    re_path(r'^api/payment-method/(?P<pk>[\w]+)/?$', views.PaymentMethodAPIView.as_view(), 
+                name='api/payment-method')
 ] + sales_rep_router.urls
 
 urlpatterns = [
